@@ -58,7 +58,11 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
             >
-              <h2 className="text-primary font-bold tracking-widest text-xs uppercase mb-3">Studio Luna</h2>
+              <img
+                src={`${import.meta.env.BASE_URL}images/studio-luna-logo.png`}
+                alt="Studio Luna"
+                className="h-24 w-auto mb-4 object-contain"
+              />
               <h1 className="font-display text-4xl md:text-5xl font-medium text-foreground leading-[1.1] mb-4">
                 Rust in de <span className="italic text-accent">chaos</span>
               </h1>
