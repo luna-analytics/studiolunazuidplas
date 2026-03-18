@@ -1,0 +1,32 @@
+Prompt voor Replit Agent / AI (Geüpdatet met juiste kleuren)
+Kopieer en plak de onderstaande tekst in de Replit Agent chat om je app te starten:
+"Build a professional, mobile-first booking web application for my yoga studio called 'Studio Luna'. The app is focused on pregnancy yoga and 'Mama Circles' (community building for mothers).
+1. Tech Stack & Style
+• Framework: React with Vite.
+• Styling: Tailwind CSS.
+• Icons: Lucide-react.
+• Branding Colors (Exact Hex Codes): - Sage Green: #8fa89b (Primary for Yoga)
+• Terracotta: #c78d76 (Primary for Mama Circles)
+• Dark Green: #3a4f41 (For headers and primary text)
+• Canvas / Off-white: #f8f7f5 (Background)
+• Beige/Sand: #e6ddd2 (Secondary backgrounds)
+• Dusty Pink: #d5b9b2 (Accents)
+• Vibe: Serene, premium, trustworthy, and welcoming ('It takes a village').
+2. Core Features
+• Landing Page: A beautiful hero section with the studio name and a brief intro about "Rust in de chaos".
+• Interactive Schedule: - A horizontal date/day selector.
+• Cards for each class showing: Title, Time, Teacher (Marjolein), Available Spots, and a short description.
+• Filter logic: Show only classes for the selected day.
+• Booking Flow: - When a user clicks "Boeken", show a clean slide-up modal.
+• The modal should have a form for: Name, Email, and a checkbox for "First time at Studio Luna?".
+• A "Confirm" button that triggers a success animation/message.
+• Persistence: Use a simple local state for now, but structure the code so I can easily add Firebase/Firestore later for real database storage.
+3. User Interface Details
+• Ensure the navigation is a bottom-bar on mobile (Schedule, My Bookings, Profile).
+• Use rounded corners (3xl) and soft shadows for a modern look.
+• All text in the UI (buttons, labels, descriptions) must be in Dutch.
+4. Content to include (Mock data):
+• Maandag: Zwangerschapsyoga, 19:00 - 20:15.
+• Woensdag: Mama Circle, 10:00 - 11:30 (Focus on connection).
+• Donderdag: Postnatale Yoga, 20:00 - 21:15.
+Please start by building the main layout and the interactive schedule."

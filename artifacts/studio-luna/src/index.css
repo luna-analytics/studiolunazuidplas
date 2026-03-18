@@ -1,0 +1,93 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap');
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: 'DM Sans', sans-serif;
+  --font-display: 'Playfair Display', serif;
+
+  /* Studio Luna Palette */
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  
+  --color-primary: hsl(var(--primary)); /* Sage Green */
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  
+  --color-secondary: hsl(var(--secondary)); /* Beige/Sand */
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  
+  --color-accent: hsl(var(--accent)); /* Terracotta */
+  --color-accent-foreground: hsl(var(--accent-foreground));
+
+  --color-muted: hsl(var(--muted)); /* Lighter Beige */
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  
+  --color-border: hsl(var(--border)); /* Dusty Pink */
+  --color-ring: hsl(var(--primary));
+  
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--foreground));
+
+  --radius-xl: 1.5rem;
+  --radius-2xl: 2rem;
+  --radius-3xl: 2.5rem;
+}
+
+:root {
+  /* Canvas / Off-white: #f8f7f5 */
+  --background: 40 20% 97%;
+  
+  /* Dark Green: #3a4f41 */
+  --foreground: 140 15% 27%;
+  
+  /* Sage Green: #8fa89b */
+  --primary: 158 12% 62%;
+  --primary-foreground: 40 20% 97%;
+  
+  /* Beige/Sand: #e6ddd2 */
+  --secondary: 33 27% 86%;
+  --secondary-foreground: 140 15% 27%;
+  
+  /* Terracotta: #c78d76 */
+  --accent: 17 43% 62%;
+  --accent-foreground: 40 20% 97%;
+  
+  /* Slightly lighter beige for muted areas */
+  --muted: 33 20% 92%;
+  --muted-foreground: 140 10% 45%;
+  
+  /* Dusty Pink: #d5b9b2 */
+  --border: 12 26% 77%;
+  
+  /* Cards use the beige/sand color */
+  --card: 33 27% 86%;
+}
+
+@layer base {
+  body {
+    @apply bg-background text-foreground antialiased font-sans selection:bg-primary/20;
+    /* Soft pattern/texture overlay for organic feel */
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    @apply tracking-tight text-foreground;
+  }
+}
+
+@layer utilities {
+  .shadow-soft {
+    box-shadow: 0 8px 30px rgba(58, 79, 65, 0.06);
+  }
+  .shadow-inner-soft {
+    box-shadow: inset 0 2px 10px rgba(58, 79, 65, 0.03);
+  }
+  /* Hide scrollbar for clean horizontal scrolling */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}

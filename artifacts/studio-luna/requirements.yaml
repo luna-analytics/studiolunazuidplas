@@ -1,0 +1,18 @@
+packages:
+  "framer-motion": "For premium slide-up animations and smooth transitions"
+  "date-fns": "For elegant date manipulation in the schedule"
+  "clsx": "Utility for constructing className strings conditionally"
+  "tailwind-merge": "Utility for merging tailwind classes without conflicts"
+  "lucide-react": "For beautiful icons"
+
+images:
+  - path: "artifacts/studio-luna/public/images/hero-yoga.png"
+    description: "Serene, soft-focus image of a pregnant woman doing gentle yoga in a sunlit, minimal studio with natural wood textures and plants. Sage green and warm beige tones."
+    aspect_ratio: "16:9"
+  - path: "artifacts/studio-luna/public/images/profile-avatar.png"
+    description: "Soft, abstract watercolor illustration of a minimal crescent moon and botanical leaves in sage green and terracotta on a beige background"
+    aspect_ratio: "1:1"
+
+notes:
+  - App uses local state (localStorage) for bookings to provide immediate functional feedback.
+  - Designed mobile-first, centered in a max-w-md container on desktop to simulate the app experience.

@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "Studio Luna"
+version = "1.0.0"
+id = "artifacts/studio-luna"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+localPort = 23125
+name = "web"
+paths = ["/"]
+
+[services.development]
+run = "pnpm --filter @workspace/studio-luna run dev"
+
+[services.env]
+PORT = "23125"
+BASE_PATH = "/"
+
+[services.production]
+build = ["pnpm", "--filter", "@workspace/studio-luna", "run", "build"]
+publicDir = "artifacts/studio-luna/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
