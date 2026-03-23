@@ -103,16 +103,27 @@ export default function Home() {
             </button>
           </motion.div>
 
-          {/* 2 — ZWANGER & MAMA CIRCLES */}
+          {/* 2 — ZWANGER & MAMA CIRCLE */}
           <motion.div
             initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }} transition={{ duration: 0.4, delay: 0.1 }}
             className="rounded-3xl border border-dashed border-accent/60 bg-accent/10 p-5"
           >
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-xs font-bold uppercase tracking-widest text-foreground/40">Binnenkort</span>
+              <span className="text-xs px-2 py-0.5 rounded-full bg-accent/30 text-accent-foreground font-semibold">Bij genoeg animo</span>
+            </div>
             <h3 className="font-display text-lg font-medium text-foreground mb-2">Zwanger & Mama Circle</h3>
-            <p className="text-sm text-foreground/65 leading-relaxed">
+            <p className="text-sm text-foreground/65 leading-relaxed mb-4">
               Bij Studio Luna geloven we in de kracht van de 'village'. Naast de fysieke lessen creëren we een veilige cirkel waarin je ervaringen deelt, vragen stelt en vriendschappen sluit. De thee staat altijd klaar. ☕️
             </p>
+            <button
+              onClick={() => setIsInterestOpen(true)}
+              className="w-full py-2.5 rounded-2xl border border-primary/40 text-primary font-semibold text-sm flex items-center justify-center gap-2 hover:bg-primary/5 transition-colors"
+            >
+              <Mail className="w-4 h-4" />
+              Houd mij op de hoogte
+            </button>
           </motion.div>
 
           {/* 3 — BEVALLINGS SPECIALS */}
@@ -126,38 +137,26 @@ export default function Home() {
               <span className="text-xs px-2 py-0.5 rounded-full bg-accent/30 text-accent-foreground font-semibold">Bij genoeg animo</span>
             </div>
             <h3 className="font-display text-lg font-medium text-foreground mb-1">Bevallings Specials 🌙</h3>
-            <p className="text-sm text-foreground/55 mb-4">Los te boeken of als bundel (€ 155,- · Tribe Members € 145,-).</p>
+            <p className="text-sm text-foreground/55 mb-4">
+              Los te boeken of als bundel —{" "}
+              <span className="font-semibold text-foreground">€ 155,-</span>
+              <span className="text-foreground/40"> (bespaar € 22,-)</span>
+            </p>
 
             <div className="space-y-3 mb-4">
               {[
-                {
-                  title: "Focus & Vertrouwen",
-                  sub: "De Beval-yoga workshop",
-                  description: "Ademhaling, visualisatie en natuurlijke bevalhoudingen.",
-                  price: "€ 45,-",
-                },
-                {
-                  title: "Verbinding & Support",
-                  sub: "De Partner-workshop",
-                  description: "Jouw partner als anker, zachte aanraking en samenwerken als team.",
-                  price: "€ 75,-",
-                },
-                {
-                  title: "De Mama Spa",
-                  sub: "Ultiem ontspannen",
-                  description: "Restorative yoga, zelfmassage en volledige ontspanning.",
-                  price: "€ 45,-",
-                },
+                { title: "Bevallings Yoga Workshop", sub: "Focus & Vertrouwen", price: "€ 49,-" },
+                { title: "Partner Workshop", sub: "Verbinding & Support", price: "€ 79,-" },
+                { title: "Mama Spa", sub: "Ultiem ontspannen", price: "€ 49,-" },
               ].map((item) => (
                 <div key={item.title} className="rounded-2xl bg-background/60 border border-border/20 px-4 py-3">
-                  <div className="flex items-start justify-between gap-2 mb-0.5">
+                  <div className="flex items-start justify-between gap-2">
                     <div>
                       <p className="text-sm font-semibold text-foreground">{item.title}</p>
-                      <p className="text-xs text-foreground/45">{item.sub} · 120 min</p>
+                      <p className="text-xs text-foreground/45 mt-0.5">{item.sub} · 120 min</p>
                     </div>
                     <span className="text-sm font-semibold text-foreground shrink-0">{item.price}</span>
                   </div>
-                  <p className="text-xs text-foreground/60 mt-1.5">{item.description}</p>
                 </div>
               ))}
             </div>
