@@ -18,10 +18,16 @@ export default function Home() {
   
   const { isBooked } = useBookings();
 
-  // Generate next 14 days
+  // Generate days up to June 9, 2026
   const upcomingDays = useMemo(() => {
-    return Array.from({ length: 14 }).map((_, i) => addDays(today, i));
+    return Array.from({ length: 100 }).map((_, i) => addDays(today, i));
   }, [today]);
+
+  // Dates that have classes
+  const classDates = useMemo(() => {
+    const all = MOCK_CLASSES.flatMap(c => c.dates);
+    return new Set(all);
+  }, []);
 
   const handleBook = (studioClass: StudioClass) => {
     setSelectedClass(studioClass);
@@ -30,9 +36,8 @@ export default function Home() {
 
   // Filter classes for selected day
   const dayClasses = useMemo(() => {
-    const dayOfWeek = selectedDate.getDay();
-    // In JS, 0 is Sunday, 1 is Monday. Our mock data matches this.
-    return MOCK_CLASSES.filter(c => c.dayOfWeek === dayOfWeek)
+    const dateStr = format(selectedDate, 'yyyy-MM-dd');
+    return MOCK_CLASSES.filter(c => c.dates.includes(dateStr))
       .sort((a, b) => a.time.localeCompare(b.time));
   }, [selectedDate]);
 
@@ -81,16 +86,18 @@ export default function Home() {
           
           {/* Day Selector (Horizontal Scroll) */}
           <div className="flex gap-3 overflow-x-auto no-scrollbar pb-4 -mx-6 px-6 snap-x">
-            {upcomingDays.map((date, idx) => {
+            {upcomingDays.map((date) => {
               const isSelected = isSameDay(date, selectedDate);
               const isToday = isSameDay(date, today);
               
+              const hasClass = classDates.has(format(date, 'yyyy-MM-dd'));
+
               return (
                 <button
                   key={date.toISOString()}
                   onClick={() => setSelectedDate(date)}
                   className={cn(
-                    "flex flex-col items-center justify-center min-w-[4.5rem] h-[5.5rem] rounded-2xl transition-all duration-300 snap-center shrink-0",
+                    "flex flex-col items-center justify-center min-w-[4.5rem] h-[5.5rem] rounded-2xl transition-all duration-300 snap-center shrink-0 relative",
                     isSelected 
                       ? "bg-foreground text-background shadow-lg scale-105" 
                       : "bg-card text-foreground/70 hover:bg-muted"
@@ -105,6 +112,12 @@ export default function Home() {
                   <span className="text-xl font-display font-semibold">
                     {format(date, 'd')}
                   </span>
+                  {hasClass && (
+                    <span className={cn(
+                      "w-1.5 h-1.5 rounded-full mt-1",
+                      isSelected ? "bg-background/60" : "bg-primary"
+                    )} />
+                  )}
                 </button>
               );
             })}
