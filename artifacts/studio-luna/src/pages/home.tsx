@@ -81,7 +81,7 @@ export default function Home() {
           </div>
           <div className="flex items-center gap-2 text-sm text-foreground/70">
             <MapPin className="w-4 h-4 shrink-0 text-primary" />
-            <span>Huize Mooisteen</span>
+            <span>Pr. Beatrixstraat 2, Nieuwerkerk a/d IJssel</span>
           </div>
           <div className="flex items-center gap-2 text-sm text-foreground/70">
             <Sparkles className="w-4 h-4 shrink-0 text-primary" />
@@ -111,7 +111,8 @@ export default function Home() {
 
         {/* DE LOCATIE */}
         <div className="mx-6 mt-6 rounded-3xl bg-secondary/80 border border-border/30 p-5">
-          <h3 className="font-semibold text-foreground mb-2">📍 Huize Mooisteen</h3>
+          <h3 className="font-semibold text-foreground mb-1">📍 Huize Mooisteen</h3>
+          <p className="text-xs text-foreground/45 mb-2">Pr. Beatrixstraat 2, 2911 AL Nieuwerkerk aan den IJssel</p>
           <p className="text-sm text-foreground/65 leading-relaxed">
             Met vloerverwarming, zacht dimbaar licht en alle yoga props (kussens, blokken en dekens) die al voor je klaarliggen. Je hoeft alleen jezelf mee te brengen. 🤍
           </p>
