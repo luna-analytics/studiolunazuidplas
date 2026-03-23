@@ -1,8 +1,8 @@
 import { BottomNav } from "@/components/bottom-nav";
 import { motion } from "framer-motion";
-import { Tag, Info } from "lucide-react";
+import { Tag, Info, MessageCircleHeart } from "lucide-react";
 
-const tarieven = [
+const tarieven: { label: string; prijs: string; info: string | null; highlight: boolean; community?: boolean }[] = [
   {
     label: "Proefles",
     prijs: "€ 10,-",
@@ -20,12 +20,14 @@ const tarieven = [
     prijs: "€ 105,-",
     info: "2 maanden geldig",
     highlight: false,
+    community: true,
   },
   {
     label: "10-rittenkaart",
     prijs: "€ 195,-",
     info: "4 maanden geldig",
     highlight: false,
+    community: true,
   },
 ];
 
@@ -54,30 +56,43 @@ export default function Tarieven() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.07 }}
-                className={`rounded-3xl px-5 py-4 flex items-center justify-between border ${
+                className={`rounded-3xl px-5 py-4 border ${
                   item.highlight
                     ? "bg-primary/10 border-primary/30"
                     : "bg-card border-border/30"
                 }`}
               >
-                <div className="flex items-center gap-3">
-                  <div className={`w-9 h-9 rounded-2xl flex items-center justify-center shrink-0 ${
-                    item.highlight ? "bg-primary/20" : "bg-secondary"
-                  }`}>
-                    <Tag className={`w-4 h-4 ${item.highlight ? "text-primary" : "text-foreground/40"}`} />
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <div className={`w-9 h-9 rounded-2xl flex items-center justify-center shrink-0 ${
+                      item.highlight ? "bg-primary/20" : "bg-secondary"
+                    }`}>
+                      <Tag className={`w-4 h-4 ${item.highlight ? "text-primary" : "text-foreground/40"}`} />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-foreground text-sm">{item.label}</p>
+                      {item.info && (
+                        <p className="text-xs text-foreground/45 mt-0.5 flex items-center gap-1">
+                          <Info className="w-3 h-3" /> {item.info}
+                        </p>
+                      )}
+                    </div>
                   </div>
-                  <div>
-                    <p className="font-semibold text-foreground text-sm">{item.label}</p>
-                    {item.info && (
-                      <p className="text-xs text-foreground/45 mt-0.5 flex items-center gap-1">
-                        <Info className="w-3 h-3" /> {item.info}
-                      </p>
-                    )}
-                  </div>
+                  <span className={`text-lg font-bold shrink-0 ${item.highlight ? "text-primary" : "text-foreground"}`}>
+                    {item.prijs}
+                  </span>
                 </div>
-                <span className={`text-lg font-bold ${item.highlight ? "text-primary" : "text-foreground"}`}>
-                  {item.prijs}
-                </span>
+                {item.community && (
+                  <div className="mt-3 pt-3 border-t border-border/20">
+                    <div className="flex items-center gap-1.5 mb-1">
+                      <MessageCircleHeart className="w-3.5 h-3.5 text-accent shrink-0" />
+                      <p className="text-xs font-semibold text-foreground">Inclusief toegang tot de Studio Luna WhatsApp-community</p>
+                    </div>
+                    <p className="text-xs text-foreground/50 leading-relaxed pl-5">
+                      Ontvang tips, extra rustmomenten en blijf in verbinding met de andere moeders uit de village.
+                    </p>
+                  </div>
+                )}
               </motion.div>
             ))}
           </div>
