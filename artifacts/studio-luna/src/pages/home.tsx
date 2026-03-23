@@ -113,9 +113,10 @@ export default function Home() {
               <span className="text-xs font-bold uppercase tracking-widest text-foreground/40">Binnenkort</span>
               <span className="text-xs px-2 py-0.5 rounded-full bg-accent/30 text-accent-foreground font-semibold">Bij genoeg animo</span>
             </div>
-            <h3 className="font-display text-lg font-medium text-foreground mb-2">Zwanger & Mama Circle</h3>
+            <h3 className="font-display text-lg font-medium text-foreground mb-0.5">Zwanger & Mama Circle</h3>
+            <p className="text-xs text-foreground/45 mb-3">90 min · € 29,-</p>
             <p className="text-sm text-foreground/65 leading-relaxed mb-4">
-              Bij Studio Luna geloven we in de kracht van de 'village'. Naast de fysieke lessen creëren we een veilige cirkel waarin je ervaringen deelt, vragen stelt en vriendschappen sluit. De thee staat altijd klaar. ☕️
+              Bij Studio Luna geloven we in de kracht van de 'village'. Naast de fysieke lessen creëren we een veilige cirkel waarin je ervaringen deelt, vragen stelt en naar elkaar omkijkt. We gebruiken zachte yoga- en ademhalingsoefeningen om samen te vertragen, zodat er ruimte ontstaat om echt te luisteren naar jezelf en elkaar. Echte verbinding met andere zwangeren en mama's in Zuidplas!
             </p>
             <button
               onClick={() => setIsInterestOpen(true)}
