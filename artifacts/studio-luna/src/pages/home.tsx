@@ -61,6 +61,9 @@ export default function Home() {
             <p className="text-sm text-foreground/65 leading-relaxed mb-3">
               Sterk, ontspannen en vol vertrouwen richting je bevalling. Met zachte houdingen houden we je veranderende lichaam in balans. We oefenen met ademhaling en maken contact met je baby.
             </p>
+            <p className="text-sm text-foreground/65 leading-relaxed mb-3">
+              Elke les heeft een net andere focus, zoals het bekken, de kracht van je adem of ruimte in je rug. Instromen is op elk moment mogelijk vanaf 14 weken zwangerschap.
+            </p>
             <div className="rounded-2xl bg-background/60 border border-border/20 px-4 py-3 text-sm text-foreground/60 space-y-1 mb-3">
               <div className="flex items-center gap-2">
                 <Calendar className="w-3.5 h-3.5 shrink-0 text-primary" />
