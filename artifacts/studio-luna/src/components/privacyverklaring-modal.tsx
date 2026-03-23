@@ -60,7 +60,7 @@ export function PrivacyverklaringModal({ isOpen, onClose }: Props) {
               <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-border/30 shrink-0">
                 <div>
                   <h2 className="font-display text-lg font-medium text-foreground">Privacyverklaring</h2>
-                  <p className="text-xs text-foreground/45 mt-0.5">Studio Luna</p>
+                  <p className="text-xs text-foreground/45 mt-0.5">Studio Luna · Laatste aanpassing: maart 2026</p>
                 </div>
                 <button onClick={onClose} className="text-foreground/40 hover:text-foreground transition-colors">
                   <X className="w-5 h-5" />
