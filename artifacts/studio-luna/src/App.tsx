@@ -6,9 +6,10 @@ import NotFound from "@/pages/not-found";
 
 // Page imports
 import Home from "./pages/home";
+import Rooster from "./pages/rooster";
 import Bookings from "./pages/bookings";
-import Profile from "./pages/profile";
 import Tarieven from "./pages/tarieven";
+import Profile from "./pages/profile";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -23,8 +24,9 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
-      <Route path="/bookings" component={Bookings} />
+      <Route path="/rooster" component={Rooster} />
       <Route path="/tarieven" component={Tarieven} />
+      <Route path="/bookings" component={Bookings} />
       <Route path="/profile" component={Profile} />
       <Route component={NotFound} />
     </Switch>

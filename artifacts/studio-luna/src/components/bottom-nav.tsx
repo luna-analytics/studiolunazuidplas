@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { CalendarDays, Bookmark, User, Tag } from "lucide-react";
+import { CalendarDays, Bookmark, Tag, Home } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 
@@ -7,10 +7,10 @@ export function BottomNav() {
   const [location] = useLocation();
 
   const navItems = [
-    { href: "/", label: "Rooster", icon: CalendarDays },
+    { href: "/", label: "Studio", icon: Home },
+    { href: "/rooster", label: "Rooster", icon: CalendarDays },
     { href: "/tarieven", label: "Tarieven", icon: Tag },
     { href: "/bookings", label: "Boekingen", icon: Bookmark },
-    { href: "/profile", label: "Profiel", icon: User },
   ];
 
   return (
