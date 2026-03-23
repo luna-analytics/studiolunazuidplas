@@ -43,13 +43,7 @@ export default function Home() {
         {/* HERO SECTION */}
         <div className="relative pt-12 pb-10 px-6 rounded-b-[2.5rem] bg-secondary overflow-hidden">
           <div className="absolute inset-0 z-0">
-            <img 
-              src={`${import.meta.env.BASE_URL}images/hero-yoga.png`} 
-              alt="Pregnancy Yoga at Studio Luna" 
-              className="w-full h-full object-cover opacity-30 mix-blend-multiply" style={{ objectPosition: 'center 80%' }}
-            />
-            {/* Elegant gradient overlay */}
-            <div className="absolute inset-0 bg-gradient-to-b from-secondary/40 via-secondary/80 to-secondary" />
+            <div className="absolute inset-0 bg-gradient-to-b from-secondary/60 via-secondary/90 to-secondary" />
           </div>
 
           <div className="relative z-10">
