@@ -143,6 +143,10 @@ export default function Home() {
               ))}
             </div>
 
+            <p className="text-xs text-foreground/50 leading-relaxed mb-4">
+              💡 Wist je dat veel verzekeraars een cursus geboortevoorbereiding vergoeden vanuit de aanvullende verzekering? Vraag dit even na bij jouw zorgverzekeraar.
+            </p>
+
             <button
               onClick={() => setIsInterestOpen(true)}
               className="w-full py-2.5 rounded-2xl border border-primary/40 text-primary font-semibold text-sm flex items-center justify-center gap-2 hover:bg-primary/5 transition-colors"
