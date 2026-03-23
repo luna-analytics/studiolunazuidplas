@@ -19,11 +19,11 @@ export default function Home() {
           <div className="relative z-10 md:flex md:items-center md:justify-between md:gap-12">
             <div className="md:max-w-xl">
               <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-                <div className="overflow-hidden flex justify-center md:hidden mb-5" style={{ height: '116px' }}>
+                <div className="overflow-hidden flex justify-center md:hidden mb-5" style={{ height: '232px' }}>
                   <img
                     src={`${import.meta.env.BASE_URL}images/studio-luna-logo.png`}
                     alt="Studio Luna"
-                    className="h-40 w-auto"
+                    className="h-80 w-auto"
                   />
                 </div>
                 <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-medium text-foreground leading-[1.15] mb-3">
@@ -42,11 +42,11 @@ export default function Home() {
               </motion.div>
             </div>
             <div className="hidden md:flex items-center justify-center shrink-0">
-              <div className="overflow-hidden opacity-60" style={{ height: '116px' }}>
+              <div className="overflow-hidden opacity-60" style={{ height: '232px' }}>
                 <img
                   src={`${import.meta.env.BASE_URL}images/studio-luna-logo.png`}
                   alt="Studio Luna"
-                  className="h-40 w-auto"
+                  className="h-80 w-auto"
                 />
               </div>
             </div>
