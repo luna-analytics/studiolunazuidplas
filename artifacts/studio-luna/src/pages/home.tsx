@@ -45,8 +45,7 @@ export default function Home() {
         {/* ONS AANBOD */}
         <div className="px-6 pt-8 pb-2">
           <motion.div initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4 }}>
-            <h2 className="font-display text-2xl font-medium text-foreground mb-1">Ons aanbod</h2>
-            <p className="text-sm text-foreground/50">Wat Studio Luna voor jou in huis heeft.</p>
+            <h2 className="font-display text-2xl font-medium text-foreground">Aanbod Studio Luna</h2>
           </motion.div>
         </div>
 
