@@ -5,6 +5,12 @@ dist
 tmp
 out-tsc
 *.tsbuildinfo
+
+# Keep production build artifacts for deployment
+!artifacts/api-server/dist/
+!artifacts/api-server/dist/**
+!artifacts/studio-luna/dist/
+!artifacts/studio-luna/dist/**
 .expo
 .expo-shared
 
