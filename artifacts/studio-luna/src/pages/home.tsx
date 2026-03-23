@@ -109,9 +109,9 @@ export default function Home() {
             viewport={{ once: true }} transition={{ duration: 0.4, delay: 0.1 }}
             className="rounded-3xl border border-dashed border-accent/60 bg-accent/10 p-5"
           >
-            <h3 className="font-display text-lg font-medium text-foreground mb-2">Zwanger & Mama Circles</h3>
+            <h3 className="font-display text-lg font-medium text-foreground mb-2">Zwanger & Mama Circle</h3>
             <p className="text-sm text-foreground/65 leading-relaxed">
-              Bij Studio Luna geloven we in de kracht van de 'village'. Naast de fysieke lessen creëren we een veilige cirkel waarin je ervaringen deelt, vragen stelt en vriendschappen sluit — voor de tijd na je bevalling. De thee staat altijd klaar. ☕️
+              Bij Studio Luna geloven we in de kracht van de 'village'. Naast de fysieke lessen creëren we een veilige cirkel waarin je ervaringen deelt, vragen stelt en vriendschappen sluit. De thee staat altijd klaar. ☕️
             </p>
           </motion.div>
 
