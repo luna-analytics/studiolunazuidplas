@@ -20,7 +20,47 @@ export function BottomNav() {
 
   return (
     <>
-      <div className="fixed bottom-0 left-0 right-0 z-40 bg-background/80 backdrop-blur-xl border-t border-border/30 pb-safe">
+      {/* DESKTOP TOP NAV */}
+      <div className="hidden md:flex fixed top-0 left-0 right-0 z-40 bg-background/90 backdrop-blur-xl border-b border-border/30 h-16 items-center px-8">
+        <div className="max-w-5xl mx-auto w-full flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-3">
+            <div className="overflow-hidden" style={{ height: '36px' }}>
+              <img
+                src={`${import.meta.env.BASE_URL}images/studio-luna-logo.png`}
+                alt="Studio Luna"
+                className="h-12 w-auto"
+              />
+            </div>
+          </Link>
+          <nav className="flex items-center gap-1">
+            {navItems.map((item) => {
+              const isActive = location === item.href;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    "px-4 py-2 rounded-xl text-sm font-medium transition-colors",
+                    isActive
+                      ? "bg-primary/10 text-foreground"
+                      : "text-foreground/55 hover:text-foreground hover:bg-secondary"
+                  )}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
+          </nav>
+          <div className="flex items-center gap-4">
+            <button onClick={() => setAvOpen(true)} className="text-xs text-foreground/35 hover:text-foreground/60 transition-colors">Algemene Voorwaarden</button>
+            <span className="text-foreground/20 text-xs">·</span>
+            <button onClick={() => setPrivacyOpen(true)} className="text-xs text-foreground/35 hover:text-foreground/60 transition-colors">Privacy</button>
+          </div>
+        </div>
+      </div>
+
+      {/* MOBILE BOTTOM NAV */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-background/80 backdrop-blur-xl border-t border-border/30 pb-safe">
         <nav className="max-w-md mx-auto flex items-center justify-around px-6 py-3">
           {navItems.map((item) => {
             const isActive = location === item.href;
@@ -56,19 +96,9 @@ export function BottomNav() {
           })}
         </nav>
         <div className="pb-2 flex items-center justify-center gap-3">
-          <button
-            onClick={() => setAvOpen(true)}
-            className="text-[10px] text-foreground/35 hover:text-foreground/60 transition-colors"
-          >
-            Algemene Voorwaarden
-          </button>
+          <button onClick={() => setAvOpen(true)} className="text-[10px] text-foreground/35 hover:text-foreground/60 transition-colors">Algemene Voorwaarden</button>
           <span className="text-[10px] text-foreground/20">·</span>
-          <button
-            onClick={() => setPrivacyOpen(true)}
-            className="text-[10px] text-foreground/35 hover:text-foreground/60 transition-colors"
-          >
-            Privacyverklaring
-          </button>
+          <button onClick={() => setPrivacyOpen(true)} className="text-[10px] text-foreground/35 hover:text-foreground/60 transition-colors">Privacyverklaring</button>
         </div>
       </div>
 

@@ -10,7 +10,6 @@ import { motion } from "framer-motion";
 export default function Bookings() {
   const { bookings, cancelBooking, isLoaded } = useBookings();
 
-  // Sort bookings by date and time
   const sortedBookings = [...bookings].sort((a, b) => {
     const dateCompare = a.date.localeCompare(b.date);
     if (dateCompare !== 0) return dateCompare;
@@ -18,25 +17,25 @@ export default function Bookings() {
   });
 
   return (
-    <div className="min-h-screen bg-background pb-28 md:pb-8 flex justify-center">
-      <div className="w-full max-w-md bg-background min-h-screen relative shadow-2xl shadow-black/5 md:border-x border-border/30">
-        
-        <div className="pt-12 px-6 pb-6 bg-secondary/30 border-b border-border/30">
-          <h1 className="font-display text-3xl font-medium text-foreground flex items-center gap-3">
+    <div className="min-h-screen bg-background pb-28 md:pb-16 md:pt-16 flex justify-center">
+      <div className="w-full max-w-5xl bg-background min-h-screen relative">
+
+        <div className="pt-12 md:pt-10 px-6 md:px-12 lg:px-16 pb-6 bg-secondary/30 md:bg-transparent border-b border-border/30 md:border-none">
+          <h1 className="font-display text-3xl md:text-4xl font-medium text-foreground flex items-center gap-3">
             <Bookmark className="w-6 h-6 text-primary" />
             Mijn Boekingen
           </h1>
         </div>
 
-        <div className="p-6">
+        <div className="p-6 md:px-12 lg:px-16">
           {!isLoaded ? (
             <div className="flex justify-center p-10">
               <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
             </div>
           ) : sortedBookings.length === 0 ? (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-              className="bg-card rounded-3xl p-8 text-center mt-10 shadow-inner-soft"
+              className="bg-card rounded-3xl p-8 text-center mt-10 shadow-inner-soft md:max-w-sm mx-auto"
             >
               <div className="w-16 h-16 bg-background rounded-full flex items-center justify-center mx-auto mb-4 text-muted-foreground shadow-sm">
                 <CalendarX2 className="w-8 h-8" />
@@ -51,24 +50,24 @@ export default function Bookings() {
               </Link>
             </motion.div>
           ) : (
-            <div className="space-y-4">
+            <div className="md:grid md:grid-cols-2 md:gap-4 space-y-4 md:space-y-0">
               {sortedBookings.map((booking, index) => {
                 const dateObj = parseISO(booking.date);
                 const isYoga = booking.type === 'yoga';
-                
+
                 return (
-                  <motion.div 
+                  <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.05 }}
-                    key={booking.id} 
+                    key={booking.id}
                     className="bg-background border-2 border-card rounded-3xl p-5 relative overflow-hidden flex flex-col group hover:border-border/50 transition-colors"
                   >
                     <div className={cn(
                       "absolute left-0 top-0 bottom-0 w-2",
                       isYoga ? "bg-primary" : "bg-accent"
                     )} />
-                    
+
                     <div className="pl-3 flex justify-between items-start">
                       <div>
                         <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">
@@ -83,7 +82,7 @@ export default function Bookings() {
                     </div>
 
                     <div className="mt-5 pl-3 flex justify-end">
-                      <button 
+                      <button
                         onClick={() => {
                           if (window.confirm("Weet je zeker dat je deze les wilt annuleren?")) {
                             cancelBooking(booking.id);
@@ -100,7 +99,7 @@ export default function Bookings() {
             </div>
           )}
         </div>
-        
+
         <BottomNav />
       </div>
     </div>

@@ -43,20 +43,20 @@ export default function Rooster() {
   };
 
   return (
-    <div className="min-h-screen bg-background pb-28 flex justify-center">
-      <div className="w-full max-w-md bg-background min-h-screen relative shadow-2xl shadow-black/5 md:border-x border-border/30">
+    <div className="min-h-screen bg-background pb-28 md:pb-16 md:pt-16 flex justify-center">
+      <div className="w-full max-w-5xl bg-background min-h-screen relative">
 
         {/* HEADER */}
-        <div className="px-6 pt-12 pb-8 bg-secondary rounded-b-[2.5rem]">
+        <div className="px-6 md:px-12 lg:px-16 pt-12 md:pt-10 pb-8 bg-secondary md:rounded-3xl md:mx-6 md:mt-6">
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
             <p className="text-xs font-bold uppercase tracking-widest text-primary mb-2">Studio Luna</p>
-            <h1 className="font-display text-3xl font-medium text-foreground">Rooster</h1>
+            <h1 className="font-display text-3xl md:text-4xl font-medium text-foreground">Rooster</h1>
             <p className="text-foreground/60 mt-2 text-sm">Zie ik jou op de mat? Klik om te reserveren.</p>
           </motion.div>
         </div>
 
-        <div className="px-6 pt-6 mb-6">
-          <div className="space-y-4">
+        <div className="px-6 md:px-12 lg:px-16 pt-6 mb-6">
+          <div className="md:grid md:grid-cols-2 md:gap-4 space-y-4 md:space-y-0">
             {upcomingInstances.length > 0 ? (
               upcomingInstances.map((instance, i) => {
                 const { classData, date, dateStr } = instance;
@@ -119,7 +119,7 @@ export default function Rooster() {
                 );
               })
             ) : (
-              <div className="bg-card/50 border border-dashed border-border rounded-3xl p-8 text-center">
+              <div className="bg-card/50 border border-dashed border-border rounded-3xl p-8 text-center col-span-2">
                 <p className="text-sm text-muted-foreground">Binnenkort nieuwe lessen beschikbaar.</p>
               </div>
             )}
