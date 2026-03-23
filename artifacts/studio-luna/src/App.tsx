@@ -8,6 +8,7 @@ import NotFound from "@/pages/not-found";
 import Home from "./pages/home";
 import Bookings from "./pages/bookings";
 import Profile from "./pages/profile";
+import Tarieven from "./pages/tarieven";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -23,6 +24,7 @@ function Router() {
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/bookings" component={Bookings} />
+      <Route path="/tarieven" component={Tarieven} />
       <Route path="/profile" component={Profile} />
       <Route component={NotFound} />
     </Switch>
