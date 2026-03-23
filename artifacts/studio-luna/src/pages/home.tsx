@@ -61,13 +61,13 @@ export default function Home() {
               <img
                 src={`${import.meta.env.BASE_URL}images/studio-luna-logo.png`}
                 alt="Studio Luna"
-                className="h-24 w-auto mb-4 object-contain"
+                className="h-40 w-auto mb-4 object-contain"
               />
-              <h1 className="font-display text-4xl md:text-5xl font-medium text-foreground leading-[1.1] mb-4">
-                Rust in de <span className="italic text-accent">chaos</span>
+              <h1 className="font-display text-4xl md:text-5xl font-medium text-foreground leading-[1.1] mb-3">
+                It takes a village. Studio Luna is jouw mama tribe.
               </h1>
-              <p className="text-foreground/80 leading-relaxed mb-6 font-medium">
-                It takes a village — een warme, veilige gemeenschap voor zwangere vrouwen en jonge moeders.
+              <p className="text-foreground/70 leading-relaxed mb-6">
+                Zwangerschapsyoga in Nieuwerkerk aan den IJssel
               </p>
               
               <button 
