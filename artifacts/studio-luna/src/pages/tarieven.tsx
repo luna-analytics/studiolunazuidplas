@@ -86,7 +86,7 @@ export default function Tarieven() {
           <div>
             <p className="text-sm font-semibold text-foreground mb-1">💳 Betaling</p>
             <p className="text-sm text-foreground/65 leading-relaxed">
-              Betalen kan in de studio, via Tikkie of via een andere betaalafspraak. Neem gerust contact op als je vragen hebt.
+              Betalen kan contant in de studio.
             </p>
           </div>
           <p className="text-sm text-foreground/50 leading-relaxed">
