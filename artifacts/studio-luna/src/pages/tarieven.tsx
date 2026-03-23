@@ -6,8 +6,8 @@ const tarieven = [
   {
     label: "Proefles",
     prijs: "€ 10,-",
-    info: "Maak kennis met Studio Luna",
-    highlight: true,
+    info: null,
+    highlight: false,
   },
   {
     label: "Losse les",
@@ -82,9 +82,15 @@ export default function Tarieven() {
         </div>
 
         {/* VOETNOOT */}
-        <div className="mx-6 mt-6 rounded-3xl border border-dashed border-accent/50 bg-accent/10 px-5 py-4">
-          <p className="text-sm text-foreground/65 leading-relaxed">
-            ✨ Start met de proefles op <strong>28 april</strong> en ontdek of Studio Luna iets voor jou is. Rittenkaarten zijn persoonlijk en niet overdraagbaar.
+        <div className="mx-6 mt-6 rounded-3xl border border-dashed border-accent/50 bg-accent/10 px-5 py-4 space-y-3">
+          <div>
+            <p className="text-sm font-semibold text-foreground mb-1">💳 Betaling</p>
+            <p className="text-sm text-foreground/65 leading-relaxed">
+              Betalen kan in de studio, via Tikkie of via een andere betaalafspraak. Neem gerust contact op als je vragen hebt.
+            </p>
+          </div>
+          <p className="text-sm text-foreground/50 leading-relaxed">
+            Rittenkaarten zijn persoonlijk en niet overdraagbaar.
           </p>
         </div>
 
