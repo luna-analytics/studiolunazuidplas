@@ -125,14 +125,43 @@ export default function Home() {
               <span className="text-xs font-bold uppercase tracking-widest text-foreground/40">Binnenkort</span>
               <span className="text-xs px-2 py-0.5 rounded-full bg-accent/30 text-accent-foreground font-semibold">Bij genoeg animo</span>
             </div>
-            <h3 className="font-display text-lg font-medium text-foreground mb-2">Bevallings Specials 🌙</h3>
-            <p className="text-sm text-foreground/65 leading-relaxed mb-3">
-              De Geboorte-Bundel: Beval-yoga, Partner-les en Mama Spa (sessies van 2 uur). Start zodra er voldoende aanmeldingen zijn.
-            </p>
-            <div className="flex items-baseline gap-3 mb-4">
-              <span className="font-semibold text-foreground">€ 155,-</span>
-              <span className="text-sm text-foreground/50">Tribe Members: € 145,-</span>
+            <h3 className="font-display text-lg font-medium text-foreground mb-1">Bevallings Specials 🌙</h3>
+            <p className="text-sm text-foreground/55 mb-4">Los te boeken of als bundel (€ 155,- · Tribe Members € 145,-).</p>
+
+            <div className="space-y-3 mb-4">
+              {[
+                {
+                  title: "Focus & Vertrouwen",
+                  sub: "De Beval-yoga workshop",
+                  description: "Ademhaling, visualisatie en natuurlijke bevalhoudingen.",
+                  price: "€ 45,-",
+                },
+                {
+                  title: "Verbinding & Support",
+                  sub: "De Partner-workshop",
+                  description: "Jouw partner als anker, zachte aanraking en samenwerken als team.",
+                  price: "€ 75,-",
+                },
+                {
+                  title: "De Mama Spa",
+                  sub: "Ultiem ontspannen",
+                  description: "Restorative yoga, zelfmassage en volledige ontspanning.",
+                  price: "€ 45,-",
+                },
+              ].map((item) => (
+                <div key={item.title} className="rounded-2xl bg-background/60 border border-border/20 px-4 py-3">
+                  <div className="flex items-start justify-between gap-2 mb-0.5">
+                    <div>
+                      <p className="text-sm font-semibold text-foreground">{item.title}</p>
+                      <p className="text-xs text-foreground/45">{item.sub} · 120 min</p>
+                    </div>
+                    <span className="text-sm font-semibold text-foreground shrink-0">{item.price}</span>
+                  </div>
+                  <p className="text-xs text-foreground/60 mt-1.5">{item.description}</p>
+                </div>
+              ))}
             </div>
+
             <button
               onClick={() => setIsInterestOpen(true)}
               className="w-full py-2.5 rounded-2xl border border-primary/40 text-primary font-semibold text-sm flex items-center justify-center gap-2 hover:bg-primary/5 transition-colors"
