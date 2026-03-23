@@ -3,7 +3,7 @@ import { useLocation } from "wouter";
 import { BottomNav } from "@/components/bottom-nav";
 import { InterestModal } from "@/components/interest-modal";
 import { motion } from "framer-motion";
-import { ArrowRight, Calendar, MapPin, Coffee, Sparkles, Mail } from "lucide-react";
+import { ArrowRight, Calendar, MapPin, Coffee, Mail } from "lucide-react";
 
 export default function Home() {
   const [, navigate] = useLocation();
@@ -37,26 +37,6 @@ export default function Home() {
                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
               </button>
             </motion.div>
-          </div>
-        </div>
-
-        {/* QUICK INFO STRIP */}
-        <div className="mx-6 mt-6 rounded-2xl border border-border/40 bg-card/60 px-4 py-3 grid grid-cols-2 gap-x-3 gap-y-2">
-          <div className="flex items-center gap-2 text-sm text-foreground/70">
-            <Calendar className="w-4 h-4 shrink-0 text-primary" />
-            <span>Elke dinsdag 19:00</span>
-          </div>
-          <div className="flex items-center gap-2 text-sm text-foreground/70">
-            <MapPin className="w-4 h-4 shrink-0 text-primary" />
-            <span>Pr. Beatrixstraat 2, Nieuwerkerk a/d IJssel</span>
-          </div>
-          <div className="flex items-center gap-2 text-sm text-foreground/70">
-            <Sparkles className="w-4 h-4 shrink-0 text-primary" />
-            <span>Proefles € 10,-</span>
-          </div>
-          <div className="flex items-center gap-2 text-sm text-foreground/70">
-            <Coffee className="w-4 h-4 shrink-0 text-primary" />
-            <span>Inclusief thee</span>
           </div>
         </div>
 
