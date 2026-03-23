@@ -3,11 +3,10 @@ import { parseISO, isFuture, isToday, format } from "date-fns";
 import { nl } from "date-fns/locale";
 import { MOCK_CLASSES, StudioClass } from "@/data/mock-classes";
 import { BookingModal } from "@/components/booking-modal";
-import { InterestModal } from "@/components/interest-modal";
 import { useBookings } from "@/hooks/use-bookings";
 import { BottomNav } from "@/components/bottom-nav";
 import { motion } from "framer-motion";
-import { Clock, Users, MapPin, Mail } from "lucide-react";
+import { Clock, Users, MapPin } from "lucide-react";
 
 type ClassInstance = {
   classData: StudioClass;
@@ -17,7 +16,6 @@ type ClassInstance = {
 
 export default function Rooster() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isInterestOpen, setIsInterestOpen] = useState(false);
   const [selectedInstance, setSelectedInstance] = useState<ClassInstance | null>(null);
   const { isBooked } = useBookings();
 
@@ -52,119 +50,80 @@ export default function Rooster() {
         <div className="px-6 pt-12 pb-8 bg-secondary rounded-b-[2.5rem]">
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
             <p className="text-xs font-bold uppercase tracking-widest text-primary mb-2">Studio Luna</p>
-            <h1 className="font-display text-3xl font-medium text-foreground">Aanbod & Rooster</h1>
-            <p className="text-foreground/60 mt-2 text-sm">Alles wat Studio Luna te bieden heeft — nu en binnenkort.</p>
+            <h1 className="font-display text-3xl font-medium text-foreground">Rooster</h1>
+            <p className="text-foreground/60 mt-2 text-sm">Zie ik jou op de mat? Klik om te reserveren.</p>
           </motion.div>
         </div>
 
-        <div className="px-6 pt-8 space-y-10 mb-6">
+        <div className="px-6 pt-6 mb-6">
+          <div className="space-y-4">
+            {upcomingInstances.length > 0 ? (
+              upcomingInstances.map((instance, i) => {
+                const { classData, date, dateStr } = instance;
+                const colors = colorMap[classData.type];
+                const booked = isBooked(classData.id, dateStr);
 
-          {/* 1 — WEKELIJKSE LESSEN */}
-          <section>
-            <motion.div initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4 }}>
-              <h2 className="font-display text-xl font-medium text-foreground mb-1">Wekelijkse Lessen</h2>
-              <p className="text-sm text-foreground/50 mb-5">Elke dinsdag om 19:00 bij Huize Mooisteen. Boek direct jouw plekje.</p>
-            </motion.div>
+                return (
+                  <motion.div
+                    key={`${classData.id}-${dateStr}`}
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.06 }}
+                    className="rounded-3xl overflow-hidden shadow-sm border border-border/30"
+                    style={{ backgroundColor: colors.light }}
+                  >
+                    <div className="px-5 pt-4 pb-2 flex items-center justify-between">
+                      <span className="text-xs font-bold uppercase tracking-widest" style={{ color: colors.bg }}>
+                        {format(date, 'EEEE d MMMM', { locale: nl })}
+                      </span>
+                      <span className="text-xs px-2 py-0.5 rounded-full font-semibold" style={{ backgroundColor: colors.bg + '22', color: colors.text }}>
+                        {colors.label}
+                      </span>
+                    </div>
 
-            <div className="space-y-4">
-              {upcomingInstances.length > 0 ? (
-                upcomingInstances.map((instance, i) => {
-                  const { classData, date, dateStr } = instance;
-                  const colors = colorMap[classData.type];
-                  const booked = isBooked(classData.id, dateStr);
+                    <div className="px-5 pb-5">
+                      <h3 className="text-lg font-semibold text-foreground mb-1">{classData.title}</h3>
+                      <p className="text-sm text-foreground/60 mb-3 leading-relaxed">{classData.description}</p>
 
-                  return (
-                    <motion.div
-                      key={`${classData.id}-${dateStr}`}
-                      initial={{ opacity: 0, y: 12 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: i * 0.06 }}
-                      className="rounded-3xl overflow-hidden shadow-sm border border-border/30"
-                      style={{ backgroundColor: colors.light }}
-                    >
-                      <div className="px-5 pt-4 pb-2 flex items-center justify-between">
-                        <span className="text-xs font-bold uppercase tracking-widest" style={{ color: colors.bg }}>
-                          {format(date, 'EEEE d MMMM', { locale: nl })}
+                      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-foreground/60 mb-4">
+                        <span className="flex items-center gap-1">
+                          <Clock className="w-3.5 h-3.5" />
+                          {classData.time}
                         </span>
-                        <span className="text-xs px-2 py-0.5 rounded-full font-semibold" style={{ backgroundColor: colors.bg + '22', color: colors.text }}>
-                          {colors.label}
+                        <span className="flex items-center gap-1">
+                          <Users className="w-3.5 h-3.5" />
+                          {classData.spotsAvailable} plekken
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <MapPin className="w-3.5 h-3.5" />
+                          Huize Mooisteen
                         </span>
                       </div>
 
-                      <div className="px-5 pb-5">
-                        <h3 className="text-lg font-semibold text-foreground mb-1">{classData.title}</h3>
-                        <p className="text-sm text-foreground/60 mb-3 leading-relaxed">{classData.description}</p>
-
-                        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-foreground/60 mb-4">
-                          <span className="flex items-center gap-1">
-                            <Clock className="w-3.5 h-3.5" />
-                            {classData.time}
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <Users className="w-3.5 h-3.5" />
-                            {classData.spotsAvailable} plekken
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <MapPin className="w-3.5 h-3.5" />
-                            Huize Mooisteen
-                          </span>
+                      {booked ? (
+                        <div className="w-full py-2.5 rounded-2xl text-center text-sm font-semibold"
+                          style={{ backgroundColor: colors.bg + '33', color: colors.text }}>
+                          ✓ Geboekt
                         </div>
-
-                        {booked ? (
-                          <div className="w-full py-2.5 rounded-2xl text-center text-sm font-semibold"
-                            style={{ backgroundColor: colors.bg + '33', color: colors.text }}>
-                            ✓ Geboekt
-                          </div>
-                        ) : (
-                          <button
-                            onClick={() => handleBook(instance)}
-                            className="w-full py-2.5 rounded-2xl text-sm font-semibold text-white transition-opacity hover:opacity-90"
-                            style={{ backgroundColor: colors.bg }}
-                          >
-                            Reserveer jouw plekje
-                          </button>
-                        )}
-                      </div>
-                    </motion.div>
-                  );
-                })
-              ) : (
-                <div className="bg-card/50 border border-dashed border-border rounded-3xl p-8 text-center">
-                  <p className="text-sm text-muted-foreground">Binnenkort nieuwe lessen beschikbaar.</p>
-                </div>
-              )}
-            </div>
-          </section>
-
-          {/* 2 — DE GEBOORTE-BUNDEL */}
-          <section>
-            <motion.div
-              initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }} transition={{ duration: 0.4 }}
-              className="rounded-3xl bg-secondary border border-border/30 p-5"
-            >
-              <div className="flex items-center gap-2 mb-3">
-                <span className="text-xs font-bold uppercase tracking-widest text-foreground/40">Binnenkort</span>
-                <span className="text-xs px-2 py-0.5 rounded-full bg-accent/30 text-accent-foreground font-semibold">Bij genoeg animo</span>
+                      ) : (
+                        <button
+                          onClick={() => handleBook(instance)}
+                          className="w-full py-2.5 rounded-2xl text-sm font-semibold text-white transition-opacity hover:opacity-90"
+                          style={{ backgroundColor: colors.bg }}
+                        >
+                          Reserveer jouw plekje
+                        </button>
+                      )}
+                    </div>
+                  </motion.div>
+                );
+              })
+            ) : (
+              <div className="bg-card/50 border border-dashed border-border rounded-3xl p-8 text-center">
+                <p className="text-sm text-muted-foreground">Binnenkort nieuwe lessen beschikbaar.</p>
               </div>
-              <h2 className="font-display text-xl font-medium text-foreground mb-2">De Geboorte-Bundel 🌙</h2>
-              <p className="text-sm text-foreground/65 leading-relaxed mb-4">
-                Bereid je optimaal voor met onze Beval-yoga, Partner-les en Mama Spa (sessies van 2 uur). De bundel start zodra er voldoende aanmeldingen zijn.
-              </p>
-              <div className="flex items-baseline gap-3 mb-5">
-                <span className="font-semibold text-foreground">€ 155,-</span>
-                <span className="text-sm text-foreground/50">Tribe Members: € 145,-</span>
-              </div>
-              <button
-                onClick={() => setIsInterestOpen(true)}
-                className="w-full py-3 rounded-2xl border border-primary/40 text-primary font-semibold text-sm flex items-center justify-center gap-2 hover:bg-primary/5 transition-colors"
-              >
-                <Mail className="w-4 h-4" />
-                Houd mij op de hoogte
-              </button>
-            </motion.div>
-          </section>
-
+            )}
+          </div>
         </div>
 
         <BookingModal
@@ -172,11 +131,6 @@ export default function Rooster() {
           onClose={() => setIsModalOpen(false)}
           studioClass={selectedInstance?.classData ?? null}
           selectedDate={selectedInstance?.date ?? new Date()}
-        />
-
-        <InterestModal
-          isOpen={isInterestOpen}
-          onClose={() => setIsInterestOpen(false)}
         />
 
         <BottomNav />
