@@ -1,50 +1,53 @@
-import { useState, useMemo, useEffect } from "react";
-import { format, addDays, startOfToday, isSameDay } from "date-fns";
+import { useState, useMemo } from "react";
+import { parseISO, isFuture, isToday, format } from "date-fns";
 import { nl } from "date-fns/locale";
 import { MOCK_CLASSES, StudioClass } from "@/data/mock-classes";
-import { ClassCard } from "@/components/class-card";
 import { BookingModal } from "@/components/booking-modal";
 import { useBookings } from "@/hooks/use-bookings";
 import { BottomNav } from "@/components/bottom-nav";
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Clock, Users, Leaf } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+type ClassInstance = {
+  classData: StudioClass;
+  date: Date;
+  dateStr: string;
+};
+
 export default function Home() {
-  const today = startOfToday();
-  const [selectedDate, setSelectedDate] = useState<Date>(today);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedClass, setSelectedClass] = useState<StudioClass | null>(null);
-  
+  const [selectedInstance, setSelectedInstance] = useState<ClassInstance | null>(null);
   const { isBooked } = useBookings();
 
-  // Generate days up to June 9, 2026
-  const upcomingDays = useMemo(() => {
-    return Array.from({ length: 100 }).map((_, i) => addDays(today, i));
-  }, [today]);
-
-  // Dates that have classes
-  const classDates = useMemo(() => {
-    const all = MOCK_CLASSES.flatMap(c => c.dates);
-    return new Set(all);
+  // Build flat list of all upcoming class instances, sorted by date
+  const upcomingInstances = useMemo((): ClassInstance[] => {
+    const instances: ClassInstance[] = [];
+    for (const cls of MOCK_CLASSES) {
+      for (const dateStr of cls.dates) {
+        const date = parseISO(dateStr);
+        if (isFuture(date) || isToday(date)) {
+          instances.push({ classData: cls, date, dateStr });
+        }
+      }
+    }
+    return instances.sort((a, b) => a.date.getTime() - b.date.getTime());
   }, []);
 
-  const handleBook = (studioClass: StudioClass) => {
-    setSelectedClass(studioClass);
+  const handleBook = (instance: ClassInstance) => {
+    setSelectedInstance(instance);
     setIsModalOpen(true);
   };
 
-  // Filter classes for selected day
-  const dayClasses = useMemo(() => {
-    const dateStr = format(selectedDate, 'yyyy-MM-dd');
-    return MOCK_CLASSES.filter(c => c.dates.includes(dateStr))
-      .sort((a, b) => a.time.localeCompare(b.time));
-  }, [selectedDate]);
+  const colorMap = {
+    yoga: { bg: "#8fa89b", light: "rgba(143,168,155,0.12)", text: "#3a4f41", label: "Yoga" },
+    circle: { bg: "#c78d76", light: "rgba(199,141,118,0.12)", text: "#7a4a35", label: "Circle" },
+  };
 
   return (
     <div className="min-h-screen bg-background pb-28 md:pb-8 flex justify-center">
       <div className="w-full max-w-md bg-background min-h-screen relative shadow-2xl shadow-black/5 md:border-x border-border/30">
-        
+
         {/* HERO SECTION */}
         <div className="relative pt-12 pb-10 px-6 rounded-b-[2.5rem] bg-secondary overflow-hidden">
           <div className="absolute inset-0 z-0">
@@ -52,7 +55,7 @@ export default function Home() {
           </div>
 
           <div className="relative z-10">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
@@ -68,10 +71,10 @@ export default function Home() {
               <p className="text-foreground/70 leading-relaxed mb-6">
                 Zwangerschapsyoga in Nieuwerkerk aan den IJssel
               </p>
-              
-              <button 
+
+              <button
                 onClick={() => document.getElementById('rooster')?.scrollIntoView({ behavior: 'smooth' })}
-                className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-2xl font-semibold shadow-soft hover:shadow-primary/20 hover:bg-primary/90 transition-all group"
+                className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-2xl font-semibold hover:bg-primary/90 transition-all group"
               >
                 Bekijk het rooster
                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
@@ -82,91 +85,90 @@ export default function Home() {
 
         {/* SCHEDULE SECTION */}
         <div id="rooster" className="pt-8 px-6">
-          <h2 className="font-display text-2xl font-medium mb-6">Het Rooster</h2>
-          
-          {/* Day Selector (Horizontal Scroll) */}
-          <div className="flex gap-3 overflow-x-auto no-scrollbar pb-4 -mx-6 px-6 snap-x">
-            {upcomingDays.map((date) => {
-              const isSelected = isSameDay(date, selectedDate);
-              const isToday = isSameDay(date, today);
-              
-              const hasClass = classDates.has(format(date, 'yyyy-MM-dd'));
+          <h2 className="font-display text-2xl font-medium mb-2">Aankomende lessen</h2>
+          <p className="text-sm text-foreground/50 mb-6">Klik op een les om je plek te reserveren</p>
 
-              return (
-                <button
-                  key={date.toISOString()}
-                  onClick={() => setSelectedDate(date)}
-                  className={cn(
-                    "flex flex-col items-center justify-center min-w-[4.5rem] h-[5.5rem] rounded-2xl transition-all duration-300 snap-center shrink-0 relative",
-                    isSelected 
-                      ? "bg-foreground text-background shadow-lg scale-105" 
-                      : "bg-card text-foreground/70 hover:bg-muted"
-                  )}
-                >
-                  <span className={cn(
-                    "text-xs font-bold uppercase mb-1",
-                    isSelected ? "text-background/80" : "text-primary"
-                  )}>
-                    {isToday ? "Vndg" : format(date, 'EE', { locale: nl }).substring(0, 2)}
-                  </span>
-                  <span className="text-xl font-display font-semibold">
-                    {format(date, 'd')}
-                  </span>
-                  {hasClass && (
-                    <span className={cn(
-                      "w-1.5 h-1.5 rounded-full mt-1",
-                      isSelected ? "bg-background/60" : "bg-primary"
-                    )} />
-                  )}
-                </button>
-              );
-            })}
-          </div>
+          <div className="space-y-4 mb-8">
+            {upcomingInstances.length > 0 ? (
+              upcomingInstances.map((instance, i) => {
+                const { classData, date, dateStr } = instance;
+                const colors = colorMap[classData.type];
+                const booked = isBooked(classData.id, dateStr);
 
-          <div className="mt-6 mb-8">
-            <h3 className="text-lg font-medium mb-4 text-foreground/90 capitalize flex items-center gap-2">
-              {format(selectedDate, 'EEEE d MMMM', { locale: nl })}
-              {isSameDay(selectedDate, today) && <span className="text-xs bg-primary/20 text-primary px-2 py-0.5 rounded-full lowercase font-bold tracking-wider">vandaag</span>}
-            </h3>
-            
-            <div className="space-y-4">
-              {dayClasses.length > 0 ? (
-                dayClasses.map((c) => (
-                  <ClassCard 
-                    key={c.id} 
-                    studioClass={c} 
-                    isBooked={isBooked(c.id, selectedDate.toISOString())}
-                    onBook={handleBook}
-                  />
-                ))
-              ) : (
-                <motion.div 
-                  initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                  className="bg-card/50 border border-dashed border-border rounded-3xl p-8 text-center"
-                >
-                  <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3 text-primary">
-                    <CalendarDays className="w-6 h-6" />
-                  </div>
-                  <h4 className="font-display text-lg font-medium mb-1">Geen lessen vandaag</h4>
-                  <p className="text-sm text-muted-foreground">Geniet van je rust of bekijk een andere dag in het rooster.</p>
-                </motion.div>
-              )}
-            </div>
+                return (
+                  <motion.div
+                    key={`${classData.id}-${dateStr}`}
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.06 }}
+                    className="rounded-3xl overflow-hidden shadow-sm border border-border/30"
+                    style={{ backgroundColor: colors.light }}
+                  >
+                    {/* Date bar */}
+                    <div className="px-5 pt-4 pb-2 flex items-center justify-between">
+                      <span className="text-xs font-bold uppercase tracking-widest" style={{ color: colors.bg }}>
+                        {format(date, 'EEEE d MMMM', { locale: nl })}
+                      </span>
+                      <span className="text-xs px-2 py-0.5 rounded-full font-semibold" style={{ backgroundColor: colors.bg + '22', color: colors.text }}>
+                        {colors.label}
+                      </span>
+                    </div>
+
+                    {/* Class info */}
+                    <div className="px-5 pb-5">
+                      <h3 className="text-lg font-semibold text-foreground mb-1">{classData.title}</h3>
+                      <p className="text-sm text-foreground/60 mb-3 leading-relaxed">{classData.description}</p>
+
+                      <div className="flex items-center gap-4 text-sm text-foreground/60 mb-4">
+                        <span className="flex items-center gap-1">
+                          <Clock className="w-3.5 h-3.5" />
+                          {classData.time}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Users className="w-3.5 h-3.5" />
+                          {classData.spotsAvailable} plekken
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Leaf className="w-3.5 h-3.5" />
+                          {classData.teacher}
+                        </span>
+                      </div>
+
+                      {booked ? (
+                        <div className="w-full py-2.5 rounded-2xl text-center text-sm font-semibold"
+                          style={{ backgroundColor: colors.bg + '33', color: colors.text }}>
+                          ✓ Geboekt
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => handleBook(instance)}
+                          className="w-full py-2.5 rounded-2xl text-sm font-semibold text-white transition-opacity hover:opacity-90"
+                          style={{ backgroundColor: colors.bg }}
+                        >
+                          Boeken
+                        </button>
+                      )}
+                    </div>
+                  </motion.div>
+                );
+              })
+            ) : (
+              <div className="bg-card/50 border border-dashed border-border rounded-3xl p-8 text-center">
+                <p className="text-sm text-muted-foreground">Binnenkort nieuwe lessen beschikbaar.</p>
+              </div>
+            )}
           </div>
         </div>
 
-        <BookingModal 
+        <BookingModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
-          studioClass={selectedClass}
-          selectedDate={selectedDate}
+          studioClass={selectedInstance?.classData ?? null}
+          selectedDate={selectedInstance?.date ?? new Date()}
         />
-        
+
         <BottomNav />
       </div>
     </div>
   );
 }
-
-// Need to import CalendarDays here since I used it in empty state
-import { CalendarDays } from "lucide-react";
