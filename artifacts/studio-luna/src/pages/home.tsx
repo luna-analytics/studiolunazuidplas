@@ -122,11 +122,17 @@ export default function Home() {
               <span className="text-xs px-2 py-0.5 rounded-full bg-accent/30 text-accent-foreground font-semibold">Bij genoeg animo</span>
             </div>
             <h3 className="font-display text-lg font-medium text-foreground mb-1">Bevallings Specials 🌙</h3>
-            <p className="text-sm text-foreground/55 mb-4">
+            <p className="text-sm text-foreground/65 leading-relaxed mb-3">
               Los te boeken of als bundel —{" "}
               <span className="font-semibold text-foreground">€ 155,-</span>
               <span className="text-foreground/40"> (bespaar € 22,-)</span>
             </p>
+            <div className="rounded-2xl bg-background/60 border border-border/20 px-4 py-3 mb-4">
+              <p className="text-xs font-semibold text-foreground mb-1">De Geboorte-Bundel Deal 🌙</p>
+              <p className="text-xs text-foreground/60 leading-relaxed">
+                Boek de drie specials samen voor de meest complete en zachte voorbereiding op jouw reis naar het moederschap. Het is ideaal om deze voorbereiding in te plannen tussen je 28e en 36e week van de zwangerschap.
+              </p>
+            </div>
 
             <div className="space-y-3 mb-4">
               {[
