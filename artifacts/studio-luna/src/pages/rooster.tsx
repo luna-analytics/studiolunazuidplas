@@ -136,21 +136,7 @@ export default function Rooster() {
             </div>
           </section>
 
-          {/* 2 — CIRCLES & COMMUNITY */}
-          <section>
-            <motion.div
-              initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }} transition={{ duration: 0.4 }}
-              className="rounded-3xl border border-dashed border-accent/60 bg-accent/10 p-5"
-            >
-              <h2 className="font-display text-xl font-medium text-foreground mb-3">Circles & Community</h2>
-              <p className="text-sm text-foreground/65 leading-relaxed">
-                Bij Studio Luna geloven we in de kracht van de 'village'. Naast de fysieke lessen creëren we een veilige cirkel waarin je ervaringen deelt, vragen stelt en vriendschappen sluit — voor de tijd na je bevalling. De thee staat altijd klaar. ☕️
-              </p>
-            </motion.div>
-          </section>
-
-          {/* 3 — DE GEBOORTE-BUNDEL */}
+          {/* 2 — DE GEBOORTE-BUNDEL */}
           <section>
             <motion.div
               initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }}

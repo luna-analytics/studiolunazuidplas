@@ -83,10 +83,18 @@ export default function Home() {
         </div>
 
         {/* NA DE LES */}
-        <div className="mx-6 mt-4 mb-6 rounded-3xl border border-dashed border-accent/60 bg-accent/10 p-5">
+        <div className="mx-6 mt-4 rounded-3xl border border-dashed border-accent/60 bg-accent/10 p-5">
           <h3 className="font-semibold text-foreground mb-2">☕️ Na de les</h3>
           <p className="text-sm text-foreground/65 leading-relaxed">
             Je hoeft na de les niet meteen naar huis. Er is tijd voor verse thee en verbinden met andere (aanstaande) mama's. Een veilige plek om ervaringen te delen, herkenning te vinden en samen op te laden. Je hoeft het niet alleen te doen.
+          </p>
+        </div>
+
+        {/* CIRCLES & COMMUNITY */}
+        <div className="mx-6 mt-4 mb-6 rounded-3xl bg-secondary border border-border/30 p-5">
+          <h3 className="font-semibold text-foreground mb-2">🌙 Circles & Community</h3>
+          <p className="text-sm text-foreground/65 leading-relaxed">
+            Bij Studio Luna geloven we in de kracht van de 'village'. Naast de fysieke lessen creëren we een veilige cirkel waarin je ervaringen deelt, vragen stelt en vriendschappen sluit — voor de tijd na je bevalling. De thee staat altijd klaar.
           </p>
         </div>
 
