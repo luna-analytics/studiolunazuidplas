@@ -4,10 +4,12 @@ import { CalendarDays, Bookmark, Tag, Home } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { AlgemeneVoorwaardenModal } from "./algemene-voorwaarden-modal";
+import { PrivacyverklaringModal } from "./privacyverklaring-modal";
 
 export function BottomNav() {
   const [location] = useLocation();
   const [avOpen, setAvOpen] = useState(false);
+  const [privacyOpen, setPrivacyOpen] = useState(false);
 
   const navItems = [
     { href: "/", label: "Studio", icon: Home },
@@ -53,17 +55,25 @@ export function BottomNav() {
             );
           })}
         </nav>
-        <div className="pb-2 text-center">
+        <div className="pb-2 flex items-center justify-center gap-3">
           <button
             onClick={() => setAvOpen(true)}
             className="text-[10px] text-foreground/35 hover:text-foreground/60 transition-colors"
           >
             Algemene Voorwaarden
           </button>
+          <span className="text-[10px] text-foreground/20">·</span>
+          <button
+            onClick={() => setPrivacyOpen(true)}
+            className="text-[10px] text-foreground/35 hover:text-foreground/60 transition-colors"
+          >
+            Privacyverklaring
+          </button>
         </div>
       </div>
 
       <AlgemeneVoorwaardenModal isOpen={avOpen} onClose={() => setAvOpen(false)} />
+      <PrivacyverklaringModal isOpen={privacyOpen} onClose={() => setPrivacyOpen(false)} />
     </>
   );
 }
