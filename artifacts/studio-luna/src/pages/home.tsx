@@ -6,7 +6,7 @@ import { BookingModal } from "@/components/booking-modal";
 import { useBookings } from "@/hooks/use-bookings";
 import { BottomNav } from "@/components/bottom-nav";
 import { motion } from "framer-motion";
-import { ArrowRight, Clock, Users, Leaf, MapPin } from "lucide-react";
+import { ArrowRight, Clock, Users, MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type ClassInstance = {
@@ -127,10 +127,6 @@ export default function Home() {
                         <span className="flex items-center gap-1">
                           <Users className="w-3.5 h-3.5" />
                           {classData.spotsAvailable} plekken
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Leaf className="w-3.5 h-3.5" />
-                          {classData.teacher}
                         </span>
                         <span className="flex items-center gap-1">
                           <MapPin className="w-3.5 h-3.5" />
