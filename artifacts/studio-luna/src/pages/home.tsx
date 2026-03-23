@@ -18,11 +18,13 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-b from-secondary/60 via-secondary/90 to-secondary" />
           <div className="relative z-10">
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-              <img
-                src={`${import.meta.env.BASE_URL}images/studio-luna-logo.png`}
-                alt="Studio Luna"
-                className="h-40 w-auto mb-5 object-contain mx-auto block"
-              />
+              <div className="overflow-hidden flex justify-center mb-5" style={{ height: '116px' }}>
+                <img
+                  src={`${import.meta.env.BASE_URL}images/studio-luna-logo.png`}
+                  alt="Studio Luna"
+                  className="h-40 w-auto"
+                />
+              </div>
               <h1 className="font-display text-4xl font-medium text-foreground leading-[1.15] mb-3">
                 It takes a village.<br />Studio Luna is jouw mama tribe.
               </h1>
