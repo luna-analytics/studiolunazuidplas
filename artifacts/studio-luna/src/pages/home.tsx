@@ -6,7 +6,7 @@ import { BookingModal } from "@/components/booking-modal";
 import { useBookings } from "@/hooks/use-bookings";
 import { BottomNav } from "@/components/bottom-nav";
 import { motion } from "framer-motion";
-import { ArrowRight, Clock, Users, Leaf } from "lucide-react";
+import { ArrowRight, Clock, Users, Leaf, MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type ClassInstance = {
@@ -119,7 +119,7 @@ export default function Home() {
                       <h3 className="text-lg font-semibold text-foreground mb-1">{classData.title}</h3>
                       <p className="text-sm text-foreground/60 mb-3 leading-relaxed">{classData.description}</p>
 
-                      <div className="flex items-center gap-4 text-sm text-foreground/60 mb-4">
+                      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-foreground/60 mb-4">
                         <span className="flex items-center gap-1">
                           <Clock className="w-3.5 h-3.5" />
                           {classData.time}
@@ -131,6 +131,10 @@ export default function Home() {
                         <span className="flex items-center gap-1">
                           <Leaf className="w-3.5 h-3.5" />
                           {classData.teacher}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <MapPin className="w-3.5 h-3.5" />
+                          Huize Mooisteen
                         </span>
                       </div>
 
