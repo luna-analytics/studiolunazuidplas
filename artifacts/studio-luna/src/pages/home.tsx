@@ -121,16 +121,7 @@ export default function Home() {
               <span className="text-xs font-bold uppercase tracking-widest text-foreground/40">Binnenkort</span>
               <span className="text-xs px-2 py-0.5 rounded-full bg-accent/30 text-accent-foreground font-semibold">Bij genoeg animo</span>
             </div>
-            <h3 className="font-display text-lg font-medium text-foreground mb-1">Bevallings Specials 🌙</h3>
-            <div className="rounded-2xl bg-background/60 border border-border/20 px-4 py-3 mb-4">
-              <div className="flex items-start justify-between gap-2 mb-1">
-                <p className="text-xs font-semibold text-foreground">De Geboorte-Bundel Deal 🌙</p>
-                <span className="text-xs font-semibold text-foreground shrink-0">€ 155,- <span className="font-normal text-foreground/40">(bespaar € 22,-)</span></span>
-              </div>
-              <p className="text-xs text-foreground/60 leading-relaxed">
-                Los te boeken of als bundel. Boek de drie specials samen voor de meest complete en zachte voorbereiding op jouw reis naar het moederschap. Ideaal tussen je 28e en 36e week.
-              </p>
-            </div>
+            <h3 className="font-display text-lg font-medium text-foreground mb-3">Bevallings Specials 🌙</h3>
 
             <div className="space-y-3 mb-4">
               {[
@@ -148,6 +139,14 @@ export default function Home() {
                   </div>
                 </div>
               ))}
+            </div>
+
+            <div className="rounded-2xl bg-background/60 border border-border/20 px-4 py-3 mb-4">
+              <p className="text-sm font-semibold text-foreground mb-0.5">De Geboorte-Bundel</p>
+              <p className="text-sm font-semibold text-foreground mb-2">€ 155,- <span className="text-xs font-normal text-foreground/45">(bespaar € 22,-)</span></p>
+              <p className="text-xs text-foreground/60 leading-relaxed">
+                Boek de drie specials samen voor de meest complete en zachte voorbereiding op jouw reis naar het moederschap. Ideaal tussen je 28e en 36e week.
+              </p>
             </div>
 
             <div className="rounded-2xl bg-background/60 border border-border/20 px-4 py-3 mb-4">
