@@ -46,7 +46,7 @@ export default function Home() {
             <img 
               src={`${import.meta.env.BASE_URL}images/hero-yoga.png`} 
               alt="Pregnancy Yoga at Studio Luna" 
-              className="w-full h-full object-cover opacity-30 mix-blend-multiply"
+              className="w-full h-full object-cover opacity-30 mix-blend-multiply" style={{ objectPosition: 'center 80%' }}
             />
             {/* Elegant gradient overlay */}
             <div className="absolute inset-0 bg-gradient-to-b from-secondary/40 via-secondary/80 to-secondary" />
