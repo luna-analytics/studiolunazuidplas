@@ -146,7 +146,7 @@ export default function Home() {
             <div className="rounded-2xl bg-background/60 border border-border/20 px-4 py-3 mb-4">
               <p className="text-xs font-semibold text-foreground mb-1">💡 Tip: Check je zorgverzekering!</p>
               <p className="text-xs text-foreground/55 leading-relaxed">
-                Wist je dat veel zorgverzekeraars (een deel van) een cursus geboortevoorbereiding vergoeden vanuit de aanvullende verzekering? Je kunt de factuur van de Geboorte-Bundel na afloop zelf indienen bij je verzekeraar om te zien of je in aanmerking komt voor een vergoeding.
+                Wist je dat veel zorgverzekeraars (een deel van) een cursus geboortevoorbereiding vergoeden vanuit de aanvullende verzekering? Je kunt de factuur van de Bevallings Specials na afloop zelf indienen bij je verzekeraar om te zien of je in aanmerking komt voor een vergoeding.
               </p>
             </div>
 
