@@ -62,12 +62,21 @@ export default function StudioLuna() {
               </div>
               <h2 className="font-display text-xl font-medium text-foreground">De missie</h2>
             </div>
+            <ul className="space-y-1.5 mb-4">
+              {[
+                "Een plek om te landen.",
+                "Een plek om fysiek sterk, gezond en in balans te blijven.",
+                "Een plek om vertrouwen te vinden in je veranderende lichaam.",
+                "Een plek om te connecten met andere moeders.",
+                "Studio Luna is jouw mama tribe.",
+              ].map((item, i) => (
+                <li key={i} className="text-sm text-foreground/70 leading-relaxed">{item}</li>
+              ))}
+            </ul>
             <p className="text-foreground/70 text-sm leading-relaxed mb-3">
-              Studio Luna is opgericht vanuit het idee dat zwangerschap en het moederschap mooier zijn wanneer je het samen beleeft. We geloven in de kracht van community, beweging en stilte.
+              Het moederschap hoef je niet alleen te doen. De missie van Studio Luna is het faciliteren van een community voor alle vrouwen in Nieuwerkerk aan den IJssel en omgeving, van zwangerschap tot ver daarna. Een veilige haven om fysiek op te laden, mentaal tot rust te komen en bovenal in verbinding te staan met andere moeders in dezelfde fase.
             </p>
-            <p className="text-foreground/70 text-sm leading-relaxed">
-              Bij Studio Luna vind je een veilige ruimte om te ontspannen, te bewegen en te connecten — met jezelf, je baby én andere vrouwen in jouw regio Zuidplas.
-            </p>
+            <p className="text-sm font-medium text-foreground/80">Welkom in jouw village.</p>
           </motion.div>
 
           {/* Wat maakt ons bijzonder */}
