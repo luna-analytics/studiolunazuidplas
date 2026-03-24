@@ -3,6 +3,7 @@ import { requireAuth } from "../middlewares/auth.js";
 import { getMemberBookings, getMemberBookingCount, createBooking, deleteBooking, getAllBookings } from "../lib/bookings.js";
 import { findMemberById, updateMemberCredits } from "../lib/users.js";
 import { readClasses } from "../lib/classes.js";
+import { sendBookingConfirmation } from "../lib/email.js";
 
 const router = Router();
 
@@ -48,6 +49,20 @@ router.post("/bookings", requireAuth, async (req, res) => {
       isLosseLes,
     });
     const credits = hasCredits ? updateMemberCredits(userId, -1).credits : member.credits;
+
+    // Send confirmation email (non-blocking)
+    sendBookingConfirmation({
+      toEmail: member.email,
+      toName: member.name,
+      className,
+      date,
+      time,
+      type,
+      isProefles,
+      isLosseLes,
+      creditsLeft: credits,
+    });
+
     res.json({ booking, credits });
   } catch (err: any) {
     res.status(400).json({ error: err.message });
