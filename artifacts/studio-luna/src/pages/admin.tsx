@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Plus, Trash2, PlusCircle, MinusCircle, ChevronDown, ChevronUp, X,
   BookOpen, Users, ClipboardList, Check, CalendarDays, Baby, Share2,
+  Sparkles, MessageCircle, MapPin, Clock,
 } from "lucide-react";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -478,6 +479,218 @@ function AanvragenTab() {
   );
 }
 
+// ─── VILLAGE BEHEER TAB ───────────────────────────────────────────────────────
+function VillageBeheerTab() {
+  const [section, setSection] = useState<"tips" | "events" | "journal" | "intros">("tips");
+
+  // Tips
+  const [tips, setTips] = useState<{ id: string; text: string; emoji: string; active: boolean; createdAt: string }[]>([]);
+  const [newTipText, setNewTipText] = useState("");
+  const [newTipEmoji, setNewTipEmoji] = useState("🌿");
+
+  // Events
+  const [events, setEvents] = useState<{ id: string; title: string; date: string; time?: string; description: string; location?: string }[]>([]);
+  const [evForm, setEvForm] = useState({ title: "", date: "", time: "", description: "", location: "" });
+
+  // Journal
+  const [questions, setQuestions] = useState<{ id: string; question: string; active: boolean; answers: { memberName: string; anonymous: boolean; text: string }[]; createdAt: string }[]>([]);
+  const [newQ, setNewQ] = useState("");
+  const [expandedQ, setExpandedQ] = useState<string | null>(null);
+
+  // Intros
+  const [intros, setIntros] = useState<{ memberId: string; intro: string }[]>([]);
+
+  useEffect(() => {
+    apiFetch("/admin/tips").then((r) => r.ok && r.json().then(setTips));
+    apiFetch("/admin/events").then((r) => r.ok && r.json().then(setEvents));
+    apiFetch("/admin/journal").then((r) => r.ok && r.json().then(setQuestions));
+    apiFetch("/admin/village/intros").then((r) => r.ok && r.json().then(setIntros));
+  }, []);
+
+  const addTip = async () => {
+    if (!newTipText.trim()) return;
+    const res = await apiFetch("/admin/tips", { method: "POST", body: JSON.stringify({ text: newTipText.trim(), emoji: newTipEmoji }) });
+    if (res.ok) { const t = await res.json(); setTips((prev) => prev.map((x) => ({ ...x, active: false })).concat(t)); setNewTipText(""); }
+  };
+  const activateTip = async (id: string) => {
+    const res = await apiFetch(`/admin/tips/${id}/activate`, { method: "POST" });
+    if (res.ok) setTips((prev) => prev.map((t) => ({ ...t, active: t.id === id })));
+  };
+  const deleteTip = async (id: string) => {
+    await apiFetch(`/admin/tips/${id}`, { method: "DELETE" });
+    setTips((prev) => prev.filter((t) => t.id !== id));
+  };
+
+  const addEvent = async () => {
+    if (!evForm.title || !evForm.date) return;
+    const res = await apiFetch("/admin/events", { method: "POST", body: JSON.stringify(evForm) });
+    if (res.ok) { const e = await res.json(); setEvents((prev) => [...prev, e]); setEvForm({ title: "", date: "", time: "", description: "", location: "" }); }
+  };
+  const deleteEvent = async (id: string) => {
+    await apiFetch(`/admin/events/${id}`, { method: "DELETE" });
+    setEvents((prev) => prev.filter((e) => e.id !== id));
+  };
+
+  const addQuestion = async () => {
+    if (!newQ.trim()) return;
+    const res = await apiFetch("/admin/journal", { method: "POST", body: JSON.stringify({ question: newQ.trim() }) });
+    if (res.ok) { const q = await res.json(); setQuestions((prev) => prev.map((x) => ({ ...x, active: false })).concat(q)); setNewQ(""); }
+  };
+  const activateQ = async (id: string) => {
+    const res = await apiFetch(`/admin/journal/${id}/activate`, { method: "POST" });
+    if (res.ok) setQuestions((prev) => prev.map((q) => ({ ...q, active: q.id === id })));
+  };
+  const deleteQ = async (id: string) => {
+    await apiFetch(`/admin/journal/${id}`, { method: "DELETE" });
+    setQuestions((prev) => prev.filter((q) => q.id !== id));
+  };
+
+  const sections = [
+    { key: "tips" as const, label: "Tip vd week", icon: <Sparkles className="w-3.5 h-3.5" /> },
+    { key: "events" as const, label: "Evenementen", icon: <CalendarDays className="w-3.5 h-3.5" /> },
+    { key: "journal" as const, label: "Journal", icon: <MessageCircle className="w-3.5 h-3.5" /> },
+    { key: "intros" as const, label: "Introducties", icon: <Users className="w-3.5 h-3.5" /> },
+  ];
+
+  return (
+    <div className="space-y-4">
+      <div className="flex flex-wrap gap-2">
+        {sections.map((s) => (
+          <button key={s.key} onClick={() => setSection(s.key)}
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-2xl text-xs font-semibold transition-all border ${section === s.key ? "bg-primary/10 border-primary/30 text-primary" : "border-border/30 text-foreground/55 hover:text-foreground"}`}>
+            {s.icon} {s.label}
+          </button>
+        ))}
+      </div>
+
+      {/* TIPS */}
+      {section === "tips" && (
+        <div className="space-y-3">
+          <div className="bg-card border border-border/30 rounded-3xl p-5">
+            <p className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-3">Nieuwe tip toevoegen</p>
+            <div className="flex gap-2 mb-3">
+              <input value={newTipEmoji} onChange={(e) => setNewTipEmoji(e.target.value)} placeholder="🌿" className="w-14 bg-secondary border border-border/40 rounded-2xl px-3 py-2.5 text-center text-lg focus:outline-none focus:ring-2 focus:ring-primary/30" />
+              <textarea value={newTipText} onChange={(e) => setNewTipText(e.target.value)} rows={2} placeholder="De tip voor deze week…"
+                className="flex-1 bg-secondary border border-border/40 rounded-2xl px-3 py-2.5 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary/30" />
+            </div>
+            <button onClick={addTip} className="flex items-center gap-2 bg-primary text-primary-foreground px-5 py-2.5 rounded-2xl font-semibold text-sm hover:bg-primary/90 transition-colors">
+              <Plus className="w-4 h-4" /> Tip activeren
+            </button>
+          </div>
+          {tips.map((tip) => (
+            <div key={tip.id} className={`bg-card border rounded-3xl px-5 py-4 flex items-start gap-3 ${tip.active ? "border-primary/30 bg-primary/3" : "border-border/30"}`}>
+              <span className="text-xl shrink-0">{tip.emoji}</span>
+              <div className="flex-1">
+                <p className="text-sm text-foreground/75 leading-relaxed">{tip.text}</p>
+                {tip.active && <span className="text-xs font-bold text-primary mt-1 block">✓ Actief</span>}
+              </div>
+              <div className="flex flex-col gap-1.5 shrink-0">
+                {!tip.active && <button onClick={() => activateTip(tip.id)} className="text-xs text-primary font-semibold hover:underline">Activeer</button>}
+                <button onClick={() => deleteTip(tip.id)} className="text-xs text-red-400 hover:text-red-600"><Trash2 className="w-3.5 h-3.5" /></button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* EVENTS */}
+      {section === "events" && (
+        <div className="space-y-3">
+          <div className="bg-card border border-border/30 rounded-3xl p-5">
+            <p className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-3">Nieuw evenement</p>
+            <div className="space-y-2">
+              <input value={evForm.title} onChange={(e) => setEvForm({ ...evForm, title: e.target.value })} placeholder="Titel"
+                className="w-full bg-secondary border border-border/40 rounded-2xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+              <div className="grid grid-cols-2 gap-2">
+                <input type="date" value={evForm.date} onChange={(e) => setEvForm({ ...evForm, date: e.target.value })}
+                  className="w-full bg-secondary border border-border/40 rounded-2xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                <input value={evForm.time} onChange={(e) => setEvForm({ ...evForm, time: e.target.value })} placeholder="Tijd (optioneel)"
+                  className="w-full bg-secondary border border-border/40 rounded-2xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+              </div>
+              <input value={evForm.location} onChange={(e) => setEvForm({ ...evForm, location: e.target.value })} placeholder="Locatie (optioneel)"
+                className="w-full bg-secondary border border-border/40 rounded-2xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+              <textarea value={evForm.description} onChange={(e) => setEvForm({ ...evForm, description: e.target.value })} rows={2} placeholder="Omschrijving"
+                className="w-full bg-secondary border border-border/40 rounded-2xl px-3 py-2.5 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary/30" />
+              <button onClick={addEvent} className="flex items-center gap-2 bg-primary text-primary-foreground px-5 py-2.5 rounded-2xl font-semibold text-sm hover:bg-primary/90 transition-colors">
+                <Plus className="w-4 h-4" /> Aanmaken
+              </button>
+            </div>
+          </div>
+          {events.length === 0 && <div className="text-center py-6 text-sm text-foreground/40">Nog geen evenementen.</div>}
+          {events.map((ev) => (
+            <div key={ev.id} className="bg-card border border-border/30 rounded-3xl px-5 py-4 flex items-start justify-between gap-3">
+              <div>
+                <p className="font-semibold text-foreground text-sm">{ev.title}</p>
+                <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-1 text-xs text-foreground/50">
+                  <span className="flex items-center gap-1"><CalendarDays className="w-3 h-3" />{ev.date}</span>
+                  {ev.time && <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{ev.time}</span>}
+                  {ev.location && <span className="flex items-center gap-1"><MapPin className="w-3 h-3" />{ev.location}</span>}
+                </div>
+                {ev.description && <p className="text-xs text-foreground/50 mt-1">{ev.description}</p>}
+              </div>
+              <button onClick={() => deleteEvent(ev.id)} className="text-foreground/30 hover:text-red-400 transition-colors shrink-0"><Trash2 className="w-4 h-4" /></button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* JOURNAL */}
+      {section === "journal" && (
+        <div className="space-y-3">
+          <div className="bg-card border border-border/30 rounded-3xl p-5">
+            <p className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-3">Nieuwe vraag van de week</p>
+            <textarea value={newQ} onChange={(e) => setNewQ(e.target.value)} rows={2} placeholder="bijv. Hoe gaat het met jou deze week?"
+              className="w-full bg-secondary border border-border/40 rounded-2xl px-3 py-2.5 text-sm resize-none mb-3 focus:outline-none focus:ring-2 focus:ring-primary/30" />
+            <button onClick={addQuestion} className="flex items-center gap-2 bg-primary text-primary-foreground px-5 py-2.5 rounded-2xl font-semibold text-sm hover:bg-primary/90 transition-colors">
+              <Plus className="w-4 h-4" /> Vraag activeren
+            </button>
+          </div>
+          {questions.map((q) => (
+            <div key={q.id} className={`bg-card border rounded-3xl overflow-hidden ${q.active ? "border-primary/30" : "border-border/30"}`}>
+              <div className="px-5 py-4 flex items-start justify-between gap-3 cursor-pointer" onClick={() => setExpandedQ(expandedQ === q.id ? null : q.id)}>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-foreground leading-relaxed">"{q.question}"</p>
+                  <div className="flex items-center gap-3 mt-1">
+                    {q.active && <span className="text-xs font-bold text-primary">✓ Actief</span>}
+                    <span className="text-xs text-foreground/40">{q.answers.length} {q.answers.length === 1 ? "antwoord" : "antwoorden"}</span>
+                  </div>
+                </div>
+                <div className="flex gap-2 shrink-0">
+                  {!q.active && <button onClick={(e) => { e.stopPropagation(); activateQ(q.id); }} className="text-xs text-primary font-semibold hover:underline">Activeer</button>}
+                  <button onClick={(e) => { e.stopPropagation(); deleteQ(q.id); }} className="text-foreground/30 hover:text-red-400"><Trash2 className="w-3.5 h-3.5" /></button>
+                </div>
+              </div>
+              {expandedQ === q.id && q.answers.length > 0 && (
+                <div className="border-t border-border/20 px-5 py-3 space-y-2">
+                  {q.answers.map((a, i) => (
+                    <div key={i} className="bg-secondary rounded-2xl px-4 py-3">
+                      <p className="text-xs font-semibold text-foreground/50 mb-1">{a.anonymous ? "Anoniem" : a.memberName}</p>
+                      <p className="text-sm text-foreground/75 italic">"{a.text}"</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* INTROS */}
+      {section === "intros" && (
+        <div className="space-y-3">
+          {intros.length === 0 && <div className="text-center py-6 text-sm text-foreground/40">Nog geen introducties ingevuld.</div>}
+          {intros.map((p, i) => (
+            <div key={p.memberId} className="bg-card border border-border/30 rounded-3xl px-5 py-4">
+              <p className="text-xs text-foreground/40 mb-1">Lid #{i + 1}</p>
+              <p className="text-sm text-foreground/75 italic leading-relaxed">"{p.intro}"</p>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── MEDEDELINGEN TAB ────────────────────────────────────────────────────────
 function MededelingenTab() {
   const [items, setItems] = useState<Announcement[]>([]);
@@ -595,7 +808,7 @@ function MededelingenTab() {
 }
 
 // ─── MAIN ADMIN PAGE ─────────────────────────────────────────────────────────
-type AdminTab = "leden" | "lessen" | "aanvragen" | "mededelingen";
+type AdminTab = "leden" | "lessen" | "aanvragen" | "mededelingen" | "village";
 
 export default function Admin() {
   const { user, loading } = useAuth();
@@ -614,6 +827,7 @@ export default function Admin() {
     { key: "lessen", label: "Lessen", icon: <BookOpen className="w-4 h-4" /> },
     { key: "aanvragen", label: "Aanvragen", icon: <ClipboardList className="w-4 h-4" /> },
     { key: "mededelingen", label: "Mededelingen", icon: <Baby className="w-4 h-4" /> },
+    { key: "village", label: "Village", icon: <Sparkles className="w-4 h-4" /> },
   ];
 
   return (
@@ -644,6 +858,7 @@ export default function Admin() {
               {tab === "lessen" && <LessenTab />}
               {tab === "aanvragen" && <AanvragenTab />}
               {tab === "mededelingen" && <MededelingenTab />}
+              {tab === "village" && <VillageBeheerTab />}
             </motion.div>
           </AnimatePresence>
         </div>

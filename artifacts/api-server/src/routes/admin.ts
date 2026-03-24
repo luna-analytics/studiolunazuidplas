@@ -6,6 +6,10 @@ import { readRequests, markRequestDone, deleteRequest } from "../lib/requests.js
 import { findMemberById } from "../lib/users.js";
 import { getMemberBookings } from "../lib/bookings.js";
 import { readAnnouncements, markAnnouncementSeen, deleteAnnouncement } from "../lib/announcements.js";
+import { readTips, createTip, activateTip, deleteTip } from "../lib/tips.js";
+import { readEvents, createEvent, deleteEvent } from "../lib/events.js";
+import { readJournal, createQuestion, activateQuestion, deleteQuestion } from "../lib/journal.js";
+import { readProfiles } from "../lib/village-profiles.js";
 
 const router = Router();
 
@@ -130,6 +134,63 @@ router.post("/admin/announcements/:id/seen", requireAdmin, (req, res) => {
 router.delete("/admin/announcements/:id", requireAdmin, (req, res) => {
   deleteAnnouncement(req.params.id);
   res.json({ ok: true });
+});
+
+// ─── TIPS ────────────────────────────────────────────────────────────────────
+
+router.get("/admin/tips", requireAdmin, (_req, res) => { res.json(readTips()); });
+
+router.post("/admin/tips", requireAdmin, (req, res) => {
+  const { text, emoji } = req.body as { text?: string; emoji?: string };
+  if (!text?.trim()) { res.status(400).json({ error: "Tekst is verplicht" }); return; }
+  res.json(createTip({ text: text.trim(), emoji }));
+});
+
+router.post("/admin/tips/:id/activate", requireAdmin, (req, res) => {
+  try { res.json(activateTip(req.params.id)); } catch (e: any) { res.status(400).json({ error: e.message }); }
+});
+
+router.delete("/admin/tips/:id", requireAdmin, (req, res) => {
+  deleteTip(req.params.id); res.json({ ok: true });
+});
+
+// ─── EVENTS ──────────────────────────────────────────────────────────────────
+
+router.get("/admin/events", requireAdmin, (_req, res) => { res.json(readEvents()); });
+
+router.post("/admin/events", requireAdmin, (req, res) => {
+  const { title, date, time, description, location } = req.body;
+  if (!title || !date) { res.status(400).json({ error: "Titel en datum zijn verplicht" }); return; }
+  res.json(createEvent({ title, date, time, description: description ?? "", location }));
+});
+
+router.delete("/admin/events/:id", requireAdmin, (req, res) => {
+  deleteEvent(req.params.id); res.json({ ok: true });
+});
+
+// ─── JOURNAL ─────────────────────────────────────────────────────────────────
+
+router.get("/admin/journal", requireAdmin, (_req, res) => { res.json(readJournal()); });
+
+router.post("/admin/journal", requireAdmin, (req, res) => {
+  const { question } = req.body as { question?: string };
+  if (!question?.trim()) { res.status(400).json({ error: "Vraag is verplicht" }); return; }
+  res.json(createQuestion(question.trim()));
+});
+
+router.post("/admin/journal/:id/activate", requireAdmin, (req, res) => {
+  try { res.json(activateQuestion(req.params.id)); } catch (e: any) { res.status(400).json({ error: e.message }); }
+});
+
+router.delete("/admin/journal/:id", requireAdmin, (req, res) => {
+  deleteQuestion(req.params.id); res.json({ ok: true });
+});
+
+// ─── VILLAGE INTROS ──────────────────────────────────────────────────────────
+
+router.get("/admin/village/intros", requireAdmin, (_req, res) => {
+  const profiles = readProfiles().filter((p) => p.intro?.trim());
+  res.json(profiles);
 });
 
 export default router;
