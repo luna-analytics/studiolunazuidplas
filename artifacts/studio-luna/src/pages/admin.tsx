@@ -811,16 +811,73 @@ function MededelingenTab() {
 type AdminTab = "leden" | "lessen" | "aanvragen" | "mededelingen" | "village";
 
 export default function Admin() {
-  const { user, loading } = useAuth();
+  const { user, loading, login } = useAuth();
   const [, navigate] = useLocation();
   const [tab, setTab] = useState<AdminTab>("leden");
+  const [adminEmail, setAdminEmail] = useState("");
+  const [adminPassword, setAdminPassword] = useState("");
+  const [adminError, setAdminError] = useState("");
+  const [adminLoading, setAdminLoading] = useState(false);
 
-  useEffect(() => {
-    if (!loading && (!user || !user.isAdmin)) navigate("/");
-  }, [user, loading]);
+  const handleAdminLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setAdminError("");
+    setAdminLoading(true);
+    try {
+      await login(adminEmail, adminPassword);
+    } catch (err: any) {
+      setAdminError(err.message);
+    } finally {
+      setAdminLoading(false);
+    }
+  };
 
   if (loading) return null;
-  if (!user?.isAdmin) return null;
+
+  if (!user?.isAdmin) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center px-6">
+        <motion.div className="w-full max-w-sm" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
+          <div className="text-center mb-8">
+            <div className="w-16 h-16 bg-secondary rounded-3xl flex items-center justify-center mx-auto mb-4">
+              <BookOpen className="w-7 h-7 text-primary" />
+            </div>
+            <h1 className="font-display text-2xl font-medium">Admin toegang</h1>
+            <p className="text-sm text-foreground/50 mt-1">Studio Luna beheer</p>
+          </div>
+          <form onSubmit={handleAdminLogin} className="space-y-3">
+            <input
+              type="email"
+              value={adminEmail}
+              onChange={(e) => setAdminEmail(e.target.value)}
+              required
+              placeholder="E-mailadres"
+              className="w-full bg-secondary border border-border/40 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+            />
+            <input
+              type="password"
+              value={adminPassword}
+              onChange={(e) => setAdminPassword(e.target.value)}
+              required
+              placeholder="Wachtwoord"
+              className="w-full bg-secondary border border-border/40 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+            />
+            {adminError && <p className="text-sm text-red-500 bg-red-50 rounded-2xl px-4 py-2">{adminError}</p>}
+            <button
+              type="submit"
+              disabled={adminLoading}
+              className="w-full bg-primary text-primary-foreground py-3 rounded-2xl font-semibold text-sm hover:bg-primary/90 disabled:opacity-60 transition-colors"
+            >
+              {adminLoading ? "Bezig…" : "Inloggen"}
+            </button>
+          </form>
+          <button onClick={() => navigate("/")} className="mt-4 w-full text-xs text-foreground/40 hover:text-foreground/60 transition-colors text-center">
+            Terug naar de app
+          </button>
+        </motion.div>
+      </div>
+    );
+  }
 
   const tabs: { key: AdminTab; label: string; icon: React.ReactNode }[] = [
     { key: "leden", label: "Leden", icon: <Users className="w-4 h-4" /> },
