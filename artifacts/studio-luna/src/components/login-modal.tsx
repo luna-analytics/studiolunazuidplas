@@ -138,6 +138,15 @@ export function LoginModal({ isOpen, onClose, defaultMode = "login" }: Props) {
                 </div>
               </div>
 
+              {mode === "login" && (
+                <p className="text-xs text-foreground/50 text-right -mt-1">
+                  Wachtwoord vergeten?{" "}
+                  <a href="mailto:info@studiolunazuidplas.nl" className="text-primary underline underline-offset-2 hover:text-primary/80">
+                    Neem contact op
+                  </a>
+                </p>
+              )}
+
               {error && (
                 <p className="text-sm text-red-500 bg-red-50 rounded-2xl px-4 py-2">{error}</p>
               )}

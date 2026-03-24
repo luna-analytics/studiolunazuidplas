@@ -1,15 +1,17 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { CalendarDays, Bookmark, Tag, Home, Sparkles } from "lucide-react";
+import { CalendarDays, Bookmark, Tag, Home, Sparkles, KeyRound } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { AlgemeneVoorwaardenModal } from "./algemene-voorwaarden-modal";
 import { PrivacyverklaringModal } from "./privacyverklaring-modal";
+import { useAuth } from "@/hooks/use-auth";
 
 export function BottomNav() {
   const [location] = useLocation();
   const [avOpen, setAvOpen] = useState(false);
   const [privacyOpen, setPrivacyOpen] = useState(false);
+  const { user } = useAuth();
 
   const navItems = [
     { href: "/", label: "Studio Luna", icon: Sparkles },
@@ -17,6 +19,7 @@ export function BottomNav() {
     { href: "/rooster", label: "Rooster", icon: CalendarDays },
     { href: "/tarieven", label: "Tarieven", icon: Tag },
     { href: "/bookings", label: "Boekingen", icon: Bookmark },
+    { href: "/village", label: "Village", icon: KeyRound },
   ];
 
   return (
@@ -26,11 +29,7 @@ export function BottomNav() {
         <div className="max-w-5xl mx-auto w-full flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3">
             <div className="overflow-hidden" style={{ height: '36px' }}>
-              <img
-                src={`${import.meta.env.BASE_URL}images/studio-luna-logo.png`}
-                alt="Studio Luna"
-                className="h-12 w-auto"
-              />
+              <img src={`${import.meta.env.BASE_URL}images/studio-luna-logo.png`} alt="Studio Luna" className="h-12 w-auto" />
             </div>
           </Link>
           <nav className="flex items-center gap-1">
@@ -41,10 +40,8 @@ export function BottomNav() {
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "px-4 py-2 rounded-xl text-sm font-medium transition-colors",
-                    isActive
-                      ? "bg-primary/10 text-foreground"
-                      : "text-foreground/55 hover:text-foreground hover:bg-secondary"
+                    "px-3 py-2 rounded-xl text-sm font-medium transition-colors",
+                    isActive ? "bg-primary/10 text-foreground" : "text-foreground/55 hover:text-foreground hover:bg-secondary"
                   )}
                 >
                   {item.label}
@@ -62,23 +59,24 @@ export function BottomNav() {
 
       {/* MOBILE BOTTOM NAV */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-background/80 backdrop-blur-xl border-t border-border/30 pb-safe">
-        <nav className="max-w-md mx-auto flex items-center justify-around px-6 py-3">
+        <nav className="max-w-md mx-auto flex items-center justify-around px-2 py-2">
           {navItems.map((item) => {
             const isActive = location === item.href;
             const Icon = item.icon;
+            const isVillage = item.href === "/village";
 
             return (
-              <Link key={item.href} href={item.href} className="relative flex flex-col items-center justify-center w-16 tap-highlight-transparent">
-                <div className="relative z-10 flex flex-col items-center gap-1.5 p-2">
+              <Link key={item.href} href={item.href} className="relative flex flex-col items-center justify-center flex-1 tap-highlight-transparent">
+                <div className="relative z-10 flex flex-col items-center gap-1 py-1.5 px-1">
                   <Icon
                     strokeWidth={isActive ? 2.5 : 2}
                     className={cn(
-                      "w-6 h-6 transition-colors duration-300",
-                      isActive ? "text-foreground" : "text-muted-foreground"
+                      "w-5 h-5 transition-colors duration-300",
+                      isActive ? "text-foreground" : isVillage && !user ? "text-muted-foreground/60" : "text-muted-foreground"
                     )}
                   />
                   <span className={cn(
-                    "text-[10px] font-medium transition-colors duration-300",
+                    "text-[9px] font-medium transition-colors duration-300 leading-none",
                     isActive ? "text-foreground" : "text-muted-foreground"
                   )}>
                     {item.label}
@@ -96,7 +94,7 @@ export function BottomNav() {
             );
           })}
         </nav>
-        <div className="pb-2 flex items-center justify-center gap-3">
+        <div className="pb-1.5 flex items-center justify-center gap-3">
           <button onClick={() => setAvOpen(true)} className="text-[10px] text-foreground/35 hover:text-foreground/60 transition-colors">Algemene Voorwaarden</button>
           <span className="text-[10px] text-foreground/20">·</span>
           <button onClick={() => setPrivacyOpen(true)} className="text-[10px] text-foreground/35 hover:text-foreground/60 transition-colors">Privacyverklaring</button>

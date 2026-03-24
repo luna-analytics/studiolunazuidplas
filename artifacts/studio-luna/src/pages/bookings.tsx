@@ -111,8 +111,8 @@ export default function Bookings() {
             )
           )}
 
-          {/* BOOKINGS LIST */}
-          <div>
+          {/* BOOKINGS LIST — alleen voor ingelogde leden */}
+          {user && !user.isAdmin && <div>
             <h2 className="font-display text-xl font-medium text-foreground mb-3">Geplande lessen</h2>
             {!isLoaded ? (
               <div className=" p-10">
@@ -161,12 +161,17 @@ export default function Bookings() {
                         {booking.isProefles && (
                           <span className="text-xs font-semibold bg-accent/30 text-foreground/60 px-3 py-1 rounded-xl">Proefles</span>
                         )}
+                        {booking.isLosseLes && (
+                          <span className="text-xs font-semibold bg-secondary text-foreground/60 px-3 py-1 rounded-xl">Losse les</span>
+                        )}
                         <div className="ml-auto">
                           <button
                             onClick={async () => {
                               const msg = booking.isProefles
                                 ? "Weet je zeker dat je je proefles wilt annuleren?"
-                                : "Weet je zeker dat je deze les wilt annuleren? Je credit wordt teruggezet.";
+                                : booking.isLosseLes
+                                ? "Weet je zeker dat je deze losse les wilt annuleren?"
+                                : "Weet je zeker dat je deze les wilt annuleren? Let op: binnen 7 uur voor de les ontvang je geen credit terug.";
                               if (window.confirm(msg)) {
                                 await cancelBooking(booking.id);
                                 await refreshUser();
@@ -183,7 +188,7 @@ export default function Bookings() {
                 })}
               </div>
             )}
-          </div>
+          </div>}
         </div>
 
         <BottomNav />

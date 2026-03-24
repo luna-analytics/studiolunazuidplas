@@ -7,7 +7,7 @@ export type StudioClass = {
   spotsAvailable: number;
   description: string;
   type: 'yoga' | 'circle';
-  dates: string[]; // Specifieke datums: "YYYY-MM-DD"
+  dates: string[];
 };
 
 export const MOCK_CLASSES: StudioClass[] = [

@@ -10,7 +10,7 @@ const sections = [
   {
     title: "1. Creditsysteem",
     items: [
-      "Studio Luna werkt met een fysiek creditsysteem dat in de studio wordt bijgehouden. Je hebt hiervoor geen app of pasje nodig.",
+      "Studio Luna werkt met een digitaal creditsysteem dat in de app wordt bijgehouden. Je kunt je saldo altijd terugvinden via de Boekingen-pagina.",
       "5 credits zijn 2 maanden geldig en 10 credits zijn 4 maanden geldig vanaf de datum van de eerste les.",
       "Studio Luna geeft in geen enkel geval geld terug. Het is niet mogelijk om (een deel van) het aankoopbedrag van je credits terug te krijgen.",
     ],

@@ -11,6 +11,7 @@ export type Booking = {
   time: string;
   type: "yoga" | "circle";
   isProefles: boolean;
+  isLosseLes: boolean;
   bookedAt: string;
 };
 
@@ -49,7 +50,7 @@ export function getAllBookings(): Booking[] {
   return readBookings();
 }
 
-export function createBooking(data: Omit<Booking, "id" | "bookedAt"> & { isProefles?: boolean }): Booking {
+export function createBooking(data: Omit<Booking, "id" | "bookedAt"> & { isProefles?: boolean; isLosseLes?: boolean }): Booking {
   const bookings = readBookings();
   const existing = bookings.find(
     (b) => b.memberId === data.memberId && b.classId === data.classId && b.date === data.date

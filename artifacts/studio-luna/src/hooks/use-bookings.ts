@@ -9,6 +9,7 @@ export type Booking = {
   time: string;
   type: "yoga" | "circle";
   isProefles: boolean;
+  isLosseLes: boolean;
   bookedAt: string;
 };
 

@@ -1,7 +1,7 @@
 import { useLocation } from "wouter";
 import { BottomNav } from "@/components/bottom-nav";
 import { motion } from "framer-motion";
-import { MapPin, Heart, Sparkles, Users, ArrowRight } from "lucide-react";
+import { MapPin, Heart, Sparkles, Users, ArrowRight, Mail, Phone, Instagram } from "lucide-react";
 
 export default function StudioLuna() {
   const [, navigate] = useLocation();
@@ -17,11 +17,7 @@ export default function StudioLuna() {
             <div className="lg:max-w-xl">
               <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
                 <div className="overflow-hidden flex justify-center lg:hidden mb-5" style={{ height: '232px' }}>
-                  <img
-                    src={`${import.meta.env.BASE_URL}images/studio-luna-logo.png`}
-                    alt="Studio Luna"
-                    className="h-80 w-auto"
-                  />
+                  <img src={`${import.meta.env.BASE_URL}images/studio-luna-logo.png`} alt="Studio Luna" className="h-80 w-auto" />
                 </div>
                 <h1 className="font-display text-4xl lg:text-5xl xl:text-6xl font-medium text-foreground leading-[1.15] mb-3">
                   It takes a village.<br />Studio Luna is jouw mama tribe.
@@ -37,11 +33,7 @@ export default function StudioLuna() {
             </div>
             <div className="hidden lg:flex items-center justify-center shrink-0">
               <div className="overflow-hidden opacity-60" style={{ height: '232px' }}>
-                <img
-                  src={`${import.meta.env.BASE_URL}images/studio-luna-logo.png`}
-                  alt="Studio Luna"
-                  className="h-80 w-auto"
-                />
+                <img src={`${import.meta.env.BASE_URL}images/studio-luna-logo.png`} alt="Studio Luna" className="h-80 w-auto" />
               </div>
             </div>
           </div>
@@ -50,12 +42,9 @@ export default function StudioLuna() {
         {/* CONTENT */}
         <div className="px-6 md:px-12 lg:px-16 pt-6 space-y-4 mb-8">
 
-          {/* Ons verhaal */}
-          <motion.div
-            initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }} transition={{ duration: 0.4 }}
-            className="bg-card rounded-3xl p-6 border border-border/30"
-          >
+          {/* De missie */}
+          <motion.div initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4 }}
+            className="bg-card rounded-3xl p-6 border border-border/30">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-9 h-9 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
                 <Heart className="w-4 h-4 text-primary" />
@@ -79,12 +68,9 @@ export default function StudioLuna() {
             <p className="text-sm font-medium text-foreground/80">Welkom in jouw village.</p>
           </motion.div>
 
-          {/* Wat maakt ons bijzonder */}
-          <motion.div
-            initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }} transition={{ duration: 0.4, delay: 0.05 }}
-            className="bg-card rounded-3xl p-6 border border-border/30"
-          >
+          {/* Wat biedt Studio Luna */}
+          <motion.div initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: 0.05 }}
+            className="bg-card rounded-3xl p-6 border border-border/30">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-9 h-9 rounded-2xl bg-accent/20 flex items-center justify-center shrink-0">
                 <Sparkles className="w-4 h-4 text-accent" />
@@ -108,12 +94,9 @@ export default function StudioLuna() {
             </ul>
           </motion.div>
 
-          {/* Community */}
-          <motion.div
-            initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }} transition={{ duration: 0.4, delay: 0.1 }}
-            className="bg-card rounded-3xl p-6 border border-border/30"
-          >
+          {/* De Mama Circle */}
+          <motion.div initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: 0.1 }}
+            className="bg-card rounded-3xl p-6 border border-border/30">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-9 h-9 rounded-2xl bg-secondary flex items-center justify-center shrink-0">
                 <Users className="w-4 h-4 text-foreground/60" />
@@ -123,17 +106,12 @@ export default function StudioLuna() {
             <p className="text-foreground/70 text-sm leading-relaxed mb-3">
               It takes a village. Verbinden met andere (aanstaande) mama's in een veilige plek om ervaringen te delen, herkenning te vinden en samen op te laden.
             </p>
-            <p className="text-foreground/70 text-sm leading-relaxed">
-              Je hoeft het niet alleen te doen.
-            </p>
+            <p className="text-foreground/70 text-sm leading-relaxed">Je hoeft het niet alleen te doen.</p>
           </motion.div>
 
           {/* Locatie */}
-          <motion.div
-            initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }} transition={{ duration: 0.4, delay: 0.15 }}
-            className="bg-card rounded-3xl p-6 border border-border/30"
-          >
+          <motion.div initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: 0.12 }}
+            className="bg-card rounded-3xl p-6 border border-border/30">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-9 h-9 rounded-2xl bg-secondary flex items-center justify-center shrink-0">
                 <MapPin className="w-4 h-4 text-foreground/60" />
@@ -144,15 +122,39 @@ export default function StudioLuna() {
               Onze lessen vinden plaats bij <span className="font-semibold text-foreground">Huize Mooisteen</span>
             </p>
             <p className="text-foreground/60 text-sm mt-1">Pr. Beatrixstraat 2, Nieuwerkerk aan den IJssel</p>
-            <a
-              href="https://maps.google.com/?q=Pr.+Beatrixstraat+2,+Nieuwerkerk+aan+den+IJssel"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 mt-4 text-sm font-medium text-primary hover:text-primary/80 transition-colors"
-            >
+            <a href="https://maps.google.com/?q=Pr.+Beatrixstraat+2,+Nieuwerkerk+aan+den+IJssel" target="_blank" rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 mt-4 text-sm font-medium text-primary hover:text-primary/80 transition-colors">
               <MapPin className="w-4 h-4" />
               Bekijk op kaart
             </a>
+          </motion.div>
+
+          {/* Contact */}
+          <motion.div initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: 0.15 }}
+            className="bg-card rounded-3xl p-6 border border-border/30">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-9 h-9 rounded-2xl bg-secondary flex items-center justify-center shrink-0">
+                <Mail className="w-4 h-4 text-foreground/60" />
+              </div>
+              <h2 className="font-display text-xl font-medium text-foreground">Contact</h2>
+            </div>
+            <div className="space-y-3">
+              <a href="mailto:info@studiolunazuidplas.nl"
+                className="flex items-center gap-3 text-sm text-foreground/70 hover:text-foreground transition-colors group">
+                <Mail className="w-4 h-4 text-primary shrink-0" />
+                <span className="group-hover:underline">info@studiolunazuidplas.nl</span>
+              </a>
+              <a href="https://wa.me/31643735343" target="_blank" rel="noopener noreferrer"
+                className="flex items-center gap-3 text-sm text-foreground/70 hover:text-foreground transition-colors group">
+                <Phone className="w-4 h-4 text-primary shrink-0" />
+                <span className="group-hover:underline">+31 6 43 73 53 43 (WhatsApp)</span>
+              </a>
+              <a href="https://www.instagram.com/studiolunazuidplas" target="_blank" rel="noopener noreferrer"
+                className="flex items-center gap-3 text-sm text-foreground/70 hover:text-foreground transition-colors group">
+                <Instagram className="w-4 h-4 text-primary shrink-0" />
+                <span className="group-hover:underline">@studiolunazuidplas</span>
+              </a>
+            </div>
           </motion.div>
 
         </div>
