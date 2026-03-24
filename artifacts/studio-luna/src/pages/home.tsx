@@ -60,7 +60,7 @@ export default function Home() {
           </motion.div>
         </div>
 
-        <div className="px-6 md:px-12 lg:px-16 pt-5 space-y-4 mb-8 md:max-w-2xl">
+        <div className="px-6 md:px-12 lg:px-16 pt-5 space-y-4 mb-8">
 
           {/* 1 — ZWANGERSCHAPSYOGA */}
           <motion.div

@@ -56,7 +56,7 @@ export default function Rooster() {
         </div>
 
         <div className="px-6 md:px-12 lg:px-16 pt-6 mb-6">
-          <div className="md:grid md:grid-cols-2 md:gap-4 space-y-4 md:space-y-0">
+          <div className="space-y-4">
             {upcomingInstances.length > 0 ? (
               upcomingInstances.map((instance, i) => {
                 const { classData, date, dateStr } = instance;
@@ -119,7 +119,7 @@ export default function Rooster() {
                 );
               })
             ) : (
-              <div className="bg-card/50 border border-dashed border-border rounded-3xl p-8 text-center col-span-2">
+              <div className="bg-card/50 border border-dashed border-border rounded-3xl p-8 text-center">
                 <p className="text-sm text-muted-foreground">Binnenkort nieuwe lessen beschikbaar.</p>
               </div>
             )}
