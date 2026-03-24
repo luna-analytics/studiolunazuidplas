@@ -19,8 +19,8 @@ export default function Home() {
             <h1 className="font-display text-3xl md:text-4xl font-medium text-foreground">Aanbod</h1>
             <p className="text-foreground/55 text-sm mt-1">Zwangerschapsyoga · Mama Circle · Workshops</p>
           </motion.div>
-          <div className="overflow-hidden shrink-0" style={{ height: '82px' }}>
-            <img src={`${import.meta.env.BASE_URL}images/studio-luna-logo.png`} alt="Studio Luna" className="h-28 w-auto" />
+          <div className="overflow-hidden shrink-0" style={{ height: '95px' }}>
+            <img src={`${import.meta.env.BASE_URL}images/studio-luna-logo.png`} alt="Studio Luna" className="h-32 w-auto" />
           </div>
         </div>
 

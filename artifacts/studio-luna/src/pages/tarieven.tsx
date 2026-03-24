@@ -44,8 +44,8 @@ export default function Tarieven() {
               Gun jezelf dit wekelijkse rustmoment tijdens je zwangerschap.
             </p>
           </motion.div>
-          <div className="overflow-hidden shrink-0" style={{ height: '82px' }}>
-            <img src={`${import.meta.env.BASE_URL}images/studio-luna-logo.png`} alt="Studio Luna" className="h-28 w-auto" />
+          <div className="overflow-hidden shrink-0" style={{ height: '95px' }}>
+            <img src={`${import.meta.env.BASE_URL}images/studio-luna-logo.png`} alt="Studio Luna" className="h-32 w-auto" />
           </div>
         </div>
 

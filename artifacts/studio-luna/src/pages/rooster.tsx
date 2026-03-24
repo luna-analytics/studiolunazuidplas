@@ -52,8 +52,8 @@ export default function Rooster() {
             <h1 className="font-display text-3xl md:text-4xl font-medium text-foreground">Rooster</h1>
             <p className="text-foreground/60 mt-2 text-sm">Zie ik jou op de mat? Klik om te reserveren.</p>
           </motion.div>
-          <div className="overflow-hidden shrink-0" style={{ height: '82px' }}>
-            <img src={`${import.meta.env.BASE_URL}images/studio-luna-logo.png`} alt="Studio Luna" className="h-28 w-auto" />
+          <div className="overflow-hidden shrink-0" style={{ height: '95px' }}>
+            <img src={`${import.meta.env.BASE_URL}images/studio-luna-logo.png`} alt="Studio Luna" className="h-32 w-auto" />
           </div>
         </div>
 
