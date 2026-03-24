@@ -52,13 +52,13 @@ router.post("/auth/register", async (req, res) => {
   }
 });
 
-router.get("/auth/me", requireAuth, (req, res) => {
+router.get("/auth/me", requireAuth, async (req, res) => {
   const user = (req as any).user as { userId: string; isAdmin: boolean };
   if (user.isAdmin) {
     res.json({ id: "admin", name: "Admin", email: ADMIN_EMAIL, isAdmin: true, credits: 0 });
     return;
   }
-  const member = findMemberById(user.userId);
+  const member = await findMemberById(user.userId);
   if (!member) {
     res.status(404).json({ error: "Lid niet gevonden" });
     return;

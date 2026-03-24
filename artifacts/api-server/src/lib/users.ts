@@ -1,5 +1,4 @@
-import fs from "fs";
-import path from "path";
+import Database from "@replit/database";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
 
@@ -13,35 +12,31 @@ export type Member = {
   createdAt: string;
 };
 
-const DATA_FILE = path.join(process.cwd(), "data", "members.json");
+const db = new Database();
+const MEMBERS_KEY = "studio_luna:members";
 
-function ensureFile() {
-  fs.mkdirSync(path.dirname(DATA_FILE), { recursive: true });
-  if (!fs.existsSync(DATA_FILE)) {
-    fs.writeFileSync(DATA_FILE, JSON.stringify([], null, 2));
-  }
-}
-
-export function readMembers(): Member[] {
+export async function readMembers(): Promise<Member[]> {
   try {
-    ensureFile();
-    return JSON.parse(fs.readFileSync(DATA_FILE, "utf-8"));
+    const result = (await db.get(MEMBERS_KEY)) as any;
+    const data = result?.value ?? result;
+    return Array.isArray(data) ? (data as Member[]) : [];
   } catch {
     return [];
   }
 }
 
-export function saveMembers(members: Member[]) {
-  ensureFile();
-  fs.writeFileSync(DATA_FILE, JSON.stringify(members, null, 2));
+export async function saveMembers(members: Member[]): Promise<void> {
+  await db.set(MEMBERS_KEY, members);
 }
 
-export function findMemberByEmail(email: string): Member | undefined {
-  return readMembers().find((m) => m.email.toLowerCase() === email.toLowerCase());
+export async function findMemberByEmail(email: string): Promise<Member | undefined> {
+  const members = await readMembers();
+  return members.find((m) => m.email.toLowerCase() === email.toLowerCase());
 }
 
-export function findMemberById(id: string): Member | undefined {
-  return readMembers().find((m) => m.id === id);
+export async function findMemberById(id: string): Promise<Member | undefined> {
+  const members = await readMembers();
+  return members.find((m) => m.id === id);
 }
 
 export async function createMember(data: {
@@ -51,7 +46,7 @@ export async function createMember(data: {
   credits?: number;
   notes?: string;
 }): Promise<Member> {
-  const members = readMembers();
+  const members = await readMembers();
   if (members.some((m) => m.email.toLowerCase() === data.email.toLowerCase())) {
     throw new Error("E-mailadres is al in gebruik");
   }
@@ -65,39 +60,42 @@ export async function createMember(data: {
     createdAt: new Date().toISOString(),
   };
   members.push(member);
-  saveMembers(members);
+  await saveMembers(members);
   return member;
 }
 
 export async function verifyMemberPassword(email: string, password: string): Promise<Member | null> {
-  const member = findMemberByEmail(email);
+  const member = await findMemberByEmail(email);
   if (!member) return null;
   const ok = await bcrypt.compare(password, member.passwordHash);
   return ok ? member : null;
 }
 
-export function updateMemberCredits(id: string, delta: number): Member {
-  const members = readMembers();
+export async function updateMemberCredits(id: string, delta: number): Promise<Member> {
+  const members = await readMembers();
   const member = members.find((m) => m.id === id);
   if (!member) throw new Error("Lid niet gevonden");
   member.credits = Math.max(0, member.credits + delta);
-  saveMembers(members);
+  await saveMembers(members);
   return member;
 }
 
-export function updateMember(id: string, data: Partial<Pick<Member, "name" | "email" | "credits" | "notes">>): Member {
-  const members = readMembers();
+export async function updateMember(
+  id: string,
+  data: Partial<Pick<Member, "name" | "email" | "credits" | "notes">>
+): Promise<Member> {
+  const members = await readMembers();
   const member = members.find((m) => m.id === id);
   if (!member) throw new Error("Lid niet gevonden");
   if (data.name !== undefined) member.name = data.name;
   if (data.email !== undefined) member.email = data.email.toLowerCase();
   if (data.credits !== undefined) member.credits = Math.max(0, data.credits);
   if (data.notes !== undefined) member.notes = data.notes;
-  saveMembers(members);
+  await saveMembers(members);
   return member;
 }
 
-export function deleteMember(id: string) {
-  const members = readMembers().filter((m) => m.id !== id);
-  saveMembers(members);
+export async function deleteMember(id: string): Promise<void> {
+  const members = (await readMembers()).filter((m) => m.id !== id);
+  await saveMembers(members);
 }

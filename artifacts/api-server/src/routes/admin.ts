@@ -1,9 +1,8 @@
 import { Router } from "express";
 import { requireAdmin } from "../middlewares/auth.js";
-import { readMembers, createMember, updateMember, deleteMember, updateMemberCredits } from "../lib/users.js";
+import { readMembers, createMember, updateMember, deleteMember, updateMemberCredits, findMemberById } from "../lib/users.js";
 import { readClasses, createClass, updateClass, deleteClass } from "../lib/classes.js";
 import { readRequests, markRequestDone, deleteRequest } from "../lib/requests.js";
-import { findMemberById } from "../lib/users.js";
 import { getMemberBookings } from "../lib/bookings.js";
 import { readAnnouncements, markAnnouncementSeen, deleteAnnouncement } from "../lib/announcements.js";
 import { readTips, createTip, activateTip, deleteTip } from "../lib/tips.js";
@@ -15,8 +14,8 @@ const router = Router();
 
 // ─── MEMBERS ─────────────────────────────────────────────────────────────────
 
-router.get("/admin/members", requireAdmin, (_req, res) => {
-  const members = readMembers().map((m) => ({
+router.get("/admin/members", requireAdmin, async (_req, res) => {
+  const members = (await readMembers()).map((m) => ({
     id: m.id, name: m.name, email: m.email, credits: m.credits, notes: m.notes, createdAt: m.createdAt,
   }));
   res.json(members);
@@ -35,31 +34,31 @@ router.post("/admin/members", requireAdmin, async (req, res) => {
   }
 });
 
-router.patch("/admin/members/:id", requireAdmin, (req, res) => {
+router.patch("/admin/members/:id", requireAdmin, async (req, res) => {
   const { name, email, credits, notes } = req.body;
   try {
-    const member = updateMember(req.params.id, { name, email, credits, notes });
+    const member = await updateMember(req.params.id, { name, email, credits, notes });
     res.json({ id: member.id, name: member.name, email: member.email, credits: member.credits, notes: member.notes });
   } catch (err: any) {
     res.status(400).json({ error: err.message });
   }
 });
 
-router.post("/admin/members/:id/credits", requireAdmin, (req, res) => {
+router.post("/admin/members/:id/credits", requireAdmin, async (req, res) => {
   const { delta } = req.body as { delta?: number };
   if (delta === undefined || isNaN(delta)) {
     res.status(400).json({ error: "Geef een aantal credits op" }); return;
   }
   try {
-    const member = updateMemberCredits(req.params.id, delta);
+    const member = await updateMemberCredits(req.params.id, delta);
     res.json({ id: member.id, credits: member.credits });
   } catch (err: any) {
     res.status(400).json({ error: err.message });
   }
 });
 
-router.delete("/admin/members/:id", requireAdmin, (req, res) => {
-  deleteMember(req.params.id);
+router.delete("/admin/members/:id", requireAdmin, async (req, res) => {
+  await deleteMember(req.params.id);
   res.json({ ok: true });
 });
 

@@ -1,5 +1,4 @@
-import fs from "fs";
-import path from "path";
+import Database from "@replit/database";
 import crypto from "crypto";
 
 export type Booking = {
@@ -15,61 +14,61 @@ export type Booking = {
   bookedAt: string;
 };
 
-const DATA_FILE = path.join(process.cwd(), "data", "bookings.json");
+const db = new Database();
+const BOOKINGS_KEY = "studio_luna:bookings";
 
-function ensureFile() {
-  fs.mkdirSync(path.dirname(DATA_FILE), { recursive: true });
-  if (!fs.existsSync(DATA_FILE)) {
-    fs.writeFileSync(DATA_FILE, JSON.stringify([], null, 2));
-  }
-}
-
-export function readBookings(): Booking[] {
+export async function readBookings(): Promise<Booking[]> {
   try {
-    ensureFile();
-    return JSON.parse(fs.readFileSync(DATA_FILE, "utf-8"));
+    const result = (await db.get(BOOKINGS_KEY)) as any;
+    const data = result?.value ?? result;
+    return Array.isArray(data) ? (data as Booking[]) : [];
   } catch {
     return [];
   }
 }
 
-export function saveBookings(bookings: Booking[]) {
-  ensureFile();
-  fs.writeFileSync(DATA_FILE, JSON.stringify(bookings, null, 2));
+export async function saveBookings(bookings: Booking[]): Promise<void> {
+  await db.set(BOOKINGS_KEY, bookings);
 }
 
-export function getMemberBookings(memberId: string): Booking[] {
-  return readBookings().filter((b) => b.memberId === memberId);
+export async function getMemberBookings(memberId: string): Promise<Booking[]> {
+  const bookings = await readBookings();
+  return bookings.filter((b) => b.memberId === memberId);
 }
 
-export function getMemberBookingCount(memberId: string): number {
-  return readBookings().filter((b) => b.memberId === memberId).length;
+export async function getMemberBookingCount(memberId: string): Promise<number> {
+  const bookings = await readBookings();
+  return bookings.filter((b) => b.memberId === memberId).length;
 }
 
-export function getAllBookings(): Booking[] {
+export async function getAllBookings(): Promise<Booking[]> {
   return readBookings();
 }
 
-export function createBooking(data: Omit<Booking, "id" | "bookedAt"> & { isProefles?: boolean; isLosseLes?: boolean }): Booking {
-  const bookings = readBookings();
+export async function createBooking(
+  data: Omit<Booking, "id" | "bookedAt"> & { isProefles?: boolean; isLosseLes?: boolean }
+): Promise<Booking> {
+  const bookings = await readBookings();
   const existing = bookings.find(
     (b) => b.memberId === data.memberId && b.classId === data.classId && b.date === data.date
   );
   if (existing) throw new Error("Je hebt deze les al geboekt");
   const booking: Booking = {
     ...data,
+    isProefles: data.isProefles ?? false,
+    isLosseLes: data.isLosseLes ?? false,
     id: crypto.randomUUID(),
     bookedAt: new Date().toISOString(),
   };
   bookings.push(booking);
-  saveBookings(bookings);
+  await saveBookings(bookings);
   return booking;
 }
 
-export function deleteBooking(id: string, memberId: string): boolean {
-  const bookings = readBookings();
+export async function deleteBooking(id: string, memberId: string): Promise<boolean> {
+  const bookings = await readBookings();
   const booking = bookings.find((b) => b.id === id && b.memberId === memberId);
   if (!booking) return false;
-  saveBookings(bookings.filter((b) => b.id !== id));
+  await saveBookings(bookings.filter((b) => b.id !== id));
   return true;
 }
