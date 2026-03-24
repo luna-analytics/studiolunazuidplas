@@ -335,7 +335,7 @@ function LessenTab() {
               <p className="text-xs text-foreground/50">{cls.time} · {cls.dates.length} datums · {cls.spotsTotal} plekken</p>
             </div>
             <div className="flex items-center gap-3">
-              <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${cls.type === "yoga" ? "bg-primary/10 text-primary" : "bg-accent/20 text-accent"}`}>{cls.type}</span>
+              <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${cls.type === "yoga" ? "bg-primary/15 text-primary" : "bg-accent/15 text-foreground"}`}>{cls.type === "yoga" ? "Yoga" : "Circle"}</span>
               {expandedId === cls.id ? <ChevronUp className="w-4 h-4 text-foreground/40" /> : <ChevronDown className="w-4 h-4 text-foreground/40" />}
             </div>
           </div>
@@ -434,7 +434,7 @@ function AanvragenTab() {
                   <div>
                     <p className="font-semibold text-foreground text-sm">{req.name}</p>
                     <p className="text-xs text-foreground/50">{req.email}</p>
-                    <span className="text-xs font-semibold bg-accent/20 text-accent px-2 py-0.5 rounded-full mt-1.5 inline-block">{pkgLabel(req.package)}</span>
+                    <span className="text-xs font-semibold bg-accent/15 text-foreground px-2.5 py-0.5 rounded-full mt-1.5 inline-block">{pkgLabel(req.package)}</span>
                   </div>
                   <div className="flex flex-col items-end gap-2 shrink-0">
                     <button onClick={() => markDone(req.id)}
@@ -897,10 +897,10 @@ export default function Admin() {
             <h1 className="font-display text-3xl md:text-4xl font-medium text-foreground">Studio Luna Admin</h1>
           </motion.div>
 
-          <div className="mt-5 flex gap-2">
+          <div className="mt-5 flex gap-2 overflow-x-auto pb-0.5" style={{ scrollbarWidth: "none" }}>
             {tabs.map((t) => (
               <button key={t.key} onClick={() => setTab(t.key)}
-                className={`flex items-center gap-1.5 px-4 py-2 rounded-2xl font-semibold text-sm transition-all ${tab === t.key ? "bg-primary text-primary-foreground shadow-sm" : "bg-background/60 text-foreground/60 hover:text-foreground hover:bg-background/80"}`}>
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-2xl font-semibold text-sm transition-all shrink-0 ${tab === t.key ? "bg-primary text-primary-foreground shadow-sm" : "bg-background/60 text-foreground/60 hover:text-foreground hover:bg-background/80"}`}>
                 {t.icon} {t.label}
               </button>
             ))}
