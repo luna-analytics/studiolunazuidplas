@@ -18,8 +18,8 @@ export default function Home() {
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
             <h1 className="font-display text-3xl md:text-4xl font-medium text-foreground">Aanbod</h1>
           </motion.div>
-          <div className="overflow-hidden shrink-0" style={{ height: '55px' }}>
-            <img src={`${import.meta.env.BASE_URL}images/studio-luna-logo.png`} alt="Studio Luna" className="h-24 w-auto" />
+          <div className="overflow-hidden shrink-0" style={{ height: '82px' }}>
+            <img src={`${import.meta.env.BASE_URL}images/studio-luna-logo.png`} alt="Studio Luna" className="h-28 w-auto" />
           </div>
         </div>
 
