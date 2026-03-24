@@ -70,7 +70,7 @@ export default function StudioLuna() {
                 "Een plek om te connecten met andere moeders.",
                 "Studio Luna is jouw mama tribe.",
               ].map((item, i) => (
-                <li key={i} className="text-sm text-foreground/70 leading-relaxed">{item}</li>
+                <li key={i} className="text-sm font-medium text-foreground/80 leading-relaxed">{item}</li>
               ))}
             </ul>
             <p className="text-foreground/70 text-sm leading-relaxed mb-3">
