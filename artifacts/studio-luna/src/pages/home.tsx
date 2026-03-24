@@ -10,7 +10,7 @@ export default function Home() {
   const [isInterestOpen, setIsInterestOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-background pb-28 md:pb-16 md:pt-16 ">
+    <div className="min-h-screen bg-background pb-28 md:pb-16 md:pt-16 flex justify-center">
       <div className="w-full max-w-5xl bg-background min-h-screen relative">
 
         {/* HEADER */}
