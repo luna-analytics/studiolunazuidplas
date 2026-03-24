@@ -1,21 +1,53 @@
+import { useLocation } from "wouter";
 import { BottomNav } from "@/components/bottom-nav";
 import { motion } from "framer-motion";
-import { MapPin, Heart, Sparkles, Users } from "lucide-react";
+import { MapPin, Heart, Sparkles, Users, ArrowRight } from "lucide-react";
 
 export default function StudioLuna() {
+  const [, navigate] = useLocation();
+
   return (
     <div className="min-h-screen bg-background pb-28 md:pb-16 md:pt-16 flex justify-center">
       <div className="w-full max-w-5xl bg-background min-h-screen relative">
 
-        {/* HEADER */}
-        <div className="px-6 md:px-12 lg:px-16 pt-12 md:pt-10 pb-10 bg-secondary md:rounded-3xl md:mx-6 md:mt-6">
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-            <p className="text-xs font-bold uppercase tracking-widest text-primary mb-2">Welkom</p>
-            <h1 className="font-display text-3xl md:text-4xl font-medium text-foreground mb-3">Studio Luna</h1>
-            <p className="text-foreground/60 text-sm leading-relaxed max-w-md">
-              Een warme plek voor zwangere vrouwen en jonge moeders in Nieuwerkerk aan den IJssel.
-            </p>
-          </motion.div>
+        {/* HERO */}
+        <div className="relative pt-12 md:pt-16 pb-12 px-6 md:px-12 lg:px-16 md:mx-6 md:mt-6 bg-secondary overflow-hidden rounded-b-[2.5rem] md:rounded-3xl">
+          <div className="absolute inset-0 bg-gradient-to-b from-secondary/60 via-secondary/90 to-secondary md:bg-none" />
+          <div className="relative z-10 lg:flex lg:items-center lg:justify-between lg:gap-12">
+            <div className="lg:max-w-xl">
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+                <div className="overflow-hidden flex justify-center lg:hidden mb-5" style={{ height: '232px' }}>
+                  <img
+                    src={`${import.meta.env.BASE_URL}images/studio-luna-logo.png`}
+                    alt="Studio Luna"
+                    className="h-80 w-auto"
+                  />
+                </div>
+                <h1 className="font-display text-4xl lg:text-5xl xl:text-6xl font-medium text-foreground leading-[1.15] mb-3">
+                  It takes a village.<br />Studio Luna is jouw mama tribe.
+                </h1>
+                <p className="text-foreground/65 leading-relaxed mb-6 md:text-base">
+                  Een plek om te ontspannen, te bewegen en te connecten — met jezelf, je baby én andere vrouwen.
+                </p>
+                <button
+                  onClick={() => navigate("/rooster")}
+                  className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-2xl font-semibold hover:bg-primary/90 transition-all group"
+                >
+                  Reserveer jouw plekje
+                  <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                </button>
+              </motion.div>
+            </div>
+            <div className="hidden lg:flex items-center justify-center shrink-0">
+              <div className="overflow-hidden opacity-60" style={{ height: '232px' }}>
+                <img
+                  src={`${import.meta.env.BASE_URL}images/studio-luna-logo.png`}
+                  alt="Studio Luna"
+                  className="h-80 w-auto"
+                />
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* CONTENT */}
@@ -41,7 +73,7 @@ export default function StudioLuna() {
             </p>
           </motion.div>
 
-          {/* Wat maakt ons anders */}
+          {/* Wat maakt ons bijzonder */}
           <motion.div
             initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }} transition={{ duration: 0.4, delay: 0.05 }}
