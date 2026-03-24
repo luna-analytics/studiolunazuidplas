@@ -26,7 +26,7 @@ export default function Home() {
                     className="h-80 w-auto"
                   />
                 </div>
-                <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-medium text-foreground leading-[1.15] mb-3">
+                <h1 className="font-display text-4xl lg:text-5xl xl:text-6xl font-medium text-foreground leading-[1.15] mb-3">
                   It takes a village.<br />Studio Luna is jouw mama tribe.
                 </h1>
                 <p className="text-foreground/65 leading-relaxed mb-6 md:text-base">
