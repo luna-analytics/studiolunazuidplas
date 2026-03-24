@@ -94,7 +94,7 @@ export default function StudioLuna() {
             <ul className="space-y-3">
               {[
                 "Kleine groepen, veel aandacht en persoonlijk contact.",
-                "Tijdens zwangerschapsyoga (85u RPYS gecertificeerd) bereid je je lichaam voor op de bevalling, leer je de kracht van je adem gebruiken, blijf je fysiek sterk en leer je rust te vinden.",
+                "Tijdens zwangerschapsyoga bereid je je lichaam voor op de bevalling, leer je de kracht van je adem gebruiken, blijf je fysiek sterk en leer je rust te vinden.",
                 "Na afloop altijd tijd voor een kopje thee en verbinding.",
                 "Instromen op elk moment mogelijk vanaf 14 weken zwangerschap.",
                 "Een actieve WhatsApp-community voor vragen, tips en verbinding tussen de lessen door.",
