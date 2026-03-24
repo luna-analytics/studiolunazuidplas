@@ -22,12 +22,12 @@ export default function Bookings() {
   });
 
   return (
-    <div className="min-h-screen bg-background pb-28 md:pb-16 md:pt-16 flex justify-center">
+    <div className="min-h-screen bg-background pb-28 md:pb-16 md:pt-16 ">
       <div className="w-full max-w-5xl bg-background min-h-screen relative">
 
         <div className="px-6 md:px-12 lg:px-16 pt-12 md:pt-10 pb-8 bg-secondary md:rounded-3xl md:mx-6 md:mt-6">
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-            <div className="overflow-hidden mb-3 flex justify-center" style={{ height: '116px' }}>
+            <div className="overflow-hidden mb-3 " style={{ height: '116px' }}>
               <img src={`${import.meta.env.BASE_URL}images/studio-luna-logo.png`} alt="Studio Luna" className="h-48 w-auto" />
             </div>
             <h1 className="font-display text-3xl md:text-4xl font-medium text-foreground">Boekingen</h1>
@@ -101,7 +101,7 @@ export default function Bookings() {
           <div>
             <h2 className="font-display text-xl font-medium text-foreground mb-3">Geplande lessen</h2>
             {!isLoaded ? (
-              <div className="flex justify-center p-10">
+              <div className=" p-10">
                 <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
               </div>
             ) : sortedBookings.length === 0 ? (
