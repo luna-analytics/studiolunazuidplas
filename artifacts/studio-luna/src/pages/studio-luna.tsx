@@ -26,9 +26,6 @@ export default function StudioLuna() {
                 <h1 className="font-display text-4xl lg:text-5xl xl:text-6xl font-medium text-foreground leading-[1.15] mb-3">
                   It takes a village.<br />Studio Luna is jouw mama tribe.
                 </h1>
-                <p className="text-foreground/65 leading-relaxed mb-6 md:text-base">
-                  Een plek om te ontspannen, te bewegen en te connecten — met jezelf, je baby én andere vrouwen.
-                </p>
                 <button
                   onClick={() => navigate("/rooster")}
                   className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-2xl font-semibold hover:bg-primary/90 transition-all group"
@@ -63,7 +60,7 @@ export default function StudioLuna() {
               <div className="w-9 h-9 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
                 <Heart className="w-4 h-4 text-primary" />
               </div>
-              <h2 className="font-display text-xl font-medium text-foreground">Ons verhaal</h2>
+              <h2 className="font-display text-xl font-medium text-foreground">De missie</h2>
             </div>
             <p className="text-foreground/70 text-sm leading-relaxed mb-3">
               Studio Luna is opgericht vanuit het idee dat zwangerschap en het moederschap mooier zijn wanneer je het samen beleeft. We geloven in de kracht van community, beweging en stilte.
