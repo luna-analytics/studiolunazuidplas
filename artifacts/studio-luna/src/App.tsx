@@ -13,6 +13,7 @@ import Tarieven from "./pages/tarieven";
 import Profile from "./pages/profile";
 import StudioLuna from "./pages/studio-luna";
 import Admin from "./pages/admin";
+import Village from "./pages/village";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -32,6 +33,7 @@ function Router() {
       <Route path="/tarieven" component={Tarieven} />
       <Route path="/bookings" component={Bookings} />
       <Route path="/admin" component={Admin} />
+      <Route path="/village" component={Village} />
       <Route path="/profile" component={Profile} />
       <Route component={NotFound} />
     </Switch>

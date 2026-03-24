@@ -56,16 +56,21 @@ export default function Bookings() {
                   </button>
                 </div>
                 {!user.isAdmin && (
-                  <div className="mt-4 pt-4 border-t border-border/20 flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center">
-                      <CreditCard className="w-5 h-5 text-primary" />
+                  <div className="mt-4 pt-4 border-t border-border/20 space-y-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center">
+                        <CreditCard className="w-5 h-5 text-primary" />
+                      </div>
+                      <div>
+                        <p className="text-xs text-foreground/50 mb-0.5">Resterend tegoed</p>
+                        <p className="font-bold text-2xl text-foreground leading-none">
+                          {user.credits} <span className="text-sm font-normal text-foreground/50">{user.credits === 1 ? "credit" : "credits"}</span>
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-xs text-foreground/50 mb-0.5">Resterend tegoed</p>
-                      <p className="font-bold text-2xl text-foreground leading-none">
-                        {user.credits} <span className="text-sm font-normal text-foreground/50">{user.credits === 1 ? "credit" : "credits"}</span>
-                      </p>
-                    </div>
+                    <Link href="/village" className="inline-flex items-center gap-2 bg-secondary border border-border/30 text-foreground px-4 py-2.5 rounded-2xl font-semibold text-sm hover:bg-secondary/80 transition-colors">
+                      🌿 De Village
+                    </Link>
                   </div>
                 )}
                 {user.isAdmin && (
