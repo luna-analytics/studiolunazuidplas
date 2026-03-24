@@ -3,7 +3,7 @@ import { useLocation } from "wouter";
 import { BottomNav } from "@/components/bottom-nav";
 import { InterestModal } from "@/components/interest-modal";
 import { motion } from "framer-motion";
-import { ArrowRight, Calendar, MapPin, Coffee, Mail } from "lucide-react";
+import { ArrowRight, Calendar, MapPin, Coffee, Mail, ClipboardList } from "lucide-react";
 
 export default function Home() {
   const [, navigate] = useLocation();
@@ -55,11 +55,20 @@ export default function Home() {
             </div>
             <button
               onClick={() => navigate("/rooster")}
-              className="w-full py-2.5 rounded-2xl bg-primary text-primary-foreground text-sm font-semibold flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors"
+              className="w-full py-2.5 rounded-2xl bg-primary text-primary-foreground text-sm font-semibold flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors mb-2"
             >
               Bekijk het rooster
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
+            <a
+              href="https://tally.so/r/XxED7j"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full py-2.5 rounded-2xl border border-primary/40 text-primary text-sm font-semibold flex items-center justify-center gap-2 hover:bg-primary/5 transition-colors"
+            >
+              <ClipboardList className="w-3.5 h-3.5" />
+              Vul je intake in
+            </a>
           </motion.div>
 
           {/* 2 — MAMA CIRCLE */}
