@@ -16,9 +16,10 @@ export default function Home() {
         {/* HEADER */}
         <div className="px-6 md:px-12 lg:px-16 pt-12 md:pt-10 pb-8 bg-secondary md:rounded-3xl md:mx-6 md:mt-6">
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-            <p className="text-xs font-bold uppercase tracking-widest text-primary mb-2">Studio Luna</p>
+            <div className="overflow-hidden mb-3" style={{ height: '28px' }}>
+              <img src={`${import.meta.env.BASE_URL}images/studio-luna-logo.png`} alt="Studio Luna" className="h-9 w-auto" />
+            </div>
             <h1 className="font-display text-3xl md:text-4xl font-medium text-foreground">Aanbod</h1>
-            <p className="text-foreground/60 mt-2 text-sm">Kies wat bij jou past.</p>
           </motion.div>
         </div>
 
@@ -68,7 +69,6 @@ export default function Home() {
           >
             <div className="flex items-center gap-2 mb-2">
               <span className="text-xs font-bold uppercase tracking-widest text-foreground/40">Binnenkort</span>
-              <span className="text-xs px-2 py-0.5 rounded-full bg-accent/30 text-accent-foreground font-semibold">Bij genoeg animo</span>
             </div>
             <h3 className="font-display text-lg font-medium text-foreground mb-0.5">Zwanger & Mama Circle</h3>
             <p className="text-xs text-foreground/45 mb-3">90 min · € 29,-</p>
@@ -92,7 +92,6 @@ export default function Home() {
           >
             <div className="flex items-center gap-2 mb-2">
               <span className="text-xs font-bold uppercase tracking-widest text-foreground/40">Binnenkort</span>
-              <span className="text-xs px-2 py-0.5 rounded-full bg-accent/30 text-accent-foreground font-semibold">Bij genoeg animo</span>
             </div>
             <h3 className="font-display text-lg font-medium text-foreground mb-3">Bevallings Specials 🌙</h3>
 
