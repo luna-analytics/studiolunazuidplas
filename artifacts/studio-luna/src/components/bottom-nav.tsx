@@ -12,8 +12,8 @@ export function BottomNav() {
   const [privacyOpen, setPrivacyOpen] = useState(false);
 
   const navItems = [
-    { href: "/studio", label: "Studio Luna", icon: Sparkles },
-    { href: "/", label: "Aanbod", icon: Home },
+    { href: "/", label: "Studio Luna", icon: Sparkles },
+    { href: "/aanbod", label: "Aanbod", icon: Home },
     { href: "/rooster", label: "Rooster", icon: CalendarDays },
     { href: "/tarieven", label: "Tarieven", icon: Tag },
     { href: "/bookings", label: "Boekingen", icon: Bookmark },
