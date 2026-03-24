@@ -11,8 +11,8 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 
 export default function Bookings() {
-  const { bookings, cancelBooking, isLoaded } = useBookings();
-  const { user, logout, loading } = useAuth();
+  const { user, logout, loading, refreshUser } = useAuth();
+  const { bookings, cancelBooking, isLoaded } = useBookings(user?.id);
   const [loginOpen, setLoginOpen] = useState(false);
 
   const sortedBookings = [...bookings].sort((a, b) => {
@@ -145,7 +145,12 @@ export default function Bookings() {
                       </div>
                       <div className="mt-4 pl-3 flex justify-end">
                         <button
-                          onClick={() => { if (window.confirm("Weet je zeker dat je deze les wilt annuleren?")) cancelBooking(booking.id); }}
+                          onClick={async () => {
+                            if (window.confirm("Weet je zeker dat je deze les wilt annuleren? Je credit wordt teruggezet.")) {
+                              await cancelBooking(booking.id);
+                              await refreshUser();
+                            }
+                          }}
                           className="text-sm font-medium text-destructive hover:bg-destructive/10 px-4 py-2 rounded-xl transition-colors"
                         >
                           Annuleren

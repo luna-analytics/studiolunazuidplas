@@ -1,61 +1,81 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { getToken } from "./use-auth";
 
 export type Booking = {
   id: string;
   classId: string;
   className: string;
-  date: string; // ISO string
+  date: string;
   time: string;
-  type: 'yoga' | 'circle';
+  type: "yoga" | "circle";
   bookedAt: string;
 };
 
-const STORAGE_KEY = "studio_luna_bookings";
+const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
-export function useBookings() {
+export function useBookings(userId?: string | null) {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      try {
-        setBookings(JSON.parse(stored));
-      } catch (e) {
-        console.error("Failed to parse bookings", e);
-      }
+  const fetchBookings = useCallback(async () => {
+    const token = getToken();
+    if (!token) {
+      setBookings([]);
+      setIsLoaded(true);
+      return;
     }
-    setIsLoaded(true);
+    try {
+      const res = await fetch(`${BASE}/api/bookings`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        setBookings(await res.json());
+      } else {
+        setBookings([]);
+      }
+    } catch {
+      setBookings([]);
+    } finally {
+      setIsLoaded(true);
+    }
   }, []);
 
-  const addBooking = (newBooking: Omit<Booking, "id" | "bookedAt">) => {
-    const booking: Booking = {
-      ...newBooking,
-      id: Math.random().toString(36).substring(2, 9),
-      bookedAt: new Date().toISOString(),
-    };
-    
-    const updated = [...bookings, booking];
-    setBookings(updated);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-    return booking;
+  useEffect(() => {
+    setIsLoaded(false);
+    fetchBookings();
+  }, [fetchBookings, userId]);
+
+  const addBooking = async (
+    data: Omit<Booking, "id" | "bookedAt">
+  ): Promise<{ credits: number }> => {
+    const token = getToken();
+    if (!token) throw new Error("Niet ingelogd");
+    const res = await fetch(`${BASE}/api/bookings`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      body: JSON.stringify(data),
+    });
+    const result = await res.json();
+    if (!res.ok) throw new Error(result.error ?? "Boeken mislukt");
+    setBookings((prev) => [...prev, result.booking]);
+    return { credits: result.credits };
   };
 
-  const cancelBooking = (id: string) => {
-    const updated = bookings.filter(b => b.id !== id);
-    setBookings(updated);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+  const cancelBooking = async (id: string): Promise<{ credits: number }> => {
+    const token = getToken();
+    if (!token) throw new Error("Niet ingelogd");
+    const res = await fetch(`${BASE}/api/bookings/${id}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const result = await res.json();
+    if (!res.ok) throw new Error(result.error ?? "Annuleren mislukt");
+    setBookings((prev) => prev.filter((b) => b.id !== id));
+    return { credits: result.credits };
   };
 
-  const isBooked = (classId: string, date: string) => {
-    return bookings.some(b => b.classId === classId && b.date === date);
-  };
+  const isBooked = (classId: string, date: string) =>
+    bookings.some((b) => b.classId === classId && b.date === date);
 
-  return {
-    bookings,
-    isLoaded,
-    addBooking,
-    cancelBooking,
-    isBooked
-  };
+  return { bookings, isLoaded, addBooking, cancelBooking, isBooked, refetch: fetchBookings };
 }

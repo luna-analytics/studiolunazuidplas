@@ -4,6 +4,7 @@ import { nl } from "date-fns/locale";
 import { MOCK_CLASSES, StudioClass } from "@/data/mock-classes";
 import { BookingModal } from "@/components/booking-modal";
 import { useBookings } from "@/hooks/use-bookings";
+import { useAuth } from "@/hooks/use-auth";
 import { BottomNav } from "@/components/bottom-nav";
 import { motion } from "framer-motion";
 import { Clock, Users, MapPin } from "lucide-react";
@@ -17,7 +18,8 @@ type ClassInstance = {
 export default function Rooster() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedInstance, setSelectedInstance] = useState<ClassInstance | null>(null);
-  const { isBooked } = useBookings();
+  const { user } = useAuth();
+  const { isBooked } = useBookings(user?.id);
 
   const upcomingInstances = useMemo((): ClassInstance[] => {
     const instances: ClassInstance[] = [];
@@ -133,6 +135,7 @@ export default function Rooster() {
           onClose={() => setIsModalOpen(false)}
           studioClass={selectedInstance?.classData ?? null}
           selectedDate={selectedInstance?.date ?? new Date()}
+          dateStr={selectedInstance?.dateStr ?? ""}
         />
 
         <BottomNav />
