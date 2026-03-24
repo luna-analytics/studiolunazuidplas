@@ -118,7 +118,7 @@ export default function Home() {
               <p className="text-sm font-semibold text-foreground mb-0.5">De Geboorte-Bundel</p>
               <p className="text-sm font-semibold text-foreground mb-2">€ 155,- <span className="text-xs font-normal text-foreground/45">(bespaar € 22,-)</span></p>
               <p className="text-xs text-foreground/60 leading-relaxed">
-                Boek de drie specials samen voor de meest complete en zachte voorbereiding op jouw reis naar het moederschap. Ideaal tussen je 28e en 36e week.
+                Boek de drie workshops samen voor de meest complete en zachte voorbereiding op jouw reis naar het moederschap. Ideaal tussen je 28e en 36e week.
               </p>
             </div>
 
