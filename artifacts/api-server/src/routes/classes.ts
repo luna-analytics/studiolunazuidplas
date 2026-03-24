@@ -4,9 +4,9 @@ import { getAllBookings } from "../lib/bookings.js";
 
 const router = Router();
 
-router.get("/classes", (_req, res) => {
+router.get("/classes", async (_req, res) => {
   const classes = readClasses();
-  const allBookings = getAllBookings();
+  const allBookings = await getAllBookings();
 
   const result = classes.map((cls) => {
     const spotsByDate: Record<string, number> = {};

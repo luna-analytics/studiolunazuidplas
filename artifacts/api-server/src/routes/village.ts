@@ -49,10 +49,10 @@ router.post("/village/checklist", requireAuth, (req: any, res: any) => {
 
 // ─── JOURNAL ─────────────────────────────────────────────────────────────────
 
-router.post("/village/journal/:id/answer", requireAuth, (req: any, res: any) => {
+router.post("/village/journal/:id/answer", requireAuth, async (req: any, res: any) => {
   const { userId, isAdmin } = req.user;
   if (isAdmin) { res.status(403).json({ error: "Geen toegang" }); return; }
-  const member = findMemberById(userId);
+  const member = await findMemberById(userId);
   if (!member) { res.status(404).json({ error: "Lid niet gevonden" }); return; }
   const { text, anonymous } = req.body as { text?: string; anonymous?: boolean };
   if (!text?.trim()) { res.status(400).json({ error: "Antwoord mag niet leeg zijn" }); return; }
@@ -66,10 +66,10 @@ router.post("/village/journal/:id/answer", requireAuth, (req: any, res: any) => 
 
 // ─── BEVALLEN ────────────────────────────────────────────────────────────────
 
-router.post("/village/bevallen", requireAuth, (req: any, res: any) => {
+router.post("/village/bevallen", requireAuth, async (req: any, res: any) => {
   const { userId, isAdmin } = req.user;
   if (isAdmin) { res.status(403).json({ error: "Geen toegang" }); return; }
-  const member = findMemberById(userId);
+  const member = await findMemberById(userId);
   if (!member) { res.status(404).json({ error: "Lid niet gevonden" }); return; }
   const { shareConsent, note } = req.body as { shareConsent?: boolean; note?: string };
   const existing = readAnnouncements().find((a) => a.memberId === userId && a.type === "bevallen");
