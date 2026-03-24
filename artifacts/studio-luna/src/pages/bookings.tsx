@@ -14,6 +14,7 @@ export default function Bookings() {
   const { user, logout, loading, refreshUser } = useAuth();
   const { bookings, cancelBooking, isLoaded } = useBookings(user?.id);
   const [loginOpen, setLoginOpen] = useState(false);
+  const [loginMode, setLoginMode] = useState<"login" | "register">("login");
 
   const sortedBookings = [...bookings].sort((a, b) => {
     const dateCompare = a.date.localeCompare(b.date);
@@ -85,19 +86,27 @@ export default function Bookings() {
             ) : (
               <motion.div
                 initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-                className="bg-card border border-border/30 rounded-3xl p-5 flex items-center justify-between"
+                className="bg-card border border-border/30 rounded-3xl p-5"
               >
-                <div>
-                  <p className="font-semibold text-foreground text-sm">Leden inloggen</p>
-                  <p className="text-xs text-foreground/50 mt-0.5">Bekijk jouw tegoed en boekingen</p>
+                <div className="mb-4">
+                  <p className="font-display text-xl font-medium text-foreground mb-1">Welkom bij Studio Luna</p>
+                  <p className="text-sm text-foreground/55 leading-relaxed">Maak een gratis account aan om een proefles te boeken, of log in als je al lid bent.</p>
                 </div>
-                <button
-                  onClick={() => setLoginOpen(true)}
-                  className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2.5 rounded-2xl font-semibold text-sm hover:bg-primary/90 transition-colors"
-                >
-                  <LogIn className="w-4 h-4" />
-                  Inloggen
-                </button>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => { setLoginMode("login"); setLoginOpen(true); }}
+                    className="flex-1 flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-2.5 rounded-2xl font-semibold text-sm hover:bg-primary/90 transition-colors"
+                  >
+                    <LogIn className="w-4 h-4" />
+                    Inloggen
+                  </button>
+                  <button
+                    onClick={() => { setLoginMode("register"); setLoginOpen(true); }}
+                    className="flex-1 flex items-center justify-center gap-2 bg-secondary border border-border/30 text-foreground px-4 py-2.5 rounded-2xl font-semibold text-sm hover:bg-secondary/80 transition-colors"
+                  >
+                    Registreren
+                  </button>
+                </div>
               </motion.div>
             )
           )}
@@ -148,18 +157,26 @@ export default function Bookings() {
                           <p className="text-foreground/70 text-sm">{booking.time}</p>
                         </div>
                       </div>
-                      <div className="mt-4 pl-3 flex justify-end">
-                        <button
-                          onClick={async () => {
-                            if (window.confirm("Weet je zeker dat je deze les wilt annuleren? Je credit wordt teruggezet.")) {
-                              await cancelBooking(booking.id);
-                              await refreshUser();
-                            }
-                          }}
-                          className="text-sm font-medium text-destructive hover:bg-destructive/10 px-4 py-2 rounded-xl transition-colors"
-                        >
-                          Annuleren
-                        </button>
+                      <div className="mt-4 pl-3 flex justify-between items-center">
+                        {booking.isProefles && (
+                          <span className="text-xs font-semibold bg-accent/30 text-foreground/60 px-3 py-1 rounded-xl">Proefles</span>
+                        )}
+                        <div className="ml-auto">
+                          <button
+                            onClick={async () => {
+                              const msg = booking.isProefles
+                                ? "Weet je zeker dat je je proefles wilt annuleren?"
+                                : "Weet je zeker dat je deze les wilt annuleren? Je credit wordt teruggezet.";
+                              if (window.confirm(msg)) {
+                                await cancelBooking(booking.id);
+                                await refreshUser();
+                              }
+                            }}
+                            className="text-sm font-medium text-destructive hover:bg-destructive/10 px-4 py-2 rounded-xl transition-colors"
+                          >
+                            Annuleren
+                          </button>
+                        </div>
                       </div>
                     </motion.div>
                   );
@@ -170,7 +187,7 @@ export default function Bookings() {
         </div>
 
         <BottomNav />
-        <LoginModal isOpen={loginOpen} onClose={() => setLoginOpen(false)} />
+        <LoginModal isOpen={loginOpen} onClose={() => setLoginOpen(false)} defaultMode={loginMode} />
       </div>
     </div>
   );

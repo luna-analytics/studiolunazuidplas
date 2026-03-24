@@ -8,6 +8,7 @@ export type Booking = {
   date: string;
   time: string;
   type: "yoga" | "circle";
+  isProefles: boolean;
   bookedAt: string;
 };
 

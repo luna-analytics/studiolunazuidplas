@@ -9,7 +9,7 @@ export default function Village() {
   const { user, loading } = useAuth();
   const [loginOpen, setLoginOpen] = useState(false);
 
-  const isVillager = user && !user.isAdmin;
+  const isVillager = user && !user.isAdmin && user.credits > 0;
 
   return (
     <div className="min-h-screen bg-background pb-28 md:pb-16 md:pt-16">
@@ -39,15 +39,20 @@ export default function Village() {
               </div>
               <h2 className="font-display text-xl font-medium mb-2">Alleen voor leden</h2>
               <p className="text-sm text-foreground/60 mb-6 leading-relaxed max-w-xs">
-                De Village is een besloten plek voor Studio Luna leden. Log in om toegang te krijgen tot downloads, video's en aanbevelingen.
+                {!user
+                  ? "De Village is een besloten plek voor Studio Luna leden. Log in om te zien of je toegang hebt."
+                  : "De Village wordt vrijgegeven zodra jij een pakket hebt. Neem contact op met Studio Luna of betaal een rittenkaart."
+                }
               </p>
-              <button
-                onClick={() => setLoginOpen(true)}
-                className="flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-2xl font-semibold text-sm hover:bg-primary/90 transition-colors"
-              >
-                <LogIn className="w-4 h-4" />
-                Inloggen
-              </button>
+              {!user && (
+                <button
+                  onClick={() => setLoginOpen(true)}
+                  className="flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-2xl font-semibold text-sm hover:bg-primary/90 transition-colors"
+                >
+                  <LogIn className="w-4 h-4" />
+                  Inloggen
+                </button>
+              )}
             </motion.div>
           ) : (
             /* LOGGED IN MEMBER */

@@ -10,6 +10,7 @@ export type Booking = {
   date: string;
   time: string;
   type: "yoga" | "circle";
+  isProefles: boolean;
   bookedAt: string;
 };
 
@@ -40,11 +41,15 @@ export function getMemberBookings(memberId: string): Booking[] {
   return readBookings().filter((b) => b.memberId === memberId);
 }
 
+export function getMemberBookingCount(memberId: string): number {
+  return readBookings().filter((b) => b.memberId === memberId).length;
+}
+
 export function getAllBookings(): Booking[] {
   return readBookings();
 }
 
-export function createBooking(data: Omit<Booking, "id" | "bookedAt">): Booking {
+export function createBooking(data: Omit<Booking, "id" | "bookedAt"> & { isProefles?: boolean }): Booking {
   const bookings = readBookings();
   const existing = bookings.find(
     (b) => b.memberId === data.memberId && b.classId === data.classId && b.date === data.date

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { signToken, requireAuth } from "../middlewares/auth.js";
-import { verifyMemberPassword, findMemberById } from "../lib/users.js";
+import { verifyMemberPassword, findMemberById, createMember } from "../lib/users.js";
 
 const router = Router();
 
@@ -31,6 +31,25 @@ router.post("/auth/login", async (req, res) => {
     token,
     user: { id: member.id, name: member.name, email: member.email, isAdmin: false, credits: member.credits },
   });
+});
+
+router.post("/auth/register", async (req, res) => {
+  const { name, email, password } = req.body as { name?: string; email?: string; password?: string };
+  if (!name || !email || !password) {
+    res.status(400).json({ error: "Naam, e-mail en wachtwoord zijn verplicht" });
+    return;
+  }
+  if (password.length < 6) {
+    res.status(400).json({ error: "Wachtwoord moet minimaal 6 tekens zijn" });
+    return;
+  }
+  try {
+    const member = await createMember({ name, email, password, credits: 0 });
+    const token = signToken({ userId: member.id, isAdmin: false });
+    res.json({ token, user: { id: member.id, name: member.name, email: member.email, isAdmin: false, credits: 0 } });
+  } catch (err: any) {
+    res.status(400).json({ error: err.message });
+  }
 });
 
 router.get("/auth/me", requireAuth, (req, res) => {
