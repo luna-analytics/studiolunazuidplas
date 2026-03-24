@@ -16,10 +16,10 @@ export default function Home() {
         {/* HERO */}
         <div className="relative pt-12 md:pt-16 pb-12 px-6 md:px-12 lg:px-16 md:rounded-2xl md:mx-6 md:mt-6 bg-secondary overflow-hidden rounded-b-[2.5rem] md:rounded-3xl">
           <div className="absolute inset-0 bg-gradient-to-b from-secondary/60 via-secondary/90 to-secondary md:bg-none" />
-          <div className="relative z-10 md:flex md:items-center md:justify-between md:gap-12">
-            <div className="md:max-w-xl">
+          <div className="relative z-10 lg:flex lg:items-center lg:justify-between lg:gap-12">
+            <div className="lg:max-w-xl">
               <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-                <div className="overflow-hidden flex justify-center md:hidden mb-5" style={{ height: '232px' }}>
+                <div className="overflow-hidden flex justify-center lg:hidden mb-5" style={{ height: '232px' }}>
                   <img
                     src={`${import.meta.env.BASE_URL}images/studio-luna-logo.png`}
                     alt="Studio Luna"
@@ -41,7 +41,7 @@ export default function Home() {
                 </button>
               </motion.div>
             </div>
-            <div className="hidden md:flex items-center justify-center shrink-0">
+            <div className="hidden lg:flex items-center justify-center shrink-0">
               <div className="overflow-hidden opacity-60" style={{ height: '232px' }}>
                 <img
                   src={`${import.meta.env.BASE_URL}images/studio-luna-logo.png`}
