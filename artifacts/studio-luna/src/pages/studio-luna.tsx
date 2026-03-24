@@ -89,14 +89,17 @@ export default function StudioLuna() {
               <div className="w-9 h-9 rounded-2xl bg-accent/20 flex items-center justify-center shrink-0">
                 <Sparkles className="w-4 h-4 text-accent" />
               </div>
-              <h2 className="font-display text-xl font-medium text-foreground">Wat maakt ons bijzonder</h2>
+              <h2 className="font-display text-xl font-medium text-foreground">Wat biedt Studio Luna</h2>
             </div>
             <ul className="space-y-3">
               {[
-                "Kleine groepen, veel aandacht en persoonlijk contact",
-                "Lessen gegeven door een gecertificeerde zwangerschapsyogadocent",
-                "Na afloop altijd tijd voor een kopje thee en verbinding",
-                "Instromen op elk moment mogelijk vanaf 14 weken zwangerschap",
+                "Kleine groepen, veel aandacht en persoonlijk contact.",
+                "Tijdens zwangerschapsyoga (85u RPYS gecertificeerd) bereid je je lichaam voor op de bevalling, leer je de kracht van je adem gebruiken, blijf je fysiek sterk en leer je rust te vinden.",
+                "Na afloop altijd tijd voor een kopje thee en verbinding.",
+                "Instromen op elk moment mogelijk vanaf 14 weken zwangerschap.",
+                "Een actieve WhatsApp-community voor vragen, tips en verbinding tussen de lessen door.",
+                "Lessen in een rustige, sfeervolle omgeving bij Huize Mooisteen in Nieuwerkerk aan den IJssel.",
+                "Aandacht voor zowel het fysieke als het mentale aspect van zwangerschap en moederschap.",
               ].map((item, i) => (
                 <li key={i} className="flex items-start gap-3 text-sm text-foreground/70">
                   <span className="mt-0.5 w-5 h-5 rounded-full bg-primary/15 flex items-center justify-center shrink-0 text-primary font-bold text-xs">{i + 1}</span>
