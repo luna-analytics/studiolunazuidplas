@@ -97,8 +97,7 @@ export default function StudioLuna() {
                 "Tijdens zwangerschapsyoga bereid je je lichaam voor op de bevalling, leer je de kracht van je adem gebruiken, blijf je fysiek sterk en leer je rust te vinden.",
                 "Na afloop altijd tijd voor een kopje thee en verbinding.",
                 "Instromen op elk moment mogelijk vanaf 14 weken zwangerschap.",
-                "Een actieve WhatsApp-community voor vragen, tips en verbinding tussen de lessen door.",
-                "Lessen in een rustige, sfeervolle omgeving bij Huize Mooisteen in Nieuwerkerk aan den IJssel.",
+                "Een WhatsApp-community voor vragen, tips en verbinding tussen de lessen door.",
                 "Aandacht voor zowel het fysieke als het mentale aspect van zwangerschap en moederschap.",
               ].map((item, i) => (
                 <li key={i} className="flex items-start gap-3 text-sm text-foreground/70">
