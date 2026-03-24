@@ -10,6 +10,7 @@ import Rooster from "./pages/rooster";
 import Bookings from "./pages/bookings";
 import Tarieven from "./pages/tarieven";
 import Profile from "./pages/profile";
+import StudioLuna from "./pages/studio-luna";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -23,6 +24,7 @@ const queryClient = new QueryClient({
 function Router() {
   return (
     <Switch>
+      <Route path="/studio" component={StudioLuna} />
       <Route path="/" component={Home} />
       <Route path="/rooster" component={Rooster} />
       <Route path="/tarieven" component={Tarieven} />

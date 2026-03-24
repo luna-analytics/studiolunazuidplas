@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { CalendarDays, Bookmark, Tag, Home } from "lucide-react";
+import { CalendarDays, Bookmark, Tag, Home, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { AlgemeneVoorwaardenModal } from "./algemene-voorwaarden-modal";
@@ -12,6 +12,7 @@ export function BottomNav() {
   const [privacyOpen, setPrivacyOpen] = useState(false);
 
   const navItems = [
+    { href: "/studio", label: "Studio Luna", icon: Sparkles },
     { href: "/", label: "Aanbod", icon: Home },
     { href: "/rooster", label: "Rooster", icon: CalendarDays },
     { href: "/tarieven", label: "Tarieven", icon: Tag },
