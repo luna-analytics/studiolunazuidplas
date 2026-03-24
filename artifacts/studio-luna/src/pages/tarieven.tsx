@@ -37,16 +37,16 @@ export default function Tarieven() {
       <div className="w-full max-w-5xl bg-background min-h-screen relative">
 
         {/* HEADER */}
-        <div className="relative px-6 md:px-12 lg:px-16 pt-12 md:pt-10 pb-8 bg-secondary md:rounded-3xl md:mx-6 md:mt-6">
-          <div className="absolute top-4 right-5 overflow-hidden" style={{ height: '116px' }}>
-            <img src={`${import.meta.env.BASE_URL}images/studio-luna-logo.png`} alt="Studio Luna" className="h-48 w-auto" />
-          </div>
+        <div className="px-6 md:px-12 lg:px-16 pt-14 md:pt-12 pb-12 bg-secondary md:rounded-3xl md:mx-6 md:mt-6 flex items-start justify-between gap-4">
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
             <h1 className="font-display text-3xl md:text-4xl font-medium text-foreground">Tarieven</h1>
             <p className="text-foreground/60 mt-2 text-sm leading-relaxed">
               Gun jezelf dit wekelijkse rustmoment tijdens je zwangerschap.
             </p>
           </motion.div>
+          <div className="overflow-hidden shrink-0" style={{ height: '55px' }}>
+            <img src={`${import.meta.env.BASE_URL}images/studio-luna-logo.png`} alt="Studio Luna" className="h-24 w-auto" />
+          </div>
         </div>
 
         {/* TARIEVEN LIJST */}
