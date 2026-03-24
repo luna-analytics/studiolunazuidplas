@@ -2,9 +2,10 @@ import { Router } from "express";
 import { requireAdmin } from "../middlewares/auth.js";
 import { readMembers, createMember, updateMember, deleteMember, updateMemberCredits } from "../lib/users.js";
 import { readClasses, createClass, updateClass, deleteClass } from "../lib/classes.js";
-import { readRequests, markRequestDone, deleteRequest, createRequest } from "../lib/requests.js";
+import { readRequests, markRequestDone, deleteRequest } from "../lib/requests.js";
 import { findMemberById } from "../lib/users.js";
 import { getMemberBookings } from "../lib/bookings.js";
+import { readAnnouncements, markAnnouncementSeen, deleteAnnouncement } from "../lib/announcements.js";
 
 const router = Router();
 
@@ -108,6 +109,26 @@ router.post("/admin/requests/:id/done", requireAdmin, (req, res) => {
 
 router.delete("/admin/requests/:id", requireAdmin, (req, res) => {
   deleteRequest(req.params.id);
+  res.json({ ok: true });
+});
+
+// ─── MEDEDELINGEN (VILLAGE ANNOUNCEMENTS) ────────────────────────────────────
+
+router.get("/admin/announcements", requireAdmin, (_req, res) => {
+  res.json(readAnnouncements());
+});
+
+router.post("/admin/announcements/:id/seen", requireAdmin, (req, res) => {
+  try {
+    const a = markAnnouncementSeen(req.params.id);
+    res.json(a);
+  } catch (err: any) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+router.delete("/admin/announcements/:id", requireAdmin, (req, res) => {
+  deleteAnnouncement(req.params.id);
   res.json({ ok: true });
 });
 

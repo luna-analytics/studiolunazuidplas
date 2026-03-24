@@ -5,6 +5,7 @@ import authRouter from "./auth";
 import adminRouter from "./admin";
 import bookingsRouter from "./bookings";
 import classesRouter from "./classes";
+import villageRouter from "./village";
 
 // Public rittenkaart request endpoint
 import { createRequest } from "../lib/requests.js";
@@ -19,6 +20,7 @@ router.use(authRouter);
 router.use(adminRouter);
 router.use(bookingsRouter);
 router.use(classesRouter);
+router.use(villageRouter);
 
 // Rittenkaart aanvraag (public of ingelogd)
 router.post("/rittenkaart-request", (req: any, res: any) => {

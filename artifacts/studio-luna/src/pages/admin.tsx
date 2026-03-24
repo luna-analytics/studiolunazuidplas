@@ -5,7 +5,7 @@ import { BottomNav } from "@/components/bottom-nav";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Plus, Trash2, PlusCircle, MinusCircle, ChevronDown, ChevronUp, X,
-  BookOpen, Users, ClipboardList, Check, CalendarDays,
+  BookOpen, Users, ClipboardList, Check, CalendarDays, Baby, Share2,
 } from "lucide-react";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -13,6 +13,7 @@ const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 type Member = { id: string; name: string; email: string; credits: number; notes: string; createdAt: string };
 type StudioClass = { id: string; title: string; time: string; teacher: string; spotsTotal: number; description: string; type: "yoga" | "circle"; dates: string[] };
 type RRequest = { id: string; name: string; email: string; package: string; createdAt: string; done: boolean };
+type Announcement = { id: string; type: "bevallen"; memberId: string; memberName: string; shareConsent: boolean; note?: string; createdAt: string; seenByAdmin: boolean };
 
 function apiFetch(path: string, opts?: RequestInit) {
   return fetch(`${BASE}/api${path}`, {
@@ -477,8 +478,124 @@ function AanvragenTab() {
   );
 }
 
+// ─── MEDEDELINGEN TAB ────────────────────────────────────────────────────────
+function MededelingenTab() {
+  const [items, setItems] = useState<Announcement[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const load = async () => {
+    setLoading(true);
+    const res = await apiFetch("/admin/announcements");
+    if (res.ok) setItems(await res.json());
+    setLoading(false);
+  };
+
+  useEffect(() => { load(); }, []);
+
+  const markSeen = async (id: string) => {
+    const res = await apiFetch(`/admin/announcements/${id}/seen`, { method: "POST" });
+    if (res.ok) setItems((prev) => prev.map((a) => a.id === id ? { ...a, seenByAdmin: true } : a));
+  };
+
+  const del = async (id: string) => {
+    await apiFetch(`/admin/announcements/${id}`, { method: "DELETE" });
+    setItems((prev) => prev.filter((a) => a.id !== id));
+  };
+
+  const unseen = items.filter((a) => !a.seenByAdmin);
+  const seen = items.filter((a) => a.seenByAdmin);
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <p className="text-sm text-foreground/60">{unseen.length} nieuw · {seen.length} afgehandeld</p>
+      </div>
+
+      {loading && (
+        <div className="flex justify-center py-10">
+          <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+        </div>
+      )}
+
+      {!loading && items.length === 0 && (
+        <div className="bg-card/50 border border-dashed border-border rounded-3xl p-8 text-center">
+          <Baby className="w-7 h-7 text-foreground/25 mx-auto mb-3" />
+          <p className="text-sm text-muted-foreground">Nog geen bevallings-aankondigingen.</p>
+        </div>
+      )}
+
+      {unseen.length > 0 && (
+        <div>
+          <p className="text-xs font-bold text-foreground/50 uppercase tracking-widest mb-2">Nieuw</p>
+          <div className="space-y-3">
+            {unseen.map((a, i) => (
+              <motion.div key={a.id} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}
+                className="rounded-3xl overflow-hidden border border-pink-200/60"
+                style={{ background: "linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%)" }}>
+                <div className="px-5 py-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-start gap-3">
+                      <div className="w-10 h-10 bg-white rounded-2xl flex items-center justify-center shrink-0 shadow-sm">
+                        <Baby className="w-5 h-5 text-pink-400" />
+                      </div>
+                      <div>
+                        <p className="font-semibold text-foreground text-sm">{a.memberName} is bevallen! 🎉</p>
+                        <p className="text-xs text-foreground/50 mt-0.5">
+                          {new Date(a.createdAt).toLocaleDateString("nl-NL", { day: "numeric", month: "long", year: "numeric" })}
+                        </p>
+                        {a.note && (
+                          <p className="text-sm text-foreground/70 mt-2 italic leading-relaxed">"{a.note}"</p>
+                        )}
+                        <div className={`flex items-center gap-1.5 mt-2 text-xs font-semibold ${a.shareConsent ? "text-primary" : "text-foreground/40"}`}>
+                          <Share2 className="w-3.5 h-3.5" />
+                          {a.shareConsent ? "Toestemming gegeven om te delen in de WhatsApp-community" : "Niet delen met de community"}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex flex-col items-end gap-2 shrink-0">
+                      <button onClick={() => markSeen(a.id)}
+                        className="flex items-center gap-1.5 bg-white text-pink-500 border border-pink-200 px-3 py-1.5 rounded-xl text-xs font-semibold hover:bg-pink-50 transition-colors shadow-sm">
+                        <Check className="w-3.5 h-3.5" /> Gezien
+                      </button>
+                      <button onClick={() => del(a.id)} className="text-xs text-foreground/30 hover:text-red-400 transition-colors">
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {seen.length > 0 && (
+        <div className="mt-4">
+          <p className="text-xs font-bold text-foreground/35 uppercase tracking-widest mb-2">Afgehandeld</p>
+          <div className="space-y-2">
+            {seen.map((a) => (
+              <div key={a.id} className="bg-card/60 border border-border/20 rounded-3xl px-5 py-3 flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <Baby className="w-4 h-4 text-pink-300 shrink-0" />
+                  <div>
+                    <p className="font-medium text-foreground/55 text-sm">{a.memberName}</p>
+                    {a.shareConsent && <p className="text-xs text-foreground/35 flex items-center gap-1"><Share2 className="w-3 h-3" /> Gedeeld</p>}
+                  </div>
+                </div>
+                <button onClick={() => del(a.id)} className="text-xs text-foreground/30 hover:text-red-400 transition-colors">
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── MAIN ADMIN PAGE ─────────────────────────────────────────────────────────
-type AdminTab = "leden" | "lessen" | "aanvragen";
+type AdminTab = "leden" | "lessen" | "aanvragen" | "mededelingen";
 
 export default function Admin() {
   const { user, loading } = useAuth();
@@ -496,6 +613,7 @@ export default function Admin() {
     { key: "leden", label: "Leden", icon: <Users className="w-4 h-4" /> },
     { key: "lessen", label: "Lessen", icon: <BookOpen className="w-4 h-4" /> },
     { key: "aanvragen", label: "Aanvragen", icon: <ClipboardList className="w-4 h-4" /> },
+    { key: "mededelingen", label: "Mededelingen", icon: <Baby className="w-4 h-4" /> },
   ];
 
   return (
@@ -525,6 +643,7 @@ export default function Admin() {
               {tab === "leden" && <LedenTab />}
               {tab === "lessen" && <LessenTab />}
               {tab === "aanvragen" && <AanvragenTab />}
+              {tab === "mededelingen" && <MededelingenTab />}
             </motion.div>
           </AnimatePresence>
         </div>
