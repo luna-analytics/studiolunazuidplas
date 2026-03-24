@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import { Link, useLocation } from "wouter";
 import { CalendarDays, Bookmark, Tag, Home, Sparkles, KeyRound } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -8,10 +8,19 @@ import { PrivacyverklaringModal } from "./privacyverklaring-modal";
 import { useAuth } from "@/hooks/use-auth";
 
 export function BottomNav() {
-  const [location] = useLocation();
+  const [location, navigate] = useLocation();
   const [avOpen, setAvOpen] = useState(false);
   const [privacyOpen, setPrivacyOpen] = useState(false);
   const { user } = useAuth();
+  const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const startLongPress = useCallback(() => {
+    longPressTimer.current = setTimeout(() => navigate("/admin"), 1500);
+  }, [navigate]);
+
+  const cancelLongPress = useCallback(() => {
+    if (longPressTimer.current) clearTimeout(longPressTimer.current);
+  }, []);
 
   const navItems = [
     { href: "/", label: "Studio Luna", icon: Sparkles },
@@ -27,7 +36,9 @@ export function BottomNav() {
       {/* DESKTOP TOP NAV */}
       <div className="hidden md:flex fixed top-0 left-0 right-0 z-40 bg-background/90 backdrop-blur-xl border-b border-border/30 h-16 items-center px-8">
         <div className="max-w-5xl mx-auto w-full flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3">
+          <Link href="/" className="flex items-center gap-3 select-none"
+            onMouseDown={startLongPress} onMouseUp={cancelLongPress} onMouseLeave={cancelLongPress}
+            onTouchStart={startLongPress} onTouchEnd={cancelLongPress} onTouchCancel={cancelLongPress}>
             <div className="overflow-hidden" style={{ height: '36px' }}>
               <img src={`${import.meta.env.BASE_URL}images/studio-luna-logo.png`} alt="Studio Luna" className="h-12 w-auto" />
             </div>
@@ -64,9 +75,18 @@ export function BottomNav() {
             const isActive = location === item.href;
             const Icon = item.icon;
             const isVillage = item.href === "/village";
+            const isStudioLuna = item.href === "/";
 
             return (
-              <Link key={item.href} href={item.href} className="relative flex flex-col items-center justify-center flex-1 tap-highlight-transparent">
+              <Link key={item.href} href={item.href}
+                className="relative flex flex-col items-center justify-center flex-1 tap-highlight-transparent select-none"
+                onMouseDown={isStudioLuna ? startLongPress : undefined}
+                onMouseUp={isStudioLuna ? cancelLongPress : undefined}
+                onMouseLeave={isStudioLuna ? cancelLongPress : undefined}
+                onTouchStart={isStudioLuna ? startLongPress : undefined}
+                onTouchEnd={isStudioLuna ? cancelLongPress : undefined}
+                onTouchCancel={isStudioLuna ? cancelLongPress : undefined}
+              >
                 <div className="relative z-10 flex flex-col items-center gap-1 py-1.5 px-1">
                   <Icon
                     strokeWidth={isActive ? 2.5 : 2}
