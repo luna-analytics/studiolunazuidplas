@@ -123,7 +123,7 @@ export default function Rooster() {
                         </span>
                         <span className={`flex items-center gap-1 font-medium ${isFull ? "text-red-500" : instance.spotsAvailable <= 2 ? "text-orange-500" : "text-foreground/60"}`}>
                           <Users className="w-3.5 h-3.5" />
-                          {isFull ? "Vol" : `${instance.spotsAvailable}/${instance.spotsTotal} plekken`}
+                          {isFull ? "Vol" : `${instance.spotsAvailable} ${instance.spotsAvailable === 1 ? "plek" : "plekken"} beschikbaar`}
                         </span>
                         <span className="flex items-center gap-1 text-foreground/60">
                           <MapPin className="w-3.5 h-3.5" />

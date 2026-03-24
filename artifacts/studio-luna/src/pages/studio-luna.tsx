@@ -19,7 +19,7 @@ export default function StudioLuna() {
                 <div className="overflow-hidden flex justify-center lg:hidden mb-5" style={{ height: '232px' }}>
                   <img src={`${import.meta.env.BASE_URL}images/studio-luna-logo.png`} alt="Studio Luna" className="h-80 w-auto" />
                 </div>
-                <h1 className="font-display text-4xl lg:text-5xl xl:text-6xl font-medium text-foreground leading-[1.15] mb-3">
+                <h1 className="font-display text-4xl lg:text-5xl font-medium text-foreground leading-[1.15] mb-3">
                   It takes a village.<br />Studio Luna is jouw mama tribe.
                 </h1>
                 <button

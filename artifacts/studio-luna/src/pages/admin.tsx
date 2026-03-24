@@ -380,11 +380,14 @@ function LessenTab() {
 function AanvragenTab() {
   const [requests, setRequests] = useState<RRequest[]>([]);
   const [loading, setLoading] = useState(true);
+  const [interests, setInterests] = useState<{ email: string; timestamp: string }[]>([]);
 
   const load = async () => {
     setLoading(true);
     const res = await apiFetch("/admin/requests");
     if (res.ok) setRequests(await res.json());
+    const resI = await apiFetch("/admin/interests");
+    if (resI.ok) setInterests(await resI.json());
     setLoading(false);
   };
 
@@ -470,6 +473,24 @@ function AanvragenTab() {
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>
                 </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {interests.length > 0 && (
+        <div className="mt-6">
+          <p className="text-xs font-bold text-foreground/50 uppercase tracking-widest mb-2">
+            Interesse Mama Circle / Workshops ({interests.length})
+          </p>
+          <div className="bg-card border border-border/30 rounded-3xl overflow-hidden">
+            {interests.map((item, i) => (
+              <div key={i} className={`px-5 py-3 flex items-center justify-between gap-3 ${i > 0 ? "border-t border-border/20" : ""}`}>
+                <p className="text-sm text-foreground/70">{item.email}</p>
+                <p className="text-xs text-foreground/35 shrink-0">
+                  {new Date(item.timestamp).toLocaleDateString("nl-NL", { day: "numeric", month: "short" })}
+                </p>
               </div>
             ))}
           </div>

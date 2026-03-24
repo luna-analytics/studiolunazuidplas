@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback } from "react";
 import { Link, useLocation } from "wouter";
-import { CalendarDays, Bookmark, Tag, Home, Sparkles, KeyRound } from "lucide-react";
+import { CalendarDays, Bookmark, Tag, Home, Sparkles, Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { AlgemeneVoorwaardenModal } from "./algemene-voorwaarden-modal";
@@ -28,7 +28,7 @@ export function BottomNav() {
     { href: "/rooster", label: "Rooster", icon: CalendarDays },
     { href: "/tarieven", label: "Tarieven", icon: Tag },
     { href: "/bookings", label: "Boekingen", icon: Bookmark },
-    { href: "/village", label: "Village", icon: KeyRound },
+    { href: "/village", label: "Village", icon: Heart },
   ];
 
   return (

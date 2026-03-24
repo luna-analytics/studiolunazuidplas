@@ -1,6 +1,7 @@
 import { Router } from "express";
 import fs from "fs";
 import path from "path";
+import { requireAdmin } from "../middlewares/auth.js";
 
 const router = Router();
 
@@ -20,6 +21,11 @@ function saveInterests(list: { email: string; timestamp: string }[]) {
   fs.mkdirSync(path.dirname(DATA_FILE), { recursive: true });
   fs.writeFileSync(DATA_FILE, JSON.stringify(list, null, 2));
 }
+
+router.get("/admin/interests", requireAdmin, (req: any, res: any) => {
+  const list = readInterests();
+  res.json(list);
+});
 
 router.post("/interests", (req, res) => {
   const { email } = req.body as { email?: string };
