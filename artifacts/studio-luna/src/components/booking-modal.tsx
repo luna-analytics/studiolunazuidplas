@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, CheckCircle2, CreditCard, LogIn, ClipboardList, ExternalLink, Coffee } from "lucide-react";
+import { X, CheckCircle2, LogIn, ClipboardList, ExternalLink, Coffee } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { StudioClass } from "@/data/mock-classes";
 import { useBookings } from "@/hooks/use-bookings";
@@ -20,7 +20,6 @@ interface BookingModalProps {
 export function BookingModal({ isOpen, onClose, studioClass, selectedDate, dateStr }: BookingModalProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [bookingType, setBookingType] = useState<"regular" | "proefles" | "losse_les">("regular");
   const [error, setError] = useState("");
   const [loginOpen, setLoginOpen] = useState(false);
 
@@ -33,13 +32,11 @@ export function BookingModal({ isOpen, onClose, studioClass, selectedDate, dateS
   const themeColorClass = isYoga ? "bg-primary text-primary-foreground" : "bg-accent text-accent-foreground";
   const formattedDate = format(selectedDate, "EEEE d MMMM", { locale: nl });
 
-  const hasCredits = user && !user.isAdmin && user.credits > 0;
-  const isFirstBooking = user && !user.isAdmin && bookings.length === 0 && !hasCredits;
-  const isLosseLesEligible = user && !user.isAdmin && !hasCredits && !isFirstBooking;
+  const isFirstBooking = user && !user.isAdmin && bookings.length === 0;
 
   const handleClose = () => {
     onClose();
-    setTimeout(() => { setIsSuccess(false); setError(""); setBookingType("regular"); }, 300);
+    setTimeout(() => { setIsSuccess(false); setError(""); }, 300);
   };
 
   const handleConfirm = async () => {
@@ -55,7 +52,7 @@ export function BookingModal({ isOpen, onClose, studioClass, selectedDate, dateS
       });
       await refreshUser();
       setIsSuccess(true);
-      setTimeout(() => { handleClose(); }, 2500);
+      setTimeout(() => { handleClose(); }, 5000);
     } catch (err: any) {
       setError(err.message ?? "Er ging iets mis");
     } finally {
@@ -94,13 +91,15 @@ export function BookingModal({ isOpen, onClose, studioClass, selectedDate, dateS
                       <CheckCircle2 className="w-8 h-8" />
                     </div>
                     <h3 className="text-2xl font-display font-semibold">
-                      {isFirstBooking ? "Proefles geboekt!" : isLosseLesEligible ? "Losse les geboekt!" : "Geboekt!"}
+                      {isFirstBooking ? "Proefles geboekt!" : "Geboekt!"}
                     </h3>
                     <p className="text-muted-foreground text-sm leading-relaxed">
                       Je plek voor <span className="font-medium text-foreground">{studioClass.title}</span> is gereserveerd.
-                      {(isFirstBooking || isLosseLesEligible) && " Betaling vindt in de studio plaats."}
-                      {" "}Tot snel bij Studio Luna 🌿
+                      {" "}Je ontvangt een bevestigingsmail. Tot snel bij Studio Luna 🌿
                     </p>
+                    <button onClick={handleClose} className="mt-2 text-sm text-foreground/50 hover:text-foreground transition-colors underline underline-offset-2">
+                      Sluiten
+                    </button>
                   </motion.div>
 
                 ) : !user ? (
@@ -144,7 +143,7 @@ export function BookingModal({ isOpen, onClose, studioClass, selectedDate, dateS
                     </div>
                     <div className="bg-primary/8 border border-primary/20 rounded-2xl px-4 py-3 mb-5">
                       <p className="text-xs text-foreground/60 leading-relaxed">
-                        Je eerste les is een <span className="font-semibold text-foreground">proefles (€ 10,-)</span>. Betaling vindt in de studio plaats — er worden geen credits afgeschreven.
+                        Je eerste les is een <span className="font-semibold text-foreground">proefles (€ 10,-)</span>. Betaling vindt in de studio plaats — contant of via Tikkie.
                       </p>
                     </div>
                     {error && <p className="text-sm text-red-500 mb-4">{error}</p>}
@@ -154,46 +153,25 @@ export function BookingModal({ isOpen, onClose, studioClass, selectedDate, dateS
                     </button>
                   </>
 
-                ) : isLosseLesEligible ? (
-                  /* LOSSE LES */
+                ) : (
+                  /* REGULIERE BOEKING */
                   <>
                     <div className="mb-5">
-                      <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-1">Losse les reserveren</p>
+                      <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-1">Reservering bevestigen</p>
                       <h2 className="text-2xl font-display font-semibold mb-1">{studioClass.title}</h2>
                       <p className="text-foreground/70 font-medium">{formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1)} · {studioClass.time}</p>
                     </div>
-                    <div className="bg-secondary rounded-2xl px-4 py-4 mb-4 flex items-start gap-3">
+                    <div className="bg-secondary rounded-2xl px-4 py-4 mb-5 flex items-start gap-3">
                       <Coffee className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                       <div>
                         <p className="text-sm font-semibold text-foreground">Betaling in de studio</p>
-                        <p className="text-xs text-foreground/60 mt-0.5 leading-relaxed">Losse les: <span className="font-semibold">€ 22,50</span>. Je betaalt contant of via Tikkie bij aankomst. Er worden geen credits afgeschreven.</p>
+                        <p className="text-xs text-foreground/60 mt-0.5 leading-relaxed">Contant of via Tikkie bij aankomst.</p>
                       </div>
                     </div>
                     {error && <p className="text-sm text-red-500 mb-4">{error}</p>}
                     <button onClick={handleConfirm} disabled={isSubmitting}
                       className={cn("w-full py-4 rounded-2xl font-semibold text-lg transition-all shadow-lg flex items-center justify-center disabled:opacity-50 active:scale-[0.98]", themeColorClass)}>
-                      {isSubmitting ? spinner : "Losse les reserveren"}
-                    </button>
-                  </>
-
-                ) : (
-                  /* REGULAR BOOKING with credits */
-                  <>
-                    <div className="mb-6">
-                      <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-1">Bevestig je reservering</p>
-                      <h2 className="text-2xl font-display font-semibold mb-1">{studioClass.title}</h2>
-                      <p className="text-foreground/70 font-medium">{formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1)} · {studioClass.time}</p>
-                    </div>
-                    <div className="bg-secondary rounded-2xl px-4 py-3 mb-6 flex items-center gap-3">
-                      <CreditCard className="w-4 h-4 text-primary shrink-0" />
-                      <p className="text-sm text-foreground/70">
-                        Er wordt <span className="font-semibold text-foreground">1 credit</span> afgeschreven. Je hebt er nog <span className="font-semibold text-foreground">{user?.credits}</span>.
-                      </p>
-                    </div>
-                    {error && <p className="text-sm text-red-500 mb-4">{error}</p>}
-                    <button onClick={handleConfirm} disabled={isSubmitting}
-                      className={cn("w-full py-4 rounded-2xl font-semibold text-lg transition-all shadow-lg flex items-center justify-center disabled:opacity-50 active:scale-[0.98]", themeColorClass)}>
-                      {isSubmitting ? spinner : "Bevestig boeking"}
+                      {isSubmitting ? spinner : "Reserveren"}
                     </button>
                   </>
                 )}

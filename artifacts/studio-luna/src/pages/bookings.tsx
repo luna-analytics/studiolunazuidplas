@@ -4,7 +4,7 @@ import { BottomNav } from "@/components/bottom-nav";
 import { LoginModal } from "@/components/login-modal";
 import { format, parseISO } from "date-fns";
 import { nl } from "date-fns/locale";
-import { Bookmark, CalendarX2, ArrowRight, LogIn, CreditCard, LogOut } from "lucide-react";
+import { Bookmark, CalendarX2, ArrowRight, LogIn, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
@@ -29,7 +29,7 @@ export default function Bookings() {
         <div className="px-6 md:px-12 lg:px-16 pt-14 md:pt-12 pb-12 bg-secondary md:rounded-3xl md:mx-6 md:mt-6 flex items-start justify-between gap-4">
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
             <h1 className="font-display text-3xl md:text-4xl font-medium text-foreground">Boekingen</h1>
-            <p className="text-foreground/60 mt-2 text-sm">Jouw geplande lessen en tegoed.</p>
+            <p className="text-foreground/60 mt-2 text-sm">Jouw geplande lessen.</p>
           </motion.div>
           <div className="overflow-hidden shrink-0" style={{ height: '95px' }}>
             <img src={`${import.meta.env.BASE_URL}images/studio-luna-logo.png`} alt="Studio Luna" className="h-32 w-auto" />
@@ -57,20 +57,10 @@ export default function Bookings() {
                   </button>
                 </div>
                 {!user.isAdmin && (
-                  <div className="mt-4 pt-4 border-t border-border/20 space-y-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center">
-                        <CreditCard className="w-5 h-5 text-primary" />
-                      </div>
-                      <div>
-                        <p className="text-xs text-foreground/50 mb-0.5">Resterend tegoed</p>
-                        <p className="font-bold text-2xl text-foreground leading-none">
-                          {user.credits} <span className="text-sm font-normal text-foreground/50">{user.credits === 1 ? "credit" : "credits"}</span>
-                        </p>
-                      </div>
-                    </div>
-                    <Link href="/village" className="inline-flex items-center gap-2 bg-secondary border border-border/30 text-foreground px-4 py-2.5 rounded-2xl font-semibold text-sm hover:bg-secondary/80 transition-colors">
-                      🌿 De Village
+                  <div className="mt-4 pt-4 border-t border-border/20">
+                    <Link href="/rooster" className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2.5 rounded-2xl font-semibold text-sm hover:bg-primary/90 transition-colors">
+                      <ArrowRight className="w-4 h-4" />
+                      Naar het rooster
                     </Link>
                   </div>
                 )}
@@ -167,12 +157,7 @@ export default function Bookings() {
                         <div className="ml-auto">
                           <button
                             onClick={async () => {
-                              const msg = booking.isProefles
-                                ? "Weet je zeker dat je je proefles wilt annuleren?"
-                                : booking.isLosseLes
-                                ? "Weet je zeker dat je deze losse les wilt annuleren?"
-                                : "Weet je zeker dat je deze les wilt annuleren? Let op: binnen 7 uur voor de les ontvang je geen credit terug.";
-                              if (window.confirm(msg)) {
+                              if (window.confirm("Weet je zeker dat je deze les wilt annuleren?")) {
                                 await cancelBooking(booking.id);
                                 await refreshUser();
                               }

@@ -45,9 +45,7 @@ export async function sendBookingConfirmation(params: {
   const formattedDate = formatDate(date);
   const lesType = typeLabel(type);
   const betaling = paymentNote(isProefles, isLosseLes);
-  const creditInfo = !isProefles && !isLosseLes
-    ? `<p style="margin:0 0 8px;">Resterend tegoed: <strong>${creditsLeft} ${creditsLeft === 1 ? "les" : "lessen"}</strong></p>`
-    : "";
+  const creditInfo = "";
 
   const html = `
 <!DOCTYPE html>
