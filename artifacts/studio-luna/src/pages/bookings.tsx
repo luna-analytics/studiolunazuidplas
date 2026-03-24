@@ -1,14 +1,19 @@
 import { useBookings } from "@/hooks/use-bookings";
+import { useAuth } from "@/hooks/use-auth";
 import { BottomNav } from "@/components/bottom-nav";
+import { LoginModal } from "@/components/login-modal";
 import { format, parseISO } from "date-fns";
 import { nl } from "date-fns/locale";
-import { Bookmark, CalendarX2, ArrowRight } from "lucide-react";
+import { Bookmark, CalendarX2, ArrowRight, LogIn, CreditCard, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
+import { useState } from "react";
 
 export default function Bookings() {
   const { bookings, cancelBooking, isLoaded } = useBookings();
+  const { user, logout, loading } = useAuth();
+  const [loginOpen, setLoginOpen] = useState(false);
 
   const sortedBookings = [...bookings].sort((a, b) => {
     const dateCompare = a.date.localeCompare(b.date);
@@ -20,87 +25,140 @@ export default function Bookings() {
     <div className="min-h-screen bg-background pb-28 md:pb-16 md:pt-16 flex justify-center">
       <div className="w-full max-w-5xl bg-background min-h-screen relative">
 
-        <div className="pt-12 md:pt-10 px-6 md:px-12 lg:px-16 pb-6 bg-secondary/30 md:bg-transparent border-b border-border/30 md:border-none">
-          <h1 className="font-display text-3xl md:text-4xl font-medium text-foreground flex items-center gap-3">
-            <Bookmark className="w-6 h-6 text-primary" />
-            Mijn Boekingen
-          </h1>
+        <div className="px-6 md:px-12 lg:px-16 pt-12 md:pt-10 pb-8 bg-secondary md:rounded-3xl md:mx-6 md:mt-6">
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+            <p className="text-xs font-bold uppercase tracking-widest text-primary mb-2">Studio Luna</p>
+            <h1 className="font-display text-3xl md:text-4xl font-medium text-foreground">Boekingen</h1>
+            <p className="text-foreground/60 mt-2 text-sm">Jouw geplande lessen en tegoed.</p>
+          </motion.div>
         </div>
 
-        <div className="p-6 md:px-12 lg:px-16">
-          {!isLoaded ? (
-            <div className="flex justify-center p-10">
-              <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
-            </div>
-          ) : sortedBookings.length === 0 ? (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-              className="bg-card rounded-3xl p-8 text-center mt-10 shadow-inner-soft md:max-w-sm mx-auto"
-            >
-              <div className="w-16 h-16 bg-background rounded-full flex items-center justify-center mx-auto mb-4 text-muted-foreground shadow-sm">
-                <CalendarX2 className="w-8 h-8" />
-              </div>
-              <h3 className="font-display text-xl font-medium mb-2">Nog geen boekingen</h3>
-              <p className="text-muted-foreground mb-6 text-sm leading-relaxed">
-                Je hebt nog geen lessen of circles gepland staan. Tijd voor wat me-time?
-              </p>
-              <Link href="/" className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-2xl font-semibold shadow-soft hover:bg-primary/90 transition-colors">
-                Bekijk het rooster
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-            </motion.div>
-          ) : (
-            <div className="md:grid md:grid-cols-2 md:gap-4 space-y-4 md:space-y-0">
-              {sortedBookings.map((booking, index) => {
-                const dateObj = parseISO(booking.date);
-                const isYoga = booking.type === 'yoga';
+        <div className="px-6 md:px-12 lg:px-16 pt-6 mb-8 space-y-4">
 
-                return (
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                    key={booking.id}
-                    className="bg-background border-2 border-card rounded-3xl p-5 relative overflow-hidden flex flex-col group hover:border-border/50 transition-colors"
-                  >
-                    <div className={cn(
-                      "absolute left-0 top-0 bottom-0 w-2",
-                      isYoga ? "bg-primary" : "bg-accent"
-                    )} />
-
-                    <div className="pl-3 flex justify-between items-start">
-                      <div>
-                        <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">
-                          {format(dateObj, 'EEEE d MMMM', { locale: nl })}
-                        </p>
-                        <h3 className="font-display text-lg font-medium mb-1">{booking.className}</h3>
-                        <p className="text-foreground/80 font-medium text-sm flex items-center gap-2">
-                          <span className="w-1.5 h-1.5 rounded-full bg-border" />
-                          {booking.time}
-                        </p>
-                      </div>
+          {/* MEMBER CARD */}
+          {!loading && (
+            user ? (
+              <motion.div
+                initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+                className="bg-card border border-border/30 rounded-3xl p-5"
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-xs font-semibold text-foreground/50 uppercase tracking-wide mb-1">Welkom terug</p>
+                    <p className="font-display text-xl font-medium text-foreground">{user.name}</p>
+                    <p className="text-sm text-foreground/50 mt-0.5">{user.email}</p>
+                  </div>
+                  <button onClick={logout} className="flex items-center gap-1.5 text-xs text-foreground/40 hover:text-foreground/70 transition-colors p-2 rounded-xl hover:bg-secondary">
+                    <LogOut className="w-4 h-4" />
+                    Uitloggen
+                  </button>
+                </div>
+                {!user.isAdmin && (
+                  <div className="mt-4 pt-4 border-t border-border/20 flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center">
+                      <CreditCard className="w-5 h-5 text-primary" />
                     </div>
-
-                    <div className="mt-5 pl-3 flex justify-end">
-                      <button
-                        onClick={() => {
-                          if (window.confirm("Weet je zeker dat je deze les wilt annuleren?")) {
-                            cancelBooking(booking.id);
-                          }
-                        }}
-                        className="text-sm font-medium text-destructive hover:bg-destructive/10 px-4 py-2 rounded-xl transition-colors"
-                      >
-                        Annuleren
-                      </button>
+                    <div>
+                      <p className="text-xs text-foreground/50 mb-0.5">Resterend tegoed</p>
+                      <p className="font-bold text-2xl text-foreground leading-none">
+                        {user.credits} <span className="text-sm font-normal text-foreground/50">{user.credits === 1 ? "credit" : "credits"}</span>
+                      </p>
                     </div>
-                  </motion.div>
-                );
-              })}
-            </div>
+                  </div>
+                )}
+                {user.isAdmin && (
+                  <div className="mt-4 pt-4 border-t border-border/20">
+                    <Link href="/admin" className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2.5 rounded-2xl font-semibold text-sm hover:bg-primary/90 transition-colors">
+                      <ArrowRight className="w-4 h-4" />
+                      Naar ledenbeheer
+                    </Link>
+                  </div>
+                )}
+              </motion.div>
+            ) : (
+              <motion.div
+                initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+                className="bg-card border border-border/30 rounded-3xl p-5 flex items-center justify-between"
+              >
+                <div>
+                  <p className="font-semibold text-foreground text-sm">Leden inloggen</p>
+                  <p className="text-xs text-foreground/50 mt-0.5">Bekijk jouw tegoed en boekingen</p>
+                </div>
+                <button
+                  onClick={() => setLoginOpen(true)}
+                  className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2.5 rounded-2xl font-semibold text-sm hover:bg-primary/90 transition-colors"
+                >
+                  <LogIn className="w-4 h-4" />
+                  Inloggen
+                </button>
+              </motion.div>
+            )
           )}
+
+          {/* BOOKINGS LIST */}
+          <div>
+            <h2 className="font-display text-xl font-medium text-foreground mb-3">Geplande lessen</h2>
+            {!isLoaded ? (
+              <div className="flex justify-center p-10">
+                <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+              </div>
+            ) : sortedBookings.length === 0 ? (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+                className="bg-card rounded-3xl p-8 text-center"
+              >
+                <div className="w-14 h-14 bg-background rounded-full flex items-center justify-center mx-auto mb-4 text-muted-foreground">
+                  <CalendarX2 className="w-7 h-7" />
+                </div>
+                <h3 className="font-display text-lg font-medium mb-2">Nog geen boekingen</h3>
+                <p className="text-muted-foreground mb-5 text-sm leading-relaxed">
+                  Je hebt nog geen lessen gepland. Tijd voor wat me-time?
+                </p>
+                <Link href="/rooster" className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-5 py-2.5 rounded-2xl font-semibold text-sm hover:bg-primary/90 transition-colors">
+                  Bekijk het rooster
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              </motion.div>
+            ) : (
+              <div className="space-y-4">
+                {sortedBookings.map((booking, index) => {
+                  const dateObj = parseISO(booking.date);
+                  const isYoga = booking.type === 'yoga';
+                  return (
+                    <motion.div
+                      key={booking.id}
+                      initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.05 }}
+                      className="bg-card border border-border/30 rounded-3xl p-5 relative overflow-hidden flex flex-col"
+                    >
+                      <div className={cn("absolute left-0 top-0 bottom-0 w-2", isYoga ? "bg-primary" : "bg-accent")} />
+                      <div className="pl-3 flex justify-between items-start">
+                        <div>
+                          <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">
+                            {format(dateObj, 'EEEE d MMMM', { locale: nl })}
+                          </p>
+                          <h3 className="font-display text-lg font-medium mb-0.5">{booking.className}</h3>
+                          <p className="text-foreground/70 text-sm">{booking.time}</p>
+                        </div>
+                      </div>
+                      <div className="mt-4 pl-3 flex justify-end">
+                        <button
+                          onClick={() => { if (window.confirm("Weet je zeker dat je deze les wilt annuleren?")) cancelBooking(booking.id); }}
+                          className="text-sm font-medium text-destructive hover:bg-destructive/10 px-4 py-2 rounded-xl transition-colors"
+                        >
+                          Annuleren
+                        </button>
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         </div>
 
         <BottomNav />
+        <LoginModal isOpen={loginOpen} onClose={() => setLoginOpen(false)} />
       </div>
     </div>
   );
