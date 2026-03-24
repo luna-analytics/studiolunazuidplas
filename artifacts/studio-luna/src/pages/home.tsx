@@ -17,6 +17,7 @@ export default function Home() {
         <div className="px-6 md:px-12 lg:px-16 pt-14 md:pt-12 pb-12 bg-secondary md:rounded-3xl md:mx-6 md:mt-6 flex items-start justify-between gap-4">
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
             <h1 className="font-display text-3xl md:text-4xl font-medium text-foreground">Aanbod</h1>
+            <p className="text-foreground/55 text-sm mt-1">Zwangerschapsyoga · Mama Circle · Workshops</p>
           </motion.div>
           <div className="overflow-hidden shrink-0" style={{ height: '82px' }}>
             <img src={`${import.meta.env.BASE_URL}images/studio-luna-logo.png`} alt="Studio Luna" className="h-28 w-auto" />
