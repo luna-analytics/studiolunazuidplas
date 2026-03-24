@@ -165,9 +165,9 @@ export default function Tarieven() {
               </div>
               <span className="text-lg font-bold text-foreground shrink-0">€ 22,50</span>
             </div>
-            <button onClick={() => openRequest("losse_les")}
-              className="w-full flex items-center justify-center gap-2 border border-primary/40 text-primary py-2.5 rounded-2xl font-semibold text-sm hover:bg-primary/5 transition-colors">
-              Losse les aanvragen
+            <button onClick={() => navigate("/rooster")}
+              className="w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground py-2.5 rounded-2xl font-semibold text-sm hover:bg-primary/90 transition-colors">
+              Boek een losse les
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </motion.div>
