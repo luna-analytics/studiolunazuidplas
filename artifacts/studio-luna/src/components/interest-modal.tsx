@@ -66,7 +66,7 @@ export function InterestModal({ isOpen, onClose }: InterestModalProps) {
               <div className="flex items-start justify-between mb-5">
                 <div>
                   <h3 className="font-display text-xl font-medium text-foreground">Houd mij op de hoogte</h3>
-                  <p className="text-sm text-foreground/60 mt-1">Laat je e-mailadres achter en we laten je weten zodra de Geboorte-Bundel start.</p>
+                  <p className="text-sm text-foreground/60 mt-1">Laat je e-mailadres achter en we laten je weten zodra een Mama Circle start of de bevallings workshops starten.</p>
                 </div>
                 <button onClick={handleClose} className="text-foreground/40 hover:text-foreground ml-4 shrink-0">
                   <X className="w-5 h-5" />
