@@ -1,6 +1,7 @@
 import { Resend } from "resend";
 import fs from "fs";
 import path from "path";
+import { getEmailSettings } from "./email-settings.js";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -52,6 +53,7 @@ export async function sendBookingConfirmation(params: {
     toEmail, toName, className, date, time, type, isProefles, isLosseLes,
   } = params;
 
+  const settings = await getEmailSettings();
   const formattedDate = formatDate(date);
   const lesType = typeLabel(type);
   const betaling = paymentNote(isProefles, isLosseLes);
@@ -59,6 +61,10 @@ export async function sendBookingConfirmation(params: {
   const logoHtml = logoBuffer
     ? `<img src="cid:studio_luna_logo" alt="Studio Luna" style="height:80px;width:auto;display:block;margin:0 auto;" />`
     : `<p style="margin:0;font-size:26px;font-weight:700;color:#E6DDD2;font-family:'Georgia',serif;letter-spacing:2px;">Studio Luna</p>`;
+
+  const persoonlijkBlok = settings.persoonlijkBericht?.trim()
+    ? `<p style="margin:16px 0 0;font-size:14px;line-height:1.7;color:#3A4F41;font-style:italic;">${settings.persoonlijkBericht.replace(/\n/g, "<br/>")}</p>`
+    : "";
 
   const html = `
 <!DOCTYPE html>
@@ -82,7 +88,7 @@ export async function sendBookingConfirmation(params: {
         <tr><td style="padding:36px 40px;">
           <p style="margin:0 0 8px;font-size:18px;font-weight:700;color:#3A4F41;">Hoi ${toName},</p>
           <p style="margin:0 0 28px;font-size:15px;line-height:1.7;color:#3A4F41;">
-            Je reservering is bevestigd. We kijken ernaar uit je te zien op de mat!
+            ${settings.welkomstTekst}
           </p>
 
           <!-- Les details -->
@@ -121,11 +127,10 @@ export async function sendBookingConfirmation(params: {
           <!-- Annuleringsinfo -->
           <table width="100%" cellpadding="0" cellspacing="0" style="border-left:3px solid #8FA89B;margin-bottom:8px;">
             <tr><td style="padding:4px 16px;">
-              <p style="margin:0;font-size:13px;color:#666;line-height:1.7;">
-                Kun je toch niet komen? Annuleer dan <strong>minimaal 7 uur</strong> voor de les via de app, zodat anderen jouw plek kunnen innemen.
-              </p>
+              <p style="margin:0;font-size:13px;color:#666;line-height:1.7;">${settings.annuleringsNote}</p>
             </td></tr>
           </table>
+          ${persoonlijkBlok}
         </td></tr>
 
         <!-- Footer -->

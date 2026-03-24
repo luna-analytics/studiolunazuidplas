@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Plus, Trash2, PlusCircle, MinusCircle, ChevronDown, ChevronUp, X,
   BookOpen, Users, ClipboardList, Check, CalendarDays, Baby, Share2,
-  Sparkles, MessageCircle, MapPin, Clock,
+  Sparkles, MessageCircle, MapPin, Clock, Mail,
 } from "lucide-react";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -828,8 +828,105 @@ function MededelingenTab() {
   );
 }
 
+// ─── EMAIL INSTELLINGEN TAB ───────────────────────────────────────────────────
+type EmailSettings = { welkomstTekst: string; persoonlijkBericht: string; annuleringsNote: string };
+
+function EmailInstellingenTab() {
+  const [settings, setSettings] = useState<EmailSettings | null>(null);
+  const [form, setForm] = useState<EmailSettings>({ welkomstTekst: "", persoonlijkBericht: "", annuleringsNote: "" });
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    apiFetch("/admin/email-settings").then(async (res) => {
+      if (res.ok) {
+        const data = await res.json();
+        setSettings(data);
+        setForm(data);
+      }
+    });
+  }, []);
+
+  const save = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSaving(true); setError(""); setSaved(false);
+    try {
+      const res = await apiFetch("/admin/email-settings", { method: "PUT", body: JSON.stringify(form) });
+      if (!res.ok) throw new Error((await res.json()).error);
+      setSettings(form);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (!settings) return <div className="flex justify-center py-10"><div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" /></div>;
+
+  return (
+    <form onSubmit={save} className="space-y-6 max-w-xl">
+      <div>
+        <p className="text-xs font-bold uppercase tracking-widest text-primary mb-1">E-mail beheer</p>
+        <p className="text-sm text-foreground/60">Pas de teksten in de bevestigingsmail aan. Leden ontvangen deze mail automatisch na een reservering.</p>
+      </div>
+
+      <div className="space-y-4">
+        <div className="bg-secondary rounded-2xl p-5 space-y-2">
+          <label className="text-sm font-semibold text-foreground">Welkomstbericht</label>
+          <p className="text-xs text-foreground/50">De tekst direct na "Hoi [naam],"</p>
+          <textarea
+            value={form.welkomstTekst}
+            onChange={(e) => setForm({ ...form, welkomstTekst: e.target.value })}
+            rows={3}
+            className="w-full bg-background border border-border/40 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
+            placeholder="Je reservering is bevestigd…"
+          />
+        </div>
+
+        <div className="bg-secondary rounded-2xl p-5 space-y-2">
+          <label className="text-sm font-semibold text-foreground">Persoonlijk bericht <span className="font-normal text-foreground/40">(optioneel)</span></label>
+          <p className="text-xs text-foreground/50">Extra berichtje onderaan, bijv. een tip of persoonlijke noot</p>
+          <textarea
+            value={form.persoonlijkBericht}
+            onChange={(e) => setForm({ ...form, persoonlijkBericht: e.target.value })}
+            rows={3}
+            className="w-full bg-background border border-border/40 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
+            placeholder="Bijv: Draag comfortabele kleding en neem een flesje water mee!"
+          />
+        </div>
+
+        <div className="bg-secondary rounded-2xl p-5 space-y-2">
+          <label className="text-sm font-semibold text-foreground">Annuleringsherinnering</label>
+          <p className="text-xs text-foreground/50">Tekst over de annuleringsregel (7 uur van tevoren)</p>
+          <textarea
+            value={form.annuleringsNote}
+            onChange={(e) => setForm({ ...form, annuleringsNote: e.target.value })}
+            rows={3}
+            className="w-full bg-background border border-border/40 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
+            placeholder="Kun je toch niet komen?…"
+          />
+        </div>
+      </div>
+
+      {error && <p className="text-sm text-red-500 bg-red-50 rounded-2xl px-4 py-2">{error}</p>}
+
+      <button
+        type="submit"
+        disabled={saving}
+        className="flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-2xl font-semibold text-sm hover:bg-primary/90 disabled:opacity-60 transition-colors"
+      >
+        <Mail className="w-4 h-4" />
+        {saving ? "Opslaan…" : saved ? "✓ Opgeslagen!" : "Wijzigingen opslaan"}
+      </button>
+    </form>
+  );
+}
+
 // ─── MAIN ADMIN PAGE ─────────────────────────────────────────────────────────
-type AdminTab = "leden" | "lessen" | "aanvragen" | "mededelingen" | "village";
+type AdminTab = "leden" | "lessen" | "aanvragen" | "mededelingen" | "village" | "email";
 
 export default function Admin() {
   const { user, loading, login } = useAuth();
@@ -906,6 +1003,7 @@ export default function Admin() {
     { key: "aanvragen", label: "Aanvragen", icon: <ClipboardList className="w-4 h-4" /> },
     { key: "mededelingen", label: "Mededelingen", icon: <Baby className="w-4 h-4" /> },
     { key: "village", label: "Village", icon: <Sparkles className="w-4 h-4" /> },
+    { key: "email", label: "E-mail", icon: <Mail className="w-4 h-4" /> },
   ];
 
   return (
@@ -937,6 +1035,7 @@ export default function Admin() {
               {tab === "aanvragen" && <AanvragenTab />}
               {tab === "mededelingen" && <MededelingenTab />}
               {tab === "village" && <VillageBeheerTab />}
+              {tab === "email" && <EmailInstellingenTab />}
             </motion.div>
           </AnimatePresence>
         </div>

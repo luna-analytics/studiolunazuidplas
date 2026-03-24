@@ -9,6 +9,7 @@ import { readTips, createTip, activateTip, deleteTip } from "../lib/tips.js";
 import { readEvents, createEvent, deleteEvent } from "../lib/events.js";
 import { readJournal, createQuestion, activateQuestion, deleteQuestion } from "../lib/journal.js";
 import { readProfiles } from "../lib/village-profiles.js";
+import { getEmailSettings, saveEmailSettings } from "../lib/email-settings.js";
 
 const router = Router();
 
@@ -190,6 +191,22 @@ router.delete("/admin/journal/:id", requireAdmin, (req, res) => {
 router.get("/admin/village/intros", requireAdmin, (_req, res) => {
   const profiles = readProfiles().filter((p) => p.intro?.trim());
   res.json(profiles);
+});
+
+// ─── EMAIL INSTELLINGEN ───────────────────────────────────────────────────────
+
+router.get("/admin/email-settings", requireAdmin, async (_req, res) => {
+  const settings = await getEmailSettings();
+  res.json(settings);
+});
+
+router.put("/admin/email-settings", requireAdmin, async (req, res) => {
+  try {
+    const settings = await saveEmailSettings(req.body);
+    res.json(settings);
+  } catch (err: any) {
+    res.status(400).json({ error: err.message });
+  }
 });
 
 export default router;
