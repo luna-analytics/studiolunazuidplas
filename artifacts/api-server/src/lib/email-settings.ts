@@ -12,7 +12,7 @@ export type EmailSettings = {
 export const EMAIL_DEFAULTS: EmailSettings = {
   welkomstTekst: "Je reservering is bevestigd. We kijken ernaar uit je te zien op de mat!",
   persoonlijkBericht: "",
-  annuleringsNote: "Kun je toch niet komen? Annuleer dan minimaal 7 uur voor de les via de app, zodat anderen jouw plek kunnen innemen.",
+  annuleringsNote: "Kun je toch niet komen? Annuleer dan minimaal 7 uur voor de les via de website of whatsapp, zodat anderen jouw plek kunnen overnemen.",
 };
 
 export async function getEmailSettings(): Promise<EmailSettings> {
