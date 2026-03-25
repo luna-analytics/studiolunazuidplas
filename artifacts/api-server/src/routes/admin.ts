@@ -3,7 +3,7 @@ import { requireAdmin } from "../middlewares/auth.js";
 import { readMembers, createMember, updateMember, deleteMember, updateMemberCredits, findMemberById } from "../lib/users.js";
 import { readClasses, createClass, updateClass, deleteClass } from "../lib/classes.js";
 import { readRequests, markRequestDone, deleteRequest } from "../lib/requests.js";
-import { getMemberBookings } from "../lib/bookings.js";
+import { getMemberBookings, readBookings, saveBookings } from "../lib/bookings.js";
 import { readAnnouncements, markAnnouncementSeen, deleteAnnouncement } from "../lib/announcements.js";
 import { readTips, createTip, activateTip, deleteTip } from "../lib/tips.js";
 import { readEvents, createEvent, deleteEvent } from "../lib/events.js";
@@ -59,7 +59,28 @@ router.post("/admin/members/:id/credits", requireAdmin, async (req, res) => {
 });
 
 router.delete("/admin/members/:id", requireAdmin, async (req, res) => {
-  await deleteMember(req.params.id);
+  const memberId = req.params.id;
+  const allBookings = await readBookings();
+  await saveBookings(allBookings.filter((b) => b.memberId !== memberId));
+  await deleteMember(memberId);
+  res.json({ ok: true });
+});
+
+router.get("/admin/members/:id/bookings", requireAdmin, async (req, res) => {
+  const bookings = await getMemberBookings(req.params.id);
+  res.json(bookings);
+});
+
+// ─── BOEKINGEN BEHEER ────────────────────────────────────────────────────────
+
+router.delete("/admin/bookings/:id", requireAdmin, async (req, res) => {
+  const allBookings = await readBookings();
+  const booking = allBookings.find((b) => b.id === req.params.id);
+  if (!booking) { res.status(404).json({ error: "Boeking niet gevonden" }); return; }
+  if (!booking.isProefles && !booking.isLosseLes) {
+    try { await updateMemberCredits(booking.memberId, 1); } catch { /* lid wellicht verwijderd */ }
+  }
+  await saveBookings(allBookings.filter((b) => b.id !== req.params.id));
   res.json({ ok: true });
 });
 
@@ -80,6 +101,20 @@ router.post("/admin/classes", requireAdmin, (req, res) => {
   } catch (err: any) {
     res.status(400).json({ error: err.message });
   }
+});
+
+router.get("/admin/classes/bookings", requireAdmin, async (_req, res) => {
+  const allBookings = await readBookings();
+  const members = await readMembers();
+  const memberMap = Object.fromEntries(members.map((m) => [m.id, { name: m.name, email: m.email }]));
+  const byClass: Record<string, Record<string, { count: number; bookings: any[] }>> = {};
+  for (const b of allBookings) {
+    if (!byClass[b.classId]) byClass[b.classId] = {};
+    if (!byClass[b.classId][b.date]) byClass[b.classId][b.date] = { count: 0, bookings: [] };
+    byClass[b.classId][b.date].count++;
+    byClass[b.classId][b.date].bookings.push({ ...b, memberName: memberMap[b.memberId]?.name ?? "Onbekend", memberEmail: memberMap[b.memberId]?.email ?? "" });
+  }
+  res.json(byClass);
 });
 
 router.patch("/admin/classes/:id", requireAdmin, (req, res) => {

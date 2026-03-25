@@ -24,6 +24,8 @@ function apiFetch(path: string, opts?: RequestInit) {
 }
 
 // ─── LEDEN TAB ───────────────────────────────────────────────────────────────
+type MemberBooking = { id: string; classId: string; className: string; date: string; time: string; type: string; isProefles: boolean; isLosseLes: boolean; bookedAt: string };
+
 function LedenTab() {
   const [members, setMembers] = useState<Member[]>([]);
   const [showForm, setShowForm] = useState(false);
@@ -32,6 +34,7 @@ function LedenTab() {
   const [formLoading, setFormLoading] = useState(false);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [creditDelta, setCreditDelta] = useState<Record<string, string>>({});
+  const [memberBookings, setMemberBookings] = useState<Record<string, { loaded: boolean; list: MemberBooking[] }>>({});
 
   const loadMembers = async () => {
     const res = await apiFetch("/admin/members");
@@ -72,6 +75,27 @@ function LedenTab() {
     if (!confirm("Weet je zeker dat je dit lid wilt verwijderen?")) return;
     await apiFetch(`/admin/members/${id}`, { method: "DELETE" });
     setMembers((m) => m.filter((mb) => mb.id !== id));
+  };
+
+  const loadMemberBookings = async (memberId: string) => {
+    if (memberBookings[memberId]?.loaded) return;
+    const res = await apiFetch(`/admin/members/${memberId}/bookings`);
+    if (res.ok) {
+      const list = await res.json();
+      setMemberBookings((prev) => ({ ...prev, [memberId]: { loaded: true, list } }));
+    }
+  };
+
+  const cancelMemberBooking = async (bookingId: string, memberId: string) => {
+    if (!confirm("Boeking annuleren? Credits worden waar van toepassing teruggestort.")) return;
+    const res = await apiFetch(`/admin/bookings/${bookingId}`, { method: "DELETE" });
+    if (res.ok) {
+      setMemberBookings((prev) => ({
+        ...prev,
+        [memberId]: { ...prev[memberId], list: prev[memberId].list.filter((b) => b.id !== bookingId) },
+      }));
+      loadMembers();
+    }
   };
 
   return (
@@ -136,7 +160,7 @@ function LedenTab() {
         <motion.div key={member.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}
           className="bg-card border border-border/30 rounded-3xl overflow-hidden">
           <div className="px-5 py-4 flex items-center justify-between cursor-pointer"
-            onClick={() => setExpandedId(expandedId === member.id ? null : member.id)}>
+            onClick={() => { const newId = expandedId === member.id ? null : member.id; setExpandedId(newId); if (newId) loadMemberBookings(newId); }}>
             <div>
               <p className="font-semibold text-foreground text-sm">{member.name}</p>
               <p className="text-xs text-foreground/50">{member.email}</p>
@@ -153,7 +177,7 @@ function LedenTab() {
               {member.notes && <p className="text-xs text-foreground/55 italic">{member.notes}</p>}
               <div>
                 <p className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-2">Credits aanpassen</p>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                   <input type="number" min="1" value={creditDelta[member.id] ?? "1"}
                     onChange={(e) => setCreditDelta({ ...creditDelta, [member.id]: e.target.value })}
                     className="w-20 bg-secondary border border-border/40 rounded-xl px-3 py-2 text-sm text-center focus:outline-none focus:ring-2 focus:ring-primary/30" />
@@ -166,6 +190,29 @@ function LedenTab() {
                     <MinusCircle className="w-4 h-4" /> Aftrekken
                   </button>
                 </div>
+              </div>
+              <div>
+                <p className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-2">Geboekte lessen</p>
+                {!memberBookings[member.id]?.loaded ? (
+                  <p className="text-xs text-foreground/40">Laden…</p>
+                ) : memberBookings[member.id].list.length === 0 ? (
+                  <p className="text-xs text-foreground/40 italic">Geen actieve boekingen</p>
+                ) : (
+                  <div className="space-y-2">
+                    {[...memberBookings[member.id].list].sort((a, b) => a.date.localeCompare(b.date)).map((b) => (
+                      <div key={b.id} className="flex items-center justify-between bg-secondary rounded-xl px-3 py-2 gap-3">
+                        <div className="min-w-0">
+                          <p className="text-xs font-semibold text-foreground truncate">{b.className}</p>
+                          <p className="text-xs text-foreground/50">{b.date} · {b.time}{b.isProefles ? " · proefles" : b.isLosseLes ? " · los" : " · rittenkaart"}</p>
+                        </div>
+                        <button onClick={() => cancelMemberBooking(b.id, member.id)}
+                          className="shrink-0 text-red-400 hover:text-red-600 transition-colors p-1 rounded-lg hover:bg-red-50">
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
               <button onClick={() => removeMember(member.id)}
                 className="flex items-center gap-1.5 text-red-500 hover:text-red-600 text-xs font-semibold transition-colors">
@@ -180,6 +227,8 @@ function LedenTab() {
 }
 
 // ─── LESSEN TAB ───────────────────────────────────────────────────────────────
+type ClassBookings = Record<string, Record<string, { count: number; bookings: (MemberBooking & { memberName: string; memberEmail: string })[] }>>;
+
 function LessenTab() {
   const [classes, setClasses] = useState<StudioClass[]>([]);
   const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -188,10 +237,16 @@ function LessenTab() {
   const [classDates, setClassDates] = useState<string[]>([]);
   const [formLoading, setFormLoading] = useState(false);
   const [formError, setFormError] = useState("");
+  const [classBookings, setClassBookings] = useState<ClassBookings>({});
+  const [editSpots, setEditSpots] = useState<Record<string, string>>({});
 
   const load = async () => {
-    const res = await apiFetch("/admin/classes");
-    if (res.ok) setClasses(await res.json());
+    const [classesRes, bookingsRes] = await Promise.all([
+      apiFetch("/admin/classes"),
+      apiFetch("/admin/classes/bookings"),
+    ]);
+    if (classesRes.ok) setClasses(await classesRes.json());
+    if (bookingsRes.ok) setClassBookings(await bookingsRes.json());
   };
 
   useEffect(() => { load(); }, []);
@@ -241,6 +296,30 @@ function LessenTab() {
     if (!confirm("Les verwijderen?")) return;
     await apiFetch(`/admin/classes/${id}`, { method: "DELETE" });
     setClasses((c) => c.filter((x) => x.id !== id));
+  };
+
+  const updateSpots = async (cls: StudioClass, newSpots: number) => {
+    if (isNaN(newSpots) || newSpots < 1) return;
+    const res = await apiFetch(`/admin/classes/${cls.id}`, { method: "PATCH", body: JSON.stringify({ spotsTotal: newSpots }) });
+    if (res.ok) { const updated = await res.json(); setClasses((c) => c.map((x) => x.id === cls.id ? updated : x)); }
+  };
+
+  const cancelClassBooking = async (bookingId: string, classId: string, date: string) => {
+    if (!confirm("Boeking annuleren? Credits worden waar van toepassing teruggestort.")) return;
+    const res = await apiFetch(`/admin/bookings/${bookingId}`, { method: "DELETE" });
+    if (res.ok) {
+      setClassBookings((prev) => {
+        const updated = { ...prev };
+        if (updated[classId]?.[date]) {
+          updated[classId] = { ...updated[classId], [date]: {
+            ...updated[classId][date],
+            bookings: updated[classId][date].bookings.filter((b) => b.id !== bookingId),
+            count: updated[classId][date].count - 1,
+          }};
+        }
+        return updated;
+      });
+    }
   };
 
   const [editDateInputs, setEditDateInputs] = useState<Record<string, string>>({});
@@ -342,18 +421,75 @@ function LessenTab() {
 
           {expandedId === cls.id && (
             <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }}
-              className="border-t border-border/20 px-5 py-4 space-y-4">
+              className="border-t border-border/20 px-5 py-4 space-y-5">
+
               <div>
-                <p className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-2">Datums beheren</p>
-                <div className="flex flex-wrap gap-2 mb-3">
-                  {cls.dates.map((d) => (
-                    <span key={d} className="flex items-center gap-1 bg-secondary text-foreground/70 text-xs font-medium px-3 py-1 rounded-full">
-                      <CalendarDays className="w-3 h-3" /> {d}
-                      <button onClick={() => removeDateFromClass(cls, d)} className="ml-0.5 hover:text-red-500 transition-colors"><X className="w-3 h-3" /></button>
-                    </span>
-                  ))}
+                <p className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-2">Aantal plekken</p>
+                <div className="flex items-center gap-2">
+                  <input type="number" min="1" max="50"
+                    value={editSpots[cls.id] ?? String(cls.spotsTotal)}
+                    onChange={(e) => setEditSpots({ ...editSpots, [cls.id]: e.target.value })}
+                    className="w-20 bg-secondary border border-border/40 rounded-xl px-3 py-2 text-sm text-center focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                  <button onClick={() => { updateSpots(cls, Number(editSpots[cls.id] ?? cls.spotsTotal)); setEditSpots({ ...editSpots, [cls.id]: "" }); }}
+                    className="px-4 py-2 bg-primary/10 text-primary rounded-xl text-xs font-semibold hover:bg-primary/20 transition-colors">
+                    Opslaan
+                  </button>
+                  <span className="text-xs text-foreground/40">(huidig: {cls.spotsTotal})</span>
+                </div>
+              </div>
+
+              <div>
+                <p className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-2">Deelnemers per datum</p>
+                <div className="space-y-3">
+                  {cls.dates.sort().map((d) => {
+                    const dateInfo = classBookings[cls.id]?.[d];
+                    const taken = dateInfo?.count ?? 0;
+                    return (
+                      <div key={d} className="bg-secondary rounded-2xl overflow-hidden">
+                        <div className="flex items-center justify-between px-4 py-2.5">
+                          <div className="flex items-center gap-2">
+                            <CalendarDays className="w-3.5 h-3.5 text-foreground/40" />
+                            <span className="text-sm font-semibold text-foreground">{d}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${taken >= cls.spotsTotal ? "bg-red-100 text-red-600" : "bg-primary/10 text-primary"}`}>
+                              {taken}/{cls.spotsTotal} geboekt
+                            </span>
+                            <button onClick={() => removeDateFromClass(cls, d)} className="text-foreground/30 hover:text-red-500 transition-colors ml-1">
+                              <X className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </div>
+                        {dateInfo && dateInfo.bookings.length > 0 && (
+                          <div className="border-t border-border/20 px-4 py-2 space-y-1.5">
+                            {dateInfo.bookings.map((b) => (
+                              <div key={b.id} className="flex items-center justify-between gap-2">
+                                <div className="min-w-0">
+                                  <span className="text-xs font-semibold text-foreground">{b.memberName}</span>
+                                  <span className="text-xs text-foreground/40 ml-2">{b.isProefles ? "proefles" : b.isLosseLes ? "los" : "rittenkaart"}</span>
+                                </div>
+                                <button onClick={() => cancelClassBooking(b.id, cls.id, d)}
+                                  className="shrink-0 text-red-400 hover:text-red-600 transition-colors p-1 rounded-lg hover:bg-red-50">
+                                  <Trash2 className="w-3 h-3" />
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                        {taken === 0 && (
+                          <div className="border-t border-border/20 px-4 py-2">
+                            <p className="text-xs text-foreground/35 italic">Nog geen boekingen</p>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
                   {cls.dates.length === 0 && <p className="text-xs text-foreground/40">Nog geen datums</p>}
                 </div>
+              </div>
+
+              <div>
+                <p className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-2">Datum toevoegen</p>
                 <div className="flex gap-2">
                   <input type="date" value={editDateInputs[cls.id] ?? ""}
                     onChange={(e) => setEditDateInputs({ ...editDateInputs, [cls.id]: e.target.value })}
@@ -364,6 +500,7 @@ function LessenTab() {
                   </button>
                 </div>
               </div>
+
               <button onClick={() => deleteClass(cls.id)}
                 className="flex items-center gap-1.5 text-red-500 hover:text-red-600 text-xs font-semibold transition-colors">
                 <Trash2 className="w-3.5 h-3.5" /> Les verwijderen
