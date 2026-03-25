@@ -131,7 +131,7 @@ function IntroModal({ current, onSave, onClose }: { current?: string; onSave: (i
         initial={{ y: 60, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ type: "spring", stiffness: 400, damping: 30 }}>
         <button onClick={onClose} className="absolute top-4 right-4 p-2 rounded-xl hover:bg-secondary transition-colors"><X className="w-4 h-4 text-foreground/50" /></button>
         <h2 className="font-display text-xl font-medium mb-1">Stel jezelf voor</h2>
-        <p className="text-sm text-foreground/60 mb-4">Vertel kort iets over jezelf — Marjolein leest dit graag.</p>
+        <p className="text-sm text-foreground/60 mb-4">Vertel kort iets over jezelf, we leren je graag kennen.</p>
         <textarea value={intro} onChange={(e) => setIntro(e.target.value)} rows={4}
           placeholder="bijv. Ik ben Roos, 28 weken zwanger van mijn eerste kindje. Ik woon in Nieuwerkerk en doe yoga voor mijn rust…"
           className="w-full bg-secondary border border-border/40 rounded-2xl px-4 py-3 text-sm resize-none mb-5 focus:outline-none focus:ring-2 focus:ring-primary/30" />
@@ -234,7 +234,7 @@ export default function Village() {
           ) : (
             <>
               <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-sm text-foreground/60 leading-relaxed">
-                Welkom in jouw eigen village, {user.name.split(" ")[0]} 🌿
+                Welkom in jouw eigen village, {user.name.split(" ")[0]} 
               </motion.p>
 
               {/* 1. COUNTDOWN */}
@@ -247,7 +247,7 @@ export default function Village() {
                       <div>
                         <p className="text-xs font-bold text-primary/60 uppercase tracking-widest mb-1">Jouw countdown</p>
                         {countdown.passed ? (
-                          <p className="font-display text-2xl font-medium text-foreground">Je bent er! 🎉</p>
+                          <p className="font-display text-2xl font-medium text-foreground">Je bent er! </p>
                         ) : (
                           <>
                             <p className="font-display text-4xl font-medium text-foreground">{countdown.days} <span className="text-2xl">dagen</span></p>
@@ -278,7 +278,7 @@ export default function Village() {
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-start gap-3 flex-1">
                     <div className="w-9 h-9 rounded-2xl bg-secondary flex items-center justify-center shrink-0 mt-0.5">
-                      <span className="text-base">🙋</span>
+                      <span className="text-base"></span>
                     </div>
                     <div className="flex-1">
                       <p className="font-semibold text-foreground text-sm mb-0.5">
@@ -378,7 +378,7 @@ export default function Village() {
                   className="rounded-3xl bg-card border border-border/30 p-5">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-9 h-9 rounded-2xl bg-pink-100 flex items-center justify-center shrink-0"><Baby className="w-4 h-4 text-pink-400" /></div>
-                    <h2 className="font-display text-lg font-medium">Geboortekaartjes 🎀</h2>
+                    <h2 className="font-display text-lg font-medium">Geboortekaartjes</h2>
                   </div>
                   <div className="space-y-3">
                     {data.births.map((b) => (
@@ -429,8 +429,8 @@ export default function Village() {
                 <div className="px-5 py-5 flex items-start gap-4">
                   <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shrink-0 shadow-sm"><Baby className="w-6 h-6 text-pink-400" /></div>
                   <div className="flex-1">
-                    <p className="font-semibold text-foreground mb-0.5">Ik ben bevallen! 🎉</p>
-                    <p className="text-sm text-foreground/60 leading-relaxed mb-4">Er ligt een persoonlijk cadeautje van Marjolein voor je klaar. Kies zelf of je het mag delen met de community.</p>
+                    <p className="font-semibold text-foreground mb-0.5">Ik ben bevallen!</p>
+                    <p className="text-sm text-foreground/60 leading-relaxed mb-4">Studio Luna heeft een persoonlijk cadeautje voor je. Als je leuk vind kan dit nieuws gedeeld worden in de community.</p>
                     <button onClick={() => setBevallenOpen(true)}
                       className="flex items-center gap-2 bg-white text-pink-500 border border-pink-200 px-5 py-2.5 rounded-2xl font-semibold text-sm hover:bg-pink-50 transition-colors shadow-sm">
                       <Baby className="w-4 h-4" /> Meld het door

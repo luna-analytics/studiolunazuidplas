@@ -99,7 +99,8 @@ export function BookingModal({ isOpen, onClose, studioClass, selectedDate, dateS
                     <p className="text-muted-foreground text-sm leading-relaxed">
                       Je plek voor <span className="font-medium text-foreground">{studioClass.title}</span> is gereserveerd.
                       {(isFirstBooking || isLosseLesEligible) && " Betaling vindt in de studio plaats."}
-                      {" "}Tot snel bij Studio Luna 🌿
+                      {" "}Tot snel bij Studio Luna 
+                      
                     </p>
                     <button onClick={handleClose} className="text-sm text-foreground/40 hover:text-foreground/70 transition-colors underline underline-offset-2">
                       Sluiten

@@ -80,7 +80,7 @@ function RittenkaartModal({ isOpen, onClose, pakket }: { isOpen: boolean; onClos
                   <p className="text-sm text-foreground/60">{label}</p>
                 </div>
                 <p className="text-sm text-foreground/65 mb-5 leading-relaxed">
-                  Stuur je aanvraag door — Studio Luna neemt contact op en regelt de betaling en credits.
+                  Studio Luna voegt zo snel mogelijk je credits toe aan je account. De betaling vindt in de studio plaats bij je eerstvolgende les.
                 </p>
                 <form onSubmit={handleSubmit} className="space-y-3">
                   <div>
