@@ -1,9 +1,10 @@
-import { Switch, Route, Router as WouterRouter } from "wouter";
+import { Switch, Route, Router as WouterRouter, useLocation } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/hooks/use-auth";
 import NotFound from "@/pages/not-found";
+import { useEffect } from "react";
 
 // Page imports
 import Home from "./pages/home";
@@ -24,19 +25,30 @@ const queryClient = new QueryClient({
   },
 });
 
+function ScrollToTop() {
+  const [location] = useLocation();
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
+  }, [location]);
+  return null;
+}
+
 function Router() {
   return (
-    <Switch>
-      <Route path="/" component={StudioLuna} />
-      <Route path="/aanbod" component={Home} />
-      <Route path="/rooster" component={Rooster} />
-      <Route path="/tarieven" component={Tarieven} />
-      <Route path="/bookings" component={Bookings} />
-      <Route path="/admin" component={Admin} />
-      <Route path="/village" component={Village} />
-      <Route path="/profile" component={Profile} />
-      <Route component={NotFound} />
-    </Switch>
+    <>
+      <ScrollToTop />
+      <Switch>
+        <Route path="/" component={StudioLuna} />
+        <Route path="/aanbod" component={Home} />
+        <Route path="/rooster" component={Rooster} />
+        <Route path="/tarieven" component={Tarieven} />
+        <Route path="/bookings" component={Bookings} />
+        <Route path="/admin" component={Admin} />
+        <Route path="/village" component={Village} />
+        <Route path="/profile" component={Profile} />
+        <Route component={NotFound} />
+      </Switch>
+    </>
   );
 }
 
