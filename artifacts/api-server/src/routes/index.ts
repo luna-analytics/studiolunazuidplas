@@ -23,7 +23,7 @@ router.use(classesRouter);
 router.use(villageRouter);
 
 // Rittenkaart aanvraag (public of ingelogd)
-router.post("/rittenkaart-request", (req: any, res: any) => {
+router.post("/rittenkaart-request", async (req: any, res: any) => {
   const { name, email, package: pkg } = req.body as { name?: string; email?: string; package?: string };
   if (!name || !email || !pkg) {
     res.status(400).json({ error: "Naam, e-mail en pakket zijn verplicht" }); return;
@@ -33,7 +33,7 @@ router.post("/rittenkaart-request", (req: any, res: any) => {
     res.status(400).json({ error: "Ongeldig pakket" }); return;
   }
   try {
-    const request = createRequest({ name, email, package: pkg as any });
+    const request = await createRequest({ name, email, package: pkg as any });
     res.json(request);
   } catch (err: any) {
     res.status(400).json({ error: err.message });

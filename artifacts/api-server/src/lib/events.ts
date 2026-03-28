@@ -1,6 +1,8 @@
-import fs from "fs";
-import path from "path";
+import Database from "@replit/database";
 import crypto from "crypto";
+
+const db = new Database();
+const KEY = "studio_luna:events";
 
 export type VillageEvent = {
   id: string;
@@ -12,32 +14,38 @@ export type VillageEvent = {
   createdAt: string;
 };
 
-const DATA_FILE = path.join(process.cwd(), "data", "events.json");
-
-function ensureFile() {
-  fs.mkdirSync(path.dirname(DATA_FILE), { recursive: true });
-  if (!fs.existsSync(DATA_FILE)) fs.writeFileSync(DATA_FILE, "[]");
+async function read(): Promise<VillageEvent[]> {
+  try {
+    const result = (await db.get(KEY)) as any;
+    if (result?.ok === false) return [];
+    const data = result?.value ?? result;
+    return Array.isArray(data) ? data : [];
+  } catch { return []; }
 }
 
-export function readEvents(): VillageEvent[] {
-  try { ensureFile(); return JSON.parse(fs.readFileSync(DATA_FILE, "utf-8")); } catch { return []; }
+async function save(events: VillageEvent[]): Promise<void> {
+  await db.set(KEY, events);
 }
 
-function save(events: VillageEvent[]) { ensureFile(); fs.writeFileSync(DATA_FILE, JSON.stringify(events, null, 2)); }
+export async function readEvents(): Promise<VillageEvent[]> {
+  return read();
+}
 
-export function getUpcomingEvents(): VillageEvent[] {
+export async function getUpcomingEvents(): Promise<VillageEvent[]> {
   const today = new Date().toISOString().split("T")[0];
-  return readEvents()
+  return (await read())
     .filter((e) => e.date >= today)
     .sort((a, b) => a.date.localeCompare(b.date));
 }
 
-export function createEvent(data: Omit<VillageEvent, "id" | "createdAt">): VillageEvent {
-  const events = readEvents();
+export async function createEvent(data: Omit<VillageEvent, "id" | "createdAt">): Promise<VillageEvent> {
+  const events = await read();
   const ev: VillageEvent = { ...data, id: crypto.randomUUID(), createdAt: new Date().toISOString() };
   events.push(ev);
-  save(events);
+  await save(events);
   return ev;
 }
 
-export function deleteEvent(id: string) { save(readEvents().filter((e) => e.id !== id)); }
+export async function deleteEvent(id: string): Promise<void> {
+  await save((await read()).filter((e) => e.id !== id));
+}

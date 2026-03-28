@@ -1,5 +1,7 @@
-import fs from "fs";
-import path from "path";
+import Database from "@replit/database";
+
+const db = new Database();
+const KEY = "studio_luna:village_profiles";
 
 export type VillageProfile = {
   memberId: string;
@@ -9,34 +11,36 @@ export type VillageProfile = {
   updatedAt: string;
 };
 
-const DATA_FILE = path.join(process.cwd(), "data", "village-profiles.json");
-
-function ensureFile() {
-  fs.mkdirSync(path.dirname(DATA_FILE), { recursive: true });
-  if (!fs.existsSync(DATA_FILE)) fs.writeFileSync(DATA_FILE, "[]");
+async function read(): Promise<VillageProfile[]> {
+  try {
+    const result = (await db.get(KEY)) as any;
+    if (result?.ok === false) return [];
+    const data = result?.value ?? result;
+    return Array.isArray(data) ? data : [];
+  } catch { return []; }
 }
 
-export function readProfiles(): VillageProfile[] {
-  try { ensureFile(); return JSON.parse(fs.readFileSync(DATA_FILE, "utf-8")); } catch { return []; }
+async function save(profiles: VillageProfile[]): Promise<void> {
+  await db.set(KEY, profiles);
 }
 
-function save(profiles: VillageProfile[]) {
-  ensureFile();
-  fs.writeFileSync(DATA_FILE, JSON.stringify(profiles, null, 2));
+export async function readProfiles(): Promise<VillageProfile[]> {
+  return read();
 }
 
-export function getProfile(memberId: string): VillageProfile {
-  return readProfiles().find((p) => p.memberId === memberId)
+export async function getProfile(memberId: string): Promise<VillageProfile> {
+  const profiles = await read();
+  return profiles.find((p) => p.memberId === memberId)
     ?? { memberId, checkedItems: [], updatedAt: new Date().toISOString() };
 }
 
-export function updateProfile(memberId: string, data: Partial<Pick<VillageProfile, "dueDate" | "intro" | "checkedItems">>): VillageProfile {
-  const profiles = readProfiles();
+export async function updateProfile(memberId: string, data: Partial<Pick<VillageProfile, "dueDate" | "intro" | "checkedItems">>): Promise<VillageProfile> {
+  const profiles = await read();
   const idx = profiles.findIndex((p) => p.memberId === memberId);
   const existing = profiles[idx] ?? { memberId, checkedItems: [], updatedAt: "" };
   const updated: VillageProfile = { ...existing, ...data, updatedAt: new Date().toISOString() };
   if (idx >= 0) profiles[idx] = updated; else profiles.push(updated);
-  save(profiles);
+  await save(profiles);
   return updated;
 }
 

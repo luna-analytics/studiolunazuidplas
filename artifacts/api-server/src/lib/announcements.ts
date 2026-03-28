@@ -1,6 +1,8 @@
-import fs from "fs";
-import path from "path";
+import Database from "@replit/database";
 import crypto from "crypto";
+
+const db = new Database();
+const KEY = "studio_luna:announcements";
 
 export type Announcement = {
   id: string;
@@ -13,31 +15,29 @@ export type Announcement = {
   seenByAdmin: boolean;
 };
 
-const DATA_FILE = path.join(process.cwd(), "data", "announcements.json");
-
-function ensureFile() {
-  fs.mkdirSync(path.dirname(DATA_FILE), { recursive: true });
-  if (!fs.existsSync(DATA_FILE)) {
-    fs.writeFileSync(DATA_FILE, JSON.stringify([], null, 2));
-  }
-}
-
-export function readAnnouncements(): Announcement[] {
+async function read(): Promise<Announcement[]> {
   try {
-    ensureFile();
-    return JSON.parse(fs.readFileSync(DATA_FILE, "utf-8"));
-  } catch {
-    return [];
-  }
+    const result = (await db.get(KEY)) as any;
+    if (result?.ok === false) return [];
+    const data = result?.value ?? result;
+    return Array.isArray(data) ? data : [];
+  } catch { return []; }
 }
 
-export function saveAnnouncements(items: Announcement[]) {
-  ensureFile();
-  fs.writeFileSync(DATA_FILE, JSON.stringify(items, null, 2));
+async function save(items: Announcement[]): Promise<void> {
+  await db.set(KEY, items);
 }
 
-export function createAnnouncement(data: Omit<Announcement, "id" | "createdAt" | "seenByAdmin">): Announcement {
-  const items = readAnnouncements();
+export async function readAnnouncements(): Promise<Announcement[]> {
+  return read();
+}
+
+export async function saveAnnouncements(items: Announcement[]): Promise<void> {
+  await save(items);
+}
+
+export async function createAnnouncement(data: Omit<Announcement, "id" | "createdAt" | "seenByAdmin">): Promise<Announcement> {
+  const items = await read();
   const item: Announcement = {
     ...data,
     id: crypto.randomUUID(),
@@ -45,19 +45,19 @@ export function createAnnouncement(data: Omit<Announcement, "id" | "createdAt" |
     seenByAdmin: false,
   };
   items.push(item);
-  saveAnnouncements(items);
+  await save(items);
   return item;
 }
 
-export function markAnnouncementSeen(id: string): Announcement {
-  const items = readAnnouncements();
+export async function markAnnouncementSeen(id: string): Promise<Announcement> {
+  const items = await read();
   const item = items.find((a) => a.id === id);
   if (!item) throw new Error("Niet gevonden");
   item.seenByAdmin = true;
-  saveAnnouncements(items);
+  await save(items);
   return item;
 }
 
-export function deleteAnnouncement(id: string) {
-  saveAnnouncements(readAnnouncements().filter((a) => a.id !== id));
+export async function deleteAnnouncement(id: string): Promise<void> {
+  await save((await read()).filter((a) => a.id !== id));
 }

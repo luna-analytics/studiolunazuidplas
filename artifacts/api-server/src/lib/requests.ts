@@ -1,6 +1,8 @@
-import fs from "fs";
-import path from "path";
+import Database from "@replit/database";
 import crypto from "crypto";
+
+const db = new Database();
+const KEY = "studio_luna:requests";
 
 export type RittenkaartRequest = {
   id: string;
@@ -12,31 +14,29 @@ export type RittenkaartRequest = {
   done: boolean;
 };
 
-const DATA_FILE = path.join(process.cwd(), "data", "requests.json");
-
-function ensureFile() {
-  fs.mkdirSync(path.dirname(DATA_FILE), { recursive: true });
-  if (!fs.existsSync(DATA_FILE)) {
-    fs.writeFileSync(DATA_FILE, JSON.stringify([], null, 2));
-  }
-}
-
-export function readRequests(): RittenkaartRequest[] {
+async function read(): Promise<RittenkaartRequest[]> {
   try {
-    ensureFile();
-    return JSON.parse(fs.readFileSync(DATA_FILE, "utf-8"));
-  } catch {
-    return [];
-  }
+    const result = (await db.get(KEY)) as any;
+    if (result?.ok === false) return [];
+    const data = result?.value ?? result;
+    return Array.isArray(data) ? data : [];
+  } catch { return []; }
 }
 
-export function saveRequests(requests: RittenkaartRequest[]) {
-  ensureFile();
-  fs.writeFileSync(DATA_FILE, JSON.stringify(requests, null, 2));
+async function save(requests: RittenkaartRequest[]): Promise<void> {
+  await db.set(KEY, requests);
 }
 
-export function createRequest(data: Omit<RittenkaartRequest, "id" | "createdAt" | "done">): RittenkaartRequest {
-  const requests = readRequests();
+export async function readRequests(): Promise<RittenkaartRequest[]> {
+  return read();
+}
+
+export async function saveRequests(requests: RittenkaartRequest[]): Promise<void> {
+  await save(requests);
+}
+
+export async function createRequest(data: Omit<RittenkaartRequest, "id" | "createdAt" | "done">): Promise<RittenkaartRequest> {
+  const requests = await read();
   const req: RittenkaartRequest = {
     ...data,
     id: crypto.randomUUID(),
@@ -44,19 +44,19 @@ export function createRequest(data: Omit<RittenkaartRequest, "id" | "createdAt" 
     done: false,
   };
   requests.push(req);
-  saveRequests(requests);
+  await save(requests);
   return req;
 }
 
-export function markRequestDone(id: string): RittenkaartRequest {
-  const requests = readRequests();
+export async function markRequestDone(id: string): Promise<RittenkaartRequest> {
+  const requests = await read();
   const req = requests.find((r) => r.id === id);
   if (!req) throw new Error("Aanvraag niet gevonden");
   req.done = true;
-  saveRequests(requests);
+  await save(requests);
   return req;
 }
 
-export function deleteRequest(id: string) {
-  saveRequests(readRequests().filter((r) => r.id !== id));
+export async function deleteRequest(id: string): Promise<void> {
+  await save((await read()).filter((r) => r.id !== id));
 }

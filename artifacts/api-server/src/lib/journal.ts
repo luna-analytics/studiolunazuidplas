@@ -1,6 +1,8 @@
-import fs from "fs";
-import path from "path";
+import Database from "@replit/database";
 import crypto from "crypto";
+
+const db = new Database();
+const KEY = "studio_luna:journal";
 
 export type JournalAnswer = {
   memberId: string;
@@ -18,9 +20,7 @@ export type JournalQuestion = {
   createdAt: string;
 };
 
-const DATA_FILE = path.join(process.cwd(), "data", "journal.json");
-
-const DEFAULTS: JournalQuestion[] = [
+const SEED: JournalQuestion[] = [
   {
     id: "j1",
     question: "Hoe gaat het met jou deze week? Wat geeft je energie?",
@@ -30,47 +30,56 @@ const DEFAULTS: JournalQuestion[] = [
   },
 ];
 
-function ensureFile() {
-  fs.mkdirSync(path.dirname(DATA_FILE), { recursive: true });
-  if (!fs.existsSync(DATA_FILE)) fs.writeFileSync(DATA_FILE, JSON.stringify(DEFAULTS, null, 2));
+async function read(): Promise<JournalQuestion[]> {
+  try {
+    const result = (await db.get(KEY)) as any;
+    if (result?.ok === false) return SEED;
+    const data = result?.value ?? result;
+    if (!Array.isArray(data) || data.length === 0) return SEED;
+    return data;
+  } catch { return SEED; }
 }
 
-export function readJournal(): JournalQuestion[] {
-  try { ensureFile(); return JSON.parse(fs.readFileSync(DATA_FILE, "utf-8")); } catch { return DEFAULTS; }
+async function save(items: JournalQuestion[]): Promise<void> {
+  await db.set(KEY, items);
 }
 
-function save(items: JournalQuestion[]) { ensureFile(); fs.writeFileSync(DATA_FILE, JSON.stringify(items, null, 2)); }
-
-export function getActiveQuestion(): JournalQuestion | null {
-  return readJournal().find((q) => q.active) ?? null;
+export async function readJournal(): Promise<JournalQuestion[]> {
+  return read();
 }
 
-export function createQuestion(question: string): JournalQuestion {
-  const items = readJournal().map((q) => ({ ...q, active: false }));
+export async function getActiveQuestion(): Promise<JournalQuestion | null> {
+  return (await read()).find((q) => q.active) ?? null;
+}
+
+export async function createQuestion(question: string): Promise<JournalQuestion> {
+  const items = (await read()).map((q) => ({ ...q, active: false }));
   const q: JournalQuestion = { id: crypto.randomUUID(), question, active: true, answers: [], createdAt: new Date().toISOString() };
   items.push(q);
-  save(items);
+  await save(items);
   return q;
 }
 
-export function activateQuestion(id: string): JournalQuestion {
-  const items = readJournal().map((q) => ({ ...q, active: q.id === id }));
-  save(items);
+export async function activateQuestion(id: string): Promise<JournalQuestion> {
+  const items = (await read()).map((q) => ({ ...q, active: q.id === id }));
+  await save(items);
   return items.find((q) => q.id === id)!;
 }
 
-export function addAnswer(questionId: string, answer: Omit<JournalAnswer, "createdAt">): JournalQuestion {
-  const items = readJournal();
+export async function addAnswer(questionId: string, answer: Omit<JournalAnswer, "createdAt">): Promise<JournalQuestion> {
+  const items = await read();
   const q = items.find((x) => x.id === questionId);
   if (!q) throw new Error("Vraag niet gevonden");
   q.answers = q.answers.filter((a) => a.memberId !== answer.memberId);
   q.answers.push({ ...answer, createdAt: new Date().toISOString() });
-  save(items);
+  await save(items);
   return q;
 }
 
-export function deleteQuestion(id: string) { save(readJournal().filter((q) => q.id !== id)); }
+export async function deleteQuestion(id: string): Promise<void> {
+  await save((await read()).filter((q) => q.id !== id));
+}
 
-export function getMyAnswer(questionId: string, memberId: string): JournalAnswer | undefined {
-  return readJournal().find((q) => q.id === questionId)?.answers.find((a) => a.memberId === memberId);
+export async function getMyAnswer(questionId: string, memberId: string): Promise<JournalAnswer | undefined> {
+  return (await read()).find((q) => q.id === questionId)?.answers.find((a) => a.memberId === memberId);
 }
