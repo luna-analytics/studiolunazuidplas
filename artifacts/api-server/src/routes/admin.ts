@@ -86,17 +86,17 @@ router.delete("/admin/bookings/:id", requireAdmin, async (req, res) => {
 
 // ─── CLASSES ─────────────────────────────────────────────────────────────────
 
-router.get("/admin/classes", requireAdmin, (_req, res) => {
-  res.json(readClasses());
+router.get("/admin/classes", requireAdmin, async (_req, res) => {
+  res.json(await readClasses());
 });
 
-router.post("/admin/classes", requireAdmin, (req, res) => {
+router.post("/admin/classes", requireAdmin, async (req, res) => {
   const { title, time, teacher, spotsTotal, description, type, dates } = req.body;
   if (!title || !time || !type) {
     res.status(400).json({ error: "Titel, tijd en type zijn verplicht" }); return;
   }
   try {
-    const cls = createClass({ title, time, teacher: teacher ?? "Marjolein", spotsTotal: spotsTotal ?? 8, description: description ?? "", type, dates: dates ?? [] });
+    const cls = await createClass({ title, time, teacher: teacher ?? "Marjolein", spotsTotal: spotsTotal ?? 8, description: description ?? "", type, dates: dates ?? [] });
     res.json(cls);
   } catch (err: any) {
     res.status(400).json({ error: err.message });
@@ -117,17 +117,17 @@ router.get("/admin/classes/bookings", requireAdmin, async (_req, res) => {
   res.json(byClass);
 });
 
-router.patch("/admin/classes/:id", requireAdmin, (req, res) => {
+router.patch("/admin/classes/:id", requireAdmin, async (req, res) => {
   try {
-    const cls = updateClass(req.params.id, req.body);
+    const cls = await updateClass(req.params.id, req.body);
     res.json(cls);
   } catch (err: any) {
     res.status(400).json({ error: err.message });
   }
 });
 
-router.delete("/admin/classes/:id", requireAdmin, (req, res) => {
-  deleteClass(req.params.id);
+router.delete("/admin/classes/:id", requireAdmin, async (req, res) => {
+  await deleteClass(req.params.id);
   res.json({ ok: true });
 });
 

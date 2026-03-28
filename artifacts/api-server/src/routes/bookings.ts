@@ -26,7 +26,7 @@ router.post("/bookings", requireAuth, async (req, res) => {
     res.status(400).json({ error: "Ongeldige gegevens" }); return;
   }
 
-  const classes = readClasses();
+  const classes = await readClasses();
   const studioClass = classes.find((c) => c.id === classId);
   if (studioClass) {
     const allBookings = await getAllBookings();

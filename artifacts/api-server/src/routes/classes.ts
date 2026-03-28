@@ -5,7 +5,7 @@ import { getAllBookings } from "../lib/bookings.js";
 const router = Router();
 
 router.get("/classes", async (_req, res) => {
-  const classes = readClasses();
+  const classes = await readClasses();
   const allBookings = await getAllBookings();
 
   const result = classes.map((cls) => {
