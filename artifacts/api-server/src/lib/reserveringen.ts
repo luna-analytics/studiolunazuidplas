@@ -13,6 +13,8 @@ export type Reservering = {
   dateStr: string;
   time: string;
   type: string;
+  aanwezig?: boolean;
+  notitie?: string;
   createdAt: string;
 };
 
@@ -27,21 +29,39 @@ export async function readReserveringen(): Promise<Reservering[]> {
   }
 }
 
+async function saveReserveringen(list: Reservering[]): Promise<void> {
+  await db.set(KEY, list);
+}
+
 export async function createReservering(
   data: Omit<Reservering, "id" | "createdAt">
 ): Promise<Reservering> {
-  const reserveringen = await readReserveringen();
-  const reservering: Reservering = {
-    ...data,
-    id: crypto.randomUUID(),
-    createdAt: new Date().toISOString(),
-  };
-  reserveringen.push(reservering);
-  await db.set(KEY, reserveringen);
-  return reservering;
+  const list = await readReserveringen();
+  const r: Reservering = { ...data, id: crypto.randomUUID(), createdAt: new Date().toISOString() };
+  list.push(r);
+  await saveReserveringen(list);
+  return r;
+}
+
+export async function toggleAanwezig(id: string): Promise<Reservering> {
+  const list = await readReserveringen();
+  const r = list.find((x) => x.id === id);
+  if (!r) throw new Error("Reservering niet gevonden");
+  r.aanwezig = !r.aanwezig;
+  await saveReserveringen(list);
+  return r;
+}
+
+export async function updateNotitie(id: string, notitie: string): Promise<Reservering> {
+  const list = await readReserveringen();
+  const r = list.find((x) => x.id === id);
+  if (!r) throw new Error("Reservering niet gevonden");
+  r.notitie = notitie;
+  await saveReserveringen(list);
+  return r;
 }
 
 export async function deleteReservering(id: string): Promise<void> {
-  const reserveringen = await readReserveringen();
-  await db.set(KEY, reserveringen.filter((r) => r.id !== id));
+  const list = await readReserveringen();
+  await saveReserveringen(list.filter((r) => r.id !== id));
 }

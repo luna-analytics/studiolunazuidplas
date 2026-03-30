@@ -7,6 +7,7 @@ import {
   Plus, Trash2, PlusCircle, MinusCircle, ChevronDown, ChevronUp, X,
   BookOpen, Users, ClipboardList, Check, CalendarDays, Baby, Share2,
   Sparkles, MessageCircle, MapPin, Clock, Mail, Palette, Tag, Receipt, Edit2, Save,
+  Copy, BellRing, UserPlus, CheckCircle2, Circle, RefreshCw,
 } from "lucide-react";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -1622,17 +1623,25 @@ function TarievenTab() {
 // ─── RESERVERINGEN TAB ───────────────────────────────────────────────────────
 type Reservering = {
   id: string; name: string; email: string; classId: string;
-  classTitle: string; dateStr: string; time: string; type: string; createdAt: string;
+  classTitle: string; dateStr: string; time: string; type: string;
+  aanwezig?: boolean; createdAt: string;
 };
 
 function ReserveeringenTab() {
   const [items, setItems] = useState<Reservering[]>([]);
   const [loading, setLoading] = useState(true);
+  const [classes, setClasses] = useState<StudioClass[]>([]);
+  const [showInboeken, setShowInboeken] = useState(false);
+  const [inboekForm, setInboekForm] = useState({ name: "", email: "", classId: "", dateStr: "", stuurEmail: true });
+  const [inboekLoading, setInboekLoading] = useState(false);
+  const [reminderState, setReminderState] = useState<Record<string, "idle" | "sending" | "done">>({});
+  const [copied, setCopied] = useState<string | null>(null);
 
   const load = async () => {
     setLoading(true);
-    const res = await apiFetch("/admin/reserveringen");
+    const [res, clsRes] = await Promise.all([apiFetch("/admin/reserveringen"), apiFetch("/api/classes")]);
     if (res.ok) setItems(await res.json());
+    if (clsRes.ok) setClasses(await clsRes.json());
     setLoading(false);
   };
 
@@ -1643,6 +1652,64 @@ function ReserveeringenTab() {
     setItems((prev) => prev.filter((r) => r.id !== id));
   };
 
+  const toggleAanwezig = async (id: string) => {
+    const res = await apiFetch(`/admin/reserveringen/${id}/aanwezig`, { method: "PATCH" });
+    if (res.ok) {
+      const updated: Reservering = await res.json();
+      setItems((prev) => prev.map((r) => (r.id === id ? updated : r)));
+    }
+  };
+
+  const sendHerinnering = async (key: string, classTitle: string, dateStr: string, time: string, type: string) => {
+    setReminderState((prev) => ({ ...prev, [key]: "sending" }));
+    const res = await apiFetch("/admin/reserveringen/herinnering", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ classTitle, dateStr, time, type }),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      setReminderState((prev) => ({ ...prev, [key]: "done" }));
+      setTimeout(() => setReminderState((prev) => ({ ...prev, [key]: "idle" })), 3000);
+      alert(`Herinnering verstuurd naar ${data.sent} deelnemer${data.sent !== 1 ? "s" : ""}!`);
+    }
+  };
+
+  const copyEmails = (group: Reservering[], key: string) => {
+    const emails = group.map((r) => r.email).join(", ");
+    navigator.clipboard.writeText(emails);
+    setCopied(key);
+    setTimeout(() => setCopied(null), 2000);
+  };
+
+  const submitInboeken = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const cls = classes.find((c) => c.id === inboekForm.classId);
+    if (!cls) return;
+    setInboekLoading(true);
+    const res = await apiFetch("/admin/reserveringen", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: inboekForm.name,
+        email: inboekForm.email,
+        classId: cls.id,
+        classTitle: cls.title,
+        dateStr: inboekForm.dateStr,
+        time: cls.time,
+        type: cls.type,
+        stuurEmail: inboekForm.stuurEmail,
+      }),
+    });
+    if (res.ok) {
+      const r: Reservering = await res.json();
+      setItems((prev) => [...prev, r]);
+      setInboekForm({ name: "", email: "", classId: "", dateStr: "", stuurEmail: true });
+      setShowInboeken(false);
+    }
+    setInboekLoading(false);
+  };
+
   const grouped = items.reduce<Record<string, Reservering[]>>((acc, r) => {
     const key = r.dateStr + "||" + r.classTitle;
     if (!acc[key]) acc[key] = [];
@@ -1651,13 +1718,77 @@ function ReserveeringenTab() {
   }, {});
 
   const sortedKeys = Object.keys(grouped).sort((a, b) => a.localeCompare(b));
+  const selectedClass = classes.find((c) => c.id === inboekForm.classId);
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <p className="text-sm text-foreground/60">{items.length} reservering{items.length !== 1 ? "en" : ""} totaal</p>
-        <button onClick={load} className="text-xs text-foreground/40 hover:text-foreground/60 transition-colors">Vernieuwen</button>
+        <div className="flex items-center gap-2">
+          <button onClick={load} className="p-2 text-foreground/40 hover:text-foreground/60 transition-colors rounded-xl hover:bg-secondary">
+            <RefreshCw className="w-4 h-4" />
+          </button>
+          <button onClick={() => setShowInboeken(!showInboeken)}
+            className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-2xl font-semibold text-sm hover:bg-primary/90 transition-colors">
+            {showInboeken ? <X className="w-4 h-4" /> : <UserPlus className="w-4 h-4" />}
+            {showInboeken ? "Sluiten" : "Inboeken"}
+          </button>
+        </div>
       </div>
+
+      <AnimatePresence>
+        {showInboeken && (
+          <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
+            className="bg-card border border-border/30 rounded-3xl p-5">
+            <h3 className="font-display text-lg font-medium mb-4">Iemand inboeken</h3>
+            <form onSubmit={submitInboeken} className="space-y-3">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Naam</label>
+                  <input required value={inboekForm.name} onChange={(e) => setInboekForm({ ...inboekForm, name: e.target.value })}
+                    placeholder="Naam deelnemer" className="w-full bg-secondary border border-border/40 rounded-2xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">E-mail</label>
+                  <input required type="email" value={inboekForm.email} onChange={(e) => setInboekForm({ ...inboekForm, email: e.target.value })}
+                    placeholder="email@adres.nl" className="w-full bg-secondary border border-border/40 rounded-2xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                </div>
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Les</label>
+                <select required value={inboekForm.classId} onChange={(e) => setInboekForm({ ...inboekForm, classId: e.target.value, dateStr: "" })}
+                  className="w-full bg-secondary border border-border/40 rounded-2xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30">
+                  <option value="">Kies een les…</option>
+                  {classes.map((c) => <option key={c.id} value={c.id}>{c.title} ({c.time})</option>)}
+                </select>
+              </div>
+              {selectedClass && (
+                <div>
+                  <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Datum</label>
+                  <select required value={inboekForm.dateStr} onChange={(e) => setInboekForm({ ...inboekForm, dateStr: e.target.value })}
+                    className="w-full bg-secondary border border-border/40 rounded-2xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30">
+                    <option value="">Kies een datum…</option>
+                    {[...selectedClass.dates].sort().map((d) => {
+                      const [y, m, day] = d.split("-").map(Number);
+                      const label = new Date(y, m - 1, day).toLocaleDateString("nl-NL", { weekday: "short", day: "numeric", month: "long" });
+                      return <option key={d} value={d}>{label}</option>;
+                    })}
+                  </select>
+                </div>
+              )}
+              <label className="flex items-center gap-2.5 cursor-pointer">
+                <input type="checkbox" checked={inboekForm.stuurEmail} onChange={(e) => setInboekForm({ ...inboekForm, stuurEmail: e.target.checked })}
+                  className="rounded" />
+                <span className="text-sm text-foreground/70">Stuur bevestigingsmail naar deelnemer</span>
+              </label>
+              <button type="submit" disabled={inboekLoading}
+                className="bg-primary text-primary-foreground px-5 py-2.5 rounded-2xl font-semibold text-sm hover:bg-primary/90 transition-colors disabled:opacity-60">
+                {inboekLoading ? "Inboeken…" : "Inboeken"}
+              </button>
+            </form>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {loading && (
         <div className="flex justify-center py-10">
@@ -1678,24 +1809,53 @@ function ReserveeringenTab() {
         const dateObj = new Date(year, month - 1, day);
         const dateLabel = dateObj.toLocaleDateString("nl-NL", { weekday: "long", day: "numeric", month: "long" });
         const time = group[0]?.time ?? "";
+        const type = group[0]?.type ?? "";
+        const aanwezig = group.filter((r) => r.aanwezig).length;
+        const rState = reminderState[key] ?? "idle";
         return (
           <div key={key} className="bg-card border border-border/30 rounded-3xl overflow-hidden">
-            <div className="px-5 pt-4 pb-2 border-b border-border/20 flex items-center justify-between gap-2">
-              <div>
-                <p className="font-semibold text-foreground text-sm capitalize">{dateLabel} · {time}</p>
-                <p className="text-xs text-foreground/50 mt-0.5">{classTitle} — {group.length} reservering{group.length !== 1 ? "en" : ""}</p>
+            <div className="px-5 pt-4 pb-3 border-b border-border/20">
+              <div className="flex items-start justify-between gap-2 mb-2">
+                <div>
+                  <p className="font-semibold text-foreground text-sm capitalize">{dateLabel} · {time}</p>
+                  <p className="text-xs text-foreground/50 mt-0.5">{classTitle} — {group.length} deelnemer{group.length !== 1 ? "s" : ""}</p>
+                </div>
+                {aanwezig > 0 && (
+                  <span className="shrink-0 text-xs font-bold px-2.5 py-0.5 rounded-full bg-primary/10 text-primary">
+                    {aanwezig}/{group.length} aanwezig
+                  </span>
+                )}
+              </div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <button onClick={() => copyEmails(group, key)}
+                  className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-xl bg-secondary hover:bg-border/30 transition-colors text-foreground/60">
+                  {copied === key ? <Check className="w-3.5 h-3.5 text-green-500" /> : <Copy className="w-3.5 h-3.5" />}
+                  {copied === key ? "Gekopieerd!" : "Kopieer e-mails"}
+                </button>
+                <button onClick={() => sendHerinnering(key, classTitle, dateStr, time, type)} disabled={rState === "sending"}
+                  className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-xl bg-secondary hover:bg-border/30 transition-colors text-foreground/60 disabled:opacity-60">
+                  {rState === "done" ? <Check className="w-3.5 h-3.5 text-green-500" /> : <BellRing className="w-3.5 h-3.5" />}
+                  {rState === "sending" ? "Versturen…" : rState === "done" ? "Verstuurd!" : "Herinnering sturen"}
+                </button>
               </div>
             </div>
             <div className="divide-y divide-border/20">
               {group.map((r) => (
                 <div key={r.id} className="px-5 py-3 flex items-center justify-between gap-3">
-                  <div>
+                  <div className="min-w-0">
                     <p className="text-sm font-medium text-foreground">{r.name}</p>
                     <p className="text-xs text-foreground/50">{r.email}</p>
                   </div>
-                  <button onClick={() => remove(r.id)} className="p-1.5 text-red-400 hover:text-red-600 transition-colors shrink-0">
-                    <Trash2 className="w-4 h-4" />
-                  </button>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <button onClick={() => toggleAanwezig(r.id)}
+                      title={r.aanwezig ? "Aanwezig — klik om te wisselen" : "Afwezig — klik om te markeren"}
+                      className={`p-1.5 rounded-xl transition-colors ${r.aanwezig ? "text-primary bg-primary/10 hover:bg-primary/20" : "text-foreground/30 hover:text-primary hover:bg-primary/10"}`}>
+                      {r.aanwezig ? <CheckCircle2 className="w-4 h-4" /> : <Circle className="w-4 h-4" />}
+                    </button>
+                    <button onClick={() => remove(r.id)} className="p-1.5 text-red-400 hover:text-red-600 transition-colors rounded-xl hover:bg-red-50">
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>

@@ -12,7 +12,9 @@ import { readProfiles } from "../lib/village-profiles.js";
 import { getEmailSettings, saveEmailSettings } from "../lib/email-settings.js";
 import { readClassTypes, createClassType, updateClassType, deleteClassType } from "../lib/class-types.js";
 import { readTarieven, saveTarieven, addRittenkaart, updateRittenkaart, deleteRittenkaart, addSpecial, updateSpecial, deleteSpecial } from "../lib/tarieven.js";
-import { readReserveringen, deleteReservering } from "../lib/reserveringen.js";
+import { readPaginaTeksten, savePaginaTeksten } from "../lib/pagina-teksten.js";
+import { readReserveringen, createReservering, toggleAanwezig, deleteReservering } from "../lib/reserveringen.js";
+import { sendReservationConfirmation, sendReminderEmail } from "../lib/email.js";
 
 const router = Router();
 
@@ -325,10 +327,61 @@ router.delete("/admin/tarieven/specials/:id", requireAdmin, async (req, res) => 
   res.json(await deleteSpecial(req.params.id));
 });
 
+router.patch("/admin/tarieven/volgorde", requireAdmin, async (req, res) => {
+  const { volgorde } = req.body;
+  if (!Array.isArray(volgorde)) return res.status(400).json({ error: "volgorde moet een array zijn" });
+  res.json(await saveTarieven({ volgorde }));
+});
+
+// ─── PAGINA TEKSTEN ──────────────────────────────────────────────────────────
+
+router.get("/admin/pagina-teksten", requireAdmin, async (_req, res) => {
+  res.json(await readPaginaTeksten());
+});
+
+router.patch("/admin/pagina-teksten", requireAdmin, async (req, res) => {
+  res.json(await savePaginaTeksten(req.body));
+});
+
 // ─── RESERVERINGEN ───────────────────────────────────────────────────────────
 
 router.get("/admin/reserveringen", requireAdmin, async (_req, res) => {
   res.json(await readReserveringen());
+});
+
+router.post("/admin/reserveringen", requireAdmin, async (req, res) => {
+  const { name, email, classId, classTitle, dateStr, time, type, stuurEmail } = req.body;
+  if (!name || !email || !classId || !classTitle || !dateStr || !time || !type) {
+    return res.status(400).json({ error: "Verplichte velden ontbreken" });
+  }
+  const r = await createReservering({ name, email, classId, classTitle, dateStr, time, type });
+  if (stuurEmail) {
+    sendReservationConfirmation({ toEmail: email, toName: name, classTitle, dateStr, time, type }).catch(() => {});
+  }
+  res.json(r);
+});
+
+router.post("/admin/reserveringen/herinnering", requireAdmin, async (req, res) => {
+  const { classTitle, dateStr, time, type } = req.body;
+  if (!classTitle || !dateStr) return res.status(400).json({ error: "Verplichte velden ontbreken" });
+  const all = await readReserveringen();
+  const groep = all.filter((r) => r.classTitle === classTitle && r.dateStr === dateStr);
+  if (groep.length === 0) return res.json({ sent: 0 });
+  await Promise.all(
+    groep.map((r) =>
+      sendReminderEmail({ toEmail: r.email, toName: r.name, classTitle, dateStr, time: time ?? r.time, type: type ?? r.type })
+    )
+  );
+  res.json({ sent: groep.length });
+});
+
+router.patch("/admin/reserveringen/:id/aanwezig", requireAdmin, async (req, res) => {
+  try {
+    const updated = await toggleAanwezig(req.params.id);
+    res.json(updated);
+  } catch {
+    res.status(404).json({ error: "Niet gevonden" });
+  }
 });
 
 router.delete("/admin/reserveringen/:id", requireAdmin, async (req, res) => {

@@ -29,6 +29,7 @@ export type TarievenData = {
   rittenkaarten: Rittenkaart[];
   specials: SpeciaalPakket[];
   betalingInfo: string;
+  volgorde?: string[];
 };
 
 const DEFAULT: TarievenData = {
