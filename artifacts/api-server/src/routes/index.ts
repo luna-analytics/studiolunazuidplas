@@ -84,6 +84,19 @@ router.post("/reserveer", async (req: any, res: any) => {
   }
 });
 
+// Reserveringen voor ingelogde gebruiker (op basis van e-mail)
+router.get("/reserveringen/mijn", requireAuth, async (req: any, res: any) => {
+  try {
+    const member = await findMemberById(req.userId);
+    if (!member) { res.status(404).json({ error: "Lid niet gevonden" }); return; }
+    const alle = await readReserveringen();
+    const mijn = alle.filter((r) => r.email.toLowerCase() === member.email.toLowerCase());
+    res.json(mijn);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Rittenkaart aanvraag (public of ingelogd) — ook voor specials
 router.post("/rittenkaart-request", async (req: any, res: any) => {
   const { name, email, package: pkg } = req.body as { name?: string; email?: string; package?: string };

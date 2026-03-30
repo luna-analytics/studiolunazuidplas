@@ -8,13 +8,35 @@ import { Bookmark, CalendarX2, ArrowRight, LogIn, CreditCard, LogOut } from "luc
 import { cn } from "@/lib/utils";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+type MijnReservering = {
+  id: string;
+  classTitle: string;
+  dateStr: string;
+  time: string;
+  type: string;
+};
 
 export default function Bookings() {
   const { user, logout, loading, refreshUser } = useAuth();
   const { bookings, cancelBooking, isLoaded } = useBookings(user?.id);
   const [loginOpen, setLoginOpen] = useState(false);
   const [loginMode, setLoginMode] = useState<"login" | "register">("login");
+  const [reserveringen, setReserveringen] = useState<MijnReservering[]>([]);
+
+  useEffect(() => {
+    if (!user || user.isAdmin) return;
+    const token = localStorage.getItem("studio_luna_token");
+    fetch(`${BASE}/api/reserveringen/mijn`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((r) => r.ok ? r.json() : [])
+      .then(setReserveringen)
+      .catch(() => {});
+  }, [user]);
 
   const sortedBookings = [...bookings].sort((a, b) => {
     const dateCompare = a.date.localeCompare(b.date);
@@ -109,6 +131,39 @@ export default function Bookings() {
                 </div>
               </motion.div>
             )
+          )}
+
+          {/* RESERVERINGEN — gereserveerd via het rooster (zonder rittenkaart) */}
+          {user && !user.isAdmin && reserveringen.length > 0 && (
+            <div>
+              <h2 className="font-display text-xl font-medium text-foreground mb-3">Gereserveerde lessen</h2>
+              <div className="space-y-3">
+                {[...reserveringen]
+                  .sort((a, b) => a.dateStr.localeCompare(b.dateStr))
+                  .map((r, i) => {
+                    const [y, m, d] = r.dateStr.split("-").map(Number);
+                    const dateObj = new Date(y, m - 1, d);
+                    const isYoga = r.type === "yoga";
+                    return (
+                      <motion.div
+                        key={r.id}
+                        initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: i * 0.05 }}
+                        className="bg-card border border-border/30 rounded-3xl p-5 relative overflow-hidden"
+                      >
+                        <div className={cn("absolute left-0 top-0 bottom-0 w-2", isYoga ? "bg-primary" : "bg-accent")} />
+                        <div className="pl-3">
+                          <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">
+                            {dateObj.toLocaleDateString("nl-NL", { weekday: "long", day: "numeric", month: "long" })}
+                          </p>
+                          <h3 className="font-display text-lg font-medium mb-0.5">{r.classTitle}</h3>
+                          <p className="text-foreground/70 text-sm">{r.time}</p>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+              </div>
+            </div>
           )}
 
           {/* BOOKINGS LIST — alleen voor ingelogde leden */}
