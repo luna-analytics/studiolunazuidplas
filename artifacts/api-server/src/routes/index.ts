@@ -13,6 +13,8 @@ import { findMemberById } from "../lib/users.js";
 import { requireAuth } from "../middlewares/auth.js";
 import { readClassTypes } from "../lib/class-types.js";
 import { readTarieven } from "../lib/tarieven.js";
+import { createReservering } from "../lib/reserveringen.js";
+import { sendReservationConfirmation } from "../lib/email.js";
 
 const router: IRouter = Router();
 
@@ -32,6 +34,25 @@ router.get("/class-types", async (_req, res) => {
 // Publieke tarieven endpoint
 router.get("/tarieven", async (_req, res) => {
   res.json(await readTarieven());
+});
+
+// Reservering voor openingsreeks (publiek, geen login nodig)
+router.post("/reserveer", async (req: any, res: any) => {
+  const { name, email, classId, classTitle, dateStr, time, type } = req.body as {
+    name?: string; email?: string; classId?: string; classTitle?: string;
+    dateStr?: string; time?: string; type?: string;
+  };
+  if (!name || !email || !classId || !classTitle || !dateStr || !time || !type) {
+    res.status(400).json({ error: "Alle velden zijn verplicht" }); return;
+  }
+  try {
+    const reservering = await createReservering({ name, email, classId, classTitle, dateStr, time, type });
+    // Stuur bevestigingsmail (fire-and-forget, blokkeer response niet)
+    sendReservationConfirmation({ toEmail: email, toName: name, classTitle, dateStr, time, type }).catch(console.error);
+    res.json(reservering);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // Rittenkaart aanvraag (public of ingelogd) — ook voor specials

@@ -2,9 +2,7 @@ import { useState, useMemo, useEffect } from "react";
 import { parseISO, isFuture, isToday, format } from "date-fns";
 import { nl } from "date-fns/locale";
 import { useClasses } from "@/hooks/use-classes";
-import { BookingModal } from "@/components/booking-modal";
-import { useBookings } from "@/hooks/use-bookings";
-import { useAuth } from "@/hooks/use-auth";
+import { ReserveerModal } from "@/components/reserveer-modal";
 import { BottomNav } from "@/components/bottom-nav";
 import { motion } from "framer-motion";
 import { Clock, Users, MapPin } from "lucide-react";
@@ -13,18 +11,18 @@ const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 type LesType = { id: string; naam: string; kleur: string };
 
-const KLEUR_MAP: Record<string, { bg: string; light: string; text: string }> = {
-  groen:       { bg: "#8fa89b", light: "rgba(143,168,155,0.12)", text: "#3a4f41" },
-  terra:       { bg: "#c78d76", light: "rgba(199,141,118,0.12)", text: "#7a4a35" },
-  roze:        { bg: "#d5b9b2", light: "rgba(213,185,178,0.12)", text: "#8B5E6A" },
-  beige:       { bg: "#d9cfc4", light: "rgba(217,207,196,0.15)", text: "#5c4a3a" },
-  donkergroen: { bg: "#3a4f41", light: "rgba(58,79,65,0.10)", text: "#ffffff" },
-  lila:        { bg: "#9b8ea8", light: "rgba(155,142,168,0.12)", text: "#5a4a6a" },
-  geel:        { bg: "#d4b96a", light: "rgba(212,185,106,0.12)", text: "#7a5c20" },
-  blauw:       { bg: "#7a9eb5", light: "rgba(122,158,181,0.12)", text: "#3a5a6a" },
+const KLEUR_MAP: Record<string, { bg: string; text: string }> = {
+  groen:       { bg: "#8fa89b", text: "#ffffff" },
+  terra:       { bg: "#c78d76", text: "#ffffff" },
+  roze:        { bg: "#d5b9b2", text: "#5c3a3a" },
+  beige:       { bg: "#d9cfc4", text: "#5c4a3a" },
+  donkergroen: { bg: "#3a4f41", text: "#ffffff" },
+  lila:        { bg: "#9b8ea8", text: "#ffffff" },
+  geel:        { bg: "#d4b96a", text: "#5a3c00" },
+  blauw:       { bg: "#7a9eb5", text: "#ffffff" },
 };
 
-const FALLBACK = { bg: "#8fa89b", light: "rgba(143,168,155,0.12)", text: "#3a4f41" };
+const FALLBACK = { bg: "#8fa89b", text: "#ffffff" };
 
 type ClassInstance = {
   classId: string;
@@ -37,13 +35,12 @@ type ClassInstance = {
   type: string;
   date: Date;
   dateStr: string;
+  dateLabel: string;
 };
 
 export default function Rooster() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedInstance, setSelectedInstance] = useState<ClassInstance | null>(null);
-  const { user } = useAuth();
-  const { isBooked, refetch: refetchBookings } = useBookings(user?.id);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selected, setSelected] = useState<ClassInstance | null>(null);
   const { classes, loading: classesLoading, refetch: refetchClasses } = useClasses();
   const [lesTypes, setLesTypes] = useState<LesType[]>([]);
 
@@ -59,7 +56,8 @@ export default function Rooster() {
     return KLEUR_MAP[lesType?.kleur ?? ""] ?? FALLBACK;
   };
 
-  const getLabel = (typeId: string) => lesTypes.find((t) => t.id === typeId)?.naam ?? typeId;
+  const getLabel = (typeId: string) =>
+    lesTypes.find((t) => t.id === typeId)?.naam ?? typeId;
 
   const upcomingInstances = useMemo((): ClassInstance[] => {
     const instances: ClassInstance[] = [];
@@ -73,11 +71,12 @@ export default function Rooster() {
             time: cls.time,
             teacher: cls.teacher,
             spotsTotal: cls.spotsTotal,
-            spotsAvailable: cls.spotsByDate[dateStr] ?? cls.spotsTotal,
+            spotsAvailable: (cls as any).spotsByDate?.[dateStr] ?? cls.spotsTotal,
             description: cls.description,
             type: cls.type,
             date,
             dateStr,
+            dateLabel: format(date, "EEEE d MMMM", { locale: nl }),
           });
         }
       }
@@ -85,13 +84,13 @@ export default function Rooster() {
     return instances.sort((a, b) => a.date.getTime() - b.date.getTime());
   }, [classes]);
 
-  const handleBook = (instance: ClassInstance) => {
-    setSelectedInstance(instance);
-    setIsModalOpen(true);
+  const handleReserveer = (instance: ClassInstance) => {
+    setSelected(instance);
+    setModalOpen(true);
   };
 
-  const handleModalClose = () => {
-    setIsModalOpen(false);
+  const handleClose = () => {
+    setModalOpen(false);
     refetchClasses();
   };
 
@@ -99,16 +98,18 @@ export default function Rooster() {
     <div className="min-h-screen bg-background pb-28 md:pb-16 md:pt-16 flex justify-center">
       <div className="w-full max-w-5xl bg-background min-h-screen relative">
 
+        {/* HEADER */}
         <div className="px-6 md:px-12 lg:px-16 pt-14 md:pt-12 pb-12 bg-secondary md:rounded-3xl md:mx-6 md:mt-6 flex items-start justify-between gap-4">
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
             <h1 className="font-display text-3xl md:text-4xl font-medium text-foreground">Rooster</h1>
-            <p className="text-foreground/60 mt-2 text-sm">Zie ik jou op de mat? Klik om te reserveren.</p>
+            <p className="text-foreground/60 mt-2 text-sm">Zie ik jou op de mat? Reserveer jouw plekje.</p>
           </motion.div>
-          <div className="overflow-hidden shrink-0" style={{ height: '95px' }}>
+          <div className="overflow-hidden shrink-0" style={{ height: "95px" }}>
             <img src={`${import.meta.env.BASE_URL}images/studio-luna-logo.png`} alt="Studio Luna" className="h-32 w-auto" />
           </div>
         </div>
 
+        {/* LESSEN */}
         <div className="px-6 md:px-12 lg:px-16 pt-6 mb-6">
           <div className="space-y-4">
             {classesLoading ? (
@@ -118,7 +119,6 @@ export default function Rooster() {
             ) : upcomingInstances.length > 0 ? (
               upcomingInstances.map((instance, i) => {
                 const colors = getColors(instance.type);
-                const booked = isBooked(instance.classId, instance.dateStr);
                 const isFull = instance.spotsAvailable <= 0;
 
                 return (
@@ -128,13 +128,17 @@ export default function Rooster() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.06 }}
                     className="rounded-3xl overflow-hidden shadow-sm border border-border/30"
-                    style={{ backgroundColor: colors.light }}
+                    style={{ backgroundColor: colors.bg + "18" }}
                   >
+                    {/* Kleurstrook + datum + type */}
                     <div className="px-5 pt-4 pb-2 flex items-center justify-between">
-                      <span className="text-xs font-bold uppercase tracking-widest" style={{ color: colors.bg }}>
-                        {format(instance.date, 'EEEE d MMMM', { locale: nl })}
+                      <span className="text-xs font-bold uppercase tracking-widest capitalize" style={{ color: colors.bg }}>
+                        {instance.dateLabel}
                       </span>
-                      <span className="text-xs px-2 py-0.5 rounded-full font-semibold" style={{ backgroundColor: colors.bg + '22', color: colors.bg }}>
+                      <span
+                        className="text-xs px-2.5 py-0.5 rounded-full font-semibold"
+                        style={{ backgroundColor: colors.bg + "30", color: colors.bg }}
+                      >
                         {getLabel(instance.type)}
                       </span>
                     </div>
@@ -148,9 +152,13 @@ export default function Rooster() {
                           <Clock className="w-3.5 h-3.5" />
                           {instance.time}
                         </span>
-                        <span className={`flex items-center gap-1 font-medium ${isFull ? "text-red-500" : instance.spotsAvailable <= 2 ? "text-orange-500" : "text-foreground/60"}`}>
+                        <span className={`flex items-center gap-1 font-medium ${
+                          isFull ? "text-red-500" : instance.spotsAvailable <= 2 ? "text-orange-500" : "text-foreground/60"
+                        }`}>
                           <Users className="w-3.5 h-3.5" />
-                          {isFull ? "Vol" : `${instance.spotsAvailable} ${instance.spotsAvailable === 1 ? "plek" : "plekken"} beschikbaar`}
+                          {isFull
+                            ? "Vol"
+                            : `${instance.spotsAvailable} ${instance.spotsAvailable === 1 ? "plek" : "plekken"} beschikbaar`}
                         </span>
                         <span className="flex items-center gap-1 text-foreground/60">
                           <MapPin className="w-3.5 h-3.5" />
@@ -158,20 +166,17 @@ export default function Rooster() {
                         </span>
                       </div>
 
-                      {booked ? (
-                        <div className="w-full py-2.5 rounded-2xl text-center text-sm font-semibold"
-                          style={{ backgroundColor: colors.bg + '33', color: colors.bg }}>
-                          ✓ Geboekt
-                        </div>
-                      ) : isFull ? (
+                      {isFull ? (
                         <div className="w-full py-2.5 rounded-2xl text-center text-sm font-semibold bg-foreground/10 text-foreground/40">
                           Vol
                         </div>
                       ) : (
-                        <button onClick={() => handleBook(instance)}
-                          className="w-full py-2.5 rounded-2xl text-sm font-semibold transition-colors"
-                          style={{ backgroundColor: colors.bg, color: "#fff" }}>
-                          Reserveren
+                        <button
+                          onClick={() => handleReserveer(instance)}
+                          className="w-full py-2.5 rounded-2xl text-sm font-semibold transition-all active:scale-[0.98]"
+                          style={{ backgroundColor: colors.bg, color: colors.text }}
+                        >
+                          Reserveer jouw plekje
                         </button>
                       )}
                     </div>
@@ -189,16 +194,16 @@ export default function Rooster() {
         <div className="pb-8" />
         <BottomNav />
 
-        {selectedInstance && (
-          <BookingModal
-            isOpen={isModalOpen}
-            onClose={handleModalClose}
-            classId={selectedInstance.classId}
-            dateStr={selectedInstance.dateStr}
-            classTitle={selectedInstance.title}
-            classTime={selectedInstance.time}
-            classDate={format(selectedInstance.date, 'EEEE d MMMM', { locale: nl })}
-            refetch={refetchBookings}
+        {selected && (
+          <ReserveerModal
+            isOpen={modalOpen}
+            onClose={handleClose}
+            classId={selected.classId}
+            classTitle={selected.title}
+            dateLabel={selected.dateLabel}
+            dateStr={selected.dateStr}
+            time={selected.time}
+            type={selected.type}
           />
         )}
       </div>

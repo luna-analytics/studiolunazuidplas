@@ -1619,8 +1619,95 @@ function TarievenTab() {
   );
 }
 
+// ─── RESERVERINGEN TAB ───────────────────────────────────────────────────────
+type Reservering = {
+  id: string; name: string; email: string; classId: string;
+  classTitle: string; dateStr: string; time: string; type: string; createdAt: string;
+};
+
+function ReserveeringenTab() {
+  const [items, setItems] = useState<Reservering[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const load = async () => {
+    setLoading(true);
+    const res = await apiFetch("/admin/reserveringen");
+    if (res.ok) setItems(await res.json());
+    setLoading(false);
+  };
+
+  useEffect(() => { load(); }, []);
+
+  const remove = async (id: string) => {
+    await apiFetch(`/admin/reserveringen/${id}`, { method: "DELETE" });
+    setItems((prev) => prev.filter((r) => r.id !== id));
+  };
+
+  const grouped = items.reduce<Record<string, Reservering[]>>((acc, r) => {
+    const key = r.dateStr + "||" + r.classTitle;
+    if (!acc[key]) acc[key] = [];
+    acc[key].push(r);
+    return acc;
+  }, {});
+
+  const sortedKeys = Object.keys(grouped).sort((a, b) => a.localeCompare(b));
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <p className="text-sm text-foreground/60">{items.length} reservering{items.length !== 1 ? "en" : ""} totaal</p>
+        <button onClick={load} className="text-xs text-foreground/40 hover:text-foreground/60 transition-colors">Vernieuwen</button>
+      </div>
+
+      {loading && (
+        <div className="flex justify-center py-10">
+          <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+        </div>
+      )}
+
+      {!loading && items.length === 0 && (
+        <div className="bg-card/50 border border-dashed border-border rounded-3xl p-8 text-center">
+          <p className="text-sm text-muted-foreground">Nog geen reserveringen.</p>
+        </div>
+      )}
+
+      {sortedKeys.map((key) => {
+        const [dateStr, classTitle] = key.split("||");
+        const group = grouped[key];
+        const [year, month, day] = dateStr.split("-").map(Number);
+        const dateObj = new Date(year, month - 1, day);
+        const dateLabel = dateObj.toLocaleDateString("nl-NL", { weekday: "long", day: "numeric", month: "long" });
+        const time = group[0]?.time ?? "";
+        return (
+          <div key={key} className="bg-card border border-border/30 rounded-3xl overflow-hidden">
+            <div className="px-5 pt-4 pb-2 border-b border-border/20 flex items-center justify-between gap-2">
+              <div>
+                <p className="font-semibold text-foreground text-sm capitalize">{dateLabel} · {time}</p>
+                <p className="text-xs text-foreground/50 mt-0.5">{classTitle} — {group.length} reservering{group.length !== 1 ? "en" : ""}</p>
+              </div>
+            </div>
+            <div className="divide-y divide-border/20">
+              {group.map((r) => (
+                <div key={r.id} className="px-5 py-3 flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-sm font-medium text-foreground">{r.name}</p>
+                    <p className="text-xs text-foreground/50">{r.email}</p>
+                  </div>
+                  <button onClick={() => remove(r.id)} className="p-1.5 text-red-400 hover:text-red-600 transition-colors shrink-0">
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 // ─── MAIN ADMIN PAGE ─────────────────────────────────────────────────────────
-type AdminTab = "leden" | "lessen" | "lestypes" | "tarieven" | "aanvragen" | "mededelingen" | "village" | "email";
+type AdminTab = "leden" | "lessen" | "lestypes" | "tarieven" | "aanvragen" | "reserveringen" | "mededelingen" | "village" | "email";
 
 export default function Admin() {
   const { user, loading, login } = useAuth();
@@ -1697,6 +1784,7 @@ export default function Admin() {
     { key: "lestypes", label: "Lestypes", icon: <Palette className="w-4 h-4" /> },
     { key: "tarieven", label: "Tarieven", icon: <Tag className="w-4 h-4" /> },
     { key: "aanvragen", label: "Aanvragen", icon: <ClipboardList className="w-4 h-4" /> },
+    { key: "reserveringen", label: "Reserveringen", icon: <CalendarDays className="w-4 h-4" /> },
     { key: "mededelingen", label: "Mededelingen", icon: <Baby className="w-4 h-4" /> },
     { key: "village", label: "Village", icon: <Sparkles className="w-4 h-4" /> },
     { key: "email", label: "E-mail", icon: <Mail className="w-4 h-4" /> },
@@ -1731,6 +1819,7 @@ export default function Admin() {
               {tab === "lestypes" && <LestypesTab />}
               {tab === "tarieven" && <TarievenTab />}
               {tab === "aanvragen" && <AanvragenTab />}
+              {tab === "reserveringen" && <ReserveeringenTab />}
               {tab === "mededelingen" && <MededelingenTab />}
               {tab === "village" && <VillageBeheerTab />}
               {tab === "email" && <EmailInstellingenTab />}

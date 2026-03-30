@@ -12,6 +12,7 @@ import { readProfiles } from "../lib/village-profiles.js";
 import { getEmailSettings, saveEmailSettings } from "../lib/email-settings.js";
 import { readClassTypes, createClassType, updateClassType, deleteClassType } from "../lib/class-types.js";
 import { readTarieven, saveTarieven, addRittenkaart, updateRittenkaart, deleteRittenkaart, addSpecial, updateSpecial, deleteSpecial } from "../lib/tarieven.js";
+import { readReserveringen, deleteReservering } from "../lib/reserveringen.js";
 
 const router = Router();
 
@@ -322,6 +323,17 @@ router.patch("/admin/tarieven/specials/:id", requireAdmin, async (req, res) => {
 
 router.delete("/admin/tarieven/specials/:id", requireAdmin, async (req, res) => {
   res.json(await deleteSpecial(req.params.id));
+});
+
+// ─── RESERVERINGEN ───────────────────────────────────────────────────────────
+
+router.get("/admin/reserveringen", requireAdmin, async (_req, res) => {
+  res.json(await readReserveringen());
+});
+
+router.delete("/admin/reserveringen/:id", requireAdmin, async (req, res) => {
+  await deleteReservering(req.params.id);
+  res.json({ ok: true });
 });
 
 export default router;
