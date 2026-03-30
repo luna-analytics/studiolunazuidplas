@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { parseISO, isFuture, isToday, format } from "date-fns";
 import { nl } from "date-fns/locale";
 import { useClasses } from "@/hooks/use-classes";
@@ -9,6 +9,23 @@ import { BottomNav } from "@/components/bottom-nav";
 import { motion } from "framer-motion";
 import { Clock, Users, MapPin } from "lucide-react";
 
+const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+type LesType = { id: string; naam: string; kleur: string };
+
+const KLEUR_MAP: Record<string, { bg: string; light: string; text: string }> = {
+  groen:       { bg: "#8fa89b", light: "rgba(143,168,155,0.12)", text: "#3a4f41" },
+  terra:       { bg: "#c78d76", light: "rgba(199,141,118,0.12)", text: "#7a4a35" },
+  roze:        { bg: "#d5b9b2", light: "rgba(213,185,178,0.12)", text: "#8B5E6A" },
+  beige:       { bg: "#d9cfc4", light: "rgba(217,207,196,0.15)", text: "#5c4a3a" },
+  donkergroen: { bg: "#3a4f41", light: "rgba(58,79,65,0.10)", text: "#ffffff" },
+  lila:        { bg: "#9b8ea8", light: "rgba(155,142,168,0.12)", text: "#5a4a6a" },
+  geel:        { bg: "#d4b96a", light: "rgba(212,185,106,0.12)", text: "#7a5c20" },
+  blauw:       { bg: "#7a9eb5", light: "rgba(122,158,181,0.12)", text: "#3a5a6a" },
+};
+
+const FALLBACK = { bg: "#8fa89b", light: "rgba(143,168,155,0.12)", text: "#3a4f41" };
+
 type ClassInstance = {
   classId: string;
   title: string;
@@ -17,7 +34,7 @@ type ClassInstance = {
   spotsTotal: number;
   spotsAvailable: number;
   description: string;
-  type: "yoga" | "circle";
+  type: string;
   date: Date;
   dateStr: string;
 };
@@ -28,6 +45,21 @@ export default function Rooster() {
   const { user } = useAuth();
   const { isBooked, refetch: refetchBookings } = useBookings(user?.id);
   const { classes, loading: classesLoading, refetch: refetchClasses } = useClasses();
+  const [lesTypes, setLesTypes] = useState<LesType[]>([]);
+
+  useEffect(() => {
+    fetch(`${BASE}/api/class-types`)
+      .then((r) => r.ok ? r.json() : [])
+      .then(setLesTypes)
+      .catch(() => {});
+  }, []);
+
+  const getColors = (typeId: string) => {
+    const lesType = lesTypes.find((t) => t.id === typeId);
+    return KLEUR_MAP[lesType?.kleur ?? ""] ?? FALLBACK;
+  };
+
+  const getLabel = (typeId: string) => lesTypes.find((t) => t.id === typeId)?.naam ?? typeId;
 
   const upcomingInstances = useMemo((): ClassInstance[] => {
     const instances: ClassInstance[] = [];
@@ -63,11 +95,6 @@ export default function Rooster() {
     refetchClasses();
   };
 
-  const colorMap = {
-    yoga: { bg: "#8fa89b", light: "rgba(143,168,155,0.12)", text: "#3a4f41", label: "Yoga" },
-    circle: { bg: "#c78d76", light: "rgba(199,141,118,0.12)", text: "#7a4a35", label: "Circle" },
-  };
-
   return (
     <div className="min-h-screen bg-background pb-28 md:pb-16 md:pt-16 flex justify-center">
       <div className="w-full max-w-5xl bg-background min-h-screen relative">
@@ -90,7 +117,7 @@ export default function Rooster() {
               </div>
             ) : upcomingInstances.length > 0 ? (
               upcomingInstances.map((instance, i) => {
-                const colors = colorMap[instance.type];
+                const colors = getColors(instance.type);
                 const booked = isBooked(instance.classId, instance.dateStr);
                 const isFull = instance.spotsAvailable <= 0;
 
@@ -107,8 +134,8 @@ export default function Rooster() {
                       <span className="text-xs font-bold uppercase tracking-widest" style={{ color: colors.bg }}>
                         {format(instance.date, 'EEEE d MMMM', { locale: nl })}
                       </span>
-                      <span className="text-xs px-2 py-0.5 rounded-full font-semibold" style={{ backgroundColor: colors.bg + '22', color: colors.text }}>
-                        {colors.label}
+                      <span className="text-xs px-2 py-0.5 rounded-full font-semibold" style={{ backgroundColor: colors.bg + '22', color: colors.bg }}>
+                        {getLabel(instance.type)}
                       </span>
                     </div>
 
@@ -133,20 +160,18 @@ export default function Rooster() {
 
                       {booked ? (
                         <div className="w-full py-2.5 rounded-2xl text-center text-sm font-semibold"
-                          style={{ backgroundColor: colors.bg + '33', color: colors.text }}>
+                          style={{ backgroundColor: colors.bg + '33', color: colors.bg }}>
                           ✓ Geboekt
                         </div>
                       ) : isFull ? (
                         <div className="w-full py-2.5 rounded-2xl text-center text-sm font-semibold bg-foreground/10 text-foreground/40">
-                          Vol — geen plekken meer
+                          Vol
                         </div>
                       ) : (
-                        <button
-                          onClick={() => handleBook(instance)}
-                          className="w-full py-2.5 rounded-2xl text-sm font-semibold text-white transition-opacity hover:opacity-90"
-                          style={{ backgroundColor: colors.bg }}
-                        >
-                          Reserveer jouw plekje
+                        <button onClick={() => handleBook(instance)}
+                          className="w-full py-2.5 rounded-2xl text-sm font-semibold transition-colors"
+                          style={{ backgroundColor: colors.bg, color: "#fff" }}>
+                          Reserveren
                         </button>
                       )}
                     </div>
@@ -154,32 +179,28 @@ export default function Rooster() {
                 );
               })
             ) : (
-              <div className="bg-card/50 border border-dashed border-border rounded-3xl p-8 text-center">
-                <p className="text-sm text-muted-foreground">Binnenkort nieuwe lessen beschikbaar.</p>
+              <div className="bg-card/50 border border-dashed border-border rounded-3xl p-10 text-center">
+                <p className="text-sm text-muted-foreground">Geen aankomende lessen gevonden.</p>
               </div>
             )}
           </div>
         </div>
 
-        <BookingModal
-          isOpen={isModalOpen}
-          onClose={handleModalClose}
-          studioClass={selectedInstance ? {
-            id: selectedInstance.classId,
-            title: selectedInstance.title,
-            time: selectedInstance.time,
-            teacher: selectedInstance.teacher,
-            spotsTotal: selectedInstance.spotsTotal,
-            spotsAvailable: selectedInstance.spotsAvailable,
-            description: selectedInstance.description,
-            type: selectedInstance.type,
-            dates: [],
-          } : null}
-          selectedDate={selectedInstance?.date ?? new Date()}
-          dateStr={selectedInstance?.dateStr ?? ""}
-        />
-
+        <div className="pb-8" />
         <BottomNav />
+
+        {selectedInstance && (
+          <BookingModal
+            isOpen={isModalOpen}
+            onClose={handleModalClose}
+            classId={selectedInstance.classId}
+            dateStr={selectedInstance.dateStr}
+            classTitle={selectedInstance.title}
+            classTime={selectedInstance.time}
+            classDate={format(selectedInstance.date, 'EEEE d MMMM', { locale: nl })}
+            refetch={refetchBookings}
+          />
+        )}
       </div>
     </div>
   );

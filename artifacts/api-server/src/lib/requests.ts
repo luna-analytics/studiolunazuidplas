@@ -8,7 +8,7 @@ export type RittenkaartRequest = {
   id: string;
   name: string;
   email: string;
-  package: "5-rittenkaart" | "10-rittenkaart" | "losse_les";
+  package: string;
   userId?: string;
   createdAt: string;
   done: boolean;

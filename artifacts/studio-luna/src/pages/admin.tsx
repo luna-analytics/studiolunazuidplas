@@ -6,14 +6,36 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Plus, Trash2, PlusCircle, MinusCircle, ChevronDown, ChevronUp, X,
   BookOpen, Users, ClipboardList, Check, CalendarDays, Baby, Share2,
-  Sparkles, MessageCircle, MapPin, Clock, Mail,
+  Sparkles, MessageCircle, MapPin, Clock, Mail, Palette, Tag, Receipt, Edit2, Save,
 } from "lucide-react";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 type Member = { id: string; name: string; email: string; credits: number; notes: string; createdAt: string };
-type StudioClass = { id: string; title: string; time: string; teacher: string; spotsTotal: number; description: string; type: "yoga" | "circle"; dates: string[] };
+type StudioClass = { id: string; title: string; time: string; teacher: string; spotsTotal: number; description: string; type: string; dates: string[] };
 type RRequest = { id: string; name: string; email: string; package: string; createdAt: string; done: boolean };
+type LesType = { id: string; naam: string; kleur: string; proeflesGeldig: boolean; actief: boolean };
+type Rittenkaart = { id: string; naam: string; prijs: number; geldigheid: string; communityAccess: boolean; beschrijving?: string };
+type SpeciaalPakket = { id: string; naam: string; prijs: number; beschrijving?: string; typeId?: string; proeflesGeldig: boolean; actief: boolean };
+type TarievenData = { proeflesPrijs: number; losseLes: number; rittenkaarten: Rittenkaart[]; specials: SpeciaalPakket[]; betalingInfo: string };
+
+const KLEUR_OPTIONS = [
+  { id: "groen", label: "Salie groen", hex: "#8fa89b" },
+  { id: "terra", label: "Terracotta", hex: "#c78d76" },
+  { id: "roze", label: "Dusty roze", hex: "#d5b9b2" },
+  { id: "beige", label: "Beige", hex: "#d9cfc4" },
+  { id: "donkergroen", label: "Donker groen", hex: "#3a4f41" },
+  { id: "lila", label: "Lila", hex: "#9b8ea8" },
+  { id: "geel", label: "Goud", hex: "#d4b96a" },
+  { id: "blauw", label: "Blauw", hex: "#7a9eb5" },
+] as const;
+
+function getKleurStyle(kleur: string): { bg: string; text: string } {
+  const found = KLEUR_OPTIONS.find((k) => k.id === kleur);
+  const hex = found?.hex ?? "#8fa89b";
+  const dark = ["donkergroen"].includes(kleur);
+  return { bg: hex, text: dark ? "#ffffff" : "#3a3a3a" };
+}
 type Announcement = { id: string; type: "bevallen"; memberId: string; memberName: string; shareConsent: boolean; note?: string; createdAt: string; seenByAdmin: boolean };
 
 function apiFetch(path: string, opts?: RequestInit) {
@@ -231,9 +253,10 @@ type ClassBookings = Record<string, Record<string, { count: number; bookings: (M
 
 function LessenTab() {
   const [classes, setClasses] = useState<StudioClass[]>([]);
+  const [lesTypes, setLesTypes] = useState<LesType[]>([]);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState({ title: "", time: "19:00", teacher: "Marjolein", spotsTotal: "8", description: "", type: "yoga" as "yoga" | "circle", newDate: "" });
+  const [form, setForm] = useState({ title: "", time: "19:00", teacher: "Marjolein", spotsTotal: "8", description: "", type: "", newDate: "" });
   const [classDates, setClassDates] = useState<string[]>([]);
   const [formLoading, setFormLoading] = useState(false);
   const [formError, setFormError] = useState("");
@@ -241,12 +264,18 @@ function LessenTab() {
   const [editSpots, setEditSpots] = useState<Record<string, string>>({});
 
   const load = async () => {
-    const [classesRes, bookingsRes] = await Promise.all([
+    const [classesRes, bookingsRes, typesRes] = await Promise.all([
       apiFetch("/admin/classes"),
       apiFetch("/admin/classes/bookings"),
+      apiFetch("/admin/class-types"),
     ]);
     if (classesRes.ok) setClasses(await classesRes.json());
     if (bookingsRes.ok) setClassBookings(await bookingsRes.json());
+    if (typesRes.ok) {
+      const types = await typesRes.json();
+      setLesTypes(types);
+      if (types.length > 0) setForm((f) => ({ ...f, type: f.type || types[0].id }));
+    }
   };
 
   useEffect(() => { load(); }, []);
@@ -262,7 +291,7 @@ function LessenTab() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
       setClasses((c) => [...c, data]);
-      setForm({ title: "", time: "19:00", teacher: "Marjolein", spotsTotal: "8", description: "", type: "yoga", newDate: "" });
+      setForm({ title: "", time: "19:00", teacher: "Marjolein", spotsTotal: "8", description: "", type: lesTypes[0]?.id ?? "", newDate: "" });
       setClassDates([]);
       setShowForm(false);
     } catch (err: any) {
@@ -359,10 +388,9 @@ function LessenTab() {
             </div>
             <div>
               <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Type</label>
-              <select value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value as any })}
+              <select value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value })}
                 className="w-full bg-secondary border border-border/40 rounded-2xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30">
-                <option value="yoga">Yoga</option>
-                <option value="circle">Circle</option>
+                {lesTypes.map((t) => <option key={t.id} value={t.id}>{t.naam}</option>)}
               </select>
             </div>
             <div>
@@ -414,7 +442,15 @@ function LessenTab() {
               <p className="text-xs text-foreground/50">{cls.time} · {cls.dates.length} datums · {cls.spotsTotal} plekken</p>
             </div>
             <div className="flex items-center gap-3">
-              <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${cls.type === "yoga" ? "bg-primary/15 text-primary" : "bg-accent/15 text-foreground"}`}>{cls.type === "yoga" ? "Yoga" : "Circle"}</span>
+              {(() => {
+                const lesType = lesTypes.find((t) => t.id === cls.type);
+                const style = getKleurStyle(lesType?.kleur ?? "groen");
+                return (
+                  <span className="text-xs font-bold px-2.5 py-0.5 rounded-full" style={{ backgroundColor: style.bg + "33", color: style.bg }}>
+                    {lesType?.naam ?? cls.type}
+                  </span>
+                );
+              })()}
               {expandedId === cls.id ? <ChevronUp className="w-4 h-4 text-foreground/40" /> : <ChevronDown className="w-4 h-4 text-foreground/40" />}
             </div>
           </div>
@@ -509,6 +545,166 @@ function LessenTab() {
           )}
         </motion.div>
       ))}
+    </div>
+  );
+}
+
+// ─── LESTYPES TAB ────────────────────────────────────────────────────────────
+function LestypesTab() {
+  const [types, setTypes] = useState<LesType[]>([]);
+  const [showForm, setShowForm] = useState(false);
+  const [form, setForm] = useState({ naam: "", kleur: "groen", proeflesGeldig: true });
+  const [editId, setEditId] = useState<string | null>(null);
+  const [editForm, setEditForm] = useState({ naam: "", kleur: "groen", proeflesGeldig: true, actief: true });
+  const [loading, setLoading] = useState(false);
+  const [err, setErr] = useState("");
+
+  const load = async () => {
+    const res = await apiFetch("/admin/class-types");
+    if (res.ok) setTypes(await res.json());
+  };
+  useEffect(() => { load(); }, []);
+
+  const create = async (e: React.FormEvent) => {
+    e.preventDefault(); setErr(""); setLoading(true);
+    try {
+      const res = await apiFetch("/admin/class-types", { method: "POST", body: JSON.stringify(form) });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      setTypes((t) => [...t, data]);
+      setForm({ naam: "", kleur: "groen", proeflesGeldig: true });
+      setShowForm(false);
+    } catch (e: any) { setErr(e.message); } finally { setLoading(false); }
+  };
+
+  const startEdit = (t: LesType) => {
+    setEditId(t.id);
+    setEditForm({ naam: t.naam, kleur: t.kleur, proeflesGeldig: t.proeflesGeldig, actief: t.actief });
+  };
+
+  const saveEdit = async (id: string) => {
+    const res = await apiFetch(`/admin/class-types/${id}`, { method: "PATCH", body: JSON.stringify(editForm) });
+    if (res.ok) { const updated = await res.json(); setTypes((t) => t.map((x) => x.id === id ? updated : x)); setEditId(null); }
+  };
+
+  const del = async (id: string) => {
+    if (!confirm("Lestype verwijderen?")) return;
+    await apiFetch(`/admin/class-types/${id}`, { method: "DELETE" });
+    setTypes((t) => t.filter((x) => x.id !== id));
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <p className="text-sm text-foreground/60">{types.length} lestypes</p>
+        <button onClick={() => setShowForm(!showForm)}
+          className="flex items-center gap-2 bg-primary text-primary-foreground px-5 py-2.5 rounded-2xl font-semibold text-sm hover:bg-primary/90 transition-colors">
+          {showForm ? <X className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+          {showForm ? "Annuleren" : "Nieuw type"}
+        </button>
+      </div>
+
+      {showForm && (
+        <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
+          className="bg-card border border-border/30 rounded-3xl p-5">
+          <h3 className="font-display text-lg font-medium mb-4">Nieuw lestype</h3>
+          <form onSubmit={create} className="space-y-3">
+            <div>
+              <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Naam</label>
+              <input required value={form.naam} onChange={(e) => setForm({ ...form, naam: e.target.value })}
+                placeholder="bijv. Workshop" className="w-full bg-secondary border border-border/40 rounded-2xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+            </div>
+            <div>
+              <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Kleur</label>
+              <div className="grid grid-cols-4 gap-2">
+                {KLEUR_OPTIONS.map((k) => (
+                  <button key={k.id} type="button" onClick={() => setForm({ ...form, kleur: k.id })}
+                    className={`flex flex-col items-center gap-1.5 p-2.5 rounded-2xl border-2 transition-all ${form.kleur === k.id ? "border-foreground/40" : "border-transparent"}`}>
+                    <span className="w-7 h-7 rounded-full block" style={{ backgroundColor: k.hex }} />
+                    <span className="text-xs text-foreground/60 leading-tight text-center">{k.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+            <label className="flex items-center gap-3 cursor-pointer">
+              <input type="checkbox" checked={form.proeflesGeldig} onChange={(e) => setForm({ ...form, proeflesGeldig: e.target.checked })} className="w-4 h-4 rounded" />
+              <span className="text-sm text-foreground/70">Proefles geldig voor dit type</span>
+            </label>
+            {err && <p className="text-sm text-red-500 bg-red-50 rounded-2xl px-3 py-2">{err}</p>}
+            <button type="submit" disabled={loading}
+              className="bg-primary text-primary-foreground px-5 py-2.5 rounded-2xl font-semibold text-sm hover:bg-primary/90 disabled:opacity-60 transition-colors">
+              {loading ? "Opslaan…" : "Lestype aanmaken"}
+            </button>
+          </form>
+        </motion.div>
+      )}
+
+      {types.map((t, i) => {
+        const style = getKleurStyle(t.kleur);
+        return (
+          <motion.div key={t.id} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}
+            className="bg-card border border-border/30 rounded-3xl overflow-hidden">
+            {editId === t.id ? (
+              <div className="p-5 space-y-3">
+                <div>
+                  <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Naam</label>
+                  <input value={editForm.naam} onChange={(e) => setEditForm({ ...editForm, naam: e.target.value })}
+                    className="w-full bg-secondary border border-border/40 rounded-2xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Kleur</label>
+                  <div className="grid grid-cols-4 gap-2">
+                    {KLEUR_OPTIONS.map((k) => (
+                      <button key={k.id} type="button" onClick={() => setEditForm({ ...editForm, kleur: k.id })}
+                        className={`flex flex-col items-center gap-1.5 p-2.5 rounded-2xl border-2 transition-all ${editForm.kleur === k.id ? "border-foreground/40" : "border-transparent"}`}>
+                        <span className="w-7 h-7 rounded-full block" style={{ backgroundColor: k.hex }} />
+                        <span className="text-xs text-foreground/60 leading-tight text-center">{k.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-4">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" checked={editForm.proeflesGeldig} onChange={(e) => setEditForm({ ...editForm, proeflesGeldig: e.target.checked })} className="w-4 h-4 rounded" />
+                    <span className="text-sm text-foreground/70">Proefles geldig</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" checked={editForm.actief} onChange={(e) => setEditForm({ ...editForm, actief: e.target.checked })} className="w-4 h-4 rounded" />
+                    <span className="text-sm text-foreground/70">Actief (zichtbaar in rooster)</span>
+                  </label>
+                </div>
+                <div className="flex gap-2 pt-1">
+                  <button onClick={() => saveEdit(t.id)}
+                    className="flex items-center gap-1.5 bg-primary text-primary-foreground px-4 py-2 rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors">
+                    <Save className="w-3.5 h-3.5" /> Opslaan
+                  </button>
+                  <button onClick={() => setEditId(null)} className="px-4 py-2 rounded-xl text-sm text-foreground/50 hover:text-foreground transition-colors">Annuleren</button>
+                </div>
+              </div>
+            ) : (
+              <div className="px-5 py-4 flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <span className="w-8 h-8 rounded-full shrink-0" style={{ backgroundColor: style.bg }} />
+                  <div>
+                    <p className="font-semibold text-foreground text-sm">{t.naam}</p>
+                    <p className="text-xs text-foreground/45 mt-0.5">
+                      {t.proeflesGeldig ? "Proefles geldig" : "Geen proefles"} · {t.actief ? "Actief" : "Inactief"}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button onClick={() => startEdit(t)} className="p-2 text-foreground/40 hover:text-foreground/70 transition-colors">
+                    <Edit2 className="w-4 h-4" />
+                  </button>
+                  <button onClick={() => del(t.id)} className="p-2 text-red-400 hover:text-red-600 transition-colors">
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            )}
+          </motion.div>
+        );
+      })}
     </div>
   );
 }
@@ -1062,8 +1258,369 @@ function EmailInstellingenTab() {
   );
 }
 
+// ─── TARIEVEN TAB ────────────────────────────────────────────────────────────
+function TarievenTab() {
+  const [data, setData] = useState<TarievenData | null>(null);
+  const [lesTypes, setLesTypes] = useState<LesType[]>([]);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  // Basisprijs form
+  const [basis, setBasis] = useState({ proeflesPrijs: "10", losseLes: "22.50", betalingInfo: "" });
+
+  // Rittenkaart forms
+  const [showRkForm, setShowRkForm] = useState(false);
+  const [rkForm, setRkForm] = useState({ naam: "", prijs: "", geldigheid: "", communityAccess: false, beschrijving: "" });
+  const [editRkId, setEditRkId] = useState<string | null>(null);
+  const [editRkForm, setEditRkForm] = useState({ naam: "", prijs: "", geldigheid: "", communityAccess: false, beschrijving: "" });
+
+  // Special forms
+  const [showSpForm, setShowSpForm] = useState(false);
+  const [spForm, setSpForm] = useState({ naam: "", prijs: "", beschrijving: "", typeId: "", proeflesGeldig: false, actief: true });
+  const [editSpId, setEditSpId] = useState<string | null>(null);
+  const [editSpForm, setEditSpForm] = useState({ naam: "", prijs: "", beschrijving: "", typeId: "", proeflesGeldig: false, actief: true });
+
+  const load = async () => {
+    const [tarRes, typesRes] = await Promise.all([apiFetch("/admin/tarieven"), apiFetch("/admin/class-types")]);
+    if (tarRes.ok) {
+      const d: TarievenData = await tarRes.json();
+      setData(d);
+      setBasis({ proeflesPrijs: String(d.proeflesPrijs), losseLes: String(d.losseLes), betalingInfo: d.betalingInfo });
+    }
+    if (typesRes.ok) setLesTypes(await typesRes.json());
+  };
+  useEffect(() => { load(); }, []);
+
+  const saveBasis = async (e: React.FormEvent) => {
+    e.preventDefault(); setSaving(true); setSaved(false);
+    const res = await apiFetch("/admin/tarieven", { method: "PUT", body: JSON.stringify({ proeflesPrijs: Number(basis.proeflesPrijs), losseLes: Number(basis.losseLes), betalingInfo: basis.betalingInfo }) });
+    if (res.ok) { setData(await res.json()); setSaved(true); setTimeout(() => setSaved(false), 2000); }
+    setSaving(false);
+  };
+
+  const addRk = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const res = await apiFetch("/admin/tarieven/rittenkaarten", { method: "POST", body: JSON.stringify({ ...rkForm, prijs: Number(rkForm.prijs) }) });
+    if (res.ok) { setData(await res.json()); setRkForm({ naam: "", prijs: "", geldigheid: "", communityAccess: false, beschrijving: "" }); setShowRkForm(false); }
+  };
+
+  const saveRk = async (id: string) => {
+    const res = await apiFetch(`/admin/tarieven/rittenkaarten/${id}`, { method: "PATCH", body: JSON.stringify({ ...editRkForm, prijs: Number(editRkForm.prijs) }) });
+    if (res.ok) { setData(await res.json()); setEditRkId(null); }
+  };
+
+  const deleteRk = async (id: string) => {
+    if (!confirm("Rittenkaart verwijderen?")) return;
+    const res = await apiFetch(`/admin/tarieven/rittenkaarten/${id}`, { method: "DELETE" });
+    if (res.ok) setData(await res.json());
+  };
+
+  const addSp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const res = await apiFetch("/admin/tarieven/specials", { method: "POST", body: JSON.stringify({ ...spForm, prijs: Number(spForm.prijs), typeId: spForm.typeId || undefined }) });
+    if (res.ok) { setData(await res.json()); setSpForm({ naam: "", prijs: "", beschrijving: "", typeId: "", proeflesGeldig: false, actief: true }); setShowSpForm(false); }
+  };
+
+  const saveSp = async (id: string) => {
+    const res = await apiFetch(`/admin/tarieven/specials/${id}`, { method: "PATCH", body: JSON.stringify({ ...editSpForm, prijs: Number(editSpForm.prijs), typeId: editSpForm.typeId || undefined }) });
+    if (res.ok) { setData(await res.json()); setEditSpId(null); }
+  };
+
+  const deleteSp = async (id: string) => {
+    if (!confirm("Speciaal pakket verwijderen?")) return;
+    const res = await apiFetch(`/admin/tarieven/specials/${id}`, { method: "DELETE" });
+    if (res.ok) setData(await res.json());
+  };
+
+  const fmtPrijs = (p: number) => `€ ${p % 1 === 0 ? p + ",-" : p.toFixed(2).replace(".", ",")}`;
+
+  if (!data) return <div className="flex justify-center py-10"><div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" /></div>;
+
+  return (
+    <div className="space-y-6">
+
+      {/* BASISTARIEVEN */}
+      <div className="bg-card border border-border/30 rounded-3xl p-5">
+        <h3 className="font-display text-lg font-medium mb-4">Basistarieven</h3>
+        <form onSubmit={saveBasis} className="space-y-3">
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Proefles (€)</label>
+              <input type="number" step="0.01" min="0" value={basis.proeflesPrijs} onChange={(e) => setBasis({ ...basis, proeflesPrijs: e.target.value })}
+                className="w-full bg-secondary border border-border/40 rounded-2xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+            </div>
+            <div>
+              <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Losse les (€)</label>
+              <input type="number" step="0.01" min="0" value={basis.losseLes} onChange={(e) => setBasis({ ...basis, losseLes: e.target.value })}
+                className="w-full bg-secondary border border-border/40 rounded-2xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+            </div>
+          </div>
+          <div>
+            <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Betaalinformatie</label>
+            <input value={basis.betalingInfo} onChange={(e) => setBasis({ ...basis, betalingInfo: e.target.value })}
+              placeholder="Betalen kan contant of via Tikkie"
+              className="w-full bg-secondary border border-border/40 rounded-2xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+          </div>
+          <button type="submit" disabled={saving}
+            className="flex items-center gap-2 bg-primary text-primary-foreground px-5 py-2.5 rounded-2xl font-semibold text-sm hover:bg-primary/90 disabled:opacity-60 transition-colors">
+            <Save className="w-3.5 h-3.5" />
+            {saving ? "Opslaan…" : saved ? "✓ Opgeslagen!" : "Basistarieven opslaan"}
+          </button>
+        </form>
+      </div>
+
+      {/* RITTENKAARTEN */}
+      <div>
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="font-display text-lg font-medium">Rittenkaarten</h3>
+          <button onClick={() => setShowRkForm(!showRkForm)}
+            className="flex items-center gap-1.5 bg-primary/10 text-primary px-4 py-2 rounded-2xl text-sm font-semibold hover:bg-primary/20 transition-colors">
+            {showRkForm ? <X className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
+            {showRkForm ? "Annuleren" : "Toevoegen"}
+          </button>
+        </div>
+
+        {showRkForm && (
+          <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
+            className="bg-card border border-border/30 rounded-3xl p-4 mb-3">
+            <form onSubmit={addRk} className="space-y-3">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Naam</label>
+                  <input required value={rkForm.naam} onChange={(e) => setRkForm({ ...rkForm, naam: e.target.value })} placeholder="bijv. 5-rittenkaart"
+                    className="w-full bg-secondary border border-border/40 rounded-2xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Prijs (€)</label>
+                  <input required type="number" step="0.01" min="0" value={rkForm.prijs} onChange={(e) => setRkForm({ ...rkForm, prijs: e.target.value })}
+                    className="w-full bg-secondary border border-border/40 rounded-2xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Geldigheid</label>
+                  <input value={rkForm.geldigheid} onChange={(e) => setRkForm({ ...rkForm, geldigheid: e.target.value })} placeholder="bijv. 2 maanden"
+                    className="w-full bg-secondary border border-border/40 rounded-2xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                </div>
+                <label className="flex items-center gap-2 cursor-pointer pt-5">
+                  <input type="checkbox" checked={rkForm.communityAccess} onChange={(e) => setRkForm({ ...rkForm, communityAccess: e.target.checked })} className="w-4 h-4 rounded" />
+                  <span className="text-sm text-foreground/70">Community toegang</span>
+                </label>
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Extra omschrijving</label>
+                <input value={rkForm.beschrijving} onChange={(e) => setRkForm({ ...rkForm, beschrijving: e.target.value })} placeholder="Optionele toelichting"
+                  className="w-full bg-secondary border border-border/40 rounded-2xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+              </div>
+              <button type="submit" className="bg-primary text-primary-foreground px-5 py-2.5 rounded-2xl font-semibold text-sm hover:bg-primary/90 transition-colors">
+                Rittenkaart aanmaken
+              </button>
+            </form>
+          </motion.div>
+        )}
+
+        <div className="space-y-2">
+          {data.rittenkaarten.map((rk) => (
+            <div key={rk.id} className="bg-card border border-border/30 rounded-3xl overflow-hidden">
+              {editRkId === rk.id ? (
+                <div className="p-4 space-y-3">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Naam</label>
+                      <input value={editRkForm.naam} onChange={(e) => setEditRkForm({ ...editRkForm, naam: e.target.value })}
+                        className="w-full bg-secondary border border-border/40 rounded-2xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                    </div>
+                    <div>
+                      <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Prijs (€)</label>
+                      <input type="number" step="0.01" min="0" value={editRkForm.prijs} onChange={(e) => setEditRkForm({ ...editRkForm, prijs: e.target.value })}
+                        className="w-full bg-secondary border border-border/40 rounded-2xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Geldigheid</label>
+                      <input value={editRkForm.geldigheid} onChange={(e) => setEditRkForm({ ...editRkForm, geldigheid: e.target.value })}
+                        className="w-full bg-secondary border border-border/40 rounded-2xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                    </div>
+                    <label className="flex items-center gap-2 cursor-pointer pt-5">
+                      <input type="checkbox" checked={editRkForm.communityAccess} onChange={(e) => setEditRkForm({ ...editRkForm, communityAccess: e.target.checked })} className="w-4 h-4 rounded" />
+                      <span className="text-sm text-foreground/70">Community</span>
+                    </label>
+                  </div>
+                  <div>
+                    <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Omschrijving</label>
+                    <input value={editRkForm.beschrijving} onChange={(e) => setEditRkForm({ ...editRkForm, beschrijving: e.target.value })}
+                      className="w-full bg-secondary border border-border/40 rounded-2xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                  </div>
+                  <div className="flex gap-2">
+                    <button onClick={() => saveRk(rk.id)} className="flex items-center gap-1.5 bg-primary text-primary-foreground px-4 py-2 rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors">
+                      <Save className="w-3.5 h-3.5" /> Opslaan
+                    </button>
+                    <button onClick={() => setEditRkId(null)} className="px-4 py-2 rounded-xl text-sm text-foreground/50 hover:text-foreground transition-colors">Annuleren</button>
+                  </div>
+                </div>
+              ) : (
+                <div className="px-5 py-4 flex items-center justify-between gap-3">
+                  <div>
+                    <p className="font-semibold text-foreground text-sm">{rk.naam}</p>
+                    <p className="text-xs text-foreground/50 mt-0.5">
+                      {fmtPrijs(rk.prijs)}{rk.geldigheid ? ` · ${rk.geldigheid}` : ""}{rk.communityAccess ? " · incl. community" : ""}
+                    </p>
+                    {rk.beschrijving && <p className="text-xs text-foreground/40 mt-0.5">{rk.beschrijving}</p>}
+                  </div>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <button onClick={() => { setEditRkId(rk.id); setEditRkForm({ naam: rk.naam, prijs: String(rk.prijs), geldigheid: rk.geldigheid, communityAccess: rk.communityAccess, beschrijving: rk.beschrijving ?? "" }); }}
+                      className="p-2 text-foreground/40 hover:text-foreground/70 transition-colors"><Edit2 className="w-4 h-4" /></button>
+                    <button onClick={() => deleteRk(rk.id)} className="p-2 text-red-400 hover:text-red-600 transition-colors"><Trash2 className="w-4 h-4" /></button>
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* SPECIALE PAKKETTEN */}
+      <div>
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="font-display text-lg font-medium">Speciale pakketten</h3>
+          <button onClick={() => setShowSpForm(!showSpForm)}
+            className="flex items-center gap-1.5 bg-primary/10 text-primary px-4 py-2 rounded-2xl text-sm font-semibold hover:bg-primary/20 transition-colors">
+            {showSpForm ? <X className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
+            {showSpForm ? "Annuleren" : "Toevoegen"}
+          </button>
+        </div>
+
+        {showSpForm && (
+          <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
+            className="bg-card border border-border/30 rounded-3xl p-4 mb-3">
+            <form onSubmit={addSp} className="space-y-3">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Naam</label>
+                  <input required value={spForm.naam} onChange={(e) => setSpForm({ ...spForm, naam: e.target.value })} placeholder="bijv. 3 Zwanger Circles"
+                    className="w-full bg-secondary border border-border/40 rounded-2xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Prijs (€)</label>
+                  <input required type="number" step="0.01" min="0" value={spForm.prijs} onChange={(e) => setSpForm({ ...spForm, prijs: e.target.value })}
+                    className="w-full bg-secondary border border-border/40 rounded-2xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Voor type (optioneel)</label>
+                  <select value={spForm.typeId} onChange={(e) => setSpForm({ ...spForm, typeId: e.target.value })}
+                    className="w-full bg-secondary border border-border/40 rounded-2xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30">
+                    <option value="">Alle types</option>
+                    {lesTypes.map((t) => <option key={t.id} value={t.id}>{t.naam}</option>)}
+                  </select>
+                </div>
+                <div className="flex flex-col gap-2 pt-1">
+                  <label className="flex items-center gap-2 cursor-pointer pt-4">
+                    <input type="checkbox" checked={spForm.proeflesGeldig} onChange={(e) => setSpForm({ ...spForm, proeflesGeldig: e.target.checked })} className="w-4 h-4 rounded" />
+                    <span className="text-sm text-foreground/70">Proefles geldig</span>
+                  </label>
+                </div>
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Omschrijving</label>
+                <input value={spForm.beschrijving} onChange={(e) => setSpForm({ ...spForm, beschrijving: e.target.value })} placeholder="Bijv. openingsaanbieding"
+                  className="w-full bg-secondary border border-border/40 rounded-2xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+              </div>
+              <button type="submit" className="bg-primary text-primary-foreground px-5 py-2.5 rounded-2xl font-semibold text-sm hover:bg-primary/90 transition-colors">
+                Pakket aanmaken
+              </button>
+            </form>
+          </motion.div>
+        )}
+
+        <div className="space-y-2">
+          {data.specials.map((sp) => {
+            const lesType = lesTypes.find((t) => t.id === sp.typeId);
+            return (
+              <div key={sp.id} className="bg-card border border-border/30 rounded-3xl overflow-hidden">
+                {editSpId === sp.id ? (
+                  <div className="p-4 space-y-3">
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Naam</label>
+                        <input value={editSpForm.naam} onChange={(e) => setEditSpForm({ ...editSpForm, naam: e.target.value })}
+                          className="w-full bg-secondary border border-border/40 rounded-2xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                      </div>
+                      <div>
+                        <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Prijs (€)</label>
+                        <input type="number" step="0.01" min="0" value={editSpForm.prijs} onChange={(e) => setEditSpForm({ ...editSpForm, prijs: e.target.value })}
+                          className="w-full bg-secondary border border-border/40 rounded-2xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Type</label>
+                        <select value={editSpForm.typeId} onChange={(e) => setEditSpForm({ ...editSpForm, typeId: e.target.value })}
+                          className="w-full bg-secondary border border-border/40 rounded-2xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30">
+                          <option value="">Alle types</option>
+                          {lesTypes.map((t) => <option key={t.id} value={t.id}>{t.naam}</option>)}
+                        </select>
+                      </div>
+                      <div className="flex flex-col gap-2 pt-1">
+                        <label className="flex items-center gap-2 cursor-pointer pt-4">
+                          <input type="checkbox" checked={editSpForm.proeflesGeldig} onChange={(e) => setEditSpForm({ ...editSpForm, proeflesGeldig: e.target.checked })} className="w-4 h-4 rounded" />
+                          <span className="text-sm text-foreground/70">Proefles geldig</span>
+                        </label>
+                      </div>
+                    </div>
+                    <div>
+                      <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Omschrijving</label>
+                      <input value={editSpForm.beschrijving} onChange={(e) => setEditSpForm({ ...editSpForm, beschrijving: e.target.value })}
+                        className="w-full bg-secondary border border-border/40 rounded-2xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                    </div>
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input type="checkbox" checked={editSpForm.actief} onChange={(e) => setEditSpForm({ ...editSpForm, actief: e.target.checked })} className="w-4 h-4 rounded" />
+                      <span className="text-sm text-foreground/70">Actief (zichtbaar op tarieven-pagina)</span>
+                    </label>
+                    <div className="flex gap-2">
+                      <button onClick={() => saveSp(sp.id)} className="flex items-center gap-1.5 bg-primary text-primary-foreground px-4 py-2 rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors">
+                        <Save className="w-3.5 h-3.5" /> Opslaan
+                      </button>
+                      <button onClick={() => setEditSpId(null)} className="px-4 py-2 rounded-xl text-sm text-foreground/50 hover:text-foreground transition-colors">Annuleren</button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="px-5 py-4 flex items-center justify-between gap-3">
+                    <div>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <p className="font-semibold text-foreground text-sm">{sp.naam}</p>
+                        {!sp.actief && <span className="text-xs bg-foreground/10 text-foreground/40 px-2 py-0.5 rounded-full">Inactief</span>}
+                      </div>
+                      <p className="text-xs text-foreground/50 mt-0.5">
+                        {fmtPrijs(sp.prijs)}{lesType ? ` · alleen voor ${lesType.naam}` : ""}{sp.proeflesGeldig ? "" : " · geen proefles"}
+                      </p>
+                      {sp.beschrijving && <p className="text-xs text-foreground/40 mt-0.5">{sp.beschrijving}</p>}
+                    </div>
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <button onClick={() => { setEditSpId(sp.id); setEditSpForm({ naam: sp.naam, prijs: String(sp.prijs), beschrijving: sp.beschrijving ?? "", typeId: sp.typeId ?? "", proeflesGeldig: sp.proeflesGeldig, actief: sp.actief }); }}
+                        className="p-2 text-foreground/40 hover:text-foreground/70 transition-colors"><Edit2 className="w-4 h-4" /></button>
+                      <button onClick={() => deleteSp(sp.id)} className="p-2 text-red-400 hover:text-red-600 transition-colors"><Trash2 className="w-4 h-4" /></button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+          {data.specials.length === 0 && (
+            <div className="bg-card/50 border border-dashed border-border rounded-3xl p-6 text-center">
+              <p className="text-sm text-muted-foreground">Nog geen speciale pakketten. Voeg er een toe hierboven.</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── MAIN ADMIN PAGE ─────────────────────────────────────────────────────────
-type AdminTab = "leden" | "lessen" | "aanvragen" | "mededelingen" | "village" | "email";
+type AdminTab = "leden" | "lessen" | "lestypes" | "tarieven" | "aanvragen" | "mededelingen" | "village" | "email";
 
 export default function Admin() {
   const { user, loading, login } = useAuth();
@@ -1137,6 +1694,8 @@ export default function Admin() {
   const tabs: { key: AdminTab; label: string; icon: React.ReactNode }[] = [
     { key: "leden", label: "Leden", icon: <Users className="w-4 h-4" /> },
     { key: "lessen", label: "Lessen", icon: <BookOpen className="w-4 h-4" /> },
+    { key: "lestypes", label: "Lestypes", icon: <Palette className="w-4 h-4" /> },
+    { key: "tarieven", label: "Tarieven", icon: <Tag className="w-4 h-4" /> },
     { key: "aanvragen", label: "Aanvragen", icon: <ClipboardList className="w-4 h-4" /> },
     { key: "mededelingen", label: "Mededelingen", icon: <Baby className="w-4 h-4" /> },
     { key: "village", label: "Village", icon: <Sparkles className="w-4 h-4" /> },
@@ -1169,6 +1728,8 @@ export default function Admin() {
               transition={{ duration: 0.15 }}>
               {tab === "leden" && <LedenTab />}
               {tab === "lessen" && <LessenTab />}
+              {tab === "lestypes" && <LestypesTab />}
+              {tab === "tarieven" && <TarievenTab />}
               {tab === "aanvragen" && <AanvragenTab />}
               {tab === "mededelingen" && <MededelingenTab />}
               {tab === "village" && <VillageBeheerTab />}

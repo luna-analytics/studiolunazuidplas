@@ -10,6 +10,8 @@ import { readEvents, createEvent, deleteEvent } from "../lib/events.js";
 import { readJournal, createQuestion, activateQuestion, deleteQuestion } from "../lib/journal.js";
 import { readProfiles } from "../lib/village-profiles.js";
 import { getEmailSettings, saveEmailSettings } from "../lib/email-settings.js";
+import { readClassTypes, createClassType, updateClassType, deleteClassType } from "../lib/class-types.js";
+import { readTarieven, saveTarieven, addRittenkaart, updateRittenkaart, deleteRittenkaart, addSpecial, updateSpecial, deleteSpecial } from "../lib/tarieven.js";
 
 const router = Router();
 
@@ -242,6 +244,84 @@ router.put("/admin/email-settings", requireAdmin, async (req, res) => {
   } catch (err: any) {
     res.status(400).json({ error: err.message });
   }
+});
+
+// ─── LESTYPES ─────────────────────────────────────────────────────────────────
+
+router.get("/admin/class-types", requireAdmin, async (_req, res) => {
+  res.json(await readClassTypes());
+});
+
+router.post("/admin/class-types", requireAdmin, async (req, res) => {
+  const { naam, kleur, proeflesGeldig, actief } = req.body;
+  if (!naam || !kleur) { res.status(400).json({ error: "Naam en kleur zijn verplicht" }); return; }
+  try {
+    res.json(await createClassType({ naam, kleur, proeflesGeldig: proeflesGeldig ?? true, actief: actief ?? true }));
+  } catch (err: any) { res.status(400).json({ error: err.message }); }
+});
+
+router.patch("/admin/class-types/:id", requireAdmin, async (req, res) => {
+  try {
+    res.json(await updateClassType(req.params.id, req.body));
+  } catch (err: any) { res.status(400).json({ error: err.message }); }
+});
+
+router.delete("/admin/class-types/:id", requireAdmin, async (req, res) => {
+  await deleteClassType(req.params.id);
+  res.json({ ok: true });
+});
+
+// ─── TARIEVEN ─────────────────────────────────────────────────────────────────
+
+router.get("/admin/tarieven", requireAdmin, async (_req, res) => {
+  res.json(await readTarieven());
+});
+
+router.put("/admin/tarieven", requireAdmin, async (req, res) => {
+  try {
+    const { proeflesPrijs, losseLes, betalingInfo } = req.body;
+    res.json(await saveTarieven({ proeflesPrijs, losseLes, betalingInfo }));
+  } catch (err: any) { res.status(400).json({ error: err.message }); }
+});
+
+router.post("/admin/tarieven/rittenkaarten", requireAdmin, async (req, res) => {
+  const { naam, prijs, geldigheid, communityAccess, beschrijving } = req.body;
+  if (!naam || prijs == null) { res.status(400).json({ error: "Naam en prijs zijn verplicht" }); return; }
+  try {
+    res.json(await addRittenkaart({ naam, prijs: Number(prijs), geldigheid: geldigheid ?? "", communityAccess: communityAccess ?? false, beschrijving }));
+  } catch (err: any) { res.status(400).json({ error: err.message }); }
+});
+
+router.patch("/admin/tarieven/rittenkaarten/:id", requireAdmin, async (req, res) => {
+  try {
+    const data = { ...req.body };
+    if (data.prijs != null) data.prijs = Number(data.prijs);
+    res.json(await updateRittenkaart(req.params.id, data));
+  } catch (err: any) { res.status(400).json({ error: err.message }); }
+});
+
+router.delete("/admin/tarieven/rittenkaarten/:id", requireAdmin, async (req, res) => {
+  res.json(await deleteRittenkaart(req.params.id));
+});
+
+router.post("/admin/tarieven/specials", requireAdmin, async (req, res) => {
+  const { naam, prijs, beschrijving, typeId, proeflesGeldig, actief } = req.body;
+  if (!naam || prijs == null) { res.status(400).json({ error: "Naam en prijs zijn verplicht" }); return; }
+  try {
+    res.json(await addSpecial({ naam, prijs: Number(prijs), beschrijving, typeId, proeflesGeldig: proeflesGeldig ?? false, actief: actief ?? true }));
+  } catch (err: any) { res.status(400).json({ error: err.message }); }
+});
+
+router.patch("/admin/tarieven/specials/:id", requireAdmin, async (req, res) => {
+  try {
+    const data = { ...req.body };
+    if (data.prijs != null) data.prijs = Number(data.prijs);
+    res.json(await updateSpecial(req.params.id, data));
+  } catch (err: any) { res.status(400).json({ error: err.message }); }
+});
+
+router.delete("/admin/tarieven/specials/:id", requireAdmin, async (req, res) => {
+  res.json(await deleteSpecial(req.params.id));
 });
 
 export default router;

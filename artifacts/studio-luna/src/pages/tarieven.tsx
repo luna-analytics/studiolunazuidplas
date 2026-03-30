@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { BottomNav } from "@/components/bottom-nav";
 import { motion, AnimatePresence } from "framer-motion";
 import { Tag, Info, MessageCircleHeart, X, ArrowRight, CheckCircle2 } from "lucide-react";
@@ -7,19 +7,27 @@ import { useLocation } from "wouter";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
-type Pakket = "5-rittenkaart" | "10-rittenkaart" | "losse_les";
+type Rittenkaart = { id: string; naam: string; lessen: number; prijs: number; geldigheid: string; omschrijving?: string; actief: boolean };
+type Special = { id: string; naam: string; prijs: number; beschrijving?: string; typeId?: string; proeflesGeldig: boolean; actief: boolean };
+type TarievenData = {
+  proeflesPrijs: number;
+  losseLes: number;
+  rittenkaarten: Rittenkaart[];
+  specials: Special[];
+  betalingInfo: string;
+};
 
-function RittenkaartModal({ isOpen, onClose, pakket }: { isOpen: boolean; onClose: () => void; pakket: Pakket | null }) {
+function fmtPrijs(n: number) {
+  return `€ ${n % 1 === 0 ? n.toFixed(0) : n.toFixed(2).replace(".", ",")},-`;
+}
+
+function RequestModal({ isOpen, onClose, pakket, label }: { isOpen: boolean; onClose: () => void; pakket: string | null; label: string }) {
   const { user } = useAuth();
   const [name, setName] = useState(user?.name ?? "");
   const [email, setEmail] = useState(user?.email ?? "");
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
-
-  const label = pakket === "5-rittenkaart" ? "5-rittenkaart (€ 105,-)"
-    : pakket === "10-rittenkaart" ? "10-rittenkaart (€ 195,-)"
-    : "Losse les (€ 22,50)";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,7 +74,7 @@ function RittenkaartModal({ isOpen, onClose, pakket }: { isOpen: boolean; onClos
                 <div>
                   <h2 className="font-display text-xl font-medium mb-2">Aanvraag ontvangen!</h2>
                   <p className="text-sm text-foreground/60 leading-relaxed">
-                    Studio Luna ontvangt jouw aanvraag voor de <strong>{label}</strong>. Je hoort snel!
+                    Studio Luna ontvangt jouw aanvraag voor <strong>{label}</strong>. Je hoort snel!
                   </p>
                 </div>
                 <button onClick={handleClose} className="bg-primary text-primary-foreground px-6 py-2.5 rounded-2xl font-semibold text-sm hover:bg-primary/90 transition-colors">
@@ -108,15 +116,41 @@ function RittenkaartModal({ isOpen, onClose, pakket }: { isOpen: boolean; onClos
   );
 }
 
+const DEFAULT_TARIEVEN: TarievenData = {
+  proeflesPrijs: 10,
+  losseLes: 22.5,
+  rittenkaarten: [
+    { id: "5rit", naam: "5-rittenkaart", lessen: 5, prijs: 105, geldigheid: "2 maanden", actief: true },
+    { id: "10rit", naam: "10-rittenkaart", lessen: 10, prijs: 195, geldigheid: "4 maanden", actief: true },
+  ],
+  specials: [],
+  betalingInfo: "Betalen kan contant in de studio of via Tikkie. Rittenkaarten zijn persoonlijk en niet overdraagbaar.",
+};
+
 export default function Tarieven() {
   const [, navigate] = useLocation();
-  const [requestPakket, setRequestPakket] = useState<Pakket | null>(null);
+  const [requestPakket, setRequestPakket] = useState<string | null>(null);
+  const [requestLabel, setRequestLabel] = useState("");
   const [requestOpen, setRequestOpen] = useState(false);
+  const [tarieven, setTarieven] = useState<TarievenData>(DEFAULT_TARIEVEN);
+  const [loading, setLoading] = useState(true);
 
-  const openRequest = (pakket: Pakket) => {
+  useEffect(() => {
+    fetch(`${BASE}/api/tarieven`)
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => { if (data) setTarieven(data); })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+
+  const openRequest = (pakket: string, label: string) => {
     setRequestPakket(pakket);
+    setRequestLabel(label);
     setRequestOpen(true);
   };
+
+  const activeRittenkaarten = tarieven.rittenkaarten.filter((r) => r.actief);
+  const activeSpecials = tarieven.specials.filter((s) => s.actief);
 
   return (
     <div className="min-h-screen bg-background pb-28 md:pb-16 md:pt-16 flex justify-center">
@@ -132,126 +166,127 @@ export default function Tarieven() {
           </div>
         </div>
 
-        <div className="px-6 md:px-12 lg:px-16 pt-8 space-y-3">
+        <div className="px-6 md:px-12 lg:px-16 pt-8 space-y-3 pb-8">
 
-          {/* PROEFLES */}
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0 }}
-            className="rounded-3xl px-5 py-4 border bg-card border-border/30">
-            <div className="flex items-center justify-between gap-3 mb-3">
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-2xl flex items-center justify-center shrink-0 bg-secondary">
-                  <Tag className="w-4 h-4 text-foreground/40" />
-                </div>
-                <p className="font-semibold text-foreground text-sm">Proefles</p>
-              </div>
-              <span className="text-lg font-bold text-foreground shrink-0">€ 10,-</span>
+          {loading ? (
+            <div className="flex justify-center py-10">
+              <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
             </div>
-            <button onClick={() => navigate("/rooster")}
-              className="w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground py-2.5 rounded-2xl font-semibold text-sm hover:bg-primary/90 transition-colors">
-              Boek een proefles
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
-          </motion.div>
-
-          {/* LOSSE LES */}
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.07 }}
-            className="rounded-3xl px-5 py-4 border bg-card border-border/30">
-            <div className="flex items-center justify-between gap-3 mb-3">
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-2xl flex items-center justify-center shrink-0 bg-secondary">
-                  <Tag className="w-4 h-4 text-foreground/40" />
+          ) : (
+            <>
+              {/* PROEFLES */}
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0 }}
+                className="rounded-3xl px-5 py-4 border bg-card border-border/30">
+                <div className="flex items-center justify-between gap-3 mb-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-2xl flex items-center justify-center shrink-0 bg-secondary">
+                      <Tag className="w-4 h-4 text-foreground/40" />
+                    </div>
+                    <p className="font-semibold text-foreground text-sm">Proefles</p>
+                  </div>
+                  <span className="text-lg font-bold text-foreground shrink-0">{fmtPrijs(tarieven.proeflesPrijs)}</span>
                 </div>
-                <p className="font-semibold text-foreground text-sm">Losse les</p>
-              </div>
-              <span className="text-lg font-bold text-foreground shrink-0">€ 22,50</span>
-            </div>
-            <button onClick={() => openRequest("losse_les")}
-              className="w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground py-2.5 rounded-2xl font-semibold text-sm hover:bg-primary/90 transition-colors">
-              Losse les aanvragen
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
-          </motion.div>
+                <button onClick={() => navigate("/rooster")}
+                  className="w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground py-2.5 rounded-2xl font-semibold text-sm hover:bg-primary/90 transition-colors">
+                  Boek een proefles
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </motion.div>
 
-          {/* 5-RITTENKAART */}
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.14 }}
-            className="rounded-3xl px-5 py-4 border bg-card border-border/30">
-            <div className="flex items-center justify-between gap-3">
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-2xl flex items-center justify-center shrink-0 bg-secondary">
-                  <Tag className="w-4 h-4 text-foreground/40" />
+              {/* LOSSE LES */}
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.07 }}
+                className="rounded-3xl px-5 py-4 border bg-card border-border/30">
+                <div className="flex items-center justify-between gap-3 mb-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-2xl flex items-center justify-center shrink-0 bg-secondary">
+                      <Tag className="w-4 h-4 text-foreground/40" />
+                    </div>
+                    <p className="font-semibold text-foreground text-sm">Losse les</p>
+                  </div>
+                  <span className="text-lg font-bold text-foreground shrink-0">{fmtPrijs(tarieven.losseLes)}</span>
                 </div>
+                <button onClick={() => openRequest("losse_les", `Losse les (${fmtPrijs(tarieven.losseLes)})`)}
+                  className="w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground py-2.5 rounded-2xl font-semibold text-sm hover:bg-primary/90 transition-colors">
+                  Losse les aanvragen
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </motion.div>
+
+              {/* RITTENKAARTEN */}
+              {activeRittenkaarten.map((rk, i) => (
+                <motion.div key={rk.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.14 + i * 0.07 }}
+                  className="rounded-3xl px-5 py-4 border bg-card border-border/30">
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-2xl flex items-center justify-center shrink-0 bg-secondary">
+                        <Tag className="w-4 h-4 text-foreground/40" />
+                      </div>
+                      <div>
+                        <p className="font-semibold text-foreground text-sm">{rk.naam}</p>
+                        <p className="text-xs text-foreground/45 mt-0.5 flex items-center gap-1">
+                          <Info className="w-3 h-3" /> {rk.geldigheid} geldig
+                        </p>
+                      </div>
+                    </div>
+                    <span className="text-lg font-bold text-foreground shrink-0">{fmtPrijs(rk.prijs)}</span>
+                  </div>
+                  <div className="mt-3 pt-3 border-t border-border/20">
+                    {rk.omschrijving ? (
+                      <p className="text-xs text-foreground/55 leading-relaxed mb-3">{rk.omschrijving}</p>
+                    ) : (
+                      <>
+                        <div className="flex items-center gap-1.5 mb-1">
+                          <MessageCircleHeart className="w-3.5 h-3.5 text-accent shrink-0" />
+                          <p className="text-xs font-semibold text-foreground">Inclusief toegang tot de Studio Luna WhatsApp-community</p>
+                        </div>
+                        <p className="text-xs text-foreground/50 leading-relaxed pl-5 mb-3">
+                          Ontvang tips, extra rustmomenten en blijf in verbinding met de andere moeders uit de village.
+                        </p>
+                      </>
+                    )}
+                    <button onClick={() => openRequest(rk.id, `${rk.naam} (${fmtPrijs(rk.prijs)})`)}
+                      className="w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground py-2.5 rounded-2xl font-semibold text-sm hover:bg-primary/90 transition-colors">
+                      {rk.naam} aanvragen
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </motion.div>
+              ))}
+
+              {/* SPECIALE PAKKETTEN */}
+              {activeSpecials.length > 0 && (
                 <div>
-                  <p className="font-semibold text-foreground text-sm">5-rittenkaart</p>
-                  <p className="text-xs text-foreground/45 mt-0.5 flex items-center gap-1">
-                    <Info className="w-3 h-3" /> 2 maanden geldig
-                  </p>
+                  <p className="text-xs font-bold uppercase tracking-widest text-foreground/40 mb-2 px-1">Speciale pakketten</p>
+                  {activeSpecials.map((sp, i) => (
+                    <motion.div key={sp.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.14 + (activeRittenkaarten.length + i) * 0.07 }}
+                      className="rounded-3xl px-5 py-4 border bg-card border-border/30 mb-3">
+                      <div className="flex items-center justify-between gap-3 mb-2">
+                        <p className="font-semibold text-foreground text-sm">{sp.naam}</p>
+                        <span className="text-lg font-bold text-foreground shrink-0">{fmtPrijs(sp.prijs)}</span>
+                      </div>
+                      {sp.beschrijving && <p className="text-xs text-foreground/55 leading-relaxed mb-3">{sp.beschrijving}</p>}
+                      <button onClick={() => openRequest(sp.id, `${sp.naam} (${fmtPrijs(sp.prijs)})`)}
+                        className="w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground py-2.5 rounded-2xl font-semibold text-sm hover:bg-primary/90 transition-colors">
+                        Aanvragen
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </button>
+                    </motion.div>
+                  ))}
                 </div>
-              </div>
-              <span className="text-lg font-bold text-foreground shrink-0">€ 105,-</span>
-            </div>
-            <div className="mt-3 pt-3 border-t border-border/20">
-              <div className="flex items-center gap-1.5 mb-1">
-                <MessageCircleHeart className="w-3.5 h-3.5 text-accent shrink-0" />
-                <p className="text-xs font-semibold text-foreground">Inclusief toegang tot de Studio Luna WhatsApp-community</p>
-              </div>
-              <p className="text-xs text-foreground/50 leading-relaxed pl-5 mb-3">
-                Ontvang tips, extra rustmomenten en blijf in verbinding met de andere moeders uit de village.
-              </p>
-              <button onClick={() => openRequest("5-rittenkaart")}
-                className="w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground py-2.5 rounded-2xl font-semibold text-sm hover:bg-primary/90 transition-colors">
-                5-rittenkaart aanvragen
-                <ArrowRight className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          </motion.div>
+              )}
 
-          {/* 10-RITTENKAART */}
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.21 }}
-            className="rounded-3xl px-5 py-4 border bg-card border-border/30">
-            <div className="flex items-center justify-between gap-3">
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-2xl flex items-center justify-center shrink-0 bg-secondary">
-                  <Tag className="w-4 h-4 text-foreground/40" />
-                </div>
-                <div>
-                  <p className="font-semibold text-foreground text-sm">10-rittenkaart</p>
-                  <p className="text-xs text-foreground/45 mt-0.5 flex items-center gap-1">
-                    <Info className="w-3 h-3" /> 4 maanden geldig
-                  </p>
-                </div>
+              {/* BETALING */}
+              <div className="rounded-3xl border border-dashed border-accent/50 bg-accent/10 px-5 py-4">
+                <p className="text-sm font-semibold text-foreground mb-1">💳 Betaling</p>
+                <p className="text-sm text-foreground/65 leading-relaxed">{tarieven.betalingInfo || "Betalen kan contant in de studio of via Tikkie."}</p>
               </div>
-              <span className="text-lg font-bold text-foreground shrink-0">€ 195,-</span>
-            </div>
-            <div className="mt-3 pt-3 border-t border-border/20">
-              <div className="flex items-center gap-1.5 mb-1">
-                <MessageCircleHeart className="w-3.5 h-3.5 text-accent shrink-0" />
-                <p className="text-xs font-semibold text-foreground">Inclusief toegang tot de Studio Luna WhatsApp-community</p>
-              </div>
-              <p className="text-xs text-foreground/50 leading-relaxed pl-5 mb-3">
-                Ontvang tips, extra rustmomenten en blijf in verbinding met de andere moeders uit de village.
-              </p>
-              <button onClick={() => openRequest("10-rittenkaart")}
-                className="w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground py-2.5 rounded-2xl font-semibold text-sm hover:bg-primary/90 transition-colors">
-                10-rittenkaart aanvragen
-                <ArrowRight className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          </motion.div>
-
-          {/* BETALING */}
-          <div className="rounded-3xl border border-dashed border-accent/50 bg-accent/10 px-5 py-4 space-y-3">
-            <div>
-              <p className="text-sm font-semibold text-foreground mb-1">💳 Betaling</p>
-              <p className="text-sm text-foreground/65 leading-relaxed">Betalen kan contant in de studio of via Tikkie.</p>
-            </div>
-            <p className="text-sm text-foreground/50 leading-relaxed">Rittenkaarten zijn persoonlijk en niet overdraagbaar.</p>
-          </div>
-
+            </>
+          )}
         </div>
 
-        <div className="pb-8" />
         <BottomNav />
-        <RittenkaartModal isOpen={requestOpen} onClose={() => setRequestOpen(false)} pakket={requestPakket} />
+        <RequestModal isOpen={requestOpen} onClose={() => setRequestOpen(false)} pakket={requestPakket} label={requestLabel} />
       </div>
     </div>
   );

@@ -11,7 +11,7 @@ export type StudioClass = {
   teacher: string;
   spotsTotal: number;
   description: string;
-  type: "yoga" | "circle";
+  type: string;
   dates: string[];
 };
 
