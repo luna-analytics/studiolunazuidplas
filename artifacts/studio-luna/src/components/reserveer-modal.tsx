@@ -37,7 +37,15 @@ export function ReserveerModal({
         body: JSON.stringify({ name, email, classId, classTitle, dateStr, time, type }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? "Er ging iets mis");
+      if (!res.ok) {
+        if (data.error === "Vol") {
+          throw new Error("Deze les is helaas vol. Neem contact op via WhatsApp als je op de wachtlijst wil staan.");
+        }
+        if (data.error === "DubbelReservering") {
+          throw new Error("Je hebt al een plek gereserveerd voor deze les.");
+        }
+        throw new Error(data.message ?? data.error ?? "Er ging iets mis, probeer het opnieuw.");
+      }
       setDone(true);
     } catch (err: any) {
       setError(err.message);

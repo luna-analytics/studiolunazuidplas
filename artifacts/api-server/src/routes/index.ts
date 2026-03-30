@@ -13,8 +13,10 @@ import { findMemberById } from "../lib/users.js";
 import { requireAuth } from "../middlewares/auth.js";
 import { readClassTypes } from "../lib/class-types.js";
 import { readTarieven } from "../lib/tarieven.js";
-import { createReservering } from "../lib/reserveringen.js";
+import { createReservering, readReserveringen } from "../lib/reserveringen.js";
 import { sendReservationConfirmation } from "../lib/email.js";
+import { readClasses } from "../lib/classes.js";
+import { getAllBookings } from "../lib/bookings.js";
 import { readPaginaTeksten } from "../lib/pagina-teksten.js";
 
 const router: IRouter = Router();
@@ -52,8 +54,29 @@ router.post("/reserveer", async (req: any, res: any) => {
     res.status(400).json({ error: "Alle velden zijn verplicht" }); return;
   }
   try {
+    // Capaciteitscontrole: tel bestaande boekingen + reserveringen voor deze les + datum
+    const [classes, allBookings, allReserveringen] = await Promise.all([
+      readClasses(),
+      getAllBookings(),
+      readReserveringen(),
+    ]);
+    const cls = classes.find((c) => c.id === classId);
+    if (cls) {
+      const takenByBookings = allBookings.filter((b) => b.classId === classId && b.date === dateStr).length;
+      const takenByReserveringen = allReserveringen.filter((r) => r.classId === classId && r.dateStr === dateStr).length;
+      const available = cls.spotsTotal - takenByBookings - takenByReserveringen;
+      if (available <= 0) {
+        res.status(409).json({ error: "Vol", message: "Deze les is helaas vol. Neem contact op met Studio Luna als je op de wachtlijst wil." });
+        return;
+      }
+      // Voorkom dubbele reservering voor zelfde e-mail + les + datum
+      const dubbel = allReserveringen.find((r) => r.classId === classId && r.dateStr === dateStr && r.email.toLowerCase() === email.toLowerCase());
+      if (dubbel) {
+        res.status(409).json({ error: "DubbelReservering", message: "Je hebt al een plek gereserveerd voor deze les." });
+        return;
+      }
+    }
     const reservering = await createReservering({ name, email, classId, classTitle, dateStr, time, type });
-    // Stuur bevestigingsmail (fire-and-forget, blokkeer response niet)
     sendReservationConfirmation({ toEmail: email, toName: name, classTitle, dateStr, time, type }).catch(console.error);
     res.json(reservering);
   } catch (err: any) {

@@ -1752,6 +1752,8 @@ function ReserveeringenTab() {
   const [showInboeken, setShowInboeken] = useState(false);
   const [inboekForm, setInboekForm] = useState({ name: "", email: "", classId: "", dateStr: "", stuurEmail: true });
   const [inboekLoading, setInboekLoading] = useState(false);
+  const [inboekError, setInboekError] = useState("");
+  const [inboekVolWaarschuwing, setInboekVolWaarschuwing] = useState(false);
   const [reminderState, setReminderState] = useState<Record<string, "idle" | "sending" | "done">>({});
   const [copied, setCopied] = useState<string | null>(null);
 
@@ -1800,11 +1802,11 @@ function ReserveeringenTab() {
     setTimeout(() => setCopied(null), 2000);
   };
 
-  const submitInboeken = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const doInboeken = async (forceOverCapacity = false) => {
     const cls = classes.find((c) => c.id === inboekForm.classId);
     if (!cls) return;
     setInboekLoading(true);
+    setInboekError("");
     const res = await apiFetch("/admin/reserveringen", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -1817,6 +1819,7 @@ function ReserveeringenTab() {
         time: cls.time,
         type: cls.type,
         stuurEmail: inboekForm.stuurEmail,
+        forceOverCapacity,
       }),
     });
     if (res.ok) {
@@ -1824,8 +1827,22 @@ function ReserveeringenTab() {
       setItems((prev) => [...prev, r]);
       setInboekForm({ name: "", email: "", classId: "", dateStr: "", stuurEmail: true });
       setShowInboeken(false);
+      setInboekVolWaarschuwing(false);
+    } else {
+      const data = await res.json();
+      if (res.status === 409 && data.error === "Vol") {
+        setInboekVolWaarschuwing(true);
+      } else {
+        setInboekError(data.error ?? "Er ging iets mis");
+      }
     }
     setInboekLoading(false);
+  };
+
+  const submitInboeken = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setInboekVolWaarschuwing(false);
+    await doInboeken(false);
   };
 
   const grouped = items.reduce<Record<string, Reservering[]>>((acc, r) => {
@@ -1899,10 +1916,25 @@ function ReserveeringenTab() {
                   className="rounded" />
                 <span className="text-sm text-foreground/70">Stuur bevestigingsmail naar deelnemer</span>
               </label>
-              <button type="submit" disabled={inboekLoading}
-                className="bg-primary text-primary-foreground px-5 py-2.5 rounded-2xl font-semibold text-sm hover:bg-primary/90 transition-colors disabled:opacity-60">
-                {inboekLoading ? "Inboeken…" : "Inboeken"}
-              </button>
+              {inboekError && (
+                <p className="text-sm text-red-500 bg-red-50 rounded-2xl px-4 py-2">{inboekError}</p>
+              )}
+              {inboekVolWaarschuwing && (
+                <div className="bg-orange-50 border border-orange-200 rounded-2xl px-4 py-3 space-y-2">
+                  <p className="text-sm font-semibold text-orange-700">⚠️ Deze les is vol</p>
+                  <p className="text-xs text-orange-600">Je kunt toch inboeken (als extra deelnemer buiten de capaciteit).</p>
+                  <button type="button" onClick={() => doInboeken(true)} disabled={inboekLoading}
+                    className="bg-orange-600 text-white px-4 py-2 rounded-xl font-semibold text-sm hover:bg-orange-700 transition-colors disabled:opacity-60">
+                    {inboekLoading ? "Inboeken…" : "Toch inboeken"}
+                  </button>
+                </div>
+              )}
+              {!inboekVolWaarschuwing && (
+                <button type="submit" disabled={inboekLoading}
+                  className="bg-primary text-primary-foreground px-5 py-2.5 rounded-2xl font-semibold text-sm hover:bg-primary/90 transition-colors disabled:opacity-60">
+                  {inboekLoading ? "Inboeken…" : "Inboeken"}
+                </button>
+              )}
             </form>
           </motion.div>
         )}
@@ -1928,15 +1960,25 @@ function ReserveeringenTab() {
         const dateLabel = dateObj.toLocaleDateString("nl-NL", { weekday: "long", day: "numeric", month: "long" });
         const time = group[0]?.time ?? "";
         const type = group[0]?.type ?? "";
+        const classId = group[0]?.classId ?? "";
         const aanwezig = group.filter((r) => r.aanwezig).length;
         const rState = reminderState[key] ?? "idle";
+        const cls = classes.find((c) => c.id === classId);
+        const spotsTotal = cls?.spotsTotal ?? null;
+        const isFull = spotsTotal !== null && group.length >= spotsTotal;
         return (
           <div key={key} className="bg-card border border-border/30 rounded-3xl overflow-hidden">
             <div className="px-5 pt-4 pb-3 border-b border-border/20">
               <div className="flex items-start justify-between gap-2 mb-2">
                 <div>
                   <p className="font-semibold text-foreground text-sm capitalize">{dateLabel} · {time}</p>
-                  <p className="text-xs text-foreground/50 mt-0.5">{classTitle} — {group.length} deelnemer{group.length !== 1 ? "s" : ""}</p>
+                  <p className="text-xs text-foreground/50 mt-0.5">
+                    {classTitle} —{" "}
+                    <span className={isFull ? "text-red-500 font-semibold" : "text-foreground/50"}>
+                      {group.length}{spotsTotal !== null ? `/${spotsTotal}` : ""} plek{group.length !== 1 ? "ken" : ""}
+                      {isFull ? " (vol)" : ""}
+                    </span>
+                  </p>
                 </div>
                 {aanwezig > 0 && (
                   <span className="shrink-0 text-xs font-bold px-2.5 py-0.5 rounded-full bg-primary/10 text-primary">

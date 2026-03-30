@@ -350,10 +350,31 @@ router.get("/admin/reserveringen", requireAdmin, async (_req, res) => {
 });
 
 router.post("/admin/reserveringen", requireAdmin, async (req, res) => {
-  const { name, email, classId, classTitle, dateStr, time, type, stuurEmail } = req.body;
+  const { name, email, classId, classTitle, dateStr, time, type, stuurEmail, forceOverCapacity } = req.body;
   if (!name || !email || !classId || !classTitle || !dateStr || !time || !type) {
     return res.status(400).json({ error: "Verplichte velden ontbreken" });
   }
+
+  // Capaciteitscontrole (admin kan overschrijven met forceOverCapacity)
+  if (!forceOverCapacity) {
+    const { readClasses } = await import("../lib/classes.js");
+    const { getAllBookings } = await import("../lib/bookings.js");
+    const [classes, allBookings, allReserveringen] = await Promise.all([
+      readClasses(),
+      getAllBookings(),
+      readReserveringen(),
+    ]);
+    const cls = classes.find((c) => c.id === classId);
+    if (cls) {
+      const takenByBookings = allBookings.filter((b) => b.classId === classId && b.date === dateStr).length;
+      const takenByReserveringen = allReserveringen.filter((r) => r.classId === classId && r.dateStr === dateStr).length;
+      const available = cls.spotsTotal - takenByBookings - takenByReserveringen;
+      if (available <= 0) {
+        return res.status(409).json({ error: "Vol", spotsTotal: cls.spotsTotal, taken: takenByBookings + takenByReserveringen });
+      }
+    }
+  }
+
   const r = await createReservering({ name, email, classId, classTitle, dateStr, time, type });
   if (stuurEmail) {
     sendReservationConfirmation({ toEmail: email, toName: name, classTitle, dateStr, time, type }).catch(() => {});
