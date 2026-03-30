@@ -21,7 +21,7 @@ function fmtPrijs(n: number) {
   return `€ ${n % 1 === 0 ? n.toFixed(0) : n.toFixed(2).replace(".", ",")},-`;
 }
 
-function RequestModal({ isOpen, onClose, pakket, label }: { isOpen: boolean; onClose: () => void; pakket: string | null; label: string }) {
+function RequestModal({ isOpen, onClose, pakket, label, aanvraagTekst }: { isOpen: boolean; onClose: () => void; pakket: string | null; label: string; aanvraagTekst: string }) {
   const { user } = useAuth();
   const [name, setName] = useState(user?.name ?? "");
   const [email, setEmail] = useState(user?.email ?? "");
@@ -87,8 +87,8 @@ function RequestModal({ isOpen, onClose, pakket, label }: { isOpen: boolean; onC
                   <h2 className="font-display text-xl font-medium mb-1">Aanvragen</h2>
                   <p className="text-sm text-foreground/60">{label}</p>
                 </div>
-                <p className="text-sm text-foreground/65 mb-5 leading-relaxed">
-                  Studio Luna voegt zo snel mogelijk je credits toe aan je account. De betaling vindt in de studio plaats bij je eerstvolgende les.
+                <p className="text-sm text-foreground/65 mb-5 leading-relaxed whitespace-pre-line">
+                  {aanvraagTekst}
                 </p>
                 <form onSubmit={handleSubmit} className="space-y-3">
                   <div>
@@ -127,6 +127,8 @@ const DEFAULT_TARIEVEN: TarievenData = {
   betalingInfo: "Betalen kan contant in de studio of via Tikkie. Rittenkaarten zijn persoonlijk en niet overdraagbaar.",
 };
 
+const DEFAULT_AANVRAAG_TEKST = "Studio Luna voegt zo snel mogelijk je credits toe aan je account. De betaling vindt in de studio plaats bij je eerstvolgende les.";
+
 export default function Tarieven() {
   const [, navigate] = useLocation();
   const [requestPakket, setRequestPakket] = useState<string | null>(null);
@@ -134,13 +136,16 @@ export default function Tarieven() {
   const [requestOpen, setRequestOpen] = useState(false);
   const [tarieven, setTarieven] = useState<TarievenData>(DEFAULT_TARIEVEN);
   const [loading, setLoading] = useState(true);
+  const [aanvraagTekst, setAanvraagTekst] = useState(DEFAULT_AANVRAAG_TEKST);
 
   useEffect(() => {
-    fetch(`${BASE}/api/tarieven`)
-      .then((r) => r.ok ? r.json() : null)
-      .then((data) => { if (data) setTarieven(data); })
-      .catch(() => {})
-      .finally(() => setLoading(false));
+    Promise.all([
+      fetch(`${BASE}/api/tarieven`).then((r) => r.ok ? r.json() : null),
+      fetch(`${BASE}/api/pagina-teksten`).then((r) => r.ok ? r.json() : null),
+    ]).then(([tarData, ptData]) => {
+      if (tarData) setTarieven(tarData);
+      if (ptData?.tarieven_aanvraag_tekst) setAanvraagTekst(ptData.tarieven_aanvraag_tekst);
+    }).catch(() => {}).finally(() => setLoading(false));
   }, []);
 
   const openRequest = (pakket: string, label: string) => {
@@ -301,7 +306,7 @@ export default function Tarieven() {
         </div>
 
         <BottomNav />
-        <RequestModal isOpen={requestOpen} onClose={() => setRequestOpen(false)} pakket={requestPakket} label={requestLabel} />
+        <RequestModal isOpen={requestOpen} onClose={() => setRequestOpen(false)} pakket={requestPakket} label={requestLabel} aanvraagTekst={aanvraagTekst} />
       </div>
     </div>
   );

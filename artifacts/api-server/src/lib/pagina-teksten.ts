@@ -17,6 +17,8 @@ export type PaginaTeksten = {
   // Aanbod pagina — Circle
   aanbod_circle_titel: string;
   aanbod_circle_tekst: string;
+  // Tarieven — aanvraag modal
+  tarieven_aanvraag_tekst: string;
 };
 
 const DEFAULT: PaginaTeksten = {
@@ -33,6 +35,8 @@ const DEFAULT: PaginaTeksten = {
   aanbod_yoga_locatie: "Huize Mooisteen, Pr. Beatrixstraat 2, Nieuwerkerk a/d IJssel",
   aanbod_yoga_extra: "Na afloop: verse thee en tijd voor verbinding",
   aanbod_circle_titel: "Zwanger & Mama Circle",
+  tarieven_aanvraag_tekst:
+    "Studio Luna voegt zo snel mogelijk je credits toe aan je account. De betaling vindt in de studio plaats bij je eerstvolgende les.",
   aanbod_circle_tekst:
     "Bij Studio Luna geloven we in de kracht van de 'village'. Naast de fysieke lessen creëren we een veilige cirkel waarin je ervaringen deelt, vragen stelt en naar elkaar omkijkt. We gebruiken zachte yoga- en ademhalingsoefeningen om samen te vertragen, zodat er ruimte ontstaat om echt te luisteren naar jezelf en elkaar. Echte verbinding met andere zwangeren en mama's in Zuidplas!",
 };
