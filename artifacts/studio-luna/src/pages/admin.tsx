@@ -1163,22 +1163,38 @@ function MededelingenTab() {
 }
 
 // ─── EMAIL INSTELLINGEN TAB ───────────────────────────────────────────────────
-type EmailSettings = { welkomstTekst: string; persoonlijkBericht: string; annuleringsNote: string };
+type EmailSettings = {
+  yogaWelkomst: string;
+  circleWelkomst: string;
+  yogaHerinnering: string;
+  circleHerinnering: string;
+  persoonlijkBericht: string;
+  annuleringsNote: string;
+  welkomstTekst: string;
+};
+
+const EMAIL_DEFAULTS: EmailSettings = {
+  yogaWelkomst: "Je plekje is gereserveerd! We kijken er naar uit je te zien op de mat. 🌙",
+  circleWelkomst: "Je plekje in de Circle is gereserveerd! We kijken ernaar uit je te verwelkomen in de kring. 🌙",
+  yogaHerinnering: "Dit is een vriendelijke herinnering dat je morgen bij ons verwacht wordt op de mat! We kijken er naar uit. 🌙",
+  circleHerinnering: "Dit is een vriendelijke herinnering dat je morgen bij ons in de Circle verwacht wordt! We kijken er naar uit. 🌙",
+  persoonlijkBericht: "",
+  annuleringsNote: "Kun je toch niet komen? Annuleer dan minimaal 7 uur voor de les via de website of via WhatsApp, zodat anderen jouw plek kunnen overnemen.",
+  welkomstTekst: "",
+};
 
 function EmailInstellingenTab() {
-  const [settings, setSettings] = useState<EmailSettings | null>(null);
-  const [form, setForm] = useState<EmailSettings>({ welkomstTekst: "", persoonlijkBericht: "", annuleringsNote: "" });
+  const [form, setForm] = useState<EmailSettings>(EMAIL_DEFAULTS);
+  const [loaded, setLoaded] = useState(false);
+  const [activeSection, setActiveSection] = useState<"yoga" | "circle" | "gedeeld">("yoga");
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
     apiFetch("/admin/email-settings").then(async (res) => {
-      if (res.ok) {
-        const data = await res.json();
-        setSettings(data);
-        setForm(data);
-      }
+      if (res.ok) { const d = await res.json(); setForm((prev) => ({ ...prev, ...d })); }
+      setLoaded(true);
     });
   }, []);
 
@@ -1188,7 +1204,6 @@ function EmailInstellingenTab() {
     try {
       const res = await apiFetch("/admin/email-settings", { method: "PUT", body: JSON.stringify(form) });
       if (!res.ok) throw new Error((await res.json()).error);
-      setSettings(form);
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
     } catch (err: any) {
@@ -1198,60 +1213,91 @@ function EmailInstellingenTab() {
     }
   };
 
-  if (!settings) return <div className="flex justify-center py-10"><div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" /></div>;
+  if (!loaded) return <div className="flex justify-center py-10"><div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" /></div>;
+
+  const ta = (label: string, hint: string, key: keyof EmailSettings, rows = 4, placeholder = "") => (
+    <div className="space-y-1.5">
+      <label className="text-sm font-semibold text-foreground">{label}</label>
+      {hint && <p className="text-xs text-foreground/50">{hint}</p>}
+      <textarea value={form[key] as string}
+        onChange={(e) => setForm({ ...form, [key]: e.target.value })}
+        rows={rows} placeholder={placeholder}
+        className="w-full bg-background border border-border/40 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none leading-relaxed" />
+    </div>
+  );
+
+  const sections = [
+    { key: "yoga" as const, label: "🧘 Yoga" },
+    { key: "circle" as const, label: "🌸 Circle" },
+    { key: "gedeeld" as const, label: "Gedeeld" },
+  ];
 
   return (
-    <form onSubmit={save} className="space-y-6 max-w-xl">
+    <form onSubmit={save} className="space-y-5 max-w-xl">
       <div>
-        <p className="text-xs font-bold uppercase tracking-widest text-primary mb-1">E-mail beheer</p>
-        <p className="text-sm text-foreground/60">Pas de teksten in de bevestigingsmail aan. Leden ontvangen deze mail automatisch na een reservering.</p>
+        <p className="text-xs font-bold uppercase tracking-widest text-primary mb-1">E-mail teksten</p>
+        <p className="text-sm text-foreground/60">Stel per lestype de teksten in voor bevestigings- en herinneringsmails. Leden ontvangen de mail automatisch.</p>
       </div>
 
-      <div className="space-y-4">
-        <div className="bg-secondary rounded-2xl p-5 space-y-2">
-          <label className="text-sm font-semibold text-foreground">Welkomstbericht</label>
-          <p className="text-xs text-foreground/50">De tekst direct na "Hoi [naam],"</p>
-          <textarea
-            value={form.welkomstTekst}
-            onChange={(e) => setForm({ ...form, welkomstTekst: e.target.value })}
-            rows={3}
-            className="w-full bg-background border border-border/40 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
-            placeholder="Je reservering is bevestigd…"
-          />
-        </div>
-
-        <div className="bg-secondary rounded-2xl p-5 space-y-2">
-          <label className="text-sm font-semibold text-foreground">Persoonlijk bericht <span className="font-normal text-foreground/40">(optioneel)</span></label>
-          <p className="text-xs text-foreground/50">Extra berichtje onderaan, bijv. een tip of persoonlijke noot</p>
-          <textarea
-            value={form.persoonlijkBericht}
-            onChange={(e) => setForm({ ...form, persoonlijkBericht: e.target.value })}
-            rows={3}
-            className="w-full bg-background border border-border/40 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
-            placeholder="Bijv: Draag comfortabele kleding en neem een flesje water mee!"
-          />
-        </div>
-
-        <div className="bg-secondary rounded-2xl p-5 space-y-2">
-          <label className="text-sm font-semibold text-foreground">Annuleringsherinnering</label>
-          <p className="text-xs text-foreground/50">Tekst over de annuleringsregel (7 uur van tevoren)</p>
-          <textarea
-            value={form.annuleringsNote}
-            onChange={(e) => setForm({ ...form, annuleringsNote: e.target.value })}
-            rows={3}
-            className="w-full bg-background border border-border/40 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
-            placeholder="Kun je toch niet komen?…"
-          />
-        </div>
+      {/* Sectie-tabs */}
+      <div className="flex gap-1.5 bg-secondary rounded-2xl p-1">
+        {sections.map((s) => (
+          <button key={s.key} type="button" onClick={() => setActiveSection(s.key)}
+            className={`flex-1 py-2 rounded-xl text-sm font-semibold transition-colors ${activeSection === s.key ? "bg-card shadow-sm text-foreground" : "text-foreground/50 hover:text-foreground/70"}`}>
+            {s.label}
+          </button>
+        ))}
       </div>
+
+      {activeSection === "yoga" && (
+        <div className="space-y-4">
+          <div className="bg-card border border-border/30 rounded-3xl p-5 space-y-4">
+            <h3 className="font-display text-base font-medium">Zwangerschapsyoga — Bevestiging</h3>
+            <p className="text-xs text-foreground/45">Tekst direct na "Lieve [naam]," in de bevestigingsmail.</p>
+            {ta("Bevestigingstekst", "", "yogaWelkomst", 5, "Je plekje is gereserveerd! We kijken er naar uit je te zien op de mat. 🌙")}
+          </div>
+          <div className="bg-card border border-border/30 rounded-3xl p-5 space-y-4">
+            <h3 className="font-display text-base font-medium">Zwangerschapsyoga — Herinnering</h3>
+            <p className="text-xs text-foreground/45">Tekst in de herinneringsmail (verstuurd de dag voor de les).</p>
+            {ta("Herinneringstekst", "", "yogaHerinnering", 5, "Dit is een vriendelijke herinnering dat je morgen bij ons verwacht wordt op de mat! 🌙")}
+          </div>
+        </div>
+      )}
+
+      {activeSection === "circle" && (
+        <div className="space-y-4">
+          <div className="bg-card border border-border/30 rounded-3xl p-5 space-y-4">
+            <h3 className="font-display text-base font-medium">Mama Circle — Bevestiging</h3>
+            <p className="text-xs text-foreground/45">Tekst direct na "Lieve [naam]," in de bevestigingsmail.</p>
+            {ta("Bevestigingstekst", "", "circleWelkomst", 5, "Je plekje in de Circle is gereserveerd! We kijken ernaar uit je te verwelkomen. 🌙")}
+          </div>
+          <div className="bg-card border border-border/30 rounded-3xl p-5 space-y-4">
+            <h3 className="font-display text-base font-medium">Mama Circle — Herinnering</h3>
+            <p className="text-xs text-foreground/45">Tekst in de herinneringsmail (verstuurd de dag voor de les).</p>
+            {ta("Herinneringstekst", "", "circleHerinnering", 5, "Dit is een vriendelijke herinnering dat je morgen bij ons in de Circle verwacht wordt! 🌙")}
+          </div>
+        </div>
+      )}
+
+      {activeSection === "gedeeld" && (
+        <div className="space-y-4">
+          <div className="bg-card border border-border/30 rounded-3xl p-5 space-y-4">
+            <h3 className="font-display text-base font-medium">Annuleringsregel</h3>
+            <p className="text-xs text-foreground/45">Geldt voor alle lestypes.</p>
+            {ta("Annuleringstekst", "", "annuleringsNote", 3, "Kun je toch niet komen? Annuleer dan minimaal 7 uur van tevoren…")}
+          </div>
+          <div className="bg-card border border-border/30 rounded-3xl p-5 space-y-4">
+            <h3 className="font-display text-base font-medium">Persoonlijk bericht <span className="text-foreground/40 font-normal text-sm">(optioneel)</span></h3>
+            <p className="text-xs text-foreground/45">Verschijnt cursief onderaan de bevestigingsmail bij alle lestypes.</p>
+            {ta("Extra bericht", "", "persoonlijkBericht", 3, "Bijv: Draag comfortabele kleding en neem een flesje water mee!")}
+          </div>
+        </div>
+      )}
 
       {error && <p className="text-sm text-red-500 bg-red-50 rounded-2xl px-4 py-2">{error}</p>}
 
-      <button
-        type="submit"
-        disabled={saving}
-        className="flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-2xl font-semibold text-sm hover:bg-primary/90 disabled:opacity-60 transition-colors"
-      >
+      <button type="submit" disabled={saving}
+        className="flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-2xl font-semibold text-sm hover:bg-primary/90 disabled:opacity-60 transition-colors">
         <Mail className="w-4 h-4" />
         {saving ? "Opslaan…" : saved ? "✓ Opgeslagen!" : "Wijzigingen opslaan"}
       </button>
