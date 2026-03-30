@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { BottomNav } from "@/components/bottom-nav";
+import { SeoFooter } from "@/components/seo-footer";
 import { InterestModal } from "@/components/interest-modal";
 import { motion } from "framer-motion";
 import { ArrowRight, Calendar, MapPin, Coffee, Mail, ClipboardList } from "lucide-react";
@@ -160,6 +161,7 @@ export default function Home() {
         </div>
 
         <InterestModal isOpen={isInterestOpen} onClose={() => setIsInterestOpen(false)} />
+        <SeoFooter />
         <BottomNav />
       </div>
     </div>

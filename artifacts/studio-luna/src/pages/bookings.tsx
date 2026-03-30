@@ -1,6 +1,7 @@
 import { useBookings } from "@/hooks/use-bookings";
 import { useAuth } from "@/hooks/use-auth";
 import { BottomNav } from "@/components/bottom-nav";
+import { SeoFooter } from "@/components/seo-footer";
 import { LoginModal } from "@/components/login-modal";
 import { format, parseISO } from "date-fns";
 import { nl } from "date-fns/locale";
@@ -244,6 +245,7 @@ export default function Bookings() {
           </div>}
         </div>
 
+        <SeoFooter />
         <BottomNav />
         <LoginModal isOpen={loginOpen} onClose={() => setLoginOpen(false)} defaultMode={loginMode} />
       </div>

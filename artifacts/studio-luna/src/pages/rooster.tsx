@@ -4,6 +4,7 @@ import { nl } from "date-fns/locale";
 import { useClasses } from "@/hooks/use-classes";
 import { ReserveerModal } from "@/components/reserveer-modal";
 import { BottomNav } from "@/components/bottom-nav";
+import { SeoFooter } from "@/components/seo-footer";
 import { motion } from "framer-motion";
 import { Clock, Users, MapPin } from "lucide-react";
 
@@ -192,6 +193,7 @@ export default function Rooster() {
         </div>
 
         <div className="pb-8" />
+        <SeoFooter />
         <BottomNav />
 
         {selected && (

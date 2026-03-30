@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { BottomNav } from "@/components/bottom-nav";
+import { SeoFooter } from "@/components/seo-footer";
 import { motion, AnimatePresence } from "framer-motion";
 import { Tag, Info, MessageCircleHeart, X, ArrowRight, CheckCircle2 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
@@ -305,6 +306,7 @@ export default function Tarieven() {
           )}
         </div>
 
+        <SeoFooter />
         <BottomNav />
         <RequestModal isOpen={requestOpen} onClose={() => setRequestOpen(false)} pakket={requestPakket} label={requestLabel} aanvraagTekst={aanvraagTekst} />
       </div>

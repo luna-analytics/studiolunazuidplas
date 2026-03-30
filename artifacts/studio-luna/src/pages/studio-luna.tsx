@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { BottomNav } from "@/components/bottom-nav";
+import { SeoFooter } from "@/components/seo-footer";
 import { motion } from "framer-motion";
 import { MapPin, Heart, Sparkles, Users, ArrowRight, Mail, Phone, Instagram } from "lucide-react";
 
@@ -174,6 +175,7 @@ export default function StudioLuna() {
 
         </div>
 
+        <SeoFooter />
         <BottomNav />
       </div>
     </div>

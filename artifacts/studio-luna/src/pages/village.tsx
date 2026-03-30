@@ -1,5 +1,6 @@
 import { useAuth, getToken } from "@/hooks/use-auth";
 import { BottomNav } from "@/components/bottom-nav";
+import { SeoFooter } from "@/components/seo-footer";
 import { LoginModal } from "@/components/login-modal";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useCallback } from "react";
@@ -467,6 +468,7 @@ export default function Village() {
           )}
         </div>
 
+        <SeoFooter />
         <BottomNav />
         <LoginModal isOpen={loginOpen} onClose={() => setLoginOpen(false)} />
         {bevallenOpen && <BevallenModal onClose={() => { setBevallenOpen(false); loadData(); }} />}
