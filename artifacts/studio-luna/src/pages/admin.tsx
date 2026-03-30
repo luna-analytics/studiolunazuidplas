@@ -7,7 +7,7 @@ import {
   Plus, Trash2, PlusCircle, MinusCircle, ChevronDown, ChevronUp, X,
   BookOpen, Users, ClipboardList, Check, CalendarDays, Baby, Share2,
   Sparkles, MessageCircle, MapPin, Clock, Mail, Palette, Tag, Receipt, Edit2, Save,
-  Copy, BellRing, UserPlus, CheckCircle2, Circle, RefreshCw,
+  Copy, BellRing, UserPlus, CheckCircle2, Circle, RefreshCw, FileText,
 } from "lucide-react";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -1280,6 +1280,49 @@ function TarievenTab() {
   const [spForm, setSpForm] = useState({ naam: "", prijs: "", beschrijving: "", typeId: "", proeflesGeldig: false, actief: true });
   const [editSpId, setEditSpId] = useState<string | null>(null);
   const [editSpForm, setEditSpForm] = useState({ naam: "", prijs: "", beschrijving: "", typeId: "", proeflesGeldig: false, actief: true });
+  const [volgordeSaving, setVolgordeSaving] = useState(false);
+
+  const computeVolgorde = (d: TarievenData): string[] => {
+    if (d.volgorde && d.volgorde.length > 0) {
+      const known = new Set([
+        "proefles", "losseles",
+        ...d.rittenkaarten.map((r) => "rit-" + r.id),
+        ...d.specials.map((s) => "special-" + s.id),
+      ]);
+      const filtered = d.volgorde.filter((k) => known.has(k));
+      const missing = [...known].filter((k) => !d.volgorde!.includes(k));
+      return [...filtered, ...missing];
+    }
+    return ["proefles", "losseles", ...d.rittenkaarten.map((r) => "rit-" + r.id), ...d.specials.map((s) => "special-" + s.id)];
+  };
+
+  const getVolgordeLabel = (key: string): string => {
+    if (key === "proefles") return "Proefles";
+    if (key === "losseles") return "Losse les";
+    if (key.startsWith("rit-")) return data?.rittenkaarten.find((r) => r.id === key.slice(4))?.naam ?? key;
+    if (key.startsWith("special-")) return data?.specials.find((s) => s.id === key.slice(8))?.naam ?? key;
+    return key;
+  };
+
+  const saveVolgorde = async (v: string[]) => {
+    setVolgordeSaving(true);
+    const res = await apiFetch("/admin/tarieven/volgorde", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ volgorde: v }),
+    });
+    if (res.ok) setData(await res.json());
+    setVolgordeSaving(false);
+  };
+
+  const moveVolgorde = async (index: number, direction: "up" | "down") => {
+    if (!data) return;
+    const v = [...computeVolgorde(data)];
+    const swapIdx = direction === "up" ? index - 1 : index + 1;
+    if (swapIdx < 0 || swapIdx >= v.length) return;
+    [v[index], v[swapIdx]] = [v[swapIdx], v[index]];
+    await saveVolgorde(v);
+  };
 
   const load = async () => {
     const [tarRes, typesRes] = await Promise.all([apiFetch("/admin/tarieven"), apiFetch("/admin/class-types")]);
@@ -1616,6 +1659,35 @@ function TarievenTab() {
           )}
         </div>
       </div>
+
+      {/* VOLGORDE */}
+      <div>
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="font-display text-lg font-medium">Volgorde op tarieven-pagina</h3>
+          {volgordeSaving && <span className="text-xs text-foreground/40 animate-pulse">Opslaan…</span>}
+        </div>
+        <p className="text-xs text-foreground/50 mb-3">Gebruik de pijltjes om de blokken te schuiven. De volgorde is direct zichtbaar op de tarieven-pagina.</p>
+        <div className="space-y-2">
+          {computeVolgorde(data).map((key, index, arr) => (
+            <div key={key} className="bg-card border border-border/30 rounded-2xl px-4 py-3 flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <span className="text-xs font-bold text-foreground/25 w-5 text-right shrink-0">{index + 1}</span>
+                <p className="text-sm font-medium text-foreground">{getVolgordeLabel(key)}</p>
+              </div>
+              <div className="flex items-center gap-0.5 shrink-0">
+                <button disabled={index === 0 || volgordeSaving} onClick={() => moveVolgorde(index, "up")}
+                  className="p-2 rounded-xl text-foreground/40 hover:text-foreground/70 hover:bg-secondary transition-colors disabled:opacity-25">
+                  <ChevronUp className="w-4 h-4" />
+                </button>
+                <button disabled={index === arr.length - 1 || volgordeSaving} onClick={() => moveVolgorde(index, "down")}
+                  className="p-2 rounded-xl text-foreground/40 hover:text-foreground/70 hover:bg-secondary transition-colors disabled:opacity-25">
+                  <ChevronDown className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
@@ -1866,8 +1938,114 @@ function ReserveeringenTab() {
   );
 }
 
+// ─── INHOUD TAB ──────────────────────────────────────────────────────────────
+type PaginaTeksten = {
+  home_hero: string; home_missie_tekst: string; home_missie_bullets: string;
+  aanbod_yoga_tekst1: string; aanbod_yoga_tekst2: string;
+  aanbod_yoga_tijd: string; aanbod_yoga_locatie: string; aanbod_yoga_extra: string;
+  aanbod_circle_titel: string; aanbod_circle_tekst: string;
+};
+
+const DEFAULT_PT: PaginaTeksten = {
+  home_hero: "It takes a village.\nStudio Luna is jouw mama tribe.",
+  home_missie_tekst: "Het moederschap hoef je niet alleen te doen. De missie van Studio Luna is het faciliteren van een community voor alle vrouwen in Nieuwerkerk aan den IJssel en omgeving, van zwangerschap tot ver daarna. Een veilige haven om fysiek op te laden, mentaal tot rust te komen en bovenal in verbinding te staan met andere moeders in dezelfde fase.",
+  home_missie_bullets: "Een plek om te landen.\nEen plek om fysiek sterk, gezond en in balans te blijven.\nEen plek om vertrouwen te vinden in je veranderende lichaam.\nEen plek om te connecten met andere moeders.\nStudio Luna is jouw mama tribe.",
+  aanbod_yoga_tekst1: "Sterk, ontspannen en vol vertrouwen richting je bevalling. Met zachte houdingen houden we je veranderende lichaam in balans. We oefenen met ademhaling en maken contact met je baby.",
+  aanbod_yoga_tekst2: "Elke les heeft een net andere focus, zoals het bekken, de kracht van je adem of ruimte in je rug. Instromen is op elk moment mogelijk vanaf 14 weken zwangerschap.",
+  aanbod_yoga_tijd: "Elke dinsdag 19:00",
+  aanbod_yoga_locatie: "Huize Mooisteen, Pr. Beatrixstraat 2, Nieuwerkerk a/d IJssel",
+  aanbod_yoga_extra: "Na afloop: verse thee en tijd voor verbinding",
+  aanbod_circle_titel: "Zwanger & Mama Circle",
+  aanbod_circle_tekst: "Bij Studio Luna geloven we in de kracht van de 'village'. Naast de fysieke lessen creëren we een veilige cirkel waarin je ervaringen deelt, vragen stelt en naar elkaar omkijkt. We gebruiken zachte yoga- en ademhalingsoefeningen om samen te vertragen, zodat er ruimte ontstaat om echt te luisteren naar jezelf en elkaar. Echte verbinding met andere zwangeren en mama's in Zuidplas!",
+};
+
+function InhoudTab() {
+  const [teksten, setTeksten] = useState<PaginaTeksten>(DEFAULT_PT);
+  const [saving, setSaving] = useState<string | null>(null);
+  const [saved, setSaved] = useState<string | null>(null);
+
+  useEffect(() => {
+    apiFetch("/admin/pagina-teksten").then(async (r) => {
+      if (r.ok) { const d = await r.json(); setTeksten((prev) => ({ ...prev, ...d })); }
+    });
+  }, []);
+
+  const saveSection = async (section: string, fields: Partial<PaginaTeksten>) => {
+    setSaving(section); setSaved(null);
+    const res = await apiFetch("/admin/pagina-teksten", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(fields),
+    });
+    if (res.ok) { const d = await res.json(); setTeksten((prev) => ({ ...prev, ...d })); setSaved(section); setTimeout(() => setSaved(null), 2500); }
+    setSaving(null);
+  };
+
+  const field = (label: string, key: keyof PaginaTeksten, multiline = false, hint?: string) => (
+    <div>
+      <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">{label}</label>
+      {hint && <p className="text-xs text-foreground/40 mb-1.5">{hint}</p>}
+      {multiline ? (
+        <textarea rows={4} value={teksten[key]} onChange={(e) => setTeksten({ ...teksten, [key]: e.target.value })}
+          className="w-full bg-secondary border border-border/40 rounded-2xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none leading-relaxed" />
+      ) : (
+        <input value={teksten[key]} onChange={(e) => setTeksten({ ...teksten, [key]: e.target.value })}
+          className="w-full bg-secondary border border-border/40 rounded-2xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+      )}
+    </div>
+  );
+
+  const saveBtn = (section: string, fields: Partial<PaginaTeksten>) => (
+    <button onClick={() => saveSection(section, fields)} disabled={saving === section}
+      className="flex items-center gap-2 bg-primary text-primary-foreground px-5 py-2.5 rounded-2xl font-semibold text-sm hover:bg-primary/90 disabled:opacity-60 transition-colors">
+      <Save className="w-3.5 h-3.5" />
+      {saving === section ? "Opslaan…" : saved === section ? "✓ Opgeslagen!" : "Opslaan"}
+    </button>
+  );
+
+  return (
+    <div className="space-y-6">
+      {/* STUDIO LUNA PAGINA */}
+      <div className="bg-card border border-border/30 rounded-3xl p-5 space-y-4">
+        <h3 className="font-display text-lg font-medium">Studio Luna pagina</h3>
+        {field("Hero tekst (h1)", "home_hero", true, "Gebruik een nieuwe regel voor een regeleinde.")}
+        {field("Missie bullets", "home_missie_bullets", true, "Eén bullet per regel.")}
+        {field("Missie alinea", "home_missie_tekst", true)}
+        {saveBtn("home", { home_hero: teksten.home_hero, home_missie_tekst: teksten.home_missie_tekst, home_missie_bullets: teksten.home_missie_bullets })}
+      </div>
+
+      {/* AANBOD — YOGA */}
+      <div className="bg-card border border-border/30 rounded-3xl p-5 space-y-4">
+        <h3 className="font-display text-lg font-medium">Aanbod — Zwangerschapsyoga</h3>
+        {field("Beschrijving (alinea 1)", "aanbod_yoga_tekst1", true)}
+        {field("Beschrijving (alinea 2)", "aanbod_yoga_tekst2", true)}
+        <div className="grid grid-cols-1 gap-3">
+          {field("Tijdstip", "aanbod_yoga_tijd")}
+          {field("Locatie", "aanbod_yoga_locatie")}
+          {field("Extra detail (thee, etc.)", "aanbod_yoga_extra")}
+        </div>
+        {saveBtn("yoga", {
+          aanbod_yoga_tekst1: teksten.aanbod_yoga_tekst1,
+          aanbod_yoga_tekst2: teksten.aanbod_yoga_tekst2,
+          aanbod_yoga_tijd: teksten.aanbod_yoga_tijd,
+          aanbod_yoga_locatie: teksten.aanbod_yoga_locatie,
+          aanbod_yoga_extra: teksten.aanbod_yoga_extra,
+        })}
+      </div>
+
+      {/* AANBOD — CIRCLE */}
+      <div className="bg-card border border-border/30 rounded-3xl p-5 space-y-4">
+        <h3 className="font-display text-lg font-medium">Aanbod — Mama Circle</h3>
+        {field("Titel", "aanbod_circle_titel")}
+        {field("Beschrijving", "aanbod_circle_tekst", true)}
+        {saveBtn("circle", { aanbod_circle_titel: teksten.aanbod_circle_titel, aanbod_circle_tekst: teksten.aanbod_circle_tekst })}
+      </div>
+    </div>
+  );
+}
+
 // ─── MAIN ADMIN PAGE ─────────────────────────────────────────────────────────
-type AdminTab = "leden" | "lessen" | "lestypes" | "tarieven" | "aanvragen" | "reserveringen" | "mededelingen" | "village" | "email";
+type AdminTab = "leden" | "lessen" | "lestypes" | "tarieven" | "aanvragen" | "reserveringen" | "mededelingen" | "village" | "email" | "inhoud";
 
 export default function Admin() {
   const { user, loading, login } = useAuth();
@@ -1948,6 +2126,7 @@ export default function Admin() {
     { key: "mededelingen", label: "Mededelingen", icon: <Baby className="w-4 h-4" /> },
     { key: "village", label: "Village", icon: <Sparkles className="w-4 h-4" /> },
     { key: "email", label: "E-mail", icon: <Mail className="w-4 h-4" /> },
+    { key: "inhoud", label: "Inhoud", icon: <FileText className="w-4 h-4" /> },
   ];
 
   return (
@@ -1983,6 +2162,7 @@ export default function Admin() {
               {tab === "mededelingen" && <MededelingenTab />}
               {tab === "village" && <VillageBeheerTab />}
               {tab === "email" && <EmailInstellingenTab />}
+              {tab === "inhoud" && <InhoudTab />}
             </motion.div>
           </AnimatePresence>
         </div>

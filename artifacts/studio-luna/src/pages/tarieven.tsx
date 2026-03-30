@@ -152,6 +152,121 @@ export default function Tarieven() {
   const activeRittenkaarten = tarieven.rittenkaarten.filter((r) => r.actief !== false);
   const activeSpecials = tarieven.specials.filter((s) => s.actief !== false);
 
+  const computeVolgorde = (): string[] => {
+    const all = [
+      "proefles", "losseles",
+      ...activeRittenkaarten.map((r) => "rit-" + r.id),
+      ...activeSpecials.map((s) => "special-" + s.id),
+    ];
+    if (tarieven.volgorde && tarieven.volgorde.length > 0) {
+      const valid = tarieven.volgorde.filter((k) => all.includes(k));
+      const missing = all.filter((k) => !valid.includes(k));
+      return [...valid, ...missing];
+    }
+    return all;
+  };
+
+  const renderBlock = (key: string, index: number) => {
+    const delay = index * 0.07;
+    if (key === "proefles") return (
+      <motion.div key="proefles" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }}
+        className="rounded-3xl px-5 py-4 border bg-card border-border/30">
+        <div className="flex items-center justify-between gap-3 mb-3">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-2xl flex items-center justify-center shrink-0 bg-secondary">
+              <Tag className="w-4 h-4 text-foreground/40" />
+            </div>
+            <p className="font-semibold text-foreground text-sm">Proefles</p>
+          </div>
+          <span className="text-lg font-bold text-foreground shrink-0">{fmtPrijs(tarieven.proeflesPrijs)}</span>
+        </div>
+        <button onClick={() => navigate("/rooster")}
+          className="w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground py-2.5 rounded-2xl font-semibold text-sm hover:bg-primary/90 transition-colors">
+          Boek een proefles <ArrowRight className="w-3.5 h-3.5" />
+        </button>
+      </motion.div>
+    );
+    if (key === "losseles") return (
+      <motion.div key="losseles" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }}
+        className="rounded-3xl px-5 py-4 border bg-card border-border/30">
+        <div className="flex items-center justify-between gap-3 mb-3">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-2xl flex items-center justify-center shrink-0 bg-secondary">
+              <Tag className="w-4 h-4 text-foreground/40" />
+            </div>
+            <p className="font-semibold text-foreground text-sm">Losse les</p>
+          </div>
+          <span className="text-lg font-bold text-foreground shrink-0">{fmtPrijs(tarieven.losseLes)}</span>
+        </div>
+        <button onClick={() => openRequest("losse_les", `Losse les (${fmtPrijs(tarieven.losseLes)})`)}
+          className="w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground py-2.5 rounded-2xl font-semibold text-sm hover:bg-primary/90 transition-colors">
+          Losse les aanvragen <ArrowRight className="w-3.5 h-3.5" />
+        </button>
+      </motion.div>
+    );
+    if (key.startsWith("rit-")) {
+      const rk = activeRittenkaarten.find((r) => r.id === key.slice(4));
+      if (!rk) return null;
+      return (
+        <motion.div key={rk.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }}
+          className="rounded-3xl px-5 py-4 border bg-card border-border/30">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-2xl flex items-center justify-center shrink-0 bg-secondary">
+                <Tag className="w-4 h-4 text-foreground/40" />
+              </div>
+              <div>
+                <p className="font-semibold text-foreground text-sm">{rk.naam}</p>
+                <p className="text-xs text-foreground/45 mt-0.5 flex items-center gap-1">
+                  <Info className="w-3 h-3" /> {rk.geldigheid} geldig
+                </p>
+              </div>
+            </div>
+            <span className="text-lg font-bold text-foreground shrink-0">{fmtPrijs(rk.prijs)}</span>
+          </div>
+          <div className="mt-3 pt-3 border-t border-border/20">
+            {rk.omschrijving ? (
+              <p className="text-xs text-foreground/55 leading-relaxed mb-3">{rk.omschrijving}</p>
+            ) : (
+              <>
+                <div className="flex items-center gap-1.5 mb-1">
+                  <MessageCircleHeart className="w-3.5 h-3.5 text-accent shrink-0" />
+                  <p className="text-xs font-semibold text-foreground">Inclusief toegang tot de Studio Luna WhatsApp-community</p>
+                </div>
+                <p className="text-xs text-foreground/50 leading-relaxed pl-5 mb-3">
+                  Ontvang tips, extra rustmomenten en blijf in verbinding met de andere moeders uit de village.
+                </p>
+              </>
+            )}
+            <button onClick={() => openRequest(rk.id, `${rk.naam} (${fmtPrijs(rk.prijs)})`)}
+              className="w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground py-2.5 rounded-2xl font-semibold text-sm hover:bg-primary/90 transition-colors">
+              {rk.naam} aanvragen <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </motion.div>
+      );
+    }
+    if (key.startsWith("special-")) {
+      const sp = activeSpecials.find((s) => s.id === key.slice(8));
+      if (!sp) return null;
+      return (
+        <motion.div key={sp.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }}
+          className="rounded-3xl px-5 py-4 border bg-card border-border/30">
+          <div className="flex items-center justify-between gap-3 mb-2">
+            <p className="font-semibold text-foreground text-sm">{sp.naam}</p>
+            <span className="text-lg font-bold text-foreground shrink-0">{fmtPrijs(sp.prijs)}</span>
+          </div>
+          {sp.beschrijving && <p className="text-xs text-foreground/55 leading-relaxed mb-3">{sp.beschrijving}</p>}
+          <button onClick={() => openRequest(sp.id, `${sp.naam} (${fmtPrijs(sp.prijs)})`)}
+            className="w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground py-2.5 rounded-2xl font-semibold text-sm hover:bg-primary/90 transition-colors">
+            Aanvragen <ArrowRight className="w-3.5 h-3.5" />
+          </button>
+        </motion.div>
+      );
+    }
+    return null;
+  };
+
   return (
     <div className="min-h-screen bg-background pb-28 md:pb-16 md:pt-16 flex justify-center">
       <div className="w-full max-w-5xl bg-background min-h-screen relative">
@@ -174,107 +289,7 @@ export default function Tarieven() {
             </div>
           ) : (
             <>
-              {/* PROEFLES */}
-              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0 }}
-                className="rounded-3xl px-5 py-4 border bg-card border-border/30">
-                <div className="flex items-center justify-between gap-3 mb-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-2xl flex items-center justify-center shrink-0 bg-secondary">
-                      <Tag className="w-4 h-4 text-foreground/40" />
-                    </div>
-                    <p className="font-semibold text-foreground text-sm">Proefles</p>
-                  </div>
-                  <span className="text-lg font-bold text-foreground shrink-0">{fmtPrijs(tarieven.proeflesPrijs)}</span>
-                </div>
-                <button onClick={() => navigate("/rooster")}
-                  className="w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground py-2.5 rounded-2xl font-semibold text-sm hover:bg-primary/90 transition-colors">
-                  Boek een proefles
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-              </motion.div>
-
-              {/* LOSSE LES */}
-              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.07 }}
-                className="rounded-3xl px-5 py-4 border bg-card border-border/30">
-                <div className="flex items-center justify-between gap-3 mb-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-2xl flex items-center justify-center shrink-0 bg-secondary">
-                      <Tag className="w-4 h-4 text-foreground/40" />
-                    </div>
-                    <p className="font-semibold text-foreground text-sm">Losse les</p>
-                  </div>
-                  <span className="text-lg font-bold text-foreground shrink-0">{fmtPrijs(tarieven.losseLes)}</span>
-                </div>
-                <button onClick={() => openRequest("losse_les", `Losse les (${fmtPrijs(tarieven.losseLes)})`)}
-                  className="w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground py-2.5 rounded-2xl font-semibold text-sm hover:bg-primary/90 transition-colors">
-                  Losse les aanvragen
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-              </motion.div>
-
-              {/* RITTENKAARTEN */}
-              {activeRittenkaarten.map((rk, i) => (
-                <motion.div key={rk.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.14 + i * 0.07 }}
-                  className="rounded-3xl px-5 py-4 border bg-card border-border/30">
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-2xl flex items-center justify-center shrink-0 bg-secondary">
-                        <Tag className="w-4 h-4 text-foreground/40" />
-                      </div>
-                      <div>
-                        <p className="font-semibold text-foreground text-sm">{rk.naam}</p>
-                        <p className="text-xs text-foreground/45 mt-0.5 flex items-center gap-1">
-                          <Info className="w-3 h-3" /> {rk.geldigheid} geldig
-                        </p>
-                      </div>
-                    </div>
-                    <span className="text-lg font-bold text-foreground shrink-0">{fmtPrijs(rk.prijs)}</span>
-                  </div>
-                  <div className="mt-3 pt-3 border-t border-border/20">
-                    {rk.omschrijving ? (
-                      <p className="text-xs text-foreground/55 leading-relaxed mb-3">{rk.omschrijving}</p>
-                    ) : (
-                      <>
-                        <div className="flex items-center gap-1.5 mb-1">
-                          <MessageCircleHeart className="w-3.5 h-3.5 text-accent shrink-0" />
-                          <p className="text-xs font-semibold text-foreground">Inclusief toegang tot de Studio Luna WhatsApp-community</p>
-                        </div>
-                        <p className="text-xs text-foreground/50 leading-relaxed pl-5 mb-3">
-                          Ontvang tips, extra rustmomenten en blijf in verbinding met de andere moeders uit de village.
-                        </p>
-                      </>
-                    )}
-                    <button onClick={() => openRequest(rk.id, `${rk.naam} (${fmtPrijs(rk.prijs)})`)}
-                      className="w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground py-2.5 rounded-2xl font-semibold text-sm hover:bg-primary/90 transition-colors">
-                      {rk.naam} aanvragen
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                </motion.div>
-              ))}
-
-              {/* SPECIALE PAKKETTEN */}
-              {activeSpecials.length > 0 && (
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-widest text-foreground/40 mb-2 px-1">Speciale pakketten</p>
-                  {activeSpecials.map((sp, i) => (
-                    <motion.div key={sp.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.14 + (activeRittenkaarten.length + i) * 0.07 }}
-                      className="rounded-3xl px-5 py-4 border bg-card border-border/30 mb-3">
-                      <div className="flex items-center justify-between gap-3 mb-2">
-                        <p className="font-semibold text-foreground text-sm">{sp.naam}</p>
-                        <span className="text-lg font-bold text-foreground shrink-0">{fmtPrijs(sp.prijs)}</span>
-                      </div>
-                      {sp.beschrijving && <p className="text-xs text-foreground/55 leading-relaxed mb-3">{sp.beschrijving}</p>}
-                      <button onClick={() => openRequest(sp.id, `${sp.naam} (${fmtPrijs(sp.prijs)})`)}
-                        className="w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground py-2.5 rounded-2xl font-semibold text-sm hover:bg-primary/90 transition-colors">
-                        Aanvragen
-                        <ArrowRight className="w-3.5 h-3.5" />
-                      </button>
-                    </motion.div>
-                  ))}
-                </div>
-              )}
+              {computeVolgorde().map((key, i) => renderBlock(key, i))}
 
               {/* BETALING */}
               <div className="rounded-3xl border border-dashed border-accent/50 bg-accent/10 px-5 py-4">
