@@ -1750,7 +1750,7 @@ function ReserveeringenTab() {
   const [loading, setLoading] = useState(true);
   const [classes, setClasses] = useState<StudioClass[]>([]);
   const [showInboeken, setShowInboeken] = useState(false);
-  const [inboekForm, setInboekForm] = useState({ name: "", email: "", classId: "", dateStr: "", stuurEmail: true });
+  const [inboekForm, setInboekForm] = useState({ name: "", email: "", classId: "", dateStr: "", stuurEmail: true, heelReeks: false });
   const [inboekLoading, setInboekLoading] = useState(false);
   const [inboekError, setInboekError] = useState("");
   const [inboekVolWaarschuwing, setInboekVolWaarschuwing] = useState(false);
@@ -1759,7 +1759,7 @@ function ReserveeringenTab() {
 
   const load = async () => {
     setLoading(true);
-    const [res, clsRes] = await Promise.all([apiFetch("/admin/reserveringen"), apiFetch("/api/classes")]);
+    const [res, clsRes] = await Promise.all([apiFetch("/admin/reserveringen"), apiFetch("/classes")]);
     if (res.ok) setItems(await res.json());
     if (clsRes.ok) setClasses(await clsRes.json());
     setLoading(false);
@@ -1807,34 +1807,55 @@ function ReserveeringenTab() {
     if (!cls) return;
     setInboekLoading(true);
     setInboekError("");
-    const res = await apiFetch("/admin/reserveringen", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name: inboekForm.name,
-        email: inboekForm.email,
-        classId: cls.id,
-        classTitle: cls.title,
-        dateStr: inboekForm.dateStr,
-        time: cls.time,
-        type: cls.type,
-        stuurEmail: inboekForm.stuurEmail,
-        forceOverCapacity,
-      }),
-    });
-    if (res.ok) {
-      const r: Reservering = await res.json();
-      setItems((prev) => [...prev, r]);
-      setInboekForm({ name: "", email: "", classId: "", dateStr: "", stuurEmail: true });
+
+    const datesToBook = inboekForm.heelReeks
+      ? [...cls.dates].sort()
+      : [inboekForm.dateStr];
+
+    const newItems: Reservering[] = [];
+    let hasError = false;
+    let isVol = false;
+
+    for (const dateStr of datesToBook) {
+      const res = await apiFetch("/admin/reserveringen", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: inboekForm.name,
+          email: inboekForm.email,
+          classId: cls.id,
+          classTitle: cls.title,
+          dateStr,
+          time: cls.time,
+          type: cls.type,
+          stuurEmail: inboekForm.stuurEmail,
+          forceOverCapacity,
+        }),
+      });
+      if (res.ok) {
+        const r: Reservering = await res.json();
+        newItems.push(r);
+      } else {
+        const data = await res.json();
+        if (res.status === 409 && data.error === "Vol") {
+          isVol = true;
+        } else {
+          hasError = true;
+          setInboekError(data.error ?? "Er ging iets mis");
+        }
+        break;
+      }
+    }
+
+    if (newItems.length > 0) {
+      setItems((prev) => [...prev, ...newItems]);
+    }
+    if (isVol) {
+      setInboekVolWaarschuwing(true);
+    } else if (!hasError) {
+      setInboekForm({ name: "", email: "", classId: "", dateStr: "", stuurEmail: true, heelReeks: false });
       setShowInboeken(false);
       setInboekVolWaarschuwing(false);
-    } else {
-      const data = await res.json();
-      if (res.status === 409 && data.error === "Vol") {
-        setInboekVolWaarschuwing(true);
-      } else {
-        setInboekError(data.error ?? "Er ging iets mis");
-      }
     }
     setInboekLoading(false);
   };
@@ -1897,7 +1918,17 @@ function ReserveeringenTab() {
                   {classes.map((c) => <option key={c.id} value={c.id}>{c.title} ({c.time})</option>)}
                 </select>
               </div>
-              {selectedClass && (
+              {selectedClass && selectedClass.dates.length > 1 && (
+                <label className="flex items-center gap-2.5 cursor-pointer">
+                  <input type="checkbox" checked={inboekForm.heelReeks}
+                    onChange={(e) => setInboekForm({ ...inboekForm, heelReeks: e.target.checked, dateStr: "" })}
+                    className="rounded" />
+                  <span className="text-sm text-foreground/70">
+                    Inboeken voor de hele reeks ({selectedClass.dates.length} lessen)
+                  </span>
+                </label>
+              )}
+              {selectedClass && !inboekForm.heelReeks && (
                 <div>
                   <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Datum</label>
                   <select required value={inboekForm.dateStr} onChange={(e) => setInboekForm({ ...inboekForm, dateStr: e.target.value })}
@@ -1909,6 +1940,14 @@ function ReserveeringenTab() {
                       return <option key={d} value={d}>{label}</option>;
                     })}
                   </select>
+                </div>
+              )}
+              {selectedClass && inboekForm.heelReeks && (
+                <div className="bg-primary/5 rounded-2xl px-4 py-2.5 text-xs text-foreground/60 space-y-0.5">
+                  {[...selectedClass.dates].sort().map((d) => {
+                    const [y, m, day] = d.split("-").map(Number);
+                    return <p key={d}>{new Date(y, m - 1, day).toLocaleDateString("nl-NL", { weekday: "short", day: "numeric", month: "long" })}</p>;
+                  })}
                 </div>
               )}
               <label className="flex items-center gap-2.5 cursor-pointer">
