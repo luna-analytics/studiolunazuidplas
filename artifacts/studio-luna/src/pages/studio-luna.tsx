@@ -1,10 +1,29 @@
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { BottomNav } from "@/components/bottom-nav";
 import { motion } from "framer-motion";
 import { MapPin, Heart, Sparkles, Users, ArrowRight, Mail, Phone, Instagram } from "lucide-react";
 
+const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+const DEFAULT_TEKSTEN = {
+  home_hero: "It takes a village.\nStudio Luna is jouw mama tribe.",
+  home_missie_tekst:
+    "Het moederschap hoef je niet alleen te doen. De missie van Studio Luna is het faciliteren van een community voor alle vrouwen in Nieuwerkerk aan den IJssel en omgeving, van zwangerschap tot ver daarna. Een veilige haven om fysiek op te laden, mentaal tot rust te komen en bovenal in verbinding te staan met andere moeders in dezelfde fase.",
+  home_missie_bullets:
+    "Een plek om te landen.\nEen plek om fysiek sterk, gezond en in balans te blijven.\nEen plek om vertrouwen te vinden in je veranderende lichaam.\nEen plek om te connecten met andere moeders.\nStudio Luna is jouw mama tribe.",
+};
+
 export default function StudioLuna() {
   const [, navigate] = useLocation();
+  const [teksten, setTeksten] = useState(DEFAULT_TEKSTEN);
+
+  useEffect(() => {
+    fetch(`${BASE}/api/pagina-teksten`)
+      .then((r) => r.ok ? r.json() : null)
+      .then((d) => { if (d) setTeksten((prev) => ({ ...prev, ...d })); })
+      .catch(() => {});
+  }, []);
 
   return (
     <div className="min-h-screen bg-background pb-28 md:pb-16 md:pt-16 flex justify-center">
@@ -20,7 +39,9 @@ export default function StudioLuna() {
                   <img src={`${import.meta.env.BASE_URL}images/studio-luna-logo.png`} alt="Studio Luna" className="h-80 w-auto" />
                 </div>
                 <h1 className="font-display text-4xl lg:text-5xl font-medium text-foreground leading-[1.15] mb-3">
-                  It takes a village.<br />Studio Luna is jouw mama tribe.
+                  {teksten.home_hero.split("\n").map((line, i, arr) => (
+                    <span key={i}>{line}{i < arr.length - 1 && <br />}</span>
+                  ))}
                 </h1>
                 <button
                   onClick={() => navigate("/rooster")}
@@ -52,18 +73,12 @@ export default function StudioLuna() {
               <h2 className="font-display text-xl font-medium text-foreground">De missie</h2>
             </div>
             <ul className="space-y-1.5 mb-4">
-              {[
-                "Een plek om te landen.",
-                "Een plek om fysiek sterk, gezond en in balans te blijven.",
-                "Een plek om vertrouwen te vinden in je veranderende lichaam.",
-                "Een plek om te connecten met andere moeders.",
-                "Studio Luna is jouw mama tribe.",
-              ].map((item, i) => (
+              {teksten.home_missie_bullets.split("\n").filter(Boolean).map((item, i) => (
                 <li key={i} className="text-sm font-medium text-foreground/80 leading-relaxed">{item}</li>
               ))}
             </ul>
             <p className="text-foreground/70 text-sm leading-relaxed mb-3">
-              Het moederschap hoef je niet alleen te doen. De missie van Studio Luna is het faciliteren van een community voor alle vrouwen in Nieuwerkerk aan den IJssel en omgeving, van zwangerschap tot ver daarna. Een veilige haven om fysiek op te laden, mentaal tot rust te komen en bovenal in verbinding te staan met andere moeders in dezelfde fase.
+              {teksten.home_missie_tekst}
             </p>
             <p className="text-sm font-medium text-foreground/80">Welkom in jouw village.</p>
           </motion.div>

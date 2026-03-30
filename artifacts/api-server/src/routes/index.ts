@@ -15,6 +15,7 @@ import { readClassTypes } from "../lib/class-types.js";
 import { readTarieven } from "../lib/tarieven.js";
 import { createReservering } from "../lib/reserveringen.js";
 import { sendReservationConfirmation } from "../lib/email.js";
+import { readPaginaTeksten } from "../lib/pagina-teksten.js";
 
 const router: IRouter = Router();
 
@@ -34,6 +35,11 @@ router.get("/class-types", async (_req, res) => {
 // Publieke tarieven endpoint
 router.get("/tarieven", async (_req, res) => {
   res.json(await readTarieven());
+});
+
+// Publieke pagina-teksten endpoint
+router.get("/pagina-teksten", async (_req, res) => {
+  res.json(await readPaginaTeksten());
 });
 
 // Reservering voor openingsreeks (publiek, geen login nodig)

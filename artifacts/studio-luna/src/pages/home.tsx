@@ -1,13 +1,33 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { BottomNav } from "@/components/bottom-nav";
 import { InterestModal } from "@/components/interest-modal";
 import { motion } from "framer-motion";
 import { ArrowRight, Calendar, MapPin, Coffee, Mail, ClipboardList } from "lucide-react";
 
+const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+const DEFAULT_TEKSTEN = {
+  aanbod_yoga_tekst1: "Sterk, ontspannen en vol vertrouwen richting je bevalling. Met zachte houdingen houden we je veranderende lichaam in balans. We oefenen met ademhaling en maken contact met je baby.",
+  aanbod_yoga_tekst2: "Elke les heeft een net andere focus, zoals het bekken, de kracht van je adem of ruimte in je rug. Instromen is op elk moment mogelijk vanaf 14 weken zwangerschap.",
+  aanbod_yoga_tijd: "Elke dinsdag 19:00",
+  aanbod_yoga_locatie: "Huize Mooisteen, Pr. Beatrixstraat 2, Nieuwerkerk a/d IJssel",
+  aanbod_yoga_extra: "Na afloop: verse thee en tijd voor verbinding",
+  aanbod_circle_titel: "Zwanger & Mama Circle",
+  aanbod_circle_tekst: "Bij Studio Luna geloven we in de kracht van de 'village'. Naast de fysieke lessen creëren we een veilige cirkel waarin je ervaringen deelt, vragen stelt en naar elkaar omkijkt. We gebruiken zachte yoga- en ademhalingsoefeningen om samen te vertragen, zodat er ruimte ontstaat om echt te luisteren naar jezelf en elkaar. Echte verbinding met andere zwangeren en mama's in Zuidplas!",
+};
+
 export default function Home() {
   const [, navigate] = useLocation();
   const [isInterestOpen, setIsInterestOpen] = useState(false);
+  const [teksten, setTeksten] = useState(DEFAULT_TEKSTEN);
+
+  useEffect(() => {
+    fetch(`${BASE}/api/pagina-teksten`)
+      .then((r) => r.ok ? r.json() : null)
+      .then((d) => { if (d) setTeksten((prev) => ({ ...prev, ...d })); })
+      .catch(() => {});
+  }, []);
 
   return (
     <div className="min-h-screen bg-background pb-28 md:pb-16 md:pt-16 flex justify-center">
@@ -33,24 +53,20 @@ export default function Home() {
             className="rounded-3xl bg-secondary border border-border/30 p-5"
           >
             <h3 className="font-display text-lg font-medium text-foreground mb-2">Zwangerschapsyoga</h3>
-            <p className="text-sm text-foreground/65 leading-relaxed mb-3">
-              Sterk, ontspannen en vol vertrouwen richting je bevalling. Met zachte houdingen houden we je veranderende lichaam in balans. We oefenen met ademhaling en maken contact met je baby.
-            </p>
-            <p className="text-sm text-foreground/65 leading-relaxed mb-3">
-              Elke les heeft een net andere focus, zoals het bekken, de kracht van je adem of ruimte in je rug. Instromen is op elk moment mogelijk vanaf 14 weken zwangerschap.
-            </p>
+            <p className="text-sm text-foreground/65 leading-relaxed mb-3">{teksten.aanbod_yoga_tekst1}</p>
+            <p className="text-sm text-foreground/65 leading-relaxed mb-3">{teksten.aanbod_yoga_tekst2}</p>
             <div className="rounded-2xl bg-background/60 border border-border/20 px-4 py-3 text-sm text-foreground/60 space-y-1 mb-3">
               <div className="flex items-center gap-2">
                 <Calendar className="w-3.5 h-3.5 shrink-0 text-primary" />
-                <span>Elke dinsdag 19:00</span>
+                <span>{teksten.aanbod_yoga_tijd}</span>
               </div>
               <div className="flex items-center gap-2">
                 <MapPin className="w-3.5 h-3.5 shrink-0 text-primary" />
-                <span>Huize Mooisteen, Pr. Beatrixstraat 2, Nieuwerkerk a/d IJssel</span>
+                <span>{teksten.aanbod_yoga_locatie}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Coffee className="w-3.5 h-3.5 shrink-0 text-primary" />
-                <span>Na afloop: verse thee en tijd voor verbinding</span>
+                <span>{teksten.aanbod_yoga_extra}</span>
               </div>
             </div>
             <button
@@ -77,10 +93,8 @@ export default function Home() {
             viewport={{ once: true }} transition={{ duration: 0.4, delay: 0.1 }}
             className="rounded-3xl border border-dashed border-accent/60 bg-accent/10 p-5"
           >
-            <h3 className="font-display text-lg font-medium text-foreground mb-0.5">Zwanger & Mama Circle</h3>
-              <p className="text-sm text-foreground/65 leading-relaxed mb-4">
-              Bij Studio Luna geloven we in de kracht van de 'village'. Naast de fysieke lessen creëren we een veilige cirkel waarin je ervaringen deelt, vragen stelt en naar elkaar omkijkt. We gebruiken zachte yoga- en ademhalingsoefeningen om samen te vertragen, zodat er ruimte ontstaat om echt te luisteren naar jezelf en elkaar. Echte verbinding met andere zwangeren en mama's in Zuidplas!
-            </p>
+            <h3 className="font-display text-lg font-medium text-foreground mb-0.5">{teksten.aanbod_circle_titel}</h3>
+            <p className="text-sm text-foreground/65 leading-relaxed mb-4">{teksten.aanbod_circle_tekst}</p>
             <button
               onClick={() => setIsInterestOpen(true)}
               className="w-full py-2.5 rounded-2xl border border-primary/40 text-primary font-semibold text-sm flex items-center justify-center gap-2 hover:bg-primary/5 transition-colors"
