@@ -149,8 +149,8 @@ export default function Tarieven() {
     setRequestOpen(true);
   };
 
-  const activeRittenkaarten = tarieven.rittenkaarten.filter((r) => r.actief);
-  const activeSpecials = tarieven.specials.filter((s) => s.actief);
+  const activeRittenkaarten = tarieven.rittenkaarten.filter((r) => r.actief !== false);
+  const activeSpecials = tarieven.specials.filter((s) => s.actief !== false);
 
   return (
     <div className="min-h-screen bg-background pb-28 md:pb-16 md:pt-16 flex justify-center">
