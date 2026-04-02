@@ -3,15 +3,35 @@ import { BottomNav } from "@/components/bottom-nav";
 import { SeoFooter } from "@/components/seo-footer";
 import { motion } from "framer-motion";
 import { fetchBlogPosts, MOCK_POSTS, categoryColor, formatDate, type BlogPost } from "@/lib/sanity";
+import { useAuth } from "@/hooks/use-auth";
 
 export default function Inspiratie() {
+  const { user, loading } = useAuth();
   const [posts, setPosts] = useState<BlogPost[]>(MOCK_POSTS);
 
   useEffect(() => {
+    if (!user?.isAdmin) return;
     fetchBlogPosts()
       .then((data) => { if (data.length > 0) setPosts(data); })
       .catch(() => {});
-  }, []);
+  }, [user]);
+
+  if (loading) return null;
+
+  if (!user?.isAdmin) {
+    return (
+      <div className="min-h-screen bg-background pb-28 flex justify-center">
+        <div className="w-full max-w-5xl flex flex-col items-center justify-center px-8 text-center" style={{ minHeight: "70vh" }}>
+          <span className="text-5xl mb-6">🌙</span>
+          <h1 className="font-display text-3xl font-medium text-foreground mb-3">Binnenkort</h1>
+          <p className="text-foreground/55 text-sm leading-relaxed max-w-xs">
+            Hier vind je straks verhalen, tips en inzichten over zwangerschap, yoga en het leven als mama.
+          </p>
+        </div>
+        <BottomNav />
+      </div>
+    );
+  }
 
   const [featured, ...rest] = posts;
 
@@ -39,7 +59,6 @@ export default function Inspiratie() {
               className="group mb-8 cursor-pointer"
             >
               <div className="relative w-full overflow-hidden rounded-3xl bg-secondary shadow-sm">
-                {/* Afbeelding 16:9 */}
                 <div className="relative w-full" style={{ paddingTop: "56.25%" }}>
                   <img
                     src={featured.mainImage?.url ?? ""}
@@ -82,7 +101,6 @@ export default function Inspiratie() {
                 transition={{ duration: 0.4, delay: i * 0.07 }}
                 className="group cursor-pointer flex flex-col"
               >
-                {/* Afbeelding 4:5 verhouding */}
                 <div className="relative w-full overflow-hidden rounded-2xl bg-secondary shadow-sm mb-3" style={{ paddingTop: "125%" }}>
                   <img
                     src={post.mainImage?.url ?? ""}
@@ -96,8 +114,6 @@ export default function Inspiratie() {
                     </span>
                   </div>
                 </div>
-
-                {/* Tekst */}
                 <div className="flex-1 flex flex-col">
                   <p className="text-[10px] text-foreground/40 mb-1">{formatDate(post.publishedAt)}</p>
                   <h3 className="font-display text-sm md:text-base font-medium text-foreground leading-snug line-clamp-3 group-hover:text-primary transition-colors duration-200">
