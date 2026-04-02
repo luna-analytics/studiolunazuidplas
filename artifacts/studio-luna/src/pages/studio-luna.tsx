@@ -83,50 +83,50 @@ export default function StudioLuna() {
         </motion.div>
 
 
-        {/* ── DE MISSIE (editorial) ── */}
+        {/* ── DE MISSIE ── */}
         <motion.div
-          initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}
-          className="px-6 md:px-12 lg:px-16 pt-10 pb-6"
+          initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }} transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
+          className="px-6 md:px-12 lg:px-16 pt-14 pb-10"
         >
-          <div className="flex items-center gap-3 mb-6">
+          <div className="flex items-center gap-3 mb-8">
             <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
               <Heart className="w-3.5 h-3.5 text-primary" />
             </div>
             <h2 className="font-display text-2xl font-medium text-foreground">De missie</h2>
           </div>
 
-          <div className="md:grid md:grid-cols-2 md:gap-10 md:items-start">
+          <div className="md:grid md:grid-cols-2 md:gap-14 md:items-start">
+            <ul className="space-y-4 mb-8 md:mb-0">
+              {teksten.home_missie_bullets.split("\n").filter(Boolean).map((item, i) => (
+                <li key={i} className="flex items-start gap-3 text-sm text-foreground/70 leading-[1.85]">
+                  <span className="mt-[7px] w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
+                  {item}
+                </li>
+              ))}
+            </ul>
             <div>
-              <ul className="space-y-3 mb-5">
-                {teksten.home_missie_bullets.split("\n").filter(Boolean).map((item, i) => (
-                  <li key={i} className="flex items-start gap-3 text-sm text-foreground/75 leading-relaxed">
-                    <span className="mt-1 w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <p className="text-sm text-foreground/65 leading-relaxed">
+              <p className="text-sm text-foreground/60 leading-[1.85]">
                 {teksten.home_missie_tekst}
               </p>
-              <p className="text-sm font-semibold text-foreground/80 mt-3">Welkom in jouw village.</p>
+              <p className="text-sm font-semibold text-foreground/75 mt-5 tracking-wide">Welkom in jouw village.</p>
             </div>
           </div>
         </motion.div>
 
-        {/* ── WAT BIEDT STUDIO LUNA (2-col grid) ── */}
+        {/* ── WAT BIEDT STUDIO LUNA ── */}
         <motion.div
-          initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.05 }}
-          className="mx-6 md:mx-12 lg:mx-16 rounded-3xl bg-secondary p-6 mb-6"
+          initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }} transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1], delay: 0.05 }}
+          className="mx-6 md:mx-12 lg:mx-16 rounded-3xl bg-secondary px-7 py-8 mb-8"
         >
-          <div className="flex items-center gap-3 mb-5">
+          <div className="flex items-center gap-3 mb-7">
             <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
               <Sparkles className="w-3.5 h-3.5 text-primary" />
             </div>
             <h2 className="font-display text-xl font-medium text-foreground">Wat biedt Studio Luna</h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
             {[
               "Kleine groepen, veel aandacht en persoonlijk contact.",
               "Zwangerschapsyoga: bevalling voorbereiden, kracht van de adem en fysieke balans.",
@@ -135,64 +135,67 @@ export default function StudioLuna() {
               "WhatsApp-community voor vragen en tips tussen lessen door.",
               "Aandacht voor zowel het fysieke als het mentale aspect van moederschap.",
             ].map((item, i) => (
-              <div key={i} className="flex items-start gap-3 bg-background/60 rounded-2xl px-4 py-3">
+              <div key={i} className="flex items-start gap-3 bg-background/50 rounded-2xl px-4 py-4 border border-border/15 shadow-soft">
                 <span className="mt-0.5 w-5 h-5 rounded-full bg-primary/15 flex items-center justify-center shrink-0 text-primary font-bold text-xs">{i + 1}</span>
-                <p className="text-sm text-foreground/70 leading-relaxed">{item}</p>
+                <p className="text-sm text-foreground/65 leading-[1.8]">{item}</p>
               </div>
             ))}
           </div>
         </motion.div>
 
-        {/* ── LOCATIE & CONTACT (naast elkaar op desktop) ── */}
-        <div className="px-6 md:px-12 lg:px-16 mb-8 md:grid md:grid-cols-2 md:gap-5">
+        {/* ── LOCATIE & CONTACT ── */}
+        <div className="px-6 md:px-12 lg:px-16 mb-14 md:grid md:grid-cols-2 md:gap-5">
 
           <motion.div
-            initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4 }}
-            className="bg-card rounded-3xl p-5 border border-border/30 mb-4 md:mb-0"
+            initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }} transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
+            className="card-luxe mb-4 md:mb-0"
           >
-            <div className="flex items-center gap-3 mb-4">
+            <div className="flex items-center gap-3 mb-5">
               <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center shrink-0">
                 <MapPin className="w-3.5 h-3.5 text-foreground/60" />
               </div>
               <h2 className="font-display text-lg font-medium text-foreground">Locatie</h2>
             </div>
-            <p className="text-foreground/70 text-sm leading-relaxed">
-              Onze lessen vinden plaats bij <span className="font-semibold text-foreground">Huize Mooisteen</span>
+            <p className="text-foreground/65 text-sm leading-[1.85]">
+              Onze lessen vinden plaats bij <span className="font-semibold text-foreground/80">Huize Mooisteen</span>
             </p>
-            <p className="text-foreground/55 text-sm mt-1">Pr. Beatrixstraat 2, Nieuwerkerk aan den IJssel</p>
-            <a href="https://maps.google.com/?q=Pr.+Beatrixstraat+2,+Nieuwerkerk+aan+den+IJssel" target="_blank" rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 mt-4 text-sm font-semibold text-primary hover:text-primary/80 transition-colors group">
+            <p className="text-foreground/50 text-sm mt-2">Pr. Beatrixstraat 2, Nieuwerkerk aan den IJssel</p>
+            <a href="https://maps.google.com/?q=Pr.+Beatrixstraat+2,+Nieuwerkerk+aan+den+IJssel"
+              target="_blank" rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 mt-5 text-sm font-semibold text-primary group">
               <MapPin className="w-3.5 h-3.5" />
               Bekijk op kaart
-              <ArrowRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5" />
+              <ArrowRight className="w-3 h-3 transition-transform duration-300 group-hover:translate-x-1" />
             </a>
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: 0.05 }}
-            className="bg-card rounded-3xl p-5 border border-border/30"
+            initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }} transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1], delay: 0.1 }}
+            className="card-luxe"
           >
-            <div className="flex items-center gap-3 mb-4">
+            <div className="flex items-center gap-3 mb-5">
               <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center shrink-0">
                 <Mail className="w-3.5 h-3.5 text-foreground/60" />
               </div>
               <h2 className="font-display text-lg font-medium text-foreground">Contact</h2>
             </div>
-            <div className="space-y-3">
+            <div className="space-y-4">
               <a href="mailto:info@studiolunazuidplas.nl"
-                className="flex items-center gap-3 text-sm text-foreground/70 hover:text-foreground transition-colors group">
+                className="flex items-center gap-3 text-sm text-foreground/65 hover:text-foreground group">
                 <Mail className="w-4 h-4 text-primary shrink-0" />
-                <span className="group-hover:underline">info@studiolunazuidplas.nl</span>
+                <span>info@studiolunazuidplas.nl</span>
               </a>
               <a href="https://wa.me/31643735343" target="_blank" rel="noopener noreferrer"
-                className="flex items-center gap-3 text-sm text-foreground/70 hover:text-foreground transition-colors group">
+                className="flex items-center gap-3 text-sm text-foreground/65 hover:text-foreground group">
                 <Phone className="w-4 h-4 text-primary shrink-0" />
-                <span className="group-hover:underline">+31 6 43 73 53 43</span>
+                <span>+31 6 43 73 53 43</span>
               </a>
               <a href="https://www.instagram.com/studiolunazuidplas" target="_blank" rel="noopener noreferrer"
-                className="flex items-center gap-3 text-sm text-foreground/70 hover:text-foreground transition-colors group">
+                className="flex items-center gap-3 text-sm text-foreground/65 hover:text-foreground group">
                 <Instagram className="w-4 h-4 text-primary shrink-0" />
-                <span className="group-hover:underline">@studiolunazuidplas</span>
+                <span>@studiolunazuidplas</span>
               </a>
             </div>
           </motion.div>
