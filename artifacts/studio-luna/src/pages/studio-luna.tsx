@@ -15,6 +15,14 @@ const DEFAULT_TEKSTEN = {
     "Een plek om te landen.\nEen plek om fysiek sterk, gezond en in balans te blijven.\nEen plek om vertrouwen te vinden in je veranderende lichaam.\nEen plek om te connecten met andere moeders.\nStudio Luna is jouw mama tribe.",
 };
 
+const FEATURES = [
+  { icon: "🧘", label: "Zwangerschapsyoga" },
+  { icon: "🌙", label: "Mama Circle" },
+  { icon: "🤝", label: "Kleine groepen" },
+  { icon: "🌿", label: "Nieuwerkerk a/d IJssel" },
+  { icon: "☕", label: "Thee & verbinding" },
+];
+
 export default function StudioLuna() {
   const [, navigate] = useLocation();
   const [teksten, setTeksten] = useState(DEFAULT_TEKSTEN);
