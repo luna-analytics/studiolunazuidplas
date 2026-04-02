@@ -35,127 +35,161 @@ export default function Home() {
       <div className="w-full max-w-5xl bg-background min-h-screen relative">
 
         {/* HEADER */}
-        <div className="px-6 md:px-12 lg:px-16 pt-14 md:pt-12 pb-12 bg-secondary md:rounded-3xl md:mx-6 md:mt-6 flex items-start justify-between gap-4">
+        <div className="px-6 md:px-12 lg:px-16 pt-14 md:pt-12 pb-10 bg-secondary md:rounded-3xl md:mx-6 md:mt-6 flex items-start justify-between gap-4">
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+            <p className="text-xs font-bold uppercase tracking-widest text-foreground/40 mb-1.5">Studio Luna</p>
             <h1 className="font-display text-3xl md:text-4xl font-medium text-foreground">Aanbod</h1>
-            <p className="text-foreground/55 text-sm mt-1">Zwangerschapsyoga · Mama Circle · Workshops</p>
+            <p className="text-foreground/55 text-sm mt-1.5">Zwangerschapsyoga · Circles · Workshops</p>
           </motion.div>
           <div className="overflow-hidden shrink-0" style={{ height: '95px' }}>
             <img src={`${import.meta.env.BASE_URL}images/studio-luna-logo.png`} alt="Studio Luna" className="h-32 w-auto" />
           </div>
         </div>
 
-        <div className="px-6 md:px-12 lg:px-16 pt-5 space-y-4 mb-8">
+        <div className="px-6 md:px-12 lg:px-16 pt-6 space-y-5 mb-8">
 
           {/* 1 — ZWANGERSCHAPSYOGA */}
           <motion.div
-            initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }} transition={{ duration: 0.4, delay: 0.05 }}
-            className="rounded-3xl bg-secondary border border-border/30 p-5"
+            initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.05 }}
+            className="rounded-3xl bg-card border border-border/25 shadow-sm overflow-hidden"
           >
-            <h3 className="font-display text-lg font-medium text-foreground mb-2">Zwangerschapsyoga</h3>
-            <p className="text-sm text-foreground/65 leading-relaxed mb-3">{teksten.aanbod_yoga_tekst1}</p>
-            <p className="text-sm text-foreground/65 leading-relaxed mb-3">{teksten.aanbod_yoga_tekst2}</p>
-            <div className="rounded-2xl bg-background/60 border border-border/20 px-4 py-3 text-sm text-foreground/60 space-y-1 mb-3">
-              <div className="flex items-center gap-2">
-                <Calendar className="w-3.5 h-3.5 shrink-0 text-primary" />
-                <span>{teksten.aanbod_yoga_tijd}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <MapPin className="w-3.5 h-3.5 shrink-0 text-primary" />
-                <span>{teksten.aanbod_yoga_locatie}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Coffee className="w-3.5 h-3.5 shrink-0 text-primary" />
-                <span>{teksten.aanbod_yoga_extra}</span>
+            {/* Afbeelding */}
+            <div className="relative w-full overflow-hidden" style={{ paddingTop: "45%" }}>
+              <img
+                src={`${BASE}/images/hero-yoga.png`}
+                alt="Zwangerschapsyoga Studio Luna"
+                className="absolute inset-0 w-full h-full object-cover object-top"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-card/80 via-card/10 to-transparent" />
+              <div className="absolute bottom-3 left-5">
+                <span className="text-[10px] font-bold uppercase tracking-widest bg-primary/15 text-primary px-2.5 py-1 rounded-full">
+                  Zwangerschapsyoga
+                </span>
               </div>
             </div>
-            <button
-              onClick={() => navigate("/rooster")}
-              className="w-full py-2.5 rounded-2xl bg-primary text-primary-foreground text-sm font-semibold flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors mb-2"
-            >
-              Bekijk het rooster
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
-            <a
-              href="https://tally.so/r/XxED7j"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full py-2.5 rounded-2xl border border-primary/40 text-primary text-sm font-semibold flex items-center justify-center gap-2 hover:bg-primary/5 transition-colors"
-            >
-              <ClipboardList className="w-3.5 h-3.5" />
-              Vul je intake in
-            </a>
+
+            <div className="p-5">
+              <h3 className="font-display text-xl font-medium text-foreground mb-2">Zwangerschapsyoga</h3>
+              <p className="text-sm text-foreground/65 leading-relaxed mb-2">{teksten.aanbod_yoga_tekst1}</p>
+              <p className="text-sm text-foreground/65 leading-relaxed mb-4">{teksten.aanbod_yoga_tekst2}</p>
+
+              <div className="rounded-2xl bg-secondary border border-border/20 px-4 py-3 text-sm text-foreground/60 space-y-2 mb-4">
+                <div className="flex items-center gap-2.5">
+                  <Calendar className="w-3.5 h-3.5 shrink-0 text-primary" />
+                  <span>{teksten.aanbod_yoga_tijd}</span>
+                </div>
+                <div className="flex items-center gap-2.5">
+                  <MapPin className="w-3.5 h-3.5 shrink-0 text-primary" />
+                  <span>{teksten.aanbod_yoga_locatie}</span>
+                </div>
+                <div className="flex items-center gap-2.5">
+                  <Coffee className="w-3.5 h-3.5 shrink-0 text-primary" />
+                  <span>{teksten.aanbod_yoga_extra}</span>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-2.5">
+                <button
+                  onClick={() => navigate("/rooster")}
+                  className="w-full py-3 rounded-2xl bg-primary text-primary-foreground text-sm font-semibold flex items-center justify-center gap-2 hover:bg-primary/90 transition-all duration-200 shadow-sm group"
+                >
+                  Bekijk het rooster
+                  <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
+                </button>
+                <a
+                  href="https://tally.so/r/XxED7j"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full py-2.5 rounded-2xl border border-border/40 text-foreground/70 text-sm font-semibold flex items-center justify-center gap-2 hover:bg-secondary hover:border-primary/30 hover:text-primary transition-all duration-200"
+                >
+                  <ClipboardList className="w-3.5 h-3.5" />
+                  Vul je intake in
+                </a>
+              </div>
+            </div>
           </motion.div>
 
           {/* 2 — MAMA CIRCLE */}
           <motion.div
-            initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }} transition={{ duration: 0.4, delay: 0.1 }}
-            className="rounded-3xl border border-dashed border-accent/60 bg-accent/10 p-5"
+            initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.1 }}
+            className="rounded-3xl bg-card border border-border/25 shadow-sm overflow-hidden"
           >
-            <h3 className="font-display text-lg font-medium text-foreground mb-0.5">{teksten.aanbod_circle_titel}</h3>
-            <p className="text-sm text-foreground/65 leading-relaxed mb-4">{teksten.aanbod_circle_tekst}</p>
-            <button
-              onClick={() => setIsInterestOpen(true)}
-              className="w-full py-2.5 rounded-2xl border border-primary/40 text-primary font-semibold text-sm flex items-center justify-center gap-2 hover:bg-primary/5 transition-colors"
-            >
-              <Mail className="w-4 h-4" />
-              Houd mij op de hoogte
-            </button>
+            <div className="bg-accent/20 px-5 pt-5 pb-4">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-accent-foreground/60">Community</span>
+              <h3 className="font-display text-xl font-medium text-foreground mt-1">{teksten.aanbod_circle_titel}</h3>
+            </div>
+            <div className="p-5">
+              <p className="text-sm text-foreground/65 leading-relaxed mb-4">{teksten.aanbod_circle_tekst}</p>
+              <button
+                onClick={() => setIsInterestOpen(true)}
+                className="w-full py-3 rounded-2xl bg-primary/10 border border-primary/20 text-primary font-semibold text-sm flex items-center justify-center gap-2 hover:bg-primary/15 hover:border-primary/40 transition-all duration-200"
+              >
+                <Mail className="w-4 h-4" />
+                Houd mij op de hoogte
+              </button>
+            </div>
           </motion.div>
 
-          {/* 3 — WORKSHOPS */}
+          {/* 3 — BEVALLINGS SPECIALS */}
           <motion.div
-            initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }} transition={{ duration: 0.4, delay: 0.15 }}
-            className="rounded-3xl bg-secondary border border-border/30 p-5"
+            initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.15 }}
+            className="rounded-3xl bg-card border border-border/25 shadow-sm overflow-hidden"
           >
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-xs font-bold uppercase tracking-widest text-foreground/40">Binnenkort</span>
+            <div className="bg-secondary px-5 pt-5 pb-4 flex items-start justify-between">
+              <div>
+                <span className="text-[10px] font-bold uppercase tracking-widest text-foreground/35">Binnenkort</span>
+                <h3 className="font-display text-xl font-medium text-foreground mt-1">Bevallings Specials 🌙</h3>
+              </div>
             </div>
-            <h3 className="font-display text-lg font-medium text-foreground mb-3">Bevallings Specials 🌙</h3>
 
-            <div className="space-y-3 mb-4">
-              {[
-                { title: "Bevallings Yoga Workshop", sub: "Focus & Vertrouwen", price: "€ 49,-" },
-                { title: "Partner Workshop", sub: "Verbinding & Support", price: "€ 79,-" },
-                { title: "Mama Spa", sub: "Ultiem ontspannen", price: "€ 49,-" },
-              ].map((item) => (
-                <div key={item.title} className="rounded-2xl bg-background/60 border border-border/20 px-4 py-3">
-                  <div className="flex items-start justify-between gap-2">
-                    <div>
-                      <p className="text-sm font-semibold text-foreground">{item.title}</p>
-                      <p className="text-xs text-foreground/45 mt-0.5">{item.sub} · 120 min</p>
-                    </div>
-                    <span className="text-sm font-semibold text-foreground shrink-0">{item.price}</span>
+            <div className="p-5">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+                {[
+                  { title: "Bevallings Yoga Workshop", sub: "Focus & Vertrouwen", price: "€ 49,-" },
+                  { title: "Partner Workshop", sub: "Verbinding & Support", price: "€ 79,-" },
+                  { title: "Mama Spa", sub: "Ultiem ontspannen", price: "€ 49,-" },
+                ].map((item) => (
+                  <div key={item.title} className="rounded-2xl bg-secondary border border-border/20 px-4 py-3.5">
+                    <p className="text-sm font-semibold text-foreground">{item.title}</p>
+                    <p className="text-xs text-foreground/45 mt-0.5">{item.sub} · 120 min</p>
+                    <p className="text-sm font-bold text-primary mt-2">{item.price}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="rounded-2xl bg-primary/5 border border-primary/15 px-4 py-3.5 mb-3">
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <p className="text-sm font-semibold text-foreground">De Geboorte-Bundel</p>
+                    <p className="text-xs text-foreground/55 mt-0.5 leading-relaxed">
+                      Boek de drie workshops samen voor de meest complete voorbereiding. Ideaal tussen de 28e en 36e week.
+                    </p>
+                  </div>
+                  <div className="shrink-0 text-right">
+                    <p className="text-base font-bold text-primary">€ 155,-</p>
+                    <p className="text-[10px] text-foreground/40">bespaar € 22,-</p>
                   </div>
                 </div>
-              ))}
-            </div>
+              </div>
 
-            <div className="rounded-2xl bg-background/60 border border-border/20 px-4 py-3 mb-4">
-              <p className="text-sm font-semibold text-foreground mb-0.5">De Geboorte-Bundel</p>
-              <p className="text-sm font-semibold text-foreground mb-2">€ 155,- <span className="text-xs font-normal text-foreground/45">(bespaar € 22,-)</span></p>
-              <p className="text-xs text-foreground/60 leading-relaxed">
-                Boek de drie workshops samen voor de meest complete en zachte voorbereiding op jouw reis naar het moederschap. Ideaal tussen je 28e en 36e week.
-              </p>
-            </div>
+              <div className="rounded-2xl bg-secondary border border-border/20 px-4 py-3 mb-4">
+                <p className="text-xs font-semibold text-foreground mb-0.5">💡 Check je zorgverzekering</p>
+                <p className="text-xs text-foreground/55 leading-relaxed">
+                  Veel verzekeraars vergoeden (een deel van) geboortevoorbereiding vanuit de aanvullende verzekering.
+                </p>
+              </div>
 
-            <div className="rounded-2xl bg-background/60 border border-border/20 px-4 py-3 mb-4">
-              <p className="text-xs font-semibold text-foreground mb-1">💡 Tip: Check je zorgverzekering!</p>
-              <p className="text-xs text-foreground/55 leading-relaxed">
-                Wist je dat veel zorgverzekeraars (een deel van) een cursus geboortevoorbereiding vergoeden vanuit de aanvullende verzekering? Je kunt de factuur van de Bevallings Specials na afloop zelf indienen bij je verzekeraar om te zien of je in aanmerking komt voor een vergoeding.
-              </p>
+              <button
+                onClick={() => setIsInterestOpen(true)}
+                className="w-full py-3 rounded-2xl bg-primary/10 border border-primary/20 text-primary font-semibold text-sm flex items-center justify-center gap-2 hover:bg-primary/15 hover:border-primary/40 transition-all duration-200"
+              >
+                <Mail className="w-4 h-4" />
+                Houd mij op de hoogte
+              </button>
             </div>
-
-            <button
-              onClick={() => setIsInterestOpen(true)}
-              className="w-full py-2.5 rounded-2xl border border-primary/40 text-primary font-semibold text-sm flex items-center justify-center gap-2 hover:bg-primary/5 transition-colors"
-            >
-              <Mail className="w-4 h-4" />
-              Houd mij op de hoogte
-            </button>
           </motion.div>
 
         </div>

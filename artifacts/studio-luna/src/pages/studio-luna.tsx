@@ -15,6 +15,15 @@ const DEFAULT_TEKSTEN = {
     "Een plek om te landen.\nEen plek om fysiek sterk, gezond en in balans te blijven.\nEen plek om vertrouwen te vinden in je veranderende lichaam.\nEen plek om te connecten met andere moeders.\nStudio Luna is jouw mama tribe.",
 };
 
+const FEATURES = [
+  { icon: "🤰", label: "Zwangerschapsyoga" },
+  { icon: "🌙", label: "Mama Circle" },
+  { icon: "🌿", label: "Kleine groepen" },
+  { icon: "☕", label: "Verbinding & thee" },
+  { icon: "🌬", label: "Ademwerk" },
+  { icon: "💛", label: "Community" },
+];
+
 export default function StudioLuna() {
   const [, navigate] = useLocation();
   const [teksten, setTeksten] = useState(DEFAULT_TEKSTEN);
@@ -30,129 +39,167 @@ export default function StudioLuna() {
     <div className="min-h-screen bg-background pb-28 md:pb-16 md:pt-16 flex justify-center">
       <div className="w-full max-w-5xl bg-background min-h-screen relative">
 
-        {/* HERO */}
-        <div className="relative pt-12 md:pt-16 pb-12 px-6 md:px-12 lg:px-16 md:mx-6 md:mt-6 bg-secondary overflow-hidden rounded-b-[2.5rem] md:rounded-3xl">
-          <div className="absolute inset-0 bg-gradient-to-b from-secondary/60 via-secondary/90 to-secondary md:bg-none" />
-          <div className="relative z-10 lg:flex lg:items-center lg:justify-between lg:gap-12">
-            <div className="lg:max-w-xl">
-              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-                <div className="overflow-hidden flex justify-center lg:hidden mb-5" style={{ height: '232px' }}>
-                  <img src={`${import.meta.env.BASE_URL}images/studio-luna-logo.png`} alt="Studio Luna" className="h-80 w-auto" />
-                </div>
-                <h1 className="font-display text-4xl lg:text-5xl font-medium text-foreground leading-[1.15] mb-3">
-                  {teksten.home_hero.split("\n").map((line, i, arr) => (
-                    <span key={i}>{line}{i < arr.length - 1 && <br />}</span>
-                  ))}
-                </h1>
+        {/* ── HERO ── */}
+        <motion.div
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }}
+          className="relative overflow-hidden md:mx-6 md:mt-6 md:rounded-3xl"
+          style={{ minHeight: 380 }}
+        >
+          <img
+            src={`${BASE}/images/hero-yoga.png`}
+            alt="Zwangerschapsyoga Studio Luna"
+            className="absolute inset-0 w-full h-full object-cover object-center"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/40 to-black/70 md:bg-gradient-to-r md:from-black/60 md:via-black/30 md:to-transparent" />
+
+          <div className="relative z-10 flex flex-col justify-end md:justify-center px-6 md:px-12 lg:px-16 pt-20 pb-10 md:py-16 min-h-[380px]">
+            <div className="md:max-w-lg">
+              <motion.p
+                initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }}
+                className="text-xs font-bold uppercase tracking-widest text-white/60 mb-3"
+              >
+                Nieuwerkerk aan den IJssel · Zuidplas
+              </motion.p>
+              <motion.h1
+                initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.3 }}
+                className="font-display text-4xl md:text-5xl font-medium text-white leading-[1.15] mb-5"
+              >
+                {teksten.home_hero.split("\n").map((line, i, arr) => (
+                  <span key={i}>{line}{i < arr.length - 1 && <br />}</span>
+                ))}
+              </motion.h1>
+              <motion.div
+                initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.5 }}
+                className="flex flex-wrap gap-3"
+              >
                 <button
                   onClick={() => navigate("/rooster")}
-                  className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-2xl font-semibold hover:bg-primary/90 transition-all group"
+                  className="inline-flex items-center gap-2 bg-white text-foreground px-6 py-3 rounded-2xl font-semibold text-sm hover:bg-white/90 transition-all duration-200 shadow-md group"
                 >
                   Reserveer jouw plekje
                   <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                 </button>
+                <button
+                  onClick={() => navigate("/aanbod")}
+                  className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm border border-white/30 text-white px-6 py-3 rounded-2xl font-semibold text-sm hover:bg-white/25 transition-all duration-200"
+                >
+                  Bekijk aanbod
+                </button>
               </motion.div>
             </div>
-            <div className="hidden lg:flex items-center justify-center shrink-0">
-              <div className="overflow-hidden opacity-60" style={{ height: '232px' }}>
-                <img src={`${import.meta.env.BASE_URL}images/studio-luna-logo.png`} alt="Studio Luna" className="h-80 w-auto" />
-              </div>
-            </div>
+          </div>
+        </motion.div>
+
+        {/* ── PILLS (aanbod) ── */}
+        <div className="px-6 md:px-12 lg:px-16 pt-6">
+          <div className="flex flex-wrap gap-2">
+            {FEATURES.map((f, i) => (
+              <motion.span
+                key={f.label}
+                initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.3, delay: 0.6 + i * 0.05 }}
+                className="inline-flex items-center gap-1.5 bg-secondary border border-border/30 rounded-full px-3.5 py-1.5 text-xs font-medium text-foreground/70"
+              >
+                <span>{f.icon}</span>{f.label}
+              </motion.span>
+            ))}
           </div>
         </div>
 
-        {/* CONTENT */}
-        <div className="px-6 md:px-12 lg:px-16 pt-6 space-y-4 mb-8">
-
-          {/* De missie */}
-          <motion.div initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4 }}
-            className="bg-card rounded-3xl p-6 border border-border/30">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-9 h-9 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
-                <Heart className="w-4 h-4 text-primary" />
-              </div>
-              <h2 className="font-display text-xl font-medium text-foreground">De missie</h2>
+        {/* ── DE MISSIE (editorial) ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}
+          className="px-6 md:px-12 lg:px-16 pt-10 pb-6"
+        >
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+              <Heart className="w-3.5 h-3.5 text-primary" />
             </div>
-            <ul className="space-y-1.5 mb-4">
-              {teksten.home_missie_bullets.split("\n").filter(Boolean).map((item, i) => (
-                <li key={i} className="text-sm font-medium text-foreground/80 leading-relaxed">{item}</li>
-              ))}
-            </ul>
-            <p className="text-foreground/70 text-sm leading-relaxed mb-3">
-              {teksten.home_missie_tekst}
-            </p>
-            <p className="text-sm font-medium text-foreground/80">Welkom in jouw village.</p>
-          </motion.div>
+            <h2 className="font-display text-2xl font-medium text-foreground">De missie</h2>
+          </div>
 
-          {/* Wat biedt Studio Luna */}
-          <motion.div initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: 0.05 }}
-            className="bg-card rounded-3xl p-6 border border-border/30">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-9 h-9 rounded-2xl bg-accent/20 flex items-center justify-center shrink-0">
-                <Sparkles className="w-4 h-4 text-accent" />
-              </div>
-              <h2 className="font-display text-xl font-medium text-foreground">Wat biedt Studio Luna</h2>
+          <div className="md:grid md:grid-cols-2 md:gap-10 md:items-start">
+            <div>
+              <ul className="space-y-3 mb-5">
+                {teksten.home_missie_bullets.split("\n").filter(Boolean).map((item, i) => (
+                  <li key={i} className="flex items-start gap-3 text-sm text-foreground/75 leading-relaxed">
+                    <span className="mt-1 w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
             </div>
-            <ul className="space-y-3">
-              {[
-                "Kleine groepen, veel aandacht en persoonlijk contact.",
-                "Tijdens zwangerschapsyoga bereid je je lichaam voor op de bevalling, leer je de kracht van je adem gebruiken, blijf je fysiek sterk en leer je rust te vinden.",
-                "Na afloop altijd tijd voor een kopje thee en verbinding.",
-                "Instromen op elk moment mogelijk vanaf 14 weken zwangerschap.",
-                "Een WhatsApp-community voor vragen, tips en verbinding tussen de lessen door.",
-                "Aandacht voor zowel het fysieke als het mentale aspect van zwangerschap en moederschap.",
-              ].map((item, i) => (
-                <li key={i} className="flex items-start gap-3 text-sm text-foreground/70">
-                  <span className="mt-0.5 w-5 h-5 rounded-full bg-primary/15 flex items-center justify-center shrink-0 text-primary font-bold text-xs">{i + 1}</span>
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </motion.div>
-
-          {/* De Mama Circle */}
-          <motion.div initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: 0.1 }}
-            className="bg-card rounded-3xl p-6 border border-border/30">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-9 h-9 rounded-2xl bg-secondary flex items-center justify-center shrink-0">
-                <Users className="w-4 h-4 text-foreground/60" />
-              </div>
-              <h2 className="font-display text-xl font-medium text-foreground">De Mama Circle</h2>
+            <div>
+              <p className="text-sm text-foreground/65 leading-relaxed">
+                {teksten.home_missie_tekst}
+              </p>
+              <p className="text-sm font-semibold text-foreground/80 mt-3">Welkom in jouw village.</p>
             </div>
-            <p className="text-foreground/70 text-sm leading-relaxed mb-3">
-              It takes a village. Verbinden met andere (aanstaande) mama's in een veilige plek om ervaringen te delen, herkenning te vinden en samen op te laden.
-            </p>
-            <p className="text-foreground/70 text-sm leading-relaxed">Je hoeft het niet alleen te doen.</p>
-          </motion.div>
+          </div>
+        </motion.div>
 
-          {/* Locatie */}
-          <motion.div initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: 0.12 }}
-            className="bg-card rounded-3xl p-6 border border-border/30">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-9 h-9 rounded-2xl bg-secondary flex items-center justify-center shrink-0">
-                <MapPin className="w-4 h-4 text-foreground/60" />
+        {/* ── WAT BIEDT STUDIO LUNA (2-col grid) ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.05 }}
+          className="mx-6 md:mx-12 lg:mx-16 rounded-3xl bg-secondary p-6 mb-6"
+        >
+          <div className="flex items-center gap-3 mb-5">
+            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+              <Sparkles className="w-3.5 h-3.5 text-primary" />
+            </div>
+            <h2 className="font-display text-xl font-medium text-foreground">Wat biedt Studio Luna</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {[
+              "Kleine groepen, veel aandacht en persoonlijk contact.",
+              "Zwangerschapsyoga: bevalling voorbereiden, kracht van de adem en fysieke balans.",
+              "Na afloop altijd tijd voor een kopje thee en verbinding.",
+              "Instromen mogelijk vanaf 14 weken zwangerschap.",
+              "WhatsApp-community voor vragen en tips tussen lessen door.",
+              "Aandacht voor zowel het fysieke als het mentale aspect van moederschap.",
+            ].map((item, i) => (
+              <div key={i} className="flex items-start gap-3 bg-background/60 rounded-2xl px-4 py-3">
+                <span className="mt-0.5 w-5 h-5 rounded-full bg-primary/15 flex items-center justify-center shrink-0 text-primary font-bold text-xs">{i + 1}</span>
+                <p className="text-sm text-foreground/70 leading-relaxed">{item}</p>
               </div>
-              <h2 className="font-display text-xl font-medium text-foreground">Locatie</h2>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* ── LOCATIE & CONTACT (naast elkaar op desktop) ── */}
+        <div className="px-6 md:px-12 lg:px-16 mb-8 md:grid md:grid-cols-2 md:gap-5">
+
+          <motion.div
+            initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4 }}
+            className="bg-card rounded-3xl p-5 border border-border/30 mb-4 md:mb-0"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center shrink-0">
+                <MapPin className="w-3.5 h-3.5 text-foreground/60" />
+              </div>
+              <h2 className="font-display text-lg font-medium text-foreground">Locatie</h2>
             </div>
             <p className="text-foreground/70 text-sm leading-relaxed">
               Onze lessen vinden plaats bij <span className="font-semibold text-foreground">Huize Mooisteen</span>
             </p>
-            <p className="text-foreground/60 text-sm mt-1">Pr. Beatrixstraat 2, Nieuwerkerk aan den IJssel</p>
+            <p className="text-foreground/55 text-sm mt-1">Pr. Beatrixstraat 2, Nieuwerkerk aan den IJssel</p>
             <a href="https://maps.google.com/?q=Pr.+Beatrixstraat+2,+Nieuwerkerk+aan+den+IJssel" target="_blank" rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 mt-4 text-sm font-medium text-primary hover:text-primary/80 transition-colors">
-              <MapPin className="w-4 h-4" />
+              className="inline-flex items-center gap-2 mt-4 text-sm font-semibold text-primary hover:text-primary/80 transition-colors group">
+              <MapPin className="w-3.5 h-3.5" />
               Bekijk op kaart
+              <ArrowRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5" />
             </a>
           </motion.div>
 
-          {/* Contact */}
-          <motion.div initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: 0.15 }}
-            className="bg-card rounded-3xl p-6 border border-border/30">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: 0.05 }}
+            className="bg-card rounded-3xl p-5 border border-border/30"
+          >
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-9 h-9 rounded-2xl bg-secondary flex items-center justify-center shrink-0">
-                <Mail className="w-4 h-4 text-foreground/60" />
+              <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center shrink-0">
+                <Mail className="w-3.5 h-3.5 text-foreground/60" />
               </div>
-              <h2 className="font-display text-xl font-medium text-foreground">Contact</h2>
+              <h2 className="font-display text-lg font-medium text-foreground">Contact</h2>
             </div>
             <div className="space-y-3">
               <a href="mailto:info@studiolunazuidplas.nl"
@@ -163,7 +210,7 @@ export default function StudioLuna() {
               <a href="https://wa.me/31643735343" target="_blank" rel="noopener noreferrer"
                 className="flex items-center gap-3 text-sm text-foreground/70 hover:text-foreground transition-colors group">
                 <Phone className="w-4 h-4 text-primary shrink-0" />
-                <span className="group-hover:underline">+31 6 43 73 53 43 (WhatsApp)</span>
+                <span className="group-hover:underline">+31 6 43 73 53 43</span>
               </a>
               <a href="https://www.instagram.com/studiolunazuidplas" target="_blank" rel="noopener noreferrer"
                 className="flex items-center gap-3 text-sm text-foreground/70 hover:text-foreground transition-colors group">
