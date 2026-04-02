@@ -25,7 +25,7 @@ export default function Inspiratie() {
           <span className="text-5xl mb-6">🌙</span>
           <h1 className="font-display text-3xl font-medium text-foreground mb-3">Binnenkort</h1>
           <p className="text-foreground/55 text-sm leading-relaxed max-w-xs">
-            Hier vind je straks verhalen, tips en inzichten over zwangerschap, yoga en het leven als mama.
+            Verhalen, inzichten en tips over zwangerschap, yoga en het leven als mama. Vanuit mijn achtergrond als onderzoeker (PhD) zoek ik graag voor je uit hoe het nu echt zit met alle veranderingen die je doormaakt.
           </p>
         </div>
         <BottomNav />
