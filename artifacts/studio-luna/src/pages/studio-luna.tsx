@@ -15,13 +15,6 @@ const DEFAULT_TEKSTEN = {
     "Een plek om te landen.\nEen plek om fysiek sterk, gezond en in balans te blijven.\nEen plek om vertrouwen te vinden in je veranderende lichaam.\nEen plek om te connecten met andere moeders.\nStudio Luna is jouw mama tribe.",
 };
 
-const FEATURES = [
-  { icon: "🧘", label: "Zwangerschapsyoga" },
-  { icon: "🌙", label: "Mama Circle" },
-  { icon: "🤝", label: "Kleine groepen" },
-  { icon: "🌿", label: "Nieuwerkerk a/d IJssel" },
-  { icon: "☕", label: "Thee & verbinding" },
-];
 
 export default function StudioLuna() {
   const [, navigate] = useLocation();
@@ -89,21 +82,6 @@ export default function StudioLuna() {
           </div>
         </motion.div>
 
-        {/* ── PILLS (aanbod) ── */}
-        <div className="px-6 md:px-12 lg:px-16 pt-6">
-          <div className="flex flex-wrap gap-2">
-            {FEATURES.map((f, i) => (
-              <motion.span
-                key={f.label}
-                initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3, delay: 0.6 + i * 0.05 }}
-                className="inline-flex items-center gap-1.5 bg-secondary border border-border/30 rounded-full px-3.5 py-1.5 text-xs font-medium text-foreground/70"
-              >
-                <span>{f.icon}</span>{f.label}
-              </motion.span>
-            ))}
-          </div>
-        </div>
 
         {/* ── DE MISSIE (editorial) ── */}
         <motion.div
