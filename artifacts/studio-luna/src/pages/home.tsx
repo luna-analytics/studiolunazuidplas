@@ -5,6 +5,7 @@ import { SeoFooter } from "@/components/seo-footer";
 import { InterestModal } from "@/components/interest-modal";
 import { motion } from "framer-motion";
 import { ArrowRight, Calendar, MapPin, Coffee, Mail, ClipboardList } from "lucide-react";
+import { IMAGES } from "@/lib/images";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -16,6 +17,14 @@ const DEFAULT_TEKSTEN = {
   aanbod_yoga_extra: "Na afloop: verse thee en tijd voor verbinding",
   aanbod_circle_titel: "Zwanger & Mama Circle",
   aanbod_circle_tekst: "Bij Studio Luna geloven we in de kracht van de 'village'. Naast de fysieke lessen creëren we een veilige cirkel waarin je ervaringen deelt, vragen stelt en naar elkaar omkijkt. We gebruiken zachte yoga- en ademhalingsoefeningen om samen te vertragen, zodat er ruimte ontstaat om echt te luisteren naar jezelf en elkaar. Echte verbinding met andere zwangeren en mama's in Zuidplas!",
+};
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 24 },
+  show: (delay = 0) => ({
+    opacity: 1, y: 0,
+    transition: { duration: 0.9, ease: [0.4, 0, 0.2, 1], delay },
+  }),
 };
 
 export default function Home() {
@@ -32,167 +41,247 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background pb-28 md:pb-16 md:pt-16 flex justify-center">
-      <div className="w-full max-w-5xl bg-background min-h-screen relative">
+      <div className="w-full max-w-5xl bg-background min-h-screen relative overflow-x-hidden">
 
-        {/* HEADER */}
-        <div className="px-6 md:px-12 lg:px-16 pt-14 md:pt-12 pb-10 bg-secondary md:rounded-3xl md:mx-6 md:mt-6 flex items-start justify-between gap-4">
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-            <p className="text-xs font-bold uppercase tracking-widest text-foreground/40 mb-1.5">Studio Luna</p>
-            <h1 className="font-display text-3xl md:text-4xl font-medium text-foreground">Aanbod</h1>
-            <p className="text-foreground/55 text-sm mt-1.5">Zwangerschapsyoga · Circles · Workshops</p>
-          </motion.div>
-          <div className="overflow-hidden shrink-0" style={{ height: '95px' }}>
-            <img src={`${import.meta.env.BASE_URL}images/studio-luna-logo.png`} alt="Studio Luna" className="h-32 w-auto" />
-          </div>
-        </div>
+        {/* ── PAGE TITLE — minimaal, geen kader ── */}
+        <motion.div
+          variants={fadeUp} initial="hidden" animate="show" custom={0}
+          className="px-7 md:px-14 lg:px-18 pt-14 md:pt-12 pb-4"
+        >
+          <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary/60 mb-3 flex items-center gap-3">
+            <span className="inline-block w-8 h-px bg-primary/40" />
+            Studio Luna
+          </p>
+          <h1 className="font-display text-4xl md:text-5xl font-medium text-foreground leading-[1.1]">Aanbod</h1>
+          <p className="text-foreground/45 text-sm mt-3 tracking-wide">Zwangerschapsyoga · Circles · Workshops</p>
+        </motion.div>
 
-        <div className="px-6 md:px-12 lg:px-16 pt-6 space-y-5 mb-8">
+        {/* ══════════════════════════════════════════════════════════
+            1 — ZWANGERSCHAPSYOGA
+            Grote foto boven, tekst eronder, geen kaders
+        ══════════════════════════════════════════════════════════ */}
+        <section className="relative py-16 md:py-24">
+          {/* Subtiele achtergrond-overgang */}
+          <div className="absolute inset-0 bg-gradient-to-b from-background via-secondary/20 to-background pointer-events-none" />
 
-          {/* 1 — ZWANGERSCHAPSYOGA */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.05 }}
-            className="rounded-3xl bg-card border border-border/25 shadow-sm overflow-hidden"
-          >
-            {/* Afbeelding */}
-            <div className="relative w-full overflow-hidden" style={{ paddingTop: "45%" }}>
+          <div className="relative">
+            {/* Foto — iets breder dan het grid, 'bloedt' naar de rand */}
+            <motion.div
+              variants={fadeUp} initial="hidden" whileInView="show"
+              viewport={{ once: true, margin: "-60px" }} custom={0}
+              className="mx-4 md:mx-10 lg:mx-14 overflow-hidden rounded-2xl mb-12"
+              style={{ aspectRatio: "16/7" }}
+            >
               <img
-                src={`${BASE}/images/hero-yoga.png`}
+                src={IMAGES.yoga}
                 alt="Zwangerschapsyoga Studio Luna"
-                className="absolute inset-0 w-full h-full object-cover object-top"
+                className="w-full h-full object-cover object-top"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-card/80 via-card/10 to-transparent" />
-              <div className="absolute bottom-3 left-5">
-                <span className="text-[10px] font-bold uppercase tracking-widest bg-primary/15 text-primary px-2.5 py-1 rounded-full">
-                  Zwangerschapsyoga
-                </span>
-              </div>
-            </div>
+            </motion.div>
 
-            <div className="p-5">
-              <h3 className="font-display text-xl font-medium text-foreground mb-2">Zwangerschapsyoga</h3>
-              <p className="text-sm text-foreground/65 leading-relaxed mb-2">{teksten.aanbod_yoga_tekst1}</p>
-              <p className="text-sm text-foreground/65 leading-relaxed mb-4">{teksten.aanbod_yoga_tekst2}</p>
-
-              <div className="rounded-2xl bg-secondary border border-border/20 px-4 py-3 text-sm text-foreground/60 space-y-2 mb-4">
-                <div className="flex items-center gap-2.5">
-                  <Calendar className="w-3.5 h-3.5 shrink-0 text-primary" />
-                  <span>{teksten.aanbod_yoga_tijd}</span>
-                </div>
-                <div className="flex items-center gap-2.5">
-                  <MapPin className="w-3.5 h-3.5 shrink-0 text-primary" />
-                  <span>{teksten.aanbod_yoga_locatie}</span>
-                </div>
-                <div className="flex items-center gap-2.5">
-                  <Coffee className="w-3.5 h-3.5 shrink-0 text-primary" />
-                  <span>{teksten.aanbod_yoga_extra}</span>
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-2.5">
-                <button
-                  onClick={() => navigate("/rooster")}
-                  className="w-full py-3 rounded-2xl bg-primary text-primary-foreground text-sm font-semibold flex items-center justify-center gap-2 hover:bg-primary/90 transition-all duration-200 shadow-sm group"
-                >
-                  Bekijk het rooster
-                  <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
-                </button>
-                <a
-                  href="https://tally.so/r/XxED7j"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full py-2.5 rounded-2xl border border-border/40 text-foreground/70 text-sm font-semibold flex items-center justify-center gap-2 hover:bg-secondary hover:border-primary/30 hover:text-primary transition-all duration-200"
-                >
-                  <ClipboardList className="w-3.5 h-3.5" />
-                  Vul je intake in
-                </a>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* 2 — MAMA CIRCLE */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.1 }}
-            className="rounded-3xl bg-card border border-border/25 shadow-sm overflow-hidden"
-          >
-            <div className="bg-accent/20 px-5 pt-5 pb-4">
-              <span className="text-[10px] font-bold uppercase tracking-widest text-accent-foreground/60">Community</span>
-              <h3 className="font-display text-xl font-medium text-foreground mt-1">{teksten.aanbod_circle_titel}</h3>
-            </div>
-            <div className="p-5">
-              <p className="text-sm text-foreground/65 leading-relaxed mb-4">{teksten.aanbod_circle_tekst}</p>
-              <button
-                onClick={() => setIsInterestOpen(true)}
-                className="w-full py-3 rounded-2xl bg-primary/10 border border-primary/20 text-primary font-semibold text-sm flex items-center justify-center gap-2 hover:bg-primary/15 hover:border-primary/40 transition-all duration-200"
+            <div className="px-7 md:px-14 lg:px-18">
+              {/* Label */}
+              <motion.p
+                variants={fadeUp} initial="hidden" whileInView="show"
+                viewport={{ once: true, margin: "-60px" }} custom={0.05}
+                className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary/60 mb-5 flex items-center gap-3"
               >
-                <Mail className="w-4 h-4" />
-                Houd mij op de hoogte
-              </button>
-            </div>
-          </motion.div>
+                <span className="inline-block w-8 h-px bg-primary/40" />
+                Zwangerschapsyoga
+              </motion.p>
 
-          {/* 3 — BEVALLINGS SPECIALS */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.15 }}
-            className="rounded-3xl bg-card border border-border/25 shadow-sm overflow-hidden"
-          >
-            <div className="bg-secondary px-5 pt-5 pb-4 flex items-start justify-between">
-              <div>
-                <span className="text-[10px] font-bold uppercase tracking-widest text-foreground/35">Binnenkort</span>
-                <h3 className="font-display text-xl font-medium text-foreground mt-1">Bevallings Specials 🌙</h3>
+              {/* Asymmetrisch: heading breed links, tekst rechts */}
+              <div className="md:grid md:grid-cols-[1fr_1.1fr] md:gap-16 md:items-start">
+
+                <motion.div
+                  variants={fadeUp} initial="hidden" whileInView="show"
+                  viewport={{ once: true, margin: "-60px" }} custom={0.1}
+                >
+                  <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground leading-[1.15] mb-8">
+                    Sterk en vol<br />vertrouwen richting<br />
+                    <em className="not-italic text-primary">je bevalling.</em>
+                  </h2>
+
+                  {/* Praktische info — zweeft losjes */}
+                  <div className="space-y-4 text-sm text-foreground/55">
+                    <div className="flex items-start gap-3">
+                      <Calendar className="w-4 h-4 shrink-0 text-primary mt-0.5" />
+                      <span className="leading-[1.8]">{teksten.aanbod_yoga_tijd}</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <MapPin className="w-4 h-4 shrink-0 text-primary mt-0.5" />
+                      <span className="leading-[1.8]">{teksten.aanbod_yoga_locatie}</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <Coffee className="w-4 h-4 shrink-0 text-primary mt-0.5" />
+                      <span className="leading-[1.8]">{teksten.aanbod_yoga_extra}</span>
+                    </div>
+                  </div>
+                </motion.div>
+
+                <motion.div
+                  variants={fadeUp} initial="hidden" whileInView="show"
+                  viewport={{ once: true, margin: "-60px" }} custom={0.2}
+                  className="md:pt-2"
+                >
+                  <p className="text-[15px] text-foreground/60 leading-[1.95] mb-4">{teksten.aanbod_yoga_tekst1}</p>
+                  <p className="text-[15px] text-foreground/60 leading-[1.95] mb-10">{teksten.aanbod_yoga_tekst2}</p>
+
+                  <div className="flex flex-col gap-3">
+                    <button
+                      onClick={() => navigate("/rooster")}
+                      className="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-7 py-3.5 rounded-2xl font-semibold text-sm hover:bg-primary/88 shadow-soft group w-full md:w-auto"
+                    >
+                      Bekijk het rooster
+                      <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+                    </button>
+                    <a
+                      href="https://tally.so/r/XxED7j"
+                      target="_blank" rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center gap-2 text-foreground/55 hover:text-primary px-7 py-3 text-sm font-semibold w-full md:w-auto"
+                    >
+                      <ClipboardList className="w-4 h-4" />
+                      Vul je intake in
+                    </a>
+                  </div>
+                </motion.div>
+
               </div>
             </div>
+          </div>
+        </section>
 
-            <div className="p-5">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
-                {[
-                  { title: "Bevallings Yoga Workshop", sub: "Focus & Vertrouwen", price: "€ 49,-" },
-                  { title: "Partner Workshop", sub: "Verbinding & Support", price: "€ 79,-" },
-                  { title: "Mama Spa", sub: "Ultiem ontspannen", price: "€ 49,-" },
-                ].map((item) => (
-                  <div key={item.title} className="rounded-2xl bg-secondary border border-border/20 px-4 py-3.5">
-                    <p className="text-sm font-semibold text-foreground">{item.title}</p>
-                    <p className="text-xs text-foreground/45 mt-0.5">{item.sub} · 120 min</p>
-                    <p className="text-sm font-bold text-primary mt-2">{item.price}</p>
-                  </div>
-                ))}
-              </div>
+        {/* ══════════════════════════════════════════════════════════
+            2 — MAMA CIRCLE
+            Omgekeerde volgorde: tekst breed, geen foto (sfeer door achtergrond)
+        ══════════════════════════════════════════════════════════ */}
+        <section className="relative px-7 md:px-14 lg:px-18 py-20 md:py-32">
+          <div className="absolute inset-0 bg-gradient-to-b from-background via-secondary/30 to-background pointer-events-none" />
 
-              <div className="rounded-2xl bg-primary/5 border border-primary/15 px-4 py-3.5 mb-3">
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <p className="text-sm font-semibold text-foreground">De Geboorte-Bundel</p>
-                    <p className="text-xs text-foreground/55 mt-0.5 leading-relaxed">
-                      Boek de drie workshops samen voor de meest complete voorbereiding. Ideaal tussen de 28e en 36e week.
-                    </p>
-                  </div>
-                  <div className="shrink-0 text-right">
-                    <p className="text-base font-bold text-primary">€ 155,-</p>
-                    <p className="text-[10px] text-foreground/40">bespaar € 22,-</p>
-                  </div>
-                </div>
-              </div>
+          <div className="relative">
+            <motion.p
+              variants={fadeUp} initial="hidden" whileInView="show"
+              viewport={{ once: true, margin: "-80px" }} custom={0}
+              className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary/60 mb-5 flex items-center gap-3"
+            >
+              <span className="inline-block w-8 h-px bg-primary/40" />
+              Community
+            </motion.p>
 
-              <div className="rounded-2xl bg-secondary border border-border/20 px-4 py-3 mb-4">
-                <p className="text-xs font-semibold text-foreground mb-0.5">💡 Check je zorgverzekering</p>
-                <p className="text-xs text-foreground/55 leading-relaxed">
-                  Veel verzekeraars vergoeden (een deel van) geboortevoorbereiding vanuit de aanvullende verzekering.
+            <div className="md:grid md:grid-cols-[1.2fr_1fr] md:gap-20 md:items-start">
+
+              <motion.div
+                variants={fadeUp} initial="hidden" whileInView="show"
+                viewport={{ once: true, margin: "-80px" }} custom={0.1}
+              >
+                <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground leading-[1.15] mb-10">
+                  {teksten.aanbod_circle_titel}
+                </h2>
+                <p className="text-[15px] text-foreground/60 leading-[1.95]">
+                  {teksten.aanbod_circle_tekst}
                 </p>
-              </div>
+              </motion.div>
 
-              <button
-                onClick={() => setIsInterestOpen(true)}
-                className="w-full py-3 rounded-2xl bg-primary/10 border border-primary/20 text-primary font-semibold text-sm flex items-center justify-center gap-2 hover:bg-primary/15 hover:border-primary/40 transition-all duration-200"
+              <motion.div
+                variants={fadeUp} initial="hidden" whileInView="show"
+                viewport={{ once: true, margin: "-80px" }} custom={0.2}
+                className="md:pt-24 mt-10 md:mt-0"
               >
-                <Mail className="w-4 h-4" />
-                Houd mij op de hoogte
-              </button>
+                {/* Foto als sfeerblok — portret formaat */}
+                <div className="overflow-hidden rounded-2xl mb-8" style={{ aspectRatio: "4/5" }}>
+                  <img
+                    src={IMAGES.circle}
+                    alt="Mama Circle Studio Luna"
+                    className="w-full h-full object-cover object-center"
+                  />
+                </div>
+
+                <button
+                  onClick={() => setIsInterestOpen(true)}
+                  className="inline-flex items-center gap-2 text-primary font-semibold text-sm hover:text-primary/75 group"
+                >
+                  <Mail className="w-4 h-4" />
+                  Houd mij op de hoogte
+                  <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+                </button>
+              </motion.div>
+
             </div>
+          </div>
+        </section>
+
+        {/* ══════════════════════════════════════════════════════════
+            3 — BEVALLINGS SPECIALS
+            Clean prijslijst, geen kaarten
+        ══════════════════════════════════════════════════════════ */}
+        <section className="px-7 md:px-14 lg:px-18 py-16 md:py-24">
+          <motion.div
+            variants={fadeUp} initial="hidden" whileInView="show"
+            viewport={{ once: true, margin: "-80px" }} custom={0}
+          >
+            <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary/60 mb-5 flex items-center gap-3">
+              <span className="inline-block w-8 h-px bg-primary/40" />
+              Binnenkort
+            </p>
+            <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground leading-[1.15] mb-14">
+              Bevallings Specials
+            </h2>
           </motion.div>
 
-        </div>
+          {/* Prijslijst — minimaal, gescheiden door dunne lijn */}
+          <div className="space-y-0 mb-14">
+            {[
+              { title: "Bevallings Yoga Workshop", sub: "Focus & Vertrouwen · 120 min", price: "€ 49,-" },
+              { title: "Partner Workshop", sub: "Verbinding & Support · 120 min", price: "€ 79,-" },
+              { title: "Mama Spa", sub: "Ultiem ontspannen · 120 min", price: "€ 49,-" },
+            ].map((item, i) => (
+              <motion.div
+                key={item.title}
+                variants={fadeUp} initial="hidden" whileInView="show"
+                viewport={{ once: true, margin: "-60px" }} custom={i * 0.08}
+                className="flex items-center justify-between gap-6 py-6 border-b border-border/15"
+              >
+                <div>
+                  <p className="text-[15px] font-semibold text-foreground">{item.title}</p>
+                  <p className="text-sm text-foreground/45 mt-1">{item.sub}</p>
+                </div>
+                <p className="font-display text-xl font-medium text-primary shrink-0">{item.price}</p>
+              </motion.div>
+            ))}
+
+            {/* Bundel */}
+            <motion.div
+              variants={fadeUp} initial="hidden" whileInView="show"
+              viewport={{ once: true, margin: "-60px" }} custom={0.3}
+              className="flex items-center justify-between gap-6 py-6 border-b border-border/15"
+            >
+              <div>
+                <p className="text-[15px] font-semibold text-foreground">De Geboorte-Bundel</p>
+                <p className="text-sm text-foreground/45 mt-1">Alle drie workshops · meest complete voorbereiding</p>
+                <p className="text-xs text-primary/70 mt-1">bespaar € 22,-</p>
+              </div>
+              <p className="font-display text-xl font-medium text-primary shrink-0">€ 155,-</p>
+            </motion.div>
+          </div>
+
+          <motion.div
+            variants={fadeUp} initial="hidden" whileInView="show"
+            viewport={{ once: true, margin: "-60px" }} custom={0.4}
+            className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6"
+          >
+            <p className="text-sm text-foreground/45 max-w-sm leading-[1.85]">
+              Veel verzekeraars vergoeden (een deel van) geboortevoorbereiding vanuit de aanvullende verzekering.
+            </p>
+            <button
+              onClick={() => setIsInterestOpen(true)}
+              className="inline-flex items-center gap-2 text-primary font-semibold text-sm hover:text-primary/75 group shrink-0"
+            >
+              <Mail className="w-4 h-4" />
+              Houd mij op de hoogte
+              <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+            </button>
+          </motion.div>
+        </section>
 
         <InterestModal isOpen={isInterestOpen} onClose={() => setIsInterestOpen(false)} />
         <SeoFooter />
