@@ -2072,6 +2072,8 @@ type PaginaTeksten = {
   aanbod_yoga_tijd: string; aanbod_yoga_locatie: string; aanbod_yoga_extra: string;
   aanbod_circle_titel: string; aanbod_circle_tekst: string;
   tarieven_aanvraag_tekst: string;
+  over_mij_naam: string; over_mij_functie: string;
+  over_mij_quote: string; over_mij_tekst: string; over_mij_foto: string;
 };
 
 const DEFAULT_PT: PaginaTeksten = {
@@ -2086,6 +2088,11 @@ const DEFAULT_PT: PaginaTeksten = {
   aanbod_circle_titel: "Zwanger & Mama Circle",
   aanbod_circle_tekst: "Bij Studio Luna geloven we in de kracht van de 'village'. Naast de fysieke lessen creëren we een veilige cirkel waarin je ervaringen deelt, vragen stelt en naar elkaar omkijkt. We gebruiken zachte yoga- en ademhalingsoefeningen om samen te vertragen, zodat er ruimte ontstaat om echt te luisteren naar jezelf en elkaar. Echte verbinding met andere zwangeren en mama's in Zuidplas!",
   tarieven_aanvraag_tekst: "Studio Luna voegt zo snel mogelijk je credits toe aan je account. De betaling vindt in de studio plaats bij je eerstvolgende les.",
+  over_mij_naam: "Jouw naam",
+  over_mij_functie: "Zwangerschapsyoga docente & oprichter Studio Luna",
+  over_mij_quote: "Ik geloof dat elke vrouw kracht in zich draagt — soms moet je die alleen even leren voelen.",
+  over_mij_tekst: "",
+  over_mij_foto: "",
 };
 
 function InhoudTab() {
@@ -2176,6 +2183,70 @@ function InhoudTab() {
         <p className="text-xs text-foreground/50">Deze tekst verschijnt in het aanvraagformulier als iemand een rittenkaart, circle of reeks aanvraagt.</p>
         {field("Informatietekst in aanvraagformulier", "tarieven_aanvraag_tekst", true)}
         {saveBtn("tarieven_aanvraag", { tarieven_aanvraag_tekst: teksten.tarieven_aanvraag_tekst })}
+      </div>
+
+      {/* OVER MIJ */}
+      <div className="bg-card border border-border/30 rounded-3xl p-5 space-y-4">
+        <h3 className="font-display text-lg font-medium">Over mij pagina</h3>
+        <p className="text-xs text-foreground/50">Alles wat je hier invult verschijnt direct op de 'Over mij' tab in de app.</p>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {field("Naam", "over_mij_naam")}
+          {field("Functie / ondertitel", "over_mij_functie")}
+        </div>
+        {field("Quote (groot citaat bovenaan)", "over_mij_quote", false, "Korte, krachtige zin die jou typeert.")}
+        {field("Jouw verhaal (biografie)", "over_mij_tekst", true, "Gebruik een lege regel tussen alinea's. Je kunt zo lang schrijven als je wilt.")}
+
+        {/* FOTO UPLOAD */}
+        <div>
+          <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Profielfoto</label>
+          <p className="text-xs text-foreground/40 mb-2">Upload een foto (max. 4 MB, JPG of PNG). De foto wordt direct opgeslagen.</p>
+          <div className="flex items-start gap-4">
+            {teksten.over_mij_foto && (
+              <div className="shrink-0 w-20 h-24 rounded-xl overflow-hidden border border-border/30">
+                <img src={teksten.over_mij_foto} alt="Profielfoto" className="w-full h-full object-cover" />
+              </div>
+            )}
+            <div className="flex-1">
+              <label className="cursor-pointer inline-flex items-center gap-2 bg-secondary border border-border/40 text-foreground/70 hover:text-foreground px-4 py-2.5 rounded-2xl text-sm font-medium transition-colors">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                Kies foto
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    if (file.size > 4 * 1024 * 1024) { alert("Foto is te groot (max 4 MB)."); return; }
+                    const reader = new FileReader();
+                    reader.onload = (ev) => {
+                      const dataUrl = ev.target?.result as string;
+                      setTeksten((prev) => ({ ...prev, over_mij_foto: dataUrl }));
+                    };
+                    reader.readAsDataURL(file);
+                  }}
+                />
+              </label>
+              {teksten.over_mij_foto && (
+                <button
+                  onClick={() => setTeksten((prev) => ({ ...prev, over_mij_foto: "" }))}
+                  className="ml-2 text-xs text-foreground/40 hover:text-red-500 transition-colors"
+                >
+                  Verwijder foto
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {saveBtn("over_mij", {
+          over_mij_naam: teksten.over_mij_naam,
+          over_mij_functie: teksten.over_mij_functie,
+          over_mij_quote: teksten.over_mij_quote,
+          over_mij_tekst: teksten.over_mij_tekst,
+          over_mij_foto: teksten.over_mij_foto,
+        })}
       </div>
     </div>
   );

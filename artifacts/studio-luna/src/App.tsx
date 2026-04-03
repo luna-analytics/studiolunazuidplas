@@ -16,6 +16,7 @@ import StudioLuna from "./pages/studio-luna";
 import Admin from "./pages/admin";
 import Village from "./pages/village";
 import Inspiratie from "./pages/inspiratie";
+import OverMij from "./pages/over-mij";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -47,6 +48,7 @@ function Router() {
         <Route path="/admin" component={Admin} />
         <Route path="/village" component={Village} />
         <Route path="/inspiratie" component={Inspiratie} />
+        <Route path="/over-mij" component={OverMij} />
         <Route path="/profile" component={Profile} />
         <Route component={NotFound} />
       </Switch>
