@@ -17,6 +17,8 @@ const DEFAULT_TEKSTEN = {
   aanbod_yoga_extra: "Na afloop: verse thee en tijd voor verbinding",
   aanbod_circle_titel: "Zwanger & Mama Circle",
   aanbod_circle_tekst: "Bij Studio Luna geloven we in de kracht van de 'village'. Naast de fysieke lessen creëren we een veilige cirkel waarin je ervaringen deelt, vragen stelt en naar elkaar omkijkt. We gebruiken zachte yoga- en ademhalingsoefeningen om samen te vertragen, zodat er ruimte ontstaat om echt te luisteren naar jezelf en elkaar. Echte verbinding met andere zwangeren en mama's in Zuidplas!",
+  foto_yoga: "",
+  foto_circle: "",
 };
 
 const fadeUp = {
@@ -73,7 +75,7 @@ export default function Home() {
               style={{ aspectRatio: "16/7" }}
             >
               <img
-                src={IMAGES.yoga}
+                src={teksten.foto_yoga || IMAGES.yoga}
                 alt="Zwangerschapsyoga Studio Luna"
                 className="w-full h-full object-cover object-top"
               />
@@ -190,7 +192,7 @@ export default function Home() {
                 {/* Foto als sfeerblok — portret formaat */}
                 <div className="overflow-hidden rounded-2xl mb-8" style={{ aspectRatio: "4/5" }}>
                   <img
-                    src={IMAGES.circle}
+                    src={teksten.foto_circle || IMAGES.circle}
                     alt="Mama Circle Studio Luna"
                     className="w-full h-full object-cover object-center"
                   />

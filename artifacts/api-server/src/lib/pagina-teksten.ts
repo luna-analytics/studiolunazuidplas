@@ -25,6 +25,10 @@ export type PaginaTeksten = {
   over_mij_quote: string;
   over_mij_tekst: string;
   over_mij_foto: string; // base64 data URL of externe URL
+  // Site-foto's (base64 data URL — leeg = gebruik standaard statische foto)
+  foto_hero: string;
+  foto_yoga: string;
+  foto_circle: string;
 };
 
 const DEFAULT: PaginaTeksten = {
@@ -48,6 +52,9 @@ const DEFAULT: PaginaTeksten = {
   over_mij_quote: "Ik geloof dat elke vrouw kracht in zich draagt — soms moet je die alleen even leren voelen.",
   over_mij_tekst: "Vertel hier jouw verhaal. Waarom ben je begonnen met Studio Luna? Wat drijft je? Hoe ben je bij zwangerschapsyoga terechtgekomen?\n\nJe kunt hier meerdere alinea's schrijven. Elke lege regel wordt een nieuwe alinea op de pagina.",
   over_mij_foto: "",
+  foto_hero: "",
+  foto_yoga: "",
+  foto_circle: "",
   aanbod_circle_tekst:
     "Bij Studio Luna geloven we in de kracht van de 'village'. Naast de fysieke lessen creëren we een veilige cirkel waarin je ervaringen deelt, vragen stelt en naar elkaar omkijkt. We gebruiken zachte yoga- en ademhalingsoefeningen om samen te vertragen, zodat er ruimte ontstaat om echt te luisteren naar jezelf en elkaar. Echte verbinding met andere zwangeren en mama's in Zuidplas!",
 };

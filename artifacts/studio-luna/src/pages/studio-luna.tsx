@@ -14,6 +14,7 @@ const DEFAULT_TEKSTEN = {
     "Het moederschap hoef je niet alleen te doen. De missie van Studio Luna is het faciliteren van een community voor alle vrouwen in Nieuwerkerk aan den IJssel en omgeving, van zwangerschap tot ver daarna. Een veilige haven om fysiek op te laden, mentaal tot rust te komen en bovenal in verbinding te staan met andere moeders in dezelfde fase.",
   home_missie_bullets:
     "Een plek om te landen.\nEen plek om fysiek sterk, gezond en in balans te blijven.\nEen plek om vertrouwen te vinden in je veranderende lichaam.\nEen plek om te connecten met andere moeders.\nStudio Luna is jouw mama tribe.",
+  foto_hero: "",
 };
 
 const fadeUp = {
@@ -47,7 +48,7 @@ export default function StudioLuna() {
           style={{ minHeight: 420 }}
         >
           <img
-            src={IMAGES.hero}
+            src={teksten.foto_hero || IMAGES.hero}
             alt="Zwangerschapsyoga Studio Luna"
             className="absolute inset-0 w-full h-full object-cover object-center"
           />

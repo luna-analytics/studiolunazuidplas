@@ -2074,6 +2074,7 @@ type PaginaTeksten = {
   tarieven_aanvraag_tekst: string;
   over_mij_naam: string; over_mij_functie: string;
   over_mij_quote: string; over_mij_tekst: string; over_mij_foto: string;
+  foto_hero: string; foto_yoga: string; foto_circle: string;
 };
 
 const DEFAULT_PT: PaginaTeksten = {
@@ -2093,6 +2094,9 @@ const DEFAULT_PT: PaginaTeksten = {
   over_mij_quote: "Ik geloof dat elke vrouw kracht in zich draagt — soms moet je die alleen even leren voelen.",
   over_mij_tekst: "",
   over_mij_foto: "",
+  foto_hero: "",
+  foto_yoga: "",
+  foto_circle: "",
 };
 
 function InhoudTab() {
@@ -2247,6 +2251,70 @@ function InhoudTab() {
           over_mij_tekst: teksten.over_mij_tekst,
           over_mij_foto: teksten.over_mij_foto,
         })}
+      </div>
+
+      {/* FOTO'S */}
+      <div className="bg-card border border-border/30 rounded-3xl p-5 space-y-6">
+        <div>
+          <h3 className="font-display text-lg font-medium">Foto's op de website</h3>
+          <p className="text-xs text-foreground/50 mt-1">Upload hier de foto's die op de website verschijnen. Max. 4 MB per foto, JPG of PNG. Laat leeg om de standaardfoto te gebruiken.</p>
+        </div>
+
+        {(
+          [
+            { key: "foto_hero" as const, label: "Headerfoto (Studio Luna pagina)", hint: "Grote achtergrondafbeelding bovenaan. Liggend formaat, bij voorkeur 1400×900 px of groter.", aspect: "landscape" },
+            { key: "foto_yoga" as const, label: "Zwangerschapsyoga foto (Aanbod pagina)", hint: "Sfeerfoto naast de yoga-beschrijving.", aspect: "portrait" },
+            { key: "foto_circle" as const, label: "Mama Circle foto (Aanbod pagina)", hint: "Foto naast de Mama Circle beschrijving.", aspect: "portrait" },
+          ] as { key: "foto_hero" | "foto_yoga" | "foto_circle"; label: string; hint: string; aspect: string }[]
+        ).map(({ key, label, hint, aspect }) => (
+          <div key={key} className="border-t border-border/20 pt-5 first:border-0 first:pt-0">
+            <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">{label}</label>
+            <p className="text-xs text-foreground/40 mb-3">{hint}</p>
+            <div className="flex items-start gap-4">
+              {teksten[key] ? (
+                <div className={`shrink-0 overflow-hidden rounded-xl border border-border/30 bg-secondary ${aspect === "landscape" ? "w-32 h-20" : "w-16 h-20"}`}>
+                  <img src={teksten[key]} alt={label} className="w-full h-full object-cover" />
+                </div>
+              ) : (
+                <div className={`shrink-0 rounded-xl border border-dashed border-border/40 bg-secondary/50 flex items-center justify-center ${aspect === "landscape" ? "w-32 h-20" : "w-16 h-20"}`}>
+                  <svg className="w-6 h-6 text-foreground/20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                </div>
+              )}
+              <div className="flex flex-col gap-2">
+                <label className="cursor-pointer inline-flex items-center gap-2 bg-secondary border border-border/40 text-foreground/70 hover:text-foreground px-4 py-2.5 rounded-2xl text-sm font-medium transition-colors">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                  {teksten[key] ? "Andere foto" : "Kies foto"}
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      if (file.size > 4 * 1024 * 1024) { alert("Foto is te groot (max 4 MB)."); return; }
+                      const reader = new FileReader();
+                      reader.onload = (ev) => {
+                        const dataUrl = ev.target?.result as string;
+                        setTeksten((prev) => ({ ...prev, [key]: dataUrl }));
+                      };
+                      reader.readAsDataURL(file);
+                    }}
+                  />
+                </label>
+                {teksten[key] && (
+                  <button
+                    onClick={() => setTeksten((prev) => ({ ...prev, [key]: "" }))}
+                    className="text-xs text-foreground/40 hover:text-red-500 transition-colors text-left"
+                  >
+                    Verwijder foto
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
+
+        {saveBtn("fotos", { foto_hero: teksten.foto_hero, foto_yoga: teksten.foto_yoga, foto_circle: teksten.foto_circle })}
       </div>
     </div>
   );
