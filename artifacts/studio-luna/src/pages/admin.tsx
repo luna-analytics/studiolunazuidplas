@@ -2124,22 +2124,38 @@ function InhoudTab() {
   const [teksten, setTeksten] = useState<PaginaTeksten>(DEFAULT_PT);
   const [saving, setSaving] = useState<string | null>(null);
   const [saved, setSaved] = useState<string | null>(null);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   useEffect(() => {
     apiFetch("/admin/pagina-teksten").then(async (r) => {
       if (r.ok) { const d = await r.json(); setTeksten((prev) => ({ ...prev, ...d })); }
-    });
+    }).catch(() => {});
   }, []);
 
   const saveSection = async (section: string, fields: Partial<PaginaTeksten>) => {
-    setSaving(section); setSaved(null);
-    const res = await apiFetch("/admin/pagina-teksten", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(fields),
-    });
-    if (res.ok) { const d = await res.json(); setTeksten((prev) => ({ ...prev, ...d })); setSaved(section); setTimeout(() => setSaved(null), 2500); }
-    setSaving(null);
+    setSaving(section); setSaved(null); setSaveError(null);
+    try {
+      const res = await apiFetch("/admin/pagina-teksten", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(fields),
+      });
+      if (res.ok) {
+        const d = await res.json();
+        setTeksten((prev) => ({ ...prev, ...d }));
+        setSaved(section);
+        setTimeout(() => setSaved(null), 2500);
+      } else {
+        const err = await res.json().catch(() => ({}));
+        setSaveError(err.error || `Fout bij opslaan (${res.status})`);
+        setTimeout(() => setSaveError(null), 4000);
+      }
+    } catch (e: any) {
+      setSaveError("Verbindingsfout — probeer opnieuw.");
+      setTimeout(() => setSaveError(null), 4000);
+    } finally {
+      setSaving(null);
+    }
   };
 
   const field = (label: string, key: keyof PaginaTeksten, multiline = false, hint?: string) => (
@@ -2166,6 +2182,11 @@ function InhoudTab() {
 
   return (
     <div className="space-y-6">
+      {saveError && (
+        <div className="bg-red-50 border border-red-200 text-red-700 rounded-2xl px-4 py-3 text-sm font-medium">
+          {saveError}
+        </div>
+      )}
       {/* STUDIO LUNA PAGINA — HERO */}
       <div className="bg-card border border-border/30 rounded-3xl p-5 space-y-4">
         <h3 className="font-display text-lg font-medium">Studio Luna pagina — Hero</h3>
