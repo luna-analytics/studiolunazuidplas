@@ -4,6 +4,7 @@ import { SeoFooter } from "@/components/seo-footer";
 import { LoginModal } from "@/components/login-modal";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useCallback } from "react";
+import { useLocation } from "wouter";
 import {
   FileText, Video, BookOpen, LogIn, Lock, Headphones, Baby, Heart,
   X, CheckCircle2, Share2, Calendar, Sparkles, MessageCircle,
@@ -149,7 +150,12 @@ function IntroModal({ current, onSave, onClose }: { current?: string; onSave: (i
 
 export default function Village() {
   const { user, loading } = useAuth();
+  const [, navigate] = useLocation();
   const [loginOpen, setLoginOpen] = useState(false);
+
+  useEffect(() => {
+    if (!loading && !user?.isAdmin) navigate("/");
+  }, [loading, user, navigate]);
   const [bevallenOpen, setBevallenOpen] = useState(false);
   const [dueDateOpen, setDueDateOpen] = useState(false);
   const [introOpen, setIntroOpen] = useState(false);

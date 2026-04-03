@@ -43,7 +43,11 @@ export function BottomNav() {
     if (longPressTimer.current) clearTimeout(longPressTimer.current);
   }, []);
 
-  const primaryItems = ALL_NAV.filter((n) => PRIMARY_NAV.includes(n.href));
+  const visibleNav = ALL_NAV.filter((n) => {
+    if (n.href === "/village" || n.href === "/inspiratie") return user?.isAdmin;
+    return true;
+  });
+  const primaryItems = visibleNav.filter((n) => PRIMARY_NAV.includes(n.href));
   const isMenuActive = !PRIMARY_NAV.includes(location);
 
   return (
@@ -60,7 +64,7 @@ export function BottomNav() {
             </div>
           </Link>
           <nav className="flex items-center gap-1">
-            {ALL_NAV.map((item) => {
+            {visibleNav.map((item) => {
               const isActive = location === item.href;
               return (
                 <Link key={item.href} href={item.href}
@@ -209,7 +213,7 @@ export function BottomNav() {
               {/* Nav items — 2-koloms grid, alles zichtbaar zonder scrollen */}
               <nav className="flex-1 px-4 py-5">
                 <div className="grid grid-cols-2 gap-2.5">
-                  {ALL_NAV.map((item, i) => {
+                  {visibleNav.map((item, i) => {
                     const isActive = location === item.href;
                     const Icon = item.icon;
                     return (
