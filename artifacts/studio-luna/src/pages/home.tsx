@@ -10,6 +10,7 @@ import { IMAGES } from "@/lib/images";
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 const DEFAULT_TEKSTEN = {
+  aanbod_yoga_heading: "Sterk en vol\nvertrouwen richting\nje bevalling.",
   aanbod_yoga_tekst1: "Sterk, ontspannen en vol vertrouwen richting je bevalling. Met zachte houdingen houden we je veranderende lichaam in balans. We oefenen met ademhaling en maken contact met je baby.",
   aanbod_yoga_tekst2: "Elke les heeft een net andere focus, zoals het bekken, de kracht van je adem of ruimte in je rug. Instromen is op elk moment mogelijk vanaf 14 weken zwangerschap.",
   aanbod_yoga_tijd: "Elke dinsdag 19:00",
@@ -17,6 +18,10 @@ const DEFAULT_TEKSTEN = {
   aanbod_yoga_extra: "Na afloop: verse thee en tijd voor verbinding",
   aanbod_circle_titel: "Zwanger & Mama Circle",
   aanbod_circle_tekst: "Bij Studio Luna geloven we in de kracht van de 'village'. Naast de fysieke lessen creëren we een veilige cirkel waarin je ervaringen deelt, vragen stelt en naar elkaar omkijkt. We gebruiken zachte yoga- en ademhalingsoefeningen om samen te vertragen, zodat er ruimte ontstaat om echt te luisteren naar jezelf en elkaar. Echte verbinding met andere zwangeren en mama's in Zuidplas!",
+  aanbod_specials_heading: "Bevallings Specials",
+  aanbod_specials_items: "Bevallings Yoga Workshop | Focus & Vertrouwen · 120 min | € 49,-\nPartner Workshop | Verbinding & Support · 120 min | € 79,-\nMama Spa | Ultiem ontspannen · 120 min | € 49,-",
+  aanbod_specials_bundel: "De Geboorte-Bundel | Alle drie workshops · meest complete voorbereiding | bespaar € 22,- | € 155,-",
+  aanbod_verzekering_tekst: "Veel verzekeraars vergoeden (een deel van) geboortevoorbereiding vanuit de aanvullende verzekering.",
   foto_yoga: "",
   foto_circle: "",
 };
@@ -100,8 +105,12 @@ export default function Home() {
                   viewport={{ once: true, margin: "-60px" }} custom={0.1}
                 >
                   <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground leading-[1.15] mb-8">
-                    Sterk en vol<br />vertrouwen richting<br />
-                    <em className="not-italic text-primary">je bevalling.</em>
+                    {teksten.aanbod_yoga_heading.split("\n").map((line, i, arr) => (
+                      <span key={i}>{i === arr.length - 1
+                        ? <em className="not-italic text-primary">{line}</em>
+                        : <>{line}<br /></>}
+                      </span>
+                    ))}
                   </h2>
 
                   {/* Praktische info — zweeft losjes */}
@@ -226,44 +235,48 @@ export default function Home() {
               Binnenkort
             </p>
             <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground leading-[1.15] mb-14">
-              Bevallings Specials
+              {teksten.aanbod_specials_heading}
             </h2>
           </motion.div>
 
           {/* Prijslijst — minimaal, gescheiden door dunne lijn */}
           <div className="space-y-0 mb-14">
-            {[
-              { title: "Bevallings Yoga Workshop", sub: "Focus & Vertrouwen · 120 min", price: "€ 49,-" },
-              { title: "Partner Workshop", sub: "Verbinding & Support · 120 min", price: "€ 79,-" },
-              { title: "Mama Spa", sub: "Ultiem ontspannen · 120 min", price: "€ 49,-" },
-            ].map((item, i) => (
-              <motion.div
-                key={item.title}
-                variants={fadeUp} initial="hidden" whileInView="show"
-                viewport={{ once: true, margin: "-60px" }} custom={i * 0.08}
-                className="flex items-center justify-between gap-6 py-6 border-b border-border/15"
-              >
-                <div>
-                  <p className="text-[15px] font-semibold text-foreground">{item.title}</p>
-                  <p className="text-sm text-foreground/45 mt-1">{item.sub}</p>
-                </div>
-                <p className="font-display text-xl font-medium text-primary shrink-0">{item.price}</p>
-              </motion.div>
-            ))}
+            {teksten.aanbod_specials_items.split("\n").filter(Boolean).map((regel, i) => {
+              const [title, sub, price] = regel.split("|").map((s) => s.trim());
+              return (
+                <motion.div
+                  key={i}
+                  variants={fadeUp} initial="hidden" whileInView="show"
+                  viewport={{ once: true, margin: "-60px" }} custom={i * 0.08}
+                  className="flex items-center justify-between gap-6 py-6 border-b border-border/15"
+                >
+                  <div>
+                    <p className="text-[15px] font-semibold text-foreground">{title}</p>
+                    {sub && <p className="text-sm text-foreground/45 mt-1">{sub}</p>}
+                  </div>
+                  <p className="font-display text-xl font-medium text-primary shrink-0">{price}</p>
+                </motion.div>
+              );
+            })}
 
             {/* Bundel */}
-            <motion.div
-              variants={fadeUp} initial="hidden" whileInView="show"
-              viewport={{ once: true, margin: "-60px" }} custom={0.3}
-              className="flex items-center justify-between gap-6 py-6 border-b border-border/15"
-            >
-              <div>
-                <p className="text-[15px] font-semibold text-foreground">De Geboorte-Bundel</p>
-                <p className="text-sm text-foreground/45 mt-1">Alle drie workshops · meest complete voorbereiding</p>
-                <p className="text-xs text-primary/70 mt-1">bespaar € 22,-</p>
-              </div>
-              <p className="font-display text-xl font-medium text-primary shrink-0">€ 155,-</p>
-            </motion.div>
+            {teksten.aanbod_specials_bundel && (() => {
+              const [title, sub, korting, price] = teksten.aanbod_specials_bundel.split("|").map((s) => s.trim());
+              return (
+                <motion.div
+                  variants={fadeUp} initial="hidden" whileInView="show"
+                  viewport={{ once: true, margin: "-60px" }} custom={0.3}
+                  className="flex items-center justify-between gap-6 py-6 border-b border-border/15"
+                >
+                  <div>
+                    <p className="text-[15px] font-semibold text-foreground">{title}</p>
+                    {sub && <p className="text-sm text-foreground/45 mt-1">{sub}</p>}
+                    {korting && <p className="text-xs text-primary/70 mt-1">{korting}</p>}
+                  </div>
+                  <p className="font-display text-xl font-medium text-primary shrink-0">{price}</p>
+                </motion.div>
+              );
+            })()}
           </div>
 
           <motion.div
@@ -272,7 +285,7 @@ export default function Home() {
             className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6"
           >
             <p className="text-sm text-foreground/45 max-w-sm leading-[1.85]">
-              Veel verzekeraars vergoeden (een deel van) geboortevoorbereiding vanuit de aanvullende verzekering.
+              {teksten.aanbod_verzekering_tekst}
             </p>
             <button
               onClick={() => setIsInterestOpen(true)}

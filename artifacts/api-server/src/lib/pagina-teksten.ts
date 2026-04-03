@@ -29,6 +29,25 @@ export type PaginaTeksten = {
   foto_hero: string;
   foto_yoga: string;
   foto_circle: string;
+  // Studio Luna pagina — missie sectie
+  home_missie_heading: string;
+  home_village_tagline: string;
+  // Studio Luna pagina — aanbod sectie
+  home_aanbod_heading: string;
+  home_aanbod_items: string; // één item per regel
+  // Studio Luna pagina — locatie & contact
+  home_locatie_naam: string;
+  home_locatie_adres: string;
+  home_contact_email: string;
+  home_contact_telefoon: string;
+  home_contact_instagram: string;
+  // Aanbod pagina — yoga
+  aanbod_yoga_heading: string;
+  // Aanbod pagina — bevallings specials
+  aanbod_specials_heading: string;
+  aanbod_specials_items: string; // formaat: "Titel | Ondertitel | Prijs" per regel
+  aanbod_specials_bundel: string; // formaat: "Titel | Ondertitel | Korting | Prijs"
+  aanbod_verzekering_tekst: string;
 };
 
 const DEFAULT: PaginaTeksten = {
@@ -55,6 +74,20 @@ const DEFAULT: PaginaTeksten = {
   foto_hero: "",
   foto_yoga: "",
   foto_circle: "",
+  home_missie_heading: "Een plek om\nte landen.",
+  home_village_tagline: "Welkom in jouw village.",
+  home_aanbod_heading: "Alles wat je nodig hebt\nop weg naar de bevalling.",
+  home_aanbod_items: "Kleine groepen, veel aandacht en persoonlijk contact.\nZwangerschapsyoga: bevalling voorbereiden, kracht van de adem en fysieke balans.\nNa afloop altijd tijd voor een kopje thee en verbinding.\nInstromen mogelijk vanaf 14 weken zwangerschap.\nWhatsApp-community voor vragen en tips tussen lessen door.\nAandacht voor zowel het fysieke als het mentale aspect van moederschap.",
+  home_locatie_naam: "Huize Mooisteen",
+  home_locatie_adres: "Pr. Beatrixstraat 2\nNieuwerkerk aan den IJssel",
+  home_contact_email: "info@studiolunazuidplas.nl",
+  home_contact_telefoon: "+31 6 43 73 53 43",
+  home_contact_instagram: "@studiolunazuidplas",
+  aanbod_yoga_heading: "Sterk en vol\nvertrouwen richting\nje bevalling.",
+  aanbod_specials_heading: "Bevallings Specials",
+  aanbod_specials_items: "Bevallings Yoga Workshop | Focus & Vertrouwen · 120 min | € 49,-\nPartner Workshop | Verbinding & Support · 120 min | € 79,-\nMama Spa | Ultiem ontspannen · 120 min | € 49,-",
+  aanbod_specials_bundel: "De Geboorte-Bundel | Alle drie workshops · meest complete voorbereiding | bespaar € 22,- | € 155,-",
+  aanbod_verzekering_tekst: "Veel verzekeraars vergoeden (een deel van) geboortevoorbereiding vanuit de aanvullende verzekering.",
   aanbod_circle_tekst:
     "Bij Studio Luna geloven we in de kracht van de 'village'. Naast de fysieke lessen creëren we een veilige cirkel waarin je ervaringen deelt, vragen stelt en naar elkaar omkijkt. We gebruiken zachte yoga- en ademhalingsoefeningen om samen te vertragen, zodat er ruimte ontstaat om echt te luisteren naar jezelf en elkaar. Echte verbinding met andere zwangeren en mama's in Zuidplas!",
 };

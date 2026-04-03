@@ -2075,6 +2075,13 @@ type PaginaTeksten = {
   over_mij_naam: string; over_mij_functie: string;
   over_mij_quote: string; over_mij_tekst: string; over_mij_foto: string;
   foto_hero: string; foto_yoga: string; foto_circle: string;
+  home_missie_heading: string; home_village_tagline: string;
+  home_aanbod_heading: string; home_aanbod_items: string;
+  home_locatie_naam: string; home_locatie_adres: string;
+  home_contact_email: string; home_contact_telefoon: string; home_contact_instagram: string;
+  aanbod_yoga_heading: string;
+  aanbod_specials_heading: string; aanbod_specials_items: string;
+  aanbod_specials_bundel: string; aanbod_verzekering_tekst: string;
 };
 
 const DEFAULT_PT: PaginaTeksten = {
@@ -2097,6 +2104,20 @@ const DEFAULT_PT: PaginaTeksten = {
   foto_hero: "",
   foto_yoga: "",
   foto_circle: "",
+  home_missie_heading: "Een plek om\nte landen.",
+  home_village_tagline: "Welkom in jouw village.",
+  home_aanbod_heading: "Alles wat je nodig hebt\nop weg naar de bevalling.",
+  home_aanbod_items: "Kleine groepen, veel aandacht en persoonlijk contact.\nZwangerschapsyoga: bevalling voorbereiden, kracht van de adem en fysieke balans.\nNa afloop altijd tijd voor een kopje thee en verbinding.\nInstromen mogelijk vanaf 14 weken zwangerschap.\nWhatsApp-community voor vragen en tips tussen lessen door.\nAandacht voor zowel het fysieke als het mentale aspect van moederschap.",
+  home_locatie_naam: "Huize Mooisteen",
+  home_locatie_adres: "Pr. Beatrixstraat 2\nNieuwerkerk aan den IJssel",
+  home_contact_email: "info@studiolunazuidplas.nl",
+  home_contact_telefoon: "+31 6 43 73 53 43",
+  home_contact_instagram: "@studiolunazuidplas",
+  aanbod_yoga_heading: "Sterk en vol\nvertrouwen richting\nje bevalling.",
+  aanbod_specials_heading: "Bevallings Specials",
+  aanbod_specials_items: "Bevallings Yoga Workshop | Focus & Vertrouwen · 120 min | € 49,-\nPartner Workshop | Verbinding & Support · 120 min | € 79,-\nMama Spa | Ultiem ontspannen · 120 min | € 49,-",
+  aanbod_specials_bundel: "De Geboorte-Bundel | Alle drie workshops · meest complete voorbereiding | bespaar € 22,- | € 155,-",
+  aanbod_verzekering_tekst: "Veel verzekeraars vergoeden (een deel van) geboortevoorbereiding vanuit de aanvullende verzekering.",
 };
 
 function InhoudTab() {
@@ -2145,18 +2166,57 @@ function InhoudTab() {
 
   return (
     <div className="space-y-6">
-      {/* STUDIO LUNA PAGINA */}
+      {/* STUDIO LUNA PAGINA — HERO */}
       <div className="bg-card border border-border/30 rounded-3xl p-5 space-y-4">
-        <h3 className="font-display text-lg font-medium">Studio Luna pagina</h3>
-        {field("Hero tekst (h1)", "home_hero", true, "Gebruik een nieuwe regel voor een regeleinde.")}
+        <h3 className="font-display text-lg font-medium">Studio Luna pagina — Hero</h3>
+        {field("Hero tekst (grote koptekst)", "home_hero", true, "Gebruik een nieuwe regel voor een regeleinde.")}
+        {saveBtn("home_hero", { home_hero: teksten.home_hero })}
+      </div>
+
+      {/* STUDIO LUNA PAGINA — MISSIE */}
+      <div className="bg-card border border-border/30 rounded-3xl p-5 space-y-4">
+        <h3 className="font-display text-lg font-medium">Studio Luna pagina — Missie</h3>
+        {field("Missie koptekst", "home_missie_heading", true, "De grote kop boven de bullets. Gebruik een nieuwe regel voor een regeleinde.")}
         {field("Missie bullets", "home_missie_bullets", true, "Eén bullet per regel.")}
-        {field("Missie alinea", "home_missie_tekst", true)}
-        {saveBtn("home", { home_hero: teksten.home_hero, home_missie_tekst: teksten.home_missie_tekst, home_missie_bullets: teksten.home_missie_bullets })}
+        {field("Missie alinea (rechterkolom)", "home_missie_tekst", true)}
+        {field("Afsluitende tagline", "home_village_tagline", false, "Kleine zin onderaan de missie-sectie, bijv. 'Welkom in jouw village.'")}
+        {saveBtn("home_missie", {
+          home_missie_heading: teksten.home_missie_heading,
+          home_missie_bullets: teksten.home_missie_bullets,
+          home_missie_tekst: teksten.home_missie_tekst,
+          home_village_tagline: teksten.home_village_tagline,
+        })}
+      </div>
+
+      {/* STUDIO LUNA PAGINA — WAT WE BIEDEN */}
+      <div className="bg-card border border-border/30 rounded-3xl p-5 space-y-4">
+        <h3 className="font-display text-lg font-medium">Studio Luna pagina — Wat we bieden</h3>
+        {field("Koptekst", "home_aanbod_heading", true, "Gebruik een nieuwe regel voor een regeleinde.")}
+        {field("Items (genummerde lijst)", "home_aanbod_items", true, "Eén item per regel. Worden automatisch genummerd.")}
+        {saveBtn("home_aanbod", { home_aanbod_heading: teksten.home_aanbod_heading, home_aanbod_items: teksten.home_aanbod_items })}
+      </div>
+
+      {/* STUDIO LUNA PAGINA — LOCATIE & CONTACT */}
+      <div className="bg-card border border-border/30 rounded-3xl p-5 space-y-4">
+        <h3 className="font-display text-lg font-medium">Studio Luna pagina — Locatie & Contact</h3>
+        {field("Locatienaam", "home_locatie_naam")}
+        {field("Adres", "home_locatie_adres", true, "Twee regels: straat op regel 1, plaatsnaam op regel 2.")}
+        {field("E-mailadres", "home_contact_email")}
+        {field("Telefoonnummer", "home_contact_telefoon")}
+        {field("Instagram handle (zonder @)", "home_contact_instagram", false, "Bijv. @studiolunazuidplas")}
+        {saveBtn("home_contact", {
+          home_locatie_naam: teksten.home_locatie_naam,
+          home_locatie_adres: teksten.home_locatie_adres,
+          home_contact_email: teksten.home_contact_email,
+          home_contact_telefoon: teksten.home_contact_telefoon,
+          home_contact_instagram: teksten.home_contact_instagram,
+        })}
       </div>
 
       {/* AANBOD — YOGA */}
       <div className="bg-card border border-border/30 rounded-3xl p-5 space-y-4">
         <h3 className="font-display text-lg font-medium">Aanbod — Zwangerschapsyoga</h3>
+        {field("Koptekst", "aanbod_yoga_heading", true, "De grote kop. Gebruik een nieuwe regel voor een regeleinde.")}
         {field("Beschrijving (alinea 1)", "aanbod_yoga_tekst1", true)}
         {field("Beschrijving (alinea 2)", "aanbod_yoga_tekst2", true)}
         <div className="grid grid-cols-1 gap-3">
@@ -2165,6 +2225,7 @@ function InhoudTab() {
           {field("Extra detail (thee, etc.)", "aanbod_yoga_extra")}
         </div>
         {saveBtn("yoga", {
+          aanbod_yoga_heading: teksten.aanbod_yoga_heading,
           aanbod_yoga_tekst1: teksten.aanbod_yoga_tekst1,
           aanbod_yoga_tekst2: teksten.aanbod_yoga_tekst2,
           aanbod_yoga_tijd: teksten.aanbod_yoga_tijd,
@@ -2179,6 +2240,21 @@ function InhoudTab() {
         {field("Titel", "aanbod_circle_titel")}
         {field("Beschrijving", "aanbod_circle_tekst", true)}
         {saveBtn("circle", { aanbod_circle_titel: teksten.aanbod_circle_titel, aanbod_circle_tekst: teksten.aanbod_circle_tekst })}
+      </div>
+
+      {/* AANBOD — BEVALLINGS SPECIALS */}
+      <div className="bg-card border border-border/30 rounded-3xl p-5 space-y-4">
+        <h3 className="font-display text-lg font-medium">Aanbod — Bevallings Specials</h3>
+        {field("Koptekst", "aanbod_specials_heading")}
+        {field("Workshops (één per regel)", "aanbod_specials_items", true, "Formaat per regel: Naam | Ondertitel | Prijs — bijv. 'Mama Spa | Ultiem ontspannen · 120 min | € 49,-'")}
+        {field("Bundel (één regel)", "aanbod_specials_bundel", false, "Formaat: Naam | Ondertitel | Kortingsregel | Prijs")}
+        {field("Verzekeraars-tekst (onder de lijst)", "aanbod_verzekering_tekst", true)}
+        {saveBtn("aanbod_specials", {
+          aanbod_specials_heading: teksten.aanbod_specials_heading,
+          aanbod_specials_items: teksten.aanbod_specials_items,
+          aanbod_specials_bundel: teksten.aanbod_specials_bundel,
+          aanbod_verzekering_tekst: teksten.aanbod_verzekering_tekst,
+        })}
       </div>
 
       {/* TARIEVEN — AANVRAAG TEKST */}

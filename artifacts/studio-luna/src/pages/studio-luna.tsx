@@ -10,10 +10,17 @@ const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 const DEFAULT_TEKSTEN = {
   home_hero: "It takes a village.\nStudio Luna is jouw mama tribe.",
-  home_missie_tekst:
-    "Het moederschap hoef je niet alleen te doen. De missie van Studio Luna is het faciliteren van een community voor alle vrouwen in Nieuwerkerk aan den IJssel en omgeving, van zwangerschap tot ver daarna. Een veilige haven om fysiek op te laden, mentaal tot rust te komen en bovenal in verbinding te staan met andere moeders in dezelfde fase.",
-  home_missie_bullets:
-    "Een plek om te landen.\nEen plek om fysiek sterk, gezond en in balans te blijven.\nEen plek om vertrouwen te vinden in je veranderende lichaam.\nEen plek om te connecten met andere moeders.\nStudio Luna is jouw mama tribe.",
+  home_missie_heading: "Een plek om\nte landen.",
+  home_missie_tekst: "Het moederschap hoef je niet alleen te doen. De missie van Studio Luna is het faciliteren van een community voor alle vrouwen in Nieuwerkerk aan den IJssel en omgeving, van zwangerschap tot ver daarna. Een veilige haven om fysiek op te laden, mentaal tot rust te komen en bovenal in verbinding te staan met andere moeders in dezelfde fase.",
+  home_missie_bullets: "Een plek om te landen.\nEen plek om fysiek sterk, gezond en in balans te blijven.\nEen plek om vertrouwen te vinden in je veranderende lichaam.\nEen plek om te connecten met andere moeders.\nStudio Luna is jouw mama tribe.",
+  home_village_tagline: "Welkom in jouw village.",
+  home_aanbod_heading: "Alles wat je nodig hebt\nop weg naar de bevalling.",
+  home_aanbod_items: "Kleine groepen, veel aandacht en persoonlijk contact.\nZwangerschapsyoga: bevalling voorbereiden, kracht van de adem en fysieke balans.\nNa afloop altijd tijd voor een kopje thee en verbinding.\nInstromen mogelijk vanaf 14 weken zwangerschap.\nWhatsApp-community voor vragen en tips tussen lessen door.\nAandacht voor zowel het fysieke als het mentale aspect van moederschap.",
+  home_locatie_naam: "Huize Mooisteen",
+  home_locatie_adres: "Pr. Beatrixstraat 2\nNieuwerkerk aan den IJssel",
+  home_contact_email: "info@studiolunazuidplas.nl",
+  home_contact_telefoon: "+31 6 43 73 53 43",
+  home_contact_instagram: "@studiolunazuidplas",
   foto_hero: "",
 };
 
@@ -119,8 +126,12 @@ export default function StudioLuna() {
                 viewport={{ once: true, margin: "-80px" }} custom={0.1}
               >
                 <h2 className="font-display text-4xl md:text-5xl font-medium text-foreground leading-[1.1] mb-10">
-                  Een plek om<br />
-                  <em className="not-italic text-primary">te landen.</em>
+                  {teksten.home_missie_heading.split("\n").map((line, i, arr) => (
+                    <span key={i}>{i === arr.length - 1
+                      ? <em className="not-italic text-primary">{line}</em>
+                      : <>{line}<br /></>}
+                    </span>
+                  ))}
                 </h2>
                 <ul className="space-y-5">
                   {teksten.home_missie_bullets.split("\n").filter(Boolean).map((item, i) => (
@@ -142,7 +153,7 @@ export default function StudioLuna() {
                   {teksten.home_missie_tekst}
                 </p>
                 <p className="mt-8 text-sm font-semibold text-foreground/60 tracking-widest uppercase">
-                  Welkom in jouw village.
+                  {teksten.home_village_tagline}
                 </p>
               </motion.div>
 
@@ -161,19 +172,16 @@ export default function StudioLuna() {
               Wat we bieden
             </p>
             <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground mb-14 leading-[1.15]">
-              Alles wat je nodig hebt<br className="hidden md:block" /> op weg naar de bevalling.
+              {teksten.home_aanbod_heading.split("\n").map((line, i, arr) => (
+                <span key={i}>{line}{i < arr.length - 1 && <br className="hidden md:block" />}</span>
+              ))}
             </h2>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-8">
-            {[
-              { n: "01", tekst: "Kleine groepen, veel aandacht en persoonlijk contact." },
-              { n: "02", tekst: "Zwangerschapsyoga: bevalling voorbereiden, kracht van de adem en fysieke balans." },
-              { n: "03", tekst: "Na afloop altijd tijd voor een kopje thee en verbinding." },
-              { n: "04", tekst: "Instromen mogelijk vanaf 14 weken zwangerschap." },
-              { n: "05", tekst: "WhatsApp-community voor vragen en tips tussen lessen door." },
-              { n: "06", tekst: "Aandacht voor zowel het fysieke als het mentale aspect van moederschap." },
-            ].map((item, i) => (
+            {teksten.home_aanbod_items.split("\n").filter(Boolean).map((tekst, i) => ({
+              n: String(i + 1).padStart(2, "0"), tekst,
+            })).map((item, i) => (
               <motion.div
                 key={item.n}
                 variants={fadeUp} initial="hidden" whileInView="show"
@@ -201,11 +209,12 @@ export default function StudioLuna() {
                 <span className="inline-block w-8 h-px bg-primary/40" />
                 Locatie
               </p>
-              <h2 className="font-display text-2xl font-medium text-foreground mb-5">Huize Mooisteen</h2>
-              <p className="text-[15px] text-foreground/55 leading-[1.9] mb-2">Pr. Beatrixstraat 2</p>
-              <p className="text-[15px] text-foreground/55 leading-[1.9]">Nieuwerkerk aan den IJssel</p>
+              <h2 className="font-display text-2xl font-medium text-foreground mb-5">{teksten.home_locatie_naam}</h2>
+              {teksten.home_locatie_adres.split("\n").map((regel, i) => (
+                <p key={i} className="text-[15px] text-foreground/55 leading-[1.9] mb-2">{regel}</p>
+              ))}
               <a
-                href="https://maps.google.com/?q=Pr.+Beatrixstraat+2,+Nieuwerkerk+aan+den+IJssel"
+                href={`https://maps.google.com/?q=${encodeURIComponent(teksten.home_locatie_adres.replace("\n", ", "))}`}
                 target="_blank" rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 mt-7 text-sm font-semibold text-primary group"
               >
@@ -225,20 +234,22 @@ export default function StudioLuna() {
                 Contact
               </p>
               <div className="space-y-5">
-                <a href="mailto:info@studiolunazuidplas.nl"
+                <a href={`mailto:${teksten.home_contact_email}`}
                   className="flex items-center gap-4 text-[15px] text-foreground/55 hover:text-foreground group">
                   <Mail className="w-4 h-4 text-primary shrink-0" />
-                  info@studiolunazuidplas.nl
+                  {teksten.home_contact_email}
                 </a>
-                <a href="https://wa.me/31643735343" target="_blank" rel="noopener noreferrer"
+                <a href={`https://wa.me/${teksten.home_contact_telefoon.replace(/\D/g, "").replace(/^0/, "31")}`}
+                  target="_blank" rel="noopener noreferrer"
                   className="flex items-center gap-4 text-[15px] text-foreground/55 hover:text-foreground group">
                   <Phone className="w-4 h-4 text-primary shrink-0" />
-                  +31 6 43 73 53 43
+                  {teksten.home_contact_telefoon}
                 </a>
-                <a href="https://www.instagram.com/studiolunazuidplas" target="_blank" rel="noopener noreferrer"
+                <a href={`https://www.instagram.com/${teksten.home_contact_instagram.replace("@", "")}`}
+                  target="_blank" rel="noopener noreferrer"
                   className="flex items-center gap-4 text-[15px] text-foreground/55 hover:text-foreground group">
                   <Instagram className="w-4 h-4 text-primary shrink-0" />
-                  @studiolunazuidplas
+                  {teksten.home_contact_instagram}
                 </a>
               </div>
             </motion.div>
