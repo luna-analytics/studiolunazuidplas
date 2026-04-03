@@ -13,13 +13,13 @@ const ALL_NAV = [
   { href: "/aanbod", label: "Aanbod", icon: Home },
   { href: "/rooster", label: "Rooster", icon: CalendarDays },
   { href: "/tarieven", label: "Tarieven", icon: Tag },
+  { href: "/over-mij", label: "Over mij", icon: User },
   { href: "/bookings", label: "Boekingen", icon: Bookmark },
   { href: "/village", label: "Village", icon: Heart },
-  { href: "/over-mij", label: "Over mij", icon: User },
-  { href: "/inspiratie", label: "Inspiratie", icon: Feather },
+  { href: "/inspiratie", label: "Blog", icon: Feather },
 ];
 
-// Vijf tabs die altijd zichtbaar zijn in de balk
+// Vier tabs die altijd zichtbaar zijn in de balk
 const PRIMARY_NAV = ["/", "/aanbod", "/rooster", "/bookings"];
 
 export function BottomNav() {
@@ -206,35 +206,40 @@ export function BottomNav() {
                 </button>
               </div>
 
-              {/* Nav items */}
-              <nav className="flex-1 px-4 py-4 overflow-y-auto">
-                {ALL_NAV.map((item, i) => {
-                  const isActive = location === item.href;
-                  const Icon = item.icon;
-                  return (
-                    <motion.div
-                      key={item.href}
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.05 + i * 0.04, duration: 0.3 }}
-                    >
-                      <Link
-                        href={item.href}
-                        onClick={() => setMenuOpen(false)}
-                        className={cn(
-                          "flex items-center gap-4 px-4 py-3.5 rounded-2xl mb-1 transition-colors group",
-                          isActive
-                            ? "bg-primary/12 text-foreground"
-                            : "text-foreground/60 hover:bg-secondary hover:text-foreground"
-                        )}
+              {/* Nav items — 2-koloms grid, alles zichtbaar zonder scrollen */}
+              <nav className="flex-1 px-4 py-5">
+                <div className="grid grid-cols-2 gap-2.5">
+                  {ALL_NAV.map((item, i) => {
+                    const isActive = location === item.href;
+                    const Icon = item.icon;
+                    return (
+                      <motion.div
+                        key={item.href}
+                        initial={{ opacity: 0, y: 12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.04 + i * 0.035, duration: 0.28 }}
                       >
-                        <Icon className={cn("w-4.5 h-4.5 shrink-0 transition-colors", isActive ? "text-primary" : "text-foreground/40 group-hover:text-primary/70")} strokeWidth={isActive ? 2.5 : 2} />
-                        <span className="text-[15px] font-medium">{item.label}</span>
-                        {isActive && <ArrowRight className="w-3.5 h-3.5 ml-auto text-primary/50" />}
-                      </Link>
-                    </motion.div>
-                  );
-                })}
+                        <Link
+                          href={item.href}
+                          onClick={() => setMenuOpen(false)}
+                          className={cn(
+                            "flex flex-col items-start gap-2.5 px-4 py-4 rounded-2xl transition-colors group w-full",
+                            isActive
+                              ? "bg-primary/12 text-foreground"
+                              : "bg-secondary/60 text-foreground/60 hover:bg-secondary hover:text-foreground"
+                          )}
+                        >
+                          <Icon
+                            className={cn("w-5 h-5 shrink-0 transition-colors",
+                              isActive ? "text-primary" : "text-foreground/35 group-hover:text-primary/60")}
+                            strokeWidth={isActive ? 2.5 : 2}
+                          />
+                          <span className="text-[13px] font-semibold leading-none">{item.label}</span>
+                        </Link>
+                      </motion.div>
+                    );
+                  })}
+                </div>
               </nav>
 
               {/* Footer: login/logout */}
