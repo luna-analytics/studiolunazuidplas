@@ -151,7 +151,7 @@ export default function Home() {
                 <motion.div
                   variants={fadeUp} initial="hidden" whileInView="show"
                   viewport={{ once: true, margin: "-60px" }} custom={0.2}
-                  className="md:pt-2"
+                  className="mt-10 md:mt-0 md:pt-2"
                 >
                   <p className="text-[15px] text-foreground/60 leading-[1.95] mb-4">{teksten.aanbod_yoga_tekst1}</p>
                   <p className="text-[15px] text-foreground/60 leading-[1.95] mb-10">{teksten.aanbod_yoga_tekst2}</p>
