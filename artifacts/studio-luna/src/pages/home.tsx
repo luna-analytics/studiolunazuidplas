@@ -221,18 +221,17 @@ export default function Home() {
                 viewport={{ once: true, margin: "-80px" }} custom={0.2}
                 className="md:pt-24 mt-10 md:mt-0"
               >
-                {/* Foto als sfeerblok — portret formaat */}
-                <div className="overflow-hidden rounded-2xl mb-8" style={{ aspectRatio: RATIO_MAP[teksten.foto_circle_hoogte] ?? "4/3" }}>
-                  <img
-                    src={photosReady ? (teksten.foto_circle || IMAGES.circle) : undefined}
-                    alt="Mama Circle Studio Luna"
-                    className="w-full h-full object-cover transition-opacity duration-700"
-                    style={{
-                      objectPosition: POS_MAP[teksten.foto_circle_positie] ?? "center",
-                      opacity: photosReady ? 1 : 0,
-                    }}
-                  />
-                </div>
+                {/* Eigen foto tonen zodra geüpload — anders geen placeholder */}
+                {photosReady && teksten.foto_circle && (
+                  <div className="overflow-hidden rounded-2xl mb-8" style={{ aspectRatio: RATIO_MAP[teksten.foto_circle_hoogte] ?? "4/3" }}>
+                    <img
+                      src={teksten.foto_circle}
+                      alt="Mama Circle Studio Luna"
+                      className="w-full h-full object-cover"
+                      style={{ objectPosition: POS_MAP[teksten.foto_circle_positie] ?? "center" }}
+                    />
+                  </div>
+                )}
 
                 <button
                   onClick={() => setIsInterestOpen(true)}

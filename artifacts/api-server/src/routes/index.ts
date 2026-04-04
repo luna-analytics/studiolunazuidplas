@@ -18,6 +18,7 @@ import { sendReservationConfirmation } from "../lib/email.js";
 import { readClasses } from "../lib/classes.js";
 import { getAllBookings } from "../lib/bookings.js";
 import { readPaginaTeksten } from "../lib/pagina-teksten.js";
+import { getAllFotos } from "../lib/foto-store.js";
 
 const router: IRouter = Router();
 
@@ -39,9 +40,10 @@ router.get("/tarieven", async (_req, res) => {
   res.json(await readTarieven());
 });
 
-// Publieke pagina-teksten endpoint
+// Publieke pagina-teksten endpoint (inclusief foto's van aparte sleutels)
 router.get("/pagina-teksten", async (_req, res) => {
-  res.json(await readPaginaTeksten());
+  const [teksten, fotos] = await Promise.all([readPaginaTeksten(), getAllFotos()]);
+  res.json({ ...teksten, ...fotos });
 });
 
 // Reservering voor openingsreeks (publiek, geen login nodig)

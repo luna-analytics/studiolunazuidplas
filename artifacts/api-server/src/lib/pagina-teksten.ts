@@ -1,7 +1,10 @@
 import Database from "@replit/database";
+import { FOTO_KEYS, migrateFotosIfNeeded } from "./foto-store";
 
 const db = new Database();
 const KEY = "studio_luna:pagina_teksten";
+
+const FOTO_FIELD_SET = new Set<string>(FOTO_KEYS);
 
 export type PaginaTeksten = {
   // Studio Luna pagina
@@ -103,21 +106,34 @@ const DEFAULT: PaginaTeksten = {
     "Bij Studio Luna geloven we in de kracht van de 'village'. Naast de fysieke lessen creëren we een veilige cirkel waarin je ervaringen deelt, vragen stelt en naar elkaar omkijkt. We gebruiken zachte yoga- en ademhalingsoefeningen om samen te vertragen, zodat er ruimte ontstaat om echt te luisteren naar jezelf en elkaar. Echte verbinding met andere zwangeren en mama's in Zuidplas!",
 };
 
+/** Strip base64 foto-velden — die worden in aparte DB-sleutels opgeslagen */
+function stripFotoFields(data: Record<string, any>): Record<string, any> {
+  return Object.fromEntries(Object.entries(data).filter(([k]) => !FOTO_FIELD_SET.has(k)));
+}
+
 export async function readPaginaTeksten(): Promise<PaginaTeksten> {
   try {
     const result = (await db.get(KEY)) as any;
     if (result?.ok === false) return DEFAULT;
     const data = result?.value ?? result;
     if (!data || typeof data !== "object") return DEFAULT;
-    return { ...DEFAULT, ...data } as PaginaTeksten;
+    // Eénmalige migratie: als er foto-data in het oude object zit, verplaats naar eigen sleutels
+    await migrateFotosIfNeeded(data as Record<string, any>);
+    // Strip foto-velden zodat het teksten-object licht blijft
+    const stripped = stripFotoFields(data as Record<string, any>);
+    return { ...DEFAULT, ...stripped } as PaginaTeksten;
   } catch {
     return DEFAULT;
   }
 }
 
-export async function savePaginaTeksten(updates: Partial<PaginaTeksten>): Promise<PaginaTeksten> {
+export async function savePaginaTeksten(
+  updates: Partial<PaginaTeksten>
+): Promise<PaginaTeksten> {
   const current = await readPaginaTeksten();
-  const updated = { ...current, ...updates };
+  // Sla nooit base64 foto-data op in het teksten-object
+  const safeUpdates = stripFotoFields(updates as Record<string, any>);
+  const updated = { ...current, ...safeUpdates };
   await db.set(KEY, updated);
-  return updated;
+  return updated as PaginaTeksten;
 }

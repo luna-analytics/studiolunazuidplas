@@ -13,6 +13,7 @@ import { getEmailSettings, saveEmailSettings } from "../lib/email-settings.js";
 import { readClassTypes, createClassType, updateClassType, deleteClassType } from "../lib/class-types.js";
 import { readTarieven, saveTarieven, addRittenkaart, updateRittenkaart, deleteRittenkaart, addSpecial, updateSpecial, deleteSpecial } from "../lib/tarieven.js";
 import { readPaginaTeksten, savePaginaTeksten } from "../lib/pagina-teksten.js";
+import { getAllFotos, setFoto, FOTO_KEYS, type FotoKey } from "../lib/foto-store.js";
 import { readReserveringen, createReservering, toggleAanwezig, deleteReservering } from "../lib/reserveringen.js";
 import { sendReservationConfirmation, sendReminderEmail } from "../lib/email.js";
 
@@ -336,11 +337,31 @@ router.patch("/admin/tarieven/volgorde", requireAdmin, async (req, res) => {
 // ─── PAGINA TEKSTEN ──────────────────────────────────────────────────────────
 
 router.get("/admin/pagina-teksten", requireAdmin, async (_req, res) => {
-  res.json(await readPaginaTeksten());
+  const [teksten, fotos] = await Promise.all([readPaginaTeksten(), getAllFotos()]);
+  res.json({ ...teksten, ...fotos });
 });
 
 router.patch("/admin/pagina-teksten", requireAdmin, async (req, res) => {
-  res.json(await savePaginaTeksten(req.body));
+  const body = req.body as Record<string, any>;
+  // Foto-velden apart opslaan in eigen DB-sleutels
+  const fotoSaves = FOTO_KEYS.filter((k) => k in body).map((k) => setFoto(k as FotoKey, body[k]));
+  const [saved] = await Promise.all([savePaginaTeksten(body), ...fotoSaves]);
+  const fotos = await getAllFotos();
+  res.json({ ...saved, ...fotos });
+});
+
+// Directe foto-route voor toekomstige uploads
+router.patch("/admin/foto/:key", requireAdmin, async (req, res) => {
+  const key = req.params.key as FotoKey;
+  if (!(FOTO_KEYS as readonly string[]).includes(key)) {
+    res.status(400).json({ error: "Onbekende foto-sleutel" }); return;
+  }
+  const { data } = req.body as { data: string };
+  if (typeof data !== "string") {
+    res.status(400).json({ error: "Verwacht { data: string }" }); return;
+  }
+  await setFoto(key, data);
+  res.json({ ok: true });
 });
 
 // ─── RESERVERINGEN ───────────────────────────────────────────────────────────
