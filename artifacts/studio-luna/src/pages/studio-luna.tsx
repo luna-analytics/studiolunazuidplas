@@ -55,7 +55,7 @@ export default function StudioLuna() {
           initial={{ opacity: 0 }} animate={{ opacity: 1 }}
           transition={{ duration: 1.1, ease: [0.4, 0, 0.2, 1] }}
           className="relative overflow-hidden md:mx-6 md:mt-6 md:rounded-3xl"
-          style={{ minHeight: 420 }}
+          style={{ minHeight: "clamp(420px, 65vw, 720px)" }}
         >
           <img
             src={photosReady ? (teksten.foto_hero || IMAGES.hero) : undefined}
@@ -68,7 +68,7 @@ export default function StudioLuna() {
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/35 to-black/75 md:bg-gradient-to-r md:from-black/65 md:via-black/35 md:to-transparent" />
 
-          <div className="relative z-10 flex flex-col justify-end md:justify-center px-7 md:px-14 lg:px-18 pt-24 pb-12 md:py-20 min-h-[420px]">
+          <div className="relative z-10 flex flex-col justify-end md:justify-center px-7 md:px-14 lg:px-18 pt-24 pb-12 md:py-20" style={{ minHeight: "clamp(420px, 65vw, 720px)" }}>
             <div className="md:max-w-lg">
               <motion.p
                 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
