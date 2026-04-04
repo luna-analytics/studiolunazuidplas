@@ -2409,6 +2409,7 @@ function InhoudTab() {
                   ))}
                 </div>
               </div>
+              <div className="pt-4">{saveBtn("foto_hero", { foto_hero: teksten.foto_hero, foto_hero_positie: teksten.foto_hero_positie })}</div>
             </div>
           );
         })()}
@@ -2471,6 +2472,7 @@ function InhoudTab() {
                   </div>
                 </div>
               </div>
+              <div className="pt-4">{saveBtn("foto_yoga", { foto_yoga: teksten.foto_yoga, foto_yoga_hoogte: teksten.foto_yoga_hoogte, foto_yoga_positie: teksten.foto_yoga_positie })}</div>
             </div>
           );
         })()}
@@ -2533,20 +2535,10 @@ function InhoudTab() {
                   </div>
                 </div>
               </div>
+              <div className="pt-4">{saveBtn("foto_circle", { foto_circle: teksten.foto_circle, foto_circle_hoogte: teksten.foto_circle_hoogte, foto_circle_positie: teksten.foto_circle_positie })}</div>
             </div>
           );
         })()}
-
-        {saveBtn("fotos", {
-          foto_hero: teksten.foto_hero,
-          foto_yoga: teksten.foto_yoga,
-          foto_circle: teksten.foto_circle,
-          foto_hero_positie: teksten.foto_hero_positie,
-          foto_yoga_hoogte: teksten.foto_yoga_hoogte,
-          foto_yoga_positie: teksten.foto_yoga_positie,
-          foto_circle_hoogte: teksten.foto_circle_hoogte,
-          foto_circle_positie: teksten.foto_circle_positie,
-        })}
       </div>
     </div>
   );

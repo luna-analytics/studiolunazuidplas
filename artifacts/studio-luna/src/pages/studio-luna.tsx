@@ -36,12 +36,14 @@ const fadeUp = {
 export default function StudioLuna() {
   const [, navigate] = useLocation();
   const [teksten, setTeksten] = useState(DEFAULT_TEKSTEN);
+  const [photosReady, setPhotosReady] = useState(false);
 
   useEffect(() => {
     fetch(`${BASE}/api/pagina-teksten`)
       .then((r) => r.ok ? r.json() : null)
       .then((d) => { if (d) setTeksten((prev) => ({ ...prev, ...d })); })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => setPhotosReady(true));
   }, []);
 
   return (
@@ -56,10 +58,13 @@ export default function StudioLuna() {
           style={{ minHeight: 420 }}
         >
           <img
-            src={teksten.foto_hero || IMAGES.hero}
+            src={photosReady ? (teksten.foto_hero || IMAGES.hero) : undefined}
             alt="Zwangerschapsyoga Studio Luna"
-            className="absolute inset-0 w-full h-full object-cover"
-            style={{ objectPosition: teksten.foto_hero_positie || "center" }}
+            className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700"
+            style={{
+              objectPosition: teksten.foto_hero_positie || "center",
+              opacity: photosReady ? 1 : 0,
+            }}
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/35 to-black/75 md:bg-gradient-to-r md:from-black/65 md:via-black/35 md:to-transparent" />
 

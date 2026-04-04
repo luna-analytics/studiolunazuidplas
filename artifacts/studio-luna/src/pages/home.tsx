@@ -55,12 +55,14 @@ export default function Home() {
   const [, navigate] = useLocation();
   const [isInterestOpen, setIsInterestOpen] = useState(false);
   const [teksten, setTeksten] = useState(DEFAULT_TEKSTEN);
+  const [photosReady, setPhotosReady] = useState(false);
 
   useEffect(() => {
     fetch(`${BASE}/api/pagina-teksten`)
       .then((r) => r.ok ? r.json() : null)
       .then((d) => { if (d) setTeksten((prev) => ({ ...prev, ...d })); })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => setPhotosReady(true));
   }, []);
 
   return (
@@ -97,10 +99,13 @@ export default function Home() {
               style={{ aspectRatio: RATIO_MAP[teksten.foto_yoga_hoogte] ?? "16/9" }}
             >
               <img
-                src={teksten.foto_yoga || IMAGES.yoga}
+                src={photosReady ? (teksten.foto_yoga || IMAGES.yoga) : undefined}
                 alt="Zwangerschapsyoga Studio Luna"
-                className="w-full h-full object-cover"
-                style={{ objectPosition: POS_MAP[teksten.foto_yoga_positie] ?? "center" }}
+                className="w-full h-full object-cover transition-opacity duration-700"
+                style={{
+                  objectPosition: POS_MAP[teksten.foto_yoga_positie] ?? "center",
+                  opacity: photosReady ? 1 : 0,
+                }}
               />
             </motion.div>
 
@@ -219,10 +224,13 @@ export default function Home() {
                 {/* Foto als sfeerblok — portret formaat */}
                 <div className="overflow-hidden rounded-2xl mb-8" style={{ aspectRatio: RATIO_MAP[teksten.foto_circle_hoogte] ?? "4/3" }}>
                   <img
-                    src={teksten.foto_circle || IMAGES.circle}
+                    src={photosReady ? (teksten.foto_circle || IMAGES.circle) : undefined}
                     alt="Mama Circle Studio Luna"
-                    className="w-full h-full object-cover"
-                    style={{ objectPosition: POS_MAP[teksten.foto_circle_positie] ?? "center" }}
+                    className="w-full h-full object-cover transition-opacity duration-700"
+                    style={{
+                      objectPosition: POS_MAP[teksten.foto_circle_positie] ?? "center",
+                      opacity: photosReady ? 1 : 0,
+                    }}
                   />
                 </div>
 
