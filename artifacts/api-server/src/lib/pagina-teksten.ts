@@ -29,6 +29,12 @@ export type PaginaTeksten = {
   foto_hero: string;
   foto_yoga: string;
   foto_circle: string;
+  // Foto-weergave-instellingen
+  foto_hero_positie: string;   // "top" | "center" | "bottom"
+  foto_yoga_hoogte: string;    // "smal" | "normaal" | "hoog" | "portret"
+  foto_yoga_positie: string;   // "top" | "center" | "bottom"
+  foto_circle_hoogte: string;  // "smal" | "normaal" | "hoog" | "portret"
+  foto_circle_positie: string; // "top" | "center" | "bottom"
   // Studio Luna pagina — missie sectie
   home_missie_heading: string;
   home_village_tagline: string;
@@ -74,6 +80,11 @@ const DEFAULT: PaginaTeksten = {
   foto_hero: "",
   foto_yoga: "",
   foto_circle: "",
+  foto_hero_positie: "center",
+  foto_yoga_hoogte: "normaal",
+  foto_yoga_positie: "center",
+  foto_circle_hoogte: "hoog",
+  foto_circle_positie: "center",
   home_missie_heading: "Een plek om\nte landen.",
   home_village_tagline: "Welkom in jouw village.",
   home_aanbod_heading: "Alles wat je nodig hebt\nop weg naar de bevalling.",

@@ -24,6 +24,10 @@ const DEFAULT_TEKSTEN = {
   aanbod_verzekering_tekst: "Veel verzekeraars vergoeden (een deel van) geboortevoorbereiding vanuit de aanvullende verzekering.",
   foto_yoga: "",
   foto_circle: "",
+  foto_yoga_hoogte: "normaal",
+  foto_yoga_positie: "center",
+  foto_circle_hoogte: "hoog",
+  foto_circle_positie: "center",
 };
 
 const fadeUp = {
@@ -32,6 +36,19 @@ const fadeUp = {
     opacity: 1, y: 0,
     transition: { duration: 0.9, ease: [0.4, 0, 0.2, 1], delay },
   }),
+};
+
+const RATIO_MAP: Record<string, string> = {
+  smal: "21/9",
+  normaal: "16/9",
+  hoog: "4/3",
+  portret: "3/4",
+};
+
+const POS_MAP: Record<string, string> = {
+  top: "top",
+  center: "center",
+  bottom: "bottom",
 };
 
 export default function Home() {
@@ -77,12 +94,13 @@ export default function Home() {
               variants={fadeUp} initial="hidden" whileInView="show"
               viewport={{ once: true, margin: "-60px" }} custom={0}
               className="mx-4 md:mx-10 lg:mx-14 overflow-hidden rounded-2xl mb-12"
-              style={{ aspectRatio: "16/7" }}
+              style={{ aspectRatio: RATIO_MAP[teksten.foto_yoga_hoogte] ?? "16/9" }}
             >
               <img
                 src={teksten.foto_yoga || IMAGES.yoga}
                 alt="Zwangerschapsyoga Studio Luna"
-                className="w-full h-full object-cover object-top"
+                className="w-full h-full object-cover"
+                style={{ objectPosition: POS_MAP[teksten.foto_yoga_positie] ?? "center" }}
               />
             </motion.div>
 
@@ -199,11 +217,12 @@ export default function Home() {
                 className="md:pt-24 mt-10 md:mt-0"
               >
                 {/* Foto als sfeerblok — portret formaat */}
-                <div className="overflow-hidden rounded-2xl mb-8" style={{ aspectRatio: "4/5" }}>
+                <div className="overflow-hidden rounded-2xl mb-8" style={{ aspectRatio: RATIO_MAP[teksten.foto_circle_hoogte] ?? "4/3" }}>
                   <img
                     src={teksten.foto_circle || IMAGES.circle}
                     alt="Mama Circle Studio Luna"
-                    className="w-full h-full object-cover object-center"
+                    className="w-full h-full object-cover"
+                    style={{ objectPosition: POS_MAP[teksten.foto_circle_positie] ?? "center" }}
                   />
                 </div>
 

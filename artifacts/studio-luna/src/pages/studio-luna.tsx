@@ -22,6 +22,7 @@ const DEFAULT_TEKSTEN = {
   home_contact_telefoon: "+31 6 43 73 53 43",
   home_contact_instagram: "@studiolunazuidplas",
   foto_hero: "",
+  foto_hero_positie: "center",
 };
 
 const fadeUp = {
@@ -57,7 +58,8 @@ export default function StudioLuna() {
           <img
             src={teksten.foto_hero || IMAGES.hero}
             alt="Zwangerschapsyoga Studio Luna"
-            className="absolute inset-0 w-full h-full object-cover object-center"
+            className="absolute inset-0 w-full h-full object-cover"
+            style={{ objectPosition: teksten.foto_hero_positie || "center" }}
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/35 to-black/75 md:bg-gradient-to-r md:from-black/65 md:via-black/35 md:to-transparent" />
 
