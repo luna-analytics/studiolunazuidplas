@@ -7,7 +7,7 @@ import {
   Plus, Trash2, PlusCircle, MinusCircle, ChevronDown, ChevronUp, X,
   BookOpen, Users, ClipboardList, Check, CalendarDays, Baby, Share2,
   Sparkles, MessageCircle, MapPin, Clock, Mail, Palette, Tag, Receipt, Edit2, Save,
-  Copy, BellRing, UserPlus, CheckCircle2, Circle, RefreshCw, FileText,
+  Copy, BellRing, UserPlus, CheckCircle2, Circle, RefreshCw, FileText, Feather, Eye, EyeOff, ArrowLeft,
 } from "lucide-react";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -2544,8 +2544,266 @@ function InhoudTab() {
   );
 }
 
+// ─── BLOG BEHEER TAB ─────────────────────────────────────────────────────────
+
+type BlogPost = {
+  id: string; title: string; category: string; body: string;
+  publishedAt: string; published: boolean; coverImage: string; createdAt: string;
+};
+const BLOG_CATEGORIES = ["Zwangerschapsyoga", "Geboortevoorbereiding", "Community", "Mama", "Over Studio Luna"];
+
+function blogFormatDate(iso: string) {
+  if (!iso) return "";
+  const [y, m, d] = iso.split("-").map(Number);
+  return new Date(y, m - 1, d).toLocaleDateString("nl-NL", { day: "numeric", month: "long", year: "numeric" });
+}
+
+function BlogBeheerTab() {
+  const [posts, setPosts] = useState<BlogPost[]>([]);
+  const [editing, setEditing] = useState<Partial<BlogPost> | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [coverPreview, setCoverPreview] = useState("");
+  const [err, setErr] = useState("");
+
+  useEffect(() => {
+    apiFetch("/admin/blog").then((r) => r.json()).then(setPosts).catch(() => {});
+  }, []);
+
+  const startNew = () => {
+    setEditing({ title: "", category: "Zwangerschapsyoga", body: "", publishedAt: new Date().toISOString().slice(0, 10), published: false });
+    setCoverPreview("");
+    setErr("");
+  };
+
+  const startEdit = (post: BlogPost) => {
+    setEditing({ ...post });
+    setCoverPreview(post.coverImage || "");
+    setErr("");
+  };
+
+  const cancel = () => { setEditing(null); setCoverPreview(""); setErr(""); };
+
+  const save = async () => {
+    if (!editing || saving) return;
+    setSaving(true); setErr("");
+    try {
+      const payload = { ...editing, coverImage: coverPreview };
+      const method = editing.id ? "PATCH" : "POST";
+      const path = editing.id ? `/admin/blog/${editing.id}` : "/admin/blog";
+      const res = await apiFetch(path, { method, body: JSON.stringify(payload) });
+      if (!res.ok) throw new Error(`Fout bij opslaan (${res.status})`);
+      const saved: BlogPost = await res.json();
+      setPosts((prev) => editing.id ? prev.map((p) => p.id === saved.id ? saved : p) : [saved, ...prev]);
+      setEditing(null); setCoverPreview("");
+    } catch (e: any) {
+      setErr(e.message || "Onbekende fout");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("Artikel verwijderen? Dit kan niet ongedaan worden gemaakt.")) return;
+    await apiFetch(`/admin/blog/${id}`, { method: "DELETE" });
+    setPosts((prev) => prev.filter((p) => p.id !== id));
+  };
+
+  const togglePublished = async (post: BlogPost) => {
+    const res = await apiFetch(`/admin/blog/${post.id}`, { method: "PATCH", body: JSON.stringify({ published: !post.published }) });
+    const updated: BlogPost = await res.json();
+    setPosts((prev) => prev.map((p) => p.id === updated.id ? { ...p, ...updated } : p));
+  };
+
+  const handleCoverUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const data = ev.target?.result as string;
+      setCoverPreview(data);
+      setEditing((prev) => prev ? { ...prev, coverImage: data } : prev);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const inputCls = "w-full bg-secondary border-0 rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-foreground/35 outline-none focus:ring-2 focus:ring-primary/30";
+  const btnPrimary = "flex items-center gap-2 bg-primary text-primary-foreground rounded-xl px-4 py-2.5 text-sm font-semibold hover:bg-primary/90 transition-colors";
+  const btnSecondary = "flex items-center gap-2 bg-secondary text-foreground/70 rounded-xl px-4 py-2.5 text-sm font-semibold hover:bg-secondary/70 transition-colors";
+
+  // ── EDIT / NEW FORM ────────────────────────────────────────────────────────
+  if (editing !== null) {
+    return (
+      <div className="max-w-2xl">
+        <button onClick={cancel} className="flex items-center gap-1.5 text-sm text-foreground/50 hover:text-foreground mb-6 transition-colors">
+          <ArrowLeft className="w-4 h-4" /> Terug naar overzicht
+        </button>
+
+        <h2 className="font-display text-2xl font-medium mb-6">{editing.id ? "Artikel bewerken" : "Nieuw artikel"}</h2>
+
+        <div className="space-y-4">
+          {/* Titel */}
+          <div>
+            <label className="block text-xs font-semibold text-foreground/50 uppercase tracking-wider mb-1.5">Titel</label>
+            <input className={inputCls} placeholder="Geef je artikel een titel..." value={editing.title || ""} onChange={(e) => setEditing((p) => p ? { ...p, title: e.target.value } : p)} />
+          </div>
+
+          {/* Categorie + Datum */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-semibold text-foreground/50 uppercase tracking-wider mb-1.5">Categorie</label>
+              <select className={inputCls} value={editing.category || "Zwangerschapsyoga"} onChange={(e) => setEditing((p) => p ? { ...p, category: e.target.value } : p)}>
+                {BLOG_CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-foreground/50 uppercase tracking-wider mb-1.5">Datum</label>
+              <input type="date" className={inputCls} value={editing.publishedAt || ""} onChange={(e) => setEditing((p) => p ? { ...p, publishedAt: e.target.value } : p)} />
+            </div>
+          </div>
+
+          {/* Coverfoto */}
+          <div>
+            <label className="block text-xs font-semibold text-foreground/50 uppercase tracking-wider mb-1.5">Coverfoto</label>
+            {coverPreview && (
+              <div className="relative mb-2">
+                <img src={coverPreview} alt="Cover preview" className="w-full max-h-52 object-cover rounded-2xl" />
+                <button onClick={() => { setCoverPreview(""); setEditing((p) => p ? { ...p, coverImage: "" } : p); }}
+                  className="absolute top-2 right-2 bg-black/50 text-white rounded-full w-7 h-7 flex items-center justify-center hover:bg-black/70">
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            )}
+            <label className="cursor-pointer inline-flex items-center gap-2 bg-secondary rounded-xl px-4 py-2.5 text-sm font-semibold text-foreground/70 hover:bg-secondary/70 transition-colors">
+              <Plus className="w-4 h-4" /> {coverPreview ? "Andere foto kiezen" : "Coverfoto toevoegen"}
+              <input type="file" accept="image/*" className="hidden" onChange={handleCoverUpload} />
+            </label>
+          </div>
+
+          {/* Tekst */}
+          <div>
+            <label className="block text-xs font-semibold text-foreground/50 uppercase tracking-wider mb-1.5">Artikel tekst</label>
+            <textarea className={`${inputCls} leading-relaxed`} rows={14} placeholder={"Schrijf hier je artikel...\n\nGebruik een lege regel voor een nieuwe alinea."} value={editing.body || ""} onChange={(e) => setEditing((p) => p ? { ...p, body: e.target.value } : p)} />
+            <p className="text-xs text-foreground/35 mt-1">Lege regels worden automatisch alinea's op de website.</p>
+          </div>
+
+          {/* Publiceren */}
+          <div className="flex items-center gap-3 bg-secondary rounded-xl px-4 py-3">
+            <button onClick={() => setEditing((p) => p ? { ...p, published: !p.published } : p)}
+              className={`w-10 h-6 rounded-full transition-colors duration-200 ${editing.published ? "bg-primary" : "bg-foreground/20"} relative shrink-0`}>
+              <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform duration-200 ${editing.published ? "translate-x-4" : ""}`} />
+            </button>
+            <div>
+              <p className="text-sm font-semibold">{editing.published ? "Gepubliceerd" : "Concept"}</p>
+              <p className="text-xs text-foreground/45">{editing.published ? "Zichtbaar voor bezoekers" : "Alleen zichtbaar voor jou als admin"}</p>
+            </div>
+          </div>
+        </div>
+
+        {err && <p className="mt-4 text-sm text-red-500 bg-red-50 rounded-xl px-4 py-3">{err}</p>}
+
+        <div className="flex gap-3 mt-6">
+          <button onClick={save} disabled={saving} className={btnPrimary}>
+            <Save className="w-4 h-4" /> {saving ? "Opslaan..." : "Opslaan"}
+          </button>
+          <button onClick={cancel} className={btnSecondary}>Annuleren</button>
+        </div>
+      </div>
+    );
+  }
+
+  // ── OVERZICHT LIJST ────────────────────────────────────────────────────────
+  const gepubliceerd = posts.filter((p) => p.published);
+  const concepten = posts.filter((p) => !p.published);
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h2 className="font-display text-2xl font-medium">Blog artikelen</h2>
+          <p className="text-sm text-foreground/45 mt-0.5">{posts.length} artikel{posts.length !== 1 ? "en" : ""} · {gepubliceerd.length} gepubliceerd</p>
+        </div>
+        <button onClick={startNew} className={btnPrimary}>
+          <Plus className="w-4 h-4" /> Nieuw artikel
+        </button>
+      </div>
+
+      {posts.length === 0 && (
+        <div className="text-center py-16 border border-dashed border-border/40 rounded-3xl">
+          <Feather className="w-8 h-8 text-foreground/20 mx-auto mb-3" />
+          <p className="font-medium text-foreground/40">Nog geen artikelen</p>
+          <p className="text-sm text-foreground/30 mt-1">Schrijf je eerste blog artikel</p>
+          <button onClick={startNew} className={`${btnPrimary} mx-auto mt-5`}><Plus className="w-4 h-4" /> Nieuw artikel</button>
+        </div>
+      )}
+
+      {gepubliceerd.length > 0 && (
+        <div className="mb-6">
+          <p className="text-xs font-bold uppercase tracking-widest text-foreground/35 mb-3">Gepubliceerd</p>
+          <div className="space-y-3">
+            {gepubliceerd.map((post) => (
+              <div key={post.id} className="flex items-start gap-3 border border-border/20 rounded-2xl p-4 bg-background">
+                {post.coverImage
+                  ? <img src={post.coverImage} alt="" className="w-16 h-16 rounded-xl object-cover shrink-0" />
+                  : <div className="w-16 h-16 rounded-xl bg-secondary shrink-0 flex items-center justify-center"><Feather className="w-5 h-5 text-foreground/25" /></div>
+                }
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-sm leading-snug truncate">{post.title || "(Zonder titel)"}</p>
+                  <p className="text-xs text-foreground/40 mt-0.5">{post.category} · {blogFormatDate(post.publishedAt)}</p>
+                  <p className="text-xs text-foreground/55 mt-1 line-clamp-2">{post.body?.slice(0, 120)}</p>
+                </div>
+                <div className="flex flex-col gap-1.5 shrink-0">
+                  <button onClick={() => startEdit(post)} className="flex items-center gap-1 text-xs font-semibold text-primary hover:text-primary/70 transition-colors">
+                    <Edit2 className="w-3.5 h-3.5" /> Bewerken
+                  </button>
+                  <button onClick={() => togglePublished(post)} className="flex items-center gap-1 text-xs font-semibold text-foreground/40 hover:text-foreground/70 transition-colors">
+                    <EyeOff className="w-3.5 h-3.5" /> Depubliceren
+                  </button>
+                  <button onClick={() => handleDelete(post.id)} className="flex items-center gap-1 text-xs font-semibold text-red-400 hover:text-red-600 transition-colors">
+                    <Trash2 className="w-3.5 h-3.5" /> Verwijderen
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {concepten.length > 0 && (
+        <div>
+          <p className="text-xs font-bold uppercase tracking-widest text-foreground/35 mb-3">Concepten</p>
+          <div className="space-y-3">
+            {concepten.map((post) => (
+              <div key={post.id} className="flex items-start gap-3 border border-dashed border-border/30 rounded-2xl p-4 bg-secondary/30">
+                {post.coverImage
+                  ? <img src={post.coverImage} alt="" className="w-16 h-16 rounded-xl object-cover shrink-0 opacity-60" />
+                  : <div className="w-16 h-16 rounded-xl bg-secondary shrink-0 flex items-center justify-center"><Feather className="w-5 h-5 text-foreground/20" /></div>
+                }
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-sm leading-snug truncate text-foreground/70">{post.title || "(Zonder titel)"}</p>
+                  <p className="text-xs text-foreground/35 mt-0.5">{post.category} · {blogFormatDate(post.publishedAt)}</p>
+                </div>
+                <div className="flex flex-col gap-1.5 shrink-0">
+                  <button onClick={() => startEdit(post)} className="flex items-center gap-1 text-xs font-semibold text-primary hover:text-primary/70 transition-colors">
+                    <Edit2 className="w-3.5 h-3.5" /> Bewerken
+                  </button>
+                  <button onClick={() => togglePublished(post)} className="flex items-center gap-1 text-xs font-semibold text-foreground/40 hover:text-foreground/70 transition-colors">
+                    <Eye className="w-3.5 h-3.5" /> Publiceren
+                  </button>
+                  <button onClick={() => handleDelete(post.id)} className="flex items-center gap-1 text-xs font-semibold text-red-400 hover:text-red-600 transition-colors">
+                    <Trash2 className="w-3.5 h-3.5" /> Verwijderen
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── MAIN ADMIN PAGE ─────────────────────────────────────────────────────────
-type AdminTab = "leden" | "lessen" | "lestypes" | "tarieven" | "aanvragen" | "reserveringen" | "mededelingen" | "village" | "email" | "inhoud";
+type AdminTab = "leden" | "lessen" | "lestypes" | "tarieven" | "aanvragen" | "reserveringen" | "mededelingen" | "village" | "email" | "inhoud" | "blog";
 
 export default function Admin() {
   const { user, loading, login } = useAuth();
@@ -2627,6 +2885,7 @@ export default function Admin() {
     { key: "village", label: "Village", icon: <Sparkles className="w-4 h-4" /> },
     { key: "email", label: "E-mail", icon: <Mail className="w-4 h-4" /> },
     { key: "inhoud", label: "Inhoud", icon: <FileText className="w-4 h-4" /> },
+    { key: "blog", label: "Blog", icon: <Feather className="w-4 h-4" /> },
   ];
 
   return (
@@ -2663,6 +2922,7 @@ export default function Admin() {
               {tab === "village" && <VillageBeheerTab />}
               {tab === "email" && <EmailInstellingenTab />}
               {tab === "inhoud" && <InhoudTab />}
+              {tab === "blog" && <BlogBeheerTab />}
             </motion.div>
           </AnimatePresence>
         </div>

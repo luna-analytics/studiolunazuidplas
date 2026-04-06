@@ -19,6 +19,8 @@ import { readClasses } from "../lib/classes.js";
 import { getAllBookings } from "../lib/bookings.js";
 import { readPaginaTeksten } from "../lib/pagina-teksten.js";
 import { getAllFotos } from "../lib/foto-store.js";
+import { readPosts } from "../lib/blog.js";
+import { getImage } from "../lib/image-store.js";
 
 const router: IRouter = Router();
 
@@ -44,6 +46,15 @@ router.get("/tarieven", async (_req, res) => {
 router.get("/pagina-teksten", async (_req, res) => {
   const [teksten, fotos] = await Promise.all([readPaginaTeksten(), getAllFotos()]);
   res.json({ ...teksten, ...fotos });
+});
+
+// Publieke blog-endpoint (alleen gepubliceerde artikelen)
+router.get("/blog", async (_req, res) => {
+  const posts = (await readPosts()).filter((p) => p.published);
+  const withCovers = await Promise.all(
+    posts.map(async (p) => ({ ...p, coverImage: await getImage(`blog_cover_${p.id}`) }))
+  );
+  res.json(withCovers);
 });
 
 // Reservering voor openingsreeks (publiek, geen login nodig)

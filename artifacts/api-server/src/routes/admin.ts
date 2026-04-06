@@ -16,6 +16,8 @@ import { readPaginaTeksten, savePaginaTeksten } from "../lib/pagina-teksten.js";
 import { getAllFotos, setFoto, FOTO_KEYS, type FotoKey } from "../lib/foto-store.js";
 import { readReserveringen, createReservering, toggleAanwezig, deleteReservering } from "../lib/reserveringen.js";
 import { sendReservationConfirmation, sendReminderEmail } from "../lib/email.js";
+import { readPosts, createPost, updatePost, deletePost } from "../lib/blog.js";
+import { getImage, setImage, deleteImage } from "../lib/image-store.js";
 
 const router = Router();
 
@@ -428,6 +430,47 @@ router.patch("/admin/reserveringen/:id/aanwezig", requireAdmin, async (req, res)
 
 router.delete("/admin/reserveringen/:id", requireAdmin, async (req, res) => {
   await deleteReservering(req.params.id);
+  res.json({ ok: true });
+});
+
+// ─── BLOG ─────────────────────────────────────────────────────────────────────
+
+router.get("/admin/blog", requireAdmin, async (_req, res) => {
+  const posts = await readPosts();
+  const withCovers = await Promise.all(
+    posts.map(async (p) => ({ ...p, coverImage: await getImage(`blog_cover_${p.id}`) }))
+  );
+  res.json(withCovers);
+});
+
+router.post("/admin/blog", requireAdmin, async (req, res) => {
+  const { coverImage, ...rest } = req.body;
+  const post = await createPost({
+    title: rest.title ?? "",
+    category: rest.category ?? "Inspiratie",
+    body: rest.body ?? "",
+    publishedAt: rest.publishedAt ?? new Date().toISOString().slice(0, 10),
+    published: rest.published ?? false,
+  });
+  if (coverImage) await setImage(`blog_cover_${post.id}`, coverImage);
+  res.json({ ...post, coverImage: coverImage ?? "" });
+});
+
+router.patch("/admin/blog/:id", requireAdmin, async (req, res) => {
+  try {
+    const { coverImage, ...rest } = req.body;
+    const post = await updatePost(req.params.id, rest);
+    if (coverImage !== undefined) await setImage(`blog_cover_${post.id}`, coverImage);
+    const cover = await getImage(`blog_cover_${post.id}`);
+    res.json({ ...post, coverImage: cover });
+  } catch (err: any) {
+    res.status(404).json({ error: err.message });
+  }
+});
+
+router.delete("/admin/blog/:id", requireAdmin, async (req, res) => {
+  await deletePost(req.params.id);
+  await deleteImage(`blog_cover_${req.params.id}`);
   res.json({ ok: true });
 });
 
