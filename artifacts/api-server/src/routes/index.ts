@@ -60,7 +60,8 @@ router.get("/blog", async (_req, res) => {
 // Enkel artikel ophalen (publiek)
 router.get("/blog/:id", async (req, res) => {
   const posts = await readPosts();
-  const post = posts.find((p) => p.id === req.params.id && p.published);
+  const param = req.params.id;
+  const post = posts.find((p) => p.published && (p.slug === param || p.id === param));
   if (!post) { res.status(404).json({ error: "Niet gevonden" }); return; }
   const coverImage = await getImage(`blog_cover_${post.id}`);
   res.json({ ...post, coverImage });

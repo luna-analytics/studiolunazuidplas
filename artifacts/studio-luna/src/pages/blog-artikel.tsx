@@ -8,6 +8,7 @@ const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 type BlogPost = {
   id: string;
+  slug: string;
   title: string;
   category: string;
   body: string;

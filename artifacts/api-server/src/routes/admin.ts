@@ -447,6 +447,7 @@ router.post("/admin/blog", requireAdmin, async (req, res) => {
   const { coverImage, ...rest } = req.body;
   const post = await createPost({
     title: rest.title ?? "",
+    slug: rest.slug,
     category: rest.category ?? "Inspiratie",
     body: rest.body ?? "",
     publishedAt: rest.publishedAt ?? new Date().toISOString().slice(0, 10),

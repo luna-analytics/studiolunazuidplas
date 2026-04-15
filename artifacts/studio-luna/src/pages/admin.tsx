@@ -2547,7 +2547,7 @@ function InhoudTab() {
 // ─── BLOG BEHEER TAB ─────────────────────────────────────────────────────────
 
 type BlogPost = {
-  id: string; title: string; category: string; body: string;
+  id: string; slug: string; title: string; category: string; body: string;
   publishedAt: string; published: boolean; coverImage: string; createdAt: string;
 };
 const BLOG_CATEGORIES = ["Zwangerschapsyoga", "Geboortevoorbereiding", "Community", "Mama", "Over Studio Luna"];
@@ -2645,6 +2645,20 @@ function BlogBeheerTab() {
           <div>
             <label className="block text-xs font-semibold text-foreground/50 uppercase tracking-wider mb-1.5">Titel</label>
             <input className={inputCls} placeholder="Geef je artikel een titel..." value={editing.title || ""} onChange={(e) => setEditing((p) => p ? { ...p, title: e.target.value } : p)} />
+          </div>
+
+          {/* Slug */}
+          <div>
+            <label className="block text-xs font-semibold text-foreground/50 uppercase tracking-wider mb-1.5">URL-slug <span className="normal-case font-normal text-foreground/35">(bijv. zwanger-en-yoga — laat leeg voor automatisch)</span></label>
+            <div className="flex items-center gap-1.5 bg-secondary rounded-xl px-4 py-3">
+              <span className="text-sm text-foreground/35 shrink-0">/blog/</span>
+              <input
+                className="flex-1 bg-transparent border-0 text-sm text-foreground placeholder:text-foreground/35 outline-none"
+                placeholder="automatisch-vanuit-titel"
+                value={editing.slug || ""}
+                onChange={(e) => setEditing((p) => p ? { ...p, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "-").replace(/-+/g, "-") } : p)}
+              />
+            </div>
           </div>
 
           {/* Categorie + Datum */}
