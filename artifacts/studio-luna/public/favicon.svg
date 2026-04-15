@@ -1,6 +1,6 @@
 <svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
   <rect width="180" height="180" rx="36" fill="#3A4F41"/>
-  <!-- Crescent moon -->
-  <circle cx="90" cy="90" r="48" fill="#F8F7F5"/>
-  <circle cx="110" cy="76" r="40" fill="#3A4F41"/>
+  <path d="M90 44C90 44 55 62 55 90C55 118 78 136 90 136C78 136 44 122 44 90C44 62 65 42 90 44Z" fill="none"/>
+  <circle cx="90" cy="90" r="44" fill="#F8F7F5"/>
+  <circle cx="108" cy="74" r="37" fill="#3A4F41"/>
 </svg>
