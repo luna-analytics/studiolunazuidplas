@@ -57,6 +57,15 @@ router.get("/blog", async (_req, res) => {
   res.json(withCovers);
 });
 
+// Enkel artikel ophalen (publiek)
+router.get("/blog/:id", async (req, res) => {
+  const posts = await readPosts();
+  const post = posts.find((p) => p.id === req.params.id && p.published);
+  if (!post) { res.status(404).json({ error: "Niet gevonden" }); return; }
+  const coverImage = await getImage(`blog_cover_${post.id}`);
+  res.json({ ...post, coverImage });
+});
+
 // Reservering voor openingsreeks (publiek, geen login nodig)
 router.post("/reserveer", async (req: any, res: any) => {
   const { name, email, classId, classTitle, dateStr, time, type } = req.body as {

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "wouter";
 import { BottomNav } from "@/components/bottom-nav";
 import { SeoFooter } from "@/components/seo-footer";
 import { motion } from "framer-motion";
@@ -120,6 +121,7 @@ export default function Inspiratie() {
               initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }}
               className="group mb-8"
             >
+              <Link href={`/blog/${featured.id}`} className="block cursor-pointer">
               <div className="relative w-full overflow-hidden rounded-3xl bg-secondary shadow-sm">
                 {featured.coverImage ? (
                   <div className="relative w-full" style={{ paddingTop: "56.25%" }}>
@@ -148,6 +150,7 @@ export default function Inspiratie() {
                 )}
               </div>
               <p className="text-sm text-foreground/65 leading-relaxed mt-4 px-1">{excerpt(featured.body)}</p>
+              </Link>
             </motion.div>
           )}
 
@@ -172,6 +175,7 @@ export default function Inspiratie() {
                   transition={{ duration: 0.4, delay: i * 0.07 }}
                   className="group flex flex-col"
                 >
+                  <Link href={`/blog/${post.id}`} className="flex flex-col flex-1 cursor-pointer">
                   <div className="relative w-full overflow-hidden rounded-2xl bg-secondary shadow-sm mb-3" style={{ paddingTop: "125%" }}>
                     {post.coverImage
                       ? <img src={post.coverImage} alt={post.title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
@@ -194,6 +198,7 @@ export default function Inspiratie() {
                       {excerpt(post.body, 120)}
                     </p>
                   </div>
+                  </Link>
                 </motion.article>
               ))}
             </div>
