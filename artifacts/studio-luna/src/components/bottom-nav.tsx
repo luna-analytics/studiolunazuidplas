@@ -14,9 +14,9 @@ const ALL_NAV = [
   { href: "/rooster", label: "Rooster", icon: CalendarDays },
   { href: "/tarieven", label: "Tarieven", icon: Tag },
   { href: "/over-mij", label: "Over mij", icon: User },
+  { href: "/blog", label: "Blog", icon: Feather },
   { href: "/bookings", label: "Boekingen", icon: Bookmark },
   { href: "/village", label: "Village", icon: Heart },
-  { href: "/blog", label: "Blog", icon: Feather },
 ];
 
 // Vier tabs die altijd zichtbaar zijn in de balk
@@ -44,7 +44,7 @@ export function BottomNav() {
   }, []);
 
   const visibleNav = ALL_NAV.filter((n) => {
-    if (n.href === "/village" || n.href === "/blog") return user?.isAdmin;
+    if (n.href === "/village") return user?.isAdmin;
     return true;
   });
   const primaryItems = visibleNav.filter((n) => PRIMARY_NAV.includes(n.href));
