@@ -78,7 +78,7 @@ export default function Inspiratie() {
           <span className="text-5xl mb-6">🌙</span>
           <h1 className="font-display text-3xl font-medium text-foreground mb-3">Binnenkort</h1>
           <p className="text-foreground/55 text-sm leading-relaxed max-w-xs">
-            Verhalen, inzichten en tips over zwangerschap, yoga en het leven als mama. Vanuit mijn achtergrond als onderzoeker (PhD) zoek ik graag voor je uit hoe het nu echt zit met alle veranderingen die je doormaakt.
+            Ik neem je mee in mijn zoektocht over alles rondom zwangerschap, postpartum en het moederschap, waar ik gevoel en wetenschap allebei een plek geef.
           </p>
         </div>
         <BottomNav />
@@ -96,9 +96,9 @@ export default function Inspiratie() {
         <div className="px-6 md:px-12 lg:px-16 pt-14 md:pt-12 pb-10 bg-secondary md:rounded-3xl md:mx-6 md:mt-6">
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
             <p className="text-xs font-bold uppercase tracking-widest text-foreground/40 mb-2">Studio Luna</p>
-            <h1 className="font-display text-3xl md:text-4xl font-medium text-foreground leading-tight">Inspiratie</h1>
+            <h1 className="font-display text-3xl md:text-4xl font-medium text-foreground leading-tight">Blog</h1>
             <p className="text-foreground/55 mt-2 text-sm leading-relaxed max-w-md">
-              Verhalen, inzichten en tips over zwangerschap, yoga en het leven als mama.
+              Ik neem je mee in mijn zoektocht over alles rondom zwangerschap, postpartum en het moederschap, waar ik gevoel en wetenschap allebei een plek geef.
             </p>
           </motion.div>
         </div>
