@@ -47,7 +47,7 @@ function Router() {
         <Route path="/bookings" component={Bookings} />
         <Route path="/admin" component={Admin} />
         <Route path="/village" component={Village} />
-        <Route path="/inspiratie" component={Inspiratie} />
+        <Route path="/blog" component={Inspiratie} />
         <Route path="/over-mij" component={OverMij} />
         <Route path="/profile" component={Profile} />
         <Route component={NotFound} />
