@@ -99,10 +99,10 @@ export default function StudioLuna() {
                   <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
                 </button>
                 <button
-                  onClick={() => navigate("/aanbod")}
+                  onClick={() => navigate("/blog")}
                   className="inline-flex items-center gap-2 bg-white/12 backdrop-blur-sm border border-white/25 text-white px-7 py-3.5 rounded-2xl font-semibold text-sm hover:bg-white/22"
                 >
-                  Bekijk aanbod
+                  Ga naar blog
                 </button>
               </motion.div>
             </div>

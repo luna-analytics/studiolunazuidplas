@@ -20,7 +20,7 @@ const ALL_NAV = [
 ];
 
 // Vier tabs die altijd zichtbaar zijn in de balk
-const PRIMARY_NAV = ["/", "/aanbod", "/rooster", "/bookings"];
+const PRIMARY_NAV = ["/", "/aanbod", "/rooster", "/blog"];
 
 export function BottomNav() {
   const [location, navigate] = useLocation();
