@@ -55,12 +55,20 @@ export function BottomNav() {
       {/* ── DESKTOP TOP NAV ── */}
       <div className="hidden md:flex fixed top-0 left-0 right-0 z-40 bg-background/90 backdrop-blur-xl border-b border-border/30 h-16 items-center px-8">
         <div className="max-w-5xl mx-auto w-full flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3 select-none"
+          <Link href="/" className="flex items-center gap-2.5 select-none"
             onMouseDown={startLongPress} onMouseUp={cancelLongPress}
             onMouseLeave={cancelLongPress} onTouchStart={startLongPress}
             onTouchEnd={cancelLongPress} onTouchCancel={cancelLongPress}>
-            <div className="overflow-hidden" style={{ height: "36px" }}>
-              <img src={`${import.meta.env.BASE_URL}images/studio-luna-logo.png`} alt="Studio Luna" className="h-12 w-auto" />
+            {/* Maan-icoon */}
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
+              <circle cx="16" cy="16" r="16" fill="#3A4F41"/>
+              <circle cx="16" cy="16" r="9" fill="#F8F7F5"/>
+              <circle cx="19.5" cy="13" r="7.5" fill="#3A4F41"/>
+            </svg>
+            {/* Naam */}
+            <div className="flex flex-col leading-none">
+              <span className="font-display text-[15px] font-medium text-foreground tracking-wide">Studio Luna</span>
+              <span className="text-[9px] uppercase tracking-[0.18em] text-foreground/40 font-sans mt-0.5">Zwangerschapsyoga</span>
             </div>
           </Link>
           <nav className="flex items-center gap-1">
