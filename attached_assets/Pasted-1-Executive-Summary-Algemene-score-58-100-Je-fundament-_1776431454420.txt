@@ -1,0 +1,103 @@
+1. 📊 Executive Summary
+Algemene score: 58 / 100
+Je fundament (sfeer, niche, doelgroep) is goed.
+Maar je website functioneert nu meer als inspiratiepagina dan als conversiemachine.
+🚨 3 meest kritieke verbeterpunten
+1. ❌ Onduidelijk aanbod (grootste conversie-lek)
+Bezoekers snappen niet direct:
+wat ze kopen
+hoe het werkt
+wat het oplevert
+👉 Impact: hoge drop-off in eerste 5–10 seconden
+2. ❌ Zwakke en inconsistente CTA-structuur
+Geen duidelijke primaire actie
+Geen “above the fold” conversieknop
+Te veel afhankelijk van “scrollen”
+👉 Impact: lage boekingsratio
+3. ❌ Gebrek aan vertrouwen (social proof & autoriteit)
+Nauwelijks reviews zichtbaar
+Jouw expertise (PhD!) onderbenut
+Geen concrete resultaten
+👉 Impact: twijfel = geen aankoop
+2. ⚙️ Technische Analyse
+🚀 Laadsnelheid
+Score-inschatting: 65/100
+Wat opvalt:
+Veel visuele elementen (grote afbeeldingen)
+Waarschijnlijk geen optimale compressie
+Mogelijk gebruik van zware page builder (zoals Wix)
+👉 Risico:
+Mobiele gebruikers haken sneller af
+SEO-ranking wordt gedrukt
+Aanbevelingen:
+Afbeeldingen comprimeren (WebP)
+Lazy loading toepassen
+Minder “above the fold” visuele belasting
+📱 Mobiele vriendelijkheid
+Score: 70/100
+Sterk:
+Layout schaalt mee
+Zwak:
+CTA’s niet prominent genoeg op mobiel
+Tekstblokken soms te lang → vermoeiend scrollen
+👉 Mobiel is waarschijnlijk >70% van je verkeer
+→ hier laat je conversie liggen
+🧱 Technische structuur
+Score: 60/100
+Geen duidelijke funnelstructuur
+Pagina’s lijken informatief i.p.v. conversion-driven
+Mogelijk:
+geen gestructureerde data
+geen duidelijke interne linking
+3. 🔎 SEO & Content
+🧩 Koppenstructuur (H1, H2, H3)
+Score: 55/100
+Problemen:
+H1 is waarschijnlijk te vaag (sfeer i.p.v. zoekintentie)
+H2’s zijn niet zoekwoordgericht
+Geen duidelijke hiërarchie
+👉 Je mist vindbaarheid op:
+“zwangerschapsyoga Zuidplas”
+“geboortevoorbereiding cursus”
+✍️ Leesbaarheid & copy
+Score: 65/100
+Sterk:
+Warm, authentiek, passend bij doelgroep
+Zwak:
+Te abstract (veel gevoel, weinig concreet)
+Te weinig scanbaar:
+lange alinea’s
+weinig bullets
+👉 Online lezen ≠ offline lezen
+🎯 Boodschap helderheid
+Score: 50/100
+Na 5 seconden moet duidelijk zijn:
+wat je doet
+voor wie
+wat het oplevert
+👉 Dat is nu niet scherp genoeg
+4. 🎨 UX/UI & Layout
+👁️ Visuele hiërarchie
+Score: 55/100
+Probleem:
+Alles voelt “even belangrijk”
+Geen duidelijke focuspunten
+👉 Gebruiker weet niet waar te kijken → geen actie
+🧭 Navigatie
+Score: 65/100
+Logisch, maar niet strategisch
+Mist funnel-denken:
+awareness → vertrouwen → actie
+⬜ Witruimte & rust
+Score: 75/100
+Sterk:
+Rustige uitstraling
+Past bij doelgroep
+Maar:
+Soms te “leeg” zonder richting
+🔘 Call to Action (CTA)
+Score: 40/100 (groot probleem)
+Niet prominent
+Niet herhaald
+Niet urgent
+👉 Geen duidelijke next step = geen conversie
