@@ -18,6 +18,7 @@ import { readReserveringen, createReservering, toggleAanwezig, deleteReservering
 import { sendReservationConfirmation, sendReminderEmail } from "../lib/email.js";
 import { readPosts, createPost, updatePost, deletePost } from "../lib/blog.js";
 import { getImage, setImage, deleteImage } from "../lib/image-store.js";
+import { readReviewsConfig, createReview, updateReview, deleteReview, setReviewsVisible } from "../lib/reviews.js";
 
 const router = Router();
 
@@ -473,6 +474,39 @@ router.delete("/admin/blog/:id", requireAdmin, async (req, res) => {
   await deletePost(req.params.id);
   await deleteImage(`blog_cover_${req.params.id}`);
   res.json({ ok: true });
+});
+
+// ─── REVIEWS ─────────────────────────────────────────────────────────────────
+
+router.get("/admin/reviews", requireAdmin, async (_req, res) => {
+  res.json(await readReviewsConfig());
+});
+
+router.post("/admin/reviews", requireAdmin, async (req, res) => {
+  try {
+    const { name, role, text, stars } = req.body as { name?: string; role?: string; text?: string; stars?: number };
+    if (!name || !text) { res.status(400).json({ error: "Naam en tekst zijn verplicht" }); return; }
+    const review = await createReview({ name, role: role ?? "", text, stars: stars ?? 5 });
+    res.json(review);
+  } catch (err: any) { res.status(500).json({ error: err.message }); }
+});
+
+router.patch("/admin/reviews/:id", requireAdmin, async (req, res) => {
+  try {
+    const review = await updateReview(req.params.id, req.body);
+    res.json(review);
+  } catch (err: any) { res.status(404).json({ error: err.message }); }
+});
+
+router.delete("/admin/reviews/:id", requireAdmin, async (req, res) => {
+  await deleteReview(req.params.id);
+  res.json({ ok: true });
+});
+
+router.post("/admin/reviews/visible", requireAdmin, async (req, res) => {
+  const { visible } = req.body as { visible: boolean };
+  await setReviewsVisible(!!visible);
+  res.json({ ok: true, visible: !!visible });
 });
 
 export default router;

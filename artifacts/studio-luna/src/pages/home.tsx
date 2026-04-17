@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { BottomNav } from "@/components/bottom-nav";
 import { SeoFooter } from "@/components/seo-footer";
+import { CtaBlock } from "@/components/cta-block";
 import { InterestModal } from "@/components/interest-modal";
 import { motion } from "framer-motion";
 import { ArrowRight, Calendar, MapPin, Coffee, Mail, ClipboardList } from "lucide-react";
@@ -106,6 +107,7 @@ export default function Home() {
                   objectPosition: POS_MAP[teksten.foto_yoga_positie] ?? "center",
                   opacity: photosReady ? 1 : 0,
                 }}
+                loading="lazy"
               />
             </motion.div>
 
@@ -229,6 +231,7 @@ export default function Home() {
                       alt="Mama Circle Studio Luna"
                       className="w-full h-full object-cover"
                       style={{ objectPosition: POS_MAP[teksten.foto_circle_positie] ?? "center" }}
+                      loading="lazy"
                     />
                   </div>
                 )}
@@ -325,6 +328,7 @@ export default function Home() {
         </section>
 
         <InterestModal isOpen={isInterestOpen} onClose={() => setIsInterestOpen(false)} />
+        <CtaBlock />
         <SeoFooter />
         <BottomNav />
       </div>

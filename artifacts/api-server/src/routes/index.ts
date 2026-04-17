@@ -21,6 +21,7 @@ import { readPaginaTeksten } from "../lib/pagina-teksten.js";
 import { getAllFotos } from "../lib/foto-store.js";
 import { readPosts } from "../lib/blog.js";
 import { getImage } from "../lib/image-store.js";
+import { readReviewsConfig } from "../lib/reviews.js";
 
 const router: IRouter = Router();
 
@@ -132,6 +133,19 @@ router.post("/rittenkaart-request", async (req: any, res: any) => {
   } catch (err: any) {
     res.status(400).json({ error: err.message });
   }
+});
+
+// Publieke reviews-endpoint (alleen zichtbaar als admin reviews heeft aangezet)
+router.get("/reviews", async (_req, res) => {
+  const config = await readReviewsConfig();
+  if (!config.visible) { res.json({ visible: false, items: [] }); return; }
+  res.json({ visible: true, items: config.items });
+});
+
+// Reviews-config ophalen als admin (altijd, ongeacht visible)
+router.get("/admin/reviews", async (_req, res) => {
+  const config = await readReviewsConfig();
+  res.json(config);
 });
 
 export default router;

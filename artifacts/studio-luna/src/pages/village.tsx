@@ -222,7 +222,7 @@ export default function Village() {
             <p className="text-foreground/55 text-sm mt-1">Exclusief voor Studio Luna leden</p>
           </motion.div>
           <div className="overflow-hidden shrink-0" style={{ height: '95px' }}>
-            <img src={`${import.meta.env.BASE_URL}images/studio-luna-logo.png`} alt="Studio Luna" className="h-32 w-auto" />
+            <img src={`${import.meta.env.BASE_URL}images/studio-luna-logo.png`} alt="Studio Luna" className="h-32 w-auto" loading="lazy" />
           </div>
         </div>
 

@@ -57,6 +57,9 @@ export type PaginaTeksten = {
   aanbod_specials_items: string; // formaat: "Titel | Ondertitel | Prijs" per regel
   aanbod_specials_bundel: string; // formaat: "Titel | Ondertitel | Korting | Prijs"
   aanbod_verzekering_tekst: string;
+  // CTA-knop instellingen
+  cta_url: string;
+  cta_label: string;
 };
 
 const DEFAULT: PaginaTeksten = {
@@ -102,6 +105,8 @@ const DEFAULT: PaginaTeksten = {
   aanbod_specials_items: "Bevallings Yoga Workshop | Focus & Vertrouwen · 120 min | € 49,-\nPartner Workshop | Verbinding & Support · 120 min | € 79,-\nMama Spa | Ultiem ontspannen · 120 min | € 49,-",
   aanbod_specials_bundel: "De Geboorte-Bundel | Alle drie workshops · meest complete voorbereiding | bespaar € 22,- | € 155,-",
   aanbod_verzekering_tekst: "Veel verzekeraars vergoeden (een deel van) geboortevoorbereiding vanuit de aanvullende verzekering.",
+  cta_url: "/rooster",
+  cta_label: "Reserveer jouw plekje",
   aanbod_circle_tekst:
     "Bij Studio Luna geloven we in de kracht van de 'village'. Naast de fysieke lessen creëren we een veilige cirkel waarin je ervaringen deelt, vragen stelt en naar elkaar omkijkt. We gebruiken zachte yoga- en ademhalingsoefeningen om samen te vertragen, zodat er ruimte ontstaat om echt te luisteren naar jezelf en elkaar. Echte verbinding met andere zwangeren en mama's in Zuidplas!",
 };

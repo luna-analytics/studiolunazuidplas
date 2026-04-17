@@ -104,7 +104,7 @@ export default function BlogArtikel() {
             className="mx-6 md:mx-12 rounded-3xl overflow-hidden mb-8"
             style={{ aspectRatio: "16/9" }}
           >
-            <img src={post.coverImage} alt={post.title} className="w-full h-full object-cover" />
+            <img src={post.coverImage} alt={post.title} className="w-full h-full object-cover" loading="lazy" />
           </motion.div>
         )}
 

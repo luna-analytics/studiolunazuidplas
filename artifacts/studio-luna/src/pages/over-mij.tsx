@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { BottomNav } from "@/components/bottom-nav";
 import { SeoFooter } from "@/components/seo-footer";
+import { CtaBlock } from "@/components/cta-block";
 import { motion } from "framer-motion";
 import { Instagram, Mail, ArrowRight } from "lucide-react";
 
@@ -78,6 +79,7 @@ export default function OverMij() {
                       src={data.over_mij_foto}
                       alt={data.over_mij_naam}
                       className="w-full h-full object-cover object-top"
+                      loading="lazy"
                     />
                   </div>
                 ) : (
@@ -182,6 +184,7 @@ export default function OverMij() {
           </motion.div>
         </section>
 
+        <CtaBlock />
         <SeoFooter />
         <BottomNav />
       </div>

@@ -106,7 +106,7 @@ export default function Rooster() {
             <p className="text-foreground/60 mt-2 text-sm">Zie ik jou op de mat? Reserveer jouw plekje.</p>
           </motion.div>
           <div className="overflow-hidden shrink-0" style={{ height: "95px" }}>
-            <img src={`${import.meta.env.BASE_URL}images/studio-luna-logo.png`} alt="Studio Luna" className="h-32 w-auto" />
+            <img src={`${import.meta.env.BASE_URL}images/studio-luna-logo.png`} alt="Studio Luna" className="h-32 w-auto" loading="lazy" />
           </div>
         </div>
 

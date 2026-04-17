@@ -8,7 +8,7 @@ import {
   Plus, Trash2, PlusCircle, MinusCircle, ChevronDown, ChevronUp, X,
   BookOpen, Users, ClipboardList, Check, CalendarDays, Baby, Share2,
   Sparkles, MessageCircle, MapPin, Clock, Mail, Palette, Tag, Receipt, Edit2, Save,
-  Copy, BellRing, UserPlus, CheckCircle2, Circle, RefreshCw, FileText, Feather, Eye, EyeOff, ArrowLeft,
+  Copy, BellRing, UserPlus, CheckCircle2, Circle, RefreshCw, FileText, Feather, Eye, EyeOff, ArrowLeft, Star,
 } from "lucide-react";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -2086,6 +2086,7 @@ type PaginaTeksten = {
   aanbod_yoga_heading: string;
   aanbod_specials_heading: string; aanbod_specials_items: string;
   aanbod_specials_bundel: string; aanbod_verzekering_tekst: string;
+  cta_url: string; cta_label: string;
 };
 
 const DEFAULT_PT: PaginaTeksten = {
@@ -2127,6 +2128,8 @@ const DEFAULT_PT: PaginaTeksten = {
   aanbod_specials_items: "Bevallings Yoga Workshop | Focus & Vertrouwen · 120 min | € 49,-\nPartner Workshop | Verbinding & Support · 120 min | € 79,-\nMama Spa | Ultiem ontspannen · 120 min | € 49,-",
   aanbod_specials_bundel: "De Geboorte-Bundel | Alle drie workshops · meest complete voorbereiding | bespaar € 22,- | € 155,-",
   aanbod_verzekering_tekst: "Veel verzekeraars vergoeden (een deel van) geboortevoorbereiding vanuit de aanvullende verzekering.",
+  cta_url: "/rooster",
+  cta_label: "Reserveer jouw plekje",
 };
 
 function InhoudTab() {
@@ -2196,6 +2199,31 @@ function InhoudTab() {
           {saveError}
         </div>
       )}
+      {/* CTA-KNOP INSTELLINGEN */}
+      <div className="bg-card border border-border/30 rounded-3xl p-5 space-y-4">
+        <div>
+          <h3 className="font-display text-lg font-medium">Reserveerknop</h3>
+          <p className="text-xs text-foreground/50 mt-1">De grote actieknop bovenaan de startpagina en onderaan elke pagina.</p>
+        </div>
+        {field("Knoptekst", "cta_label", false, "Bijv. 'Reserveer jouw plekje' of 'Plan een proefles'")}
+        <div>
+          <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Bestemming (URL)</label>
+          <p className="text-xs text-foreground/40 mb-1.5">Vul een interne pagina in (/rooster, /aanbod, /tarieven) of een externe URL (https://…)</p>
+          <input value={teksten.cta_url} onChange={(e) => setTeksten({ ...teksten, cta_url: e.target.value })}
+            placeholder="/rooster"
+            className="w-full bg-secondary border border-border/40 rounded-2xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+          <div className="flex flex-wrap gap-2 mt-2">
+            {["/rooster", "/aanbod", "/tarieven"].map(url => (
+              <button key={url} type="button" onClick={() => setTeksten({ ...teksten, cta_url: url })}
+                className={`text-xs px-3 py-1 rounded-xl border transition-colors ${teksten.cta_url === url ? "bg-primary text-white border-primary" : "border-border/40 text-foreground/60 hover:border-primary/50"}`}>
+                {url}
+              </button>
+            ))}
+          </div>
+        </div>
+        {saveBtn("cta", { cta_url: teksten.cta_url, cta_label: teksten.cta_label })}
+      </div>
+
       {/* STUDIO LUNA PAGINA — HERO */}
       <div className="bg-card border border-border/30 rounded-3xl p-5 space-y-4">
         <h3 className="font-display text-lg font-medium">Studio Luna pagina — Hero</h3>
@@ -2819,8 +2847,172 @@ function BlogBeheerTab() {
   );
 }
 
+// ─── REVIEWS BEHEER ──────────────────────────────────────────────────────────
+type Review = { id: string; name: string; role: string; text: string; stars: number };
+type ReviewsConfig = { visible: boolean; items: Review[] };
+
+function ReviewsBeheerTab() {
+  const [config, setConfig] = useState<ReviewsConfig>({ visible: false, items: [] });
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [form, setForm] = useState({ name: "", role: "", text: "", stars: 5 });
+  const [editId, setEditId] = useState<string | null>(null);
+  const [editForm, setEditForm] = useState<Review | null>(null);
+
+  const load = () => {
+    setLoading(true);
+    apiFetch("/admin/reviews").then(async r => {
+      if (r.ok) setConfig(await r.json());
+    }).finally(() => setLoading(false));
+  };
+
+  useEffect(load, []);
+
+  const toggleVisible = async () => {
+    setSaving(true);
+    const res = await apiFetch("/admin/reviews/visible", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ visible: !config.visible }),
+    });
+    if (res.ok) setConfig(c => ({ ...c, visible: !c.visible }));
+    setSaving(false);
+  };
+
+  const addReview = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSaving(true);
+    const res = await apiFetch("/admin/reviews", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(form),
+    });
+    if (res.ok) { load(); setForm({ name: "", role: "", text: "", stars: 5 }); }
+    setSaving(false);
+  };
+
+  const saveEdit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editId || !editForm) return;
+    setSaving(true);
+    const res = await apiFetch(`/admin/reviews/${editId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(editForm),
+    });
+    if (res.ok) { load(); setEditId(null); setEditForm(null); }
+    setSaving(false);
+  };
+
+  const deleteReview = async (id: string) => {
+    if (!confirm("Review verwijderen?")) return;
+    await apiFetch(`/admin/reviews/${id}`, { method: "DELETE" });
+    load();
+  };
+
+  const iBase = "w-full bg-secondary border border-border/40 rounded-2xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30";
+  const taBase = `${iBase} resize-none`;
+
+  if (loading) return <p className="text-sm text-foreground/50 py-8 text-center">Laden…</p>;
+
+  return (
+    <div className="space-y-6">
+      {/* Zichtbaarheid toggle */}
+      <div className="bg-card border border-border/30 rounded-3xl p-5">
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <h3 className="font-display text-lg font-medium">Reviews op de website</h3>
+            <p className="text-xs text-foreground/50 mt-1">
+              {config.visible ? "Reviews zijn zichtbaar voor bezoekers." : "Reviews zijn verborgen — alleen jij ziet ze als admin."}
+            </p>
+          </div>
+          <button
+            onClick={toggleVisible}
+            disabled={saving}
+            className={`px-5 py-2.5 rounded-2xl font-semibold text-sm transition-colors ${config.visible ? "bg-primary text-white" : "bg-secondary border border-border/40 text-foreground/70 hover:bg-primary/10"}`}
+          >
+            {config.visible ? "Aan — zet uit" : "Uit — zet aan"}
+          </button>
+        </div>
+      </div>
+
+      {/* Bestaande reviews */}
+      {config.items.length > 0 && (
+        <div className="bg-card border border-border/30 rounded-3xl p-5 space-y-4">
+          <h3 className="font-display text-lg font-medium">Geplaatste reviews ({config.items.length})</h3>
+          {config.items.map((review) => (
+            <div key={review.id} className="border border-border/20 rounded-2xl p-4 space-y-2">
+              {editId === review.id && editForm ? (
+                <form onSubmit={saveEdit} className="space-y-3">
+                  <input value={editForm.name} onChange={e => setEditForm({...editForm, name: e.target.value})} placeholder="Naam" className={iBase} required />
+                  <input value={editForm.role} onChange={e => setEditForm({...editForm, role: e.target.value})} placeholder="Rol (bijv. deelneemster zwangerschapsyoga)" className={iBase} />
+                  <textarea rows={3} value={editForm.text} onChange={e => setEditForm({...editForm, text: e.target.value})} placeholder="Reviewtekst" className={taBase} required />
+                  <div className="flex items-center gap-2">
+                    <label className="text-xs text-foreground/60">Sterren:</label>
+                    {[1,2,3,4,5].map(s => (
+                      <button key={s} type="button" onClick={() => setEditForm({...editForm, stars: s})}
+                        className={`text-lg ${s <= editForm.stars ? "text-primary" : "text-foreground/20"}`}>★</button>
+                    ))}
+                  </div>
+                  <div className="flex gap-2">
+                    <button type="submit" disabled={saving} className="flex-1 bg-primary text-white py-2 rounded-2xl text-sm font-semibold">Opslaan</button>
+                    <button type="button" onClick={() => { setEditId(null); setEditForm(null); }} className="flex-1 bg-secondary py-2 rounded-2xl text-sm font-semibold">Annuleer</button>
+                  </div>
+                </form>
+              ) : (
+                <>
+                  <div className="flex justify-between items-start gap-2">
+                    <div>
+                      <p className="text-sm font-semibold">{review.name}</p>
+                      {review.role && <p className="text-xs text-foreground/50">{review.role}</p>}
+                    </div>
+                    <div className="flex gap-1.5 shrink-0">
+                      <button onClick={() => { setEditId(review.id); setEditForm({...review}); }}
+                        className="text-xs text-foreground/50 hover:text-primary px-3 py-1 rounded-xl border border-border/30">Bewerken</button>
+                      <button onClick={() => deleteReview(review.id)}
+                        className="text-xs text-red-500/70 hover:text-red-600 px-3 py-1 rounded-xl border border-red-200/40">Verwijder</button>
+                    </div>
+                  </div>
+                  <div className="flex gap-0.5">
+                    {Array.from({length:5}).map((_,s) => (
+                      <span key={s} className={`text-sm ${s < review.stars ? "text-primary" : "text-foreground/15"}`}>★</span>
+                    ))}
+                  </div>
+                  <p className="text-sm text-foreground/65 leading-relaxed">"{review.text}"</p>
+                </>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Nieuwe review toevoegen */}
+      <div className="bg-card border border-border/30 rounded-3xl p-5 space-y-4">
+        <h3 className="font-display text-lg font-medium">Review toevoegen</h3>
+        <form onSubmit={addReview} className="space-y-3">
+          <input value={form.name} onChange={e => setForm({...form, name: e.target.value})} placeholder="Naam" className={iBase} required />
+          <input value={form.role} onChange={e => setForm({...form, role: e.target.value})} placeholder="Rol (bijv. deelneemster zwangerschapsyoga)" className={iBase} />
+          <textarea rows={3} value={form.text} onChange={e => setForm({...form, text: e.target.value})} placeholder="Reviewtekst (schrijf in 1e persoon, bijv. &quot;De lessen zijn...&quot;)" className={taBase} required />
+          <div className="flex items-center gap-2">
+            <label className="text-xs text-foreground/60 font-medium">Sterren:</label>
+            {[1,2,3,4,5].map(s => (
+              <button key={s} type="button" onClick={() => setForm({...form, stars: s})}
+                className={`text-lg transition-colors ${s <= form.stars ? "text-primary" : "text-foreground/20"}`}>★</button>
+            ))}
+          </div>
+          <button type="submit" disabled={saving}
+            className="w-full bg-primary text-white py-3 rounded-2xl font-semibold text-sm hover:bg-primary/90 disabled:opacity-60 transition-colors">
+            <Save className="w-3.5 h-3.5 inline mr-2" />
+            Review toevoegen
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
 // ─── MAIN ADMIN PAGE ─────────────────────────────────────────────────────────
-type AdminTab = "leden" | "lessen" | "lestypes" | "tarieven" | "aanvragen" | "reserveringen" | "mededelingen" | "village" | "email" | "inhoud" | "blog";
+type AdminTab = "leden" | "lessen" | "lestypes" | "tarieven" | "aanvragen" | "reserveringen" | "mededelingen" | "village" | "email" | "inhoud" | "blog" | "reviews";
 
 export default function Admin() {
   const { user, loading, login } = useAuth();
@@ -2903,6 +3095,7 @@ export default function Admin() {
     { key: "email", label: "E-mail", icon: <Mail className="w-4 h-4" /> },
     { key: "inhoud", label: "Inhoud", icon: <FileText className="w-4 h-4" /> },
     { key: "blog", label: "Blog", icon: <Feather className="w-4 h-4" /> },
+    { key: "reviews", label: "Reviews", icon: <Star className="w-4 h-4" /> },
   ];
 
   return (
@@ -2940,6 +3133,7 @@ export default function Admin() {
               {tab === "email" && <EmailInstellingenTab />}
               {tab === "inhoud" && <InhoudTab />}
               {tab === "blog" && <BlogBeheerTab />}
+              {tab === "reviews" && <ReviewsBeheerTab />}
             </motion.div>
           </AnimatePresence>
         </div>

@@ -2,13 +2,20 @@ import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { BottomNav } from "@/components/bottom-nav";
 import { SeoFooter } from "@/components/seo-footer";
+import { CtaBlock } from "@/components/cta-block";
 import { motion } from "framer-motion";
-import { MapPin, Heart, ArrowRight, Mail, Phone, Instagram } from "lucide-react";
+import { MapPin, ArrowRight, Mail, Phone, Instagram, Star, Calendar, BookOpen } from "lucide-react";
 import { IMAGES } from "@/lib/images";
+import { useAuth } from "@/hooks/use-auth";
+
+type Review = { id: string; name: string; role: string; text: string; stars: number };
+type ReviewsConfig = { visible: boolean; items: Review[] };
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 const DEFAULT_TEKSTEN = {
+  cta_url: "/rooster",
+  cta_label: "Reserveer jouw plekje",
   home_hero: "It takes a village.\nStudio Luna is jouw mama tribe.",
   home_missie_heading: "Een plek om\nte landen.",
   home_missie_tekst: "Het moederschap hoef je niet alleen te doen. De missie van Studio Luna is het faciliteren van een community voor alle vrouwen in Nieuwerkerk aan den IJssel en omgeving, van zwangerschap tot ver daarna. Een veilige haven om fysiek op te laden, mentaal tot rust te komen en bovenal in verbinding te staan met andere moeders in dezelfde fase.",
@@ -35,8 +42,10 @@ const fadeUp = {
 
 export default function StudioLuna() {
   const [, navigate] = useLocation();
+  const { user } = useAuth();
   const [teksten, setTeksten] = useState(DEFAULT_TEKSTEN);
   const [photosReady, setPhotosReady] = useState(false);
+  const [reviewsConfig, setReviewsConfig] = useState<ReviewsConfig | null>(null);
 
   useEffect(() => {
     fetch(`${BASE}/api/pagina-teksten`)
@@ -44,6 +53,14 @@ export default function StudioLuna() {
       .then((d) => { if (d) setTeksten((prev) => ({ ...prev, ...d })); })
       .catch(() => {})
       .finally(() => setPhotosReady(true));
+
+    const token = localStorage.getItem("sl_token");
+    const reviewsUrl = token ? `${BASE}/api/admin/reviews` : `${BASE}/api/reviews`;
+    const reviewsHeaders: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
+    fetch(reviewsUrl, { headers: reviewsHeaders })
+      .then((r) => r.ok ? r.json() : null)
+      .then((d) => { if (d) setReviewsConfig(d); })
+      .catch(() => {});
   }, []);
 
   return (
@@ -92,10 +109,10 @@ export default function StudioLuna() {
                 className="flex flex-wrap gap-3"
               >
                 <button
-                  onClick={() => navigate("/rooster")}
+                  onClick={() => navigate(teksten.cta_url)}
                   className="inline-flex items-center gap-2 bg-white text-foreground px-7 py-3.5 rounded-2xl font-semibold text-sm hover:bg-white/92 shadow-md group"
                 >
-                  Reserveer jouw plekje
+                  {teksten.cta_label}
                   <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
                 </button>
                 <button
@@ -202,6 +219,81 @@ export default function StudioLuna() {
           </div>
         </section>
 
+        {/* ── SNELLE LINKS — interne navigatie naar rooster / tarieven / aanbod ── */}
+        <section className="px-7 md:px-14 lg:px-18 py-6 md:py-10">
+          <motion.div
+            variants={fadeUp} initial="hidden" whileInView="show"
+            viewport={{ once: true, margin: "-40px" }} custom={0}
+            className="flex flex-wrap gap-3"
+          >
+            <button
+              onClick={() => navigate("/rooster")}
+              className="inline-flex items-center gap-2 border border-primary/25 text-primary/80 hover:bg-primary/5 px-5 py-2.5 rounded-2xl text-sm font-semibold transition-colors"
+            >
+              <Calendar className="w-3.5 h-3.5" />
+              Bekijk het rooster
+            </button>
+            <button
+              onClick={() => navigate("/tarieven")}
+              className="inline-flex items-center gap-2 border border-primary/25 text-primary/80 hover:bg-primary/5 px-5 py-2.5 rounded-2xl text-sm font-semibold transition-colors"
+            >
+              Bekijk tarieven
+            </button>
+            <button
+              onClick={() => navigate("/aanbod")}
+              className="inline-flex items-center gap-2 border border-primary/25 text-primary/80 hover:bg-primary/5 px-5 py-2.5 rounded-2xl text-sm font-semibold transition-colors"
+            >
+              <BookOpen className="w-3.5 h-3.5" />
+              Bekijk aanbod
+            </button>
+          </motion.div>
+        </section>
+
+        {/* ── REVIEWS — zichtbaar als admin ze heeft aangezet (of admin bekijkt pagina) ── */}
+        {reviewsConfig && (reviewsConfig.visible || user?.isAdmin) && reviewsConfig.items.length > 0 && (
+          <section className="px-7 md:px-14 lg:px-18 py-16 md:py-24">
+            {!reviewsConfig.visible && user?.isAdmin && (
+              <p className="text-xs text-center text-amber-700/80 bg-amber-50 border border-amber-200 rounded-2xl px-4 py-2 mb-8">
+                Reviews staan uit — alleen zichtbaar voor jou als admin
+              </p>
+            )}
+            <motion.div
+              variants={fadeUp} initial="hidden" whileInView="show"
+              viewport={{ once: true, margin: "-60px" }} custom={0}
+              className="mb-12"
+            >
+              <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary/60 mb-5 flex items-center gap-3">
+                <span className="inline-block w-8 h-px bg-primary/40" />
+                Ervaringen
+              </p>
+              <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground leading-[1.15]">
+                Wat vrouwen zeggen
+              </h2>
+            </motion.div>
+            <div className="grid md:grid-cols-3 gap-6">
+              {reviewsConfig.items.map((review, i) => (
+                <motion.div
+                  key={review.id}
+                  variants={fadeUp} initial="hidden" whileInView="show"
+                  viewport={{ once: true, margin: "-40px" }} custom={i * 0.1}
+                  className="bg-secondary/30 rounded-2xl p-7 flex flex-col gap-4"
+                >
+                  <div className="flex gap-1">
+                    {Array.from({ length: 5 }).map((_, s) => (
+                      <Star key={s} className={`w-3.5 h-3.5 ${s < review.stars ? "text-primary fill-primary" : "text-foreground/20"}`} />
+                    ))}
+                  </div>
+                  <p className="text-[15px] text-foreground/70 leading-[1.85] flex-1">"{review.text}"</p>
+                  <div>
+                    <p className="text-sm font-semibold text-foreground">{review.name}</p>
+                    {review.role && <p className="text-xs text-foreground/45 mt-0.5">{review.role}</p>}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </section>
+        )}
+
         {/* ── LOCATIE & CONTACT — plain tekst, geen kaarten ── */}
         <section className="relative px-7 md:px-14 lg:px-18 py-20 md:py-28 mb-4">
           <div className="absolute inset-0 bg-gradient-to-b from-background via-secondary/25 to-background pointer-events-none" />
@@ -264,6 +356,7 @@ export default function StudioLuna() {
           </div>
         </section>
 
+        <CtaBlock ctaUrl={teksten.cta_url} ctaLabel={teksten.cta_label} />
         <SeoFooter />
         <BottomNav />
       </div>

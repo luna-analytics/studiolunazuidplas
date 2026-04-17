@@ -15,6 +15,7 @@ export default function Profile() {
                 src={`${import.meta.env.BASE_URL}images/profile-avatar.png`} 
                 alt="Profile Avatar" 
                 className="w-full h-full rounded-full object-cover border-4 border-background shadow-lg relative z-10"
+                loading="lazy"
               />
             </div>
             
