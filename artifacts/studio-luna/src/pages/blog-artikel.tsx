@@ -82,6 +82,7 @@ export default function BlogArtikel() {
     );
   }
 
+  const isHtml = (s: string) => /^<[a-z][\s\S]*>/i.test(s.trimStart());
   const paragraphs = post.body.split(/\n\n+/).map((p) => p.trim()).filter(Boolean);
 
   return (
@@ -129,12 +130,15 @@ export default function BlogArtikel() {
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.1 }}
           className="px-6 md:px-12 pb-12"
         >
-          <div className="prose-luna space-y-5">
-            {paragraphs.map((para, i) => (
-              <p key={i} className="text-[15px] text-foreground/80 leading-[1.85] font-light">
-                {para}
-              </p>
-            ))}
+          <div className="blog-content">
+            {isHtml(post.body)
+              ? <div dangerouslySetInnerHTML={{ __html: post.body }} />
+              : paragraphs.map((para, i) => (
+                  <p key={i} className="text-[15px] text-foreground/80 leading-[1.85] font-light">
+                    {para}
+                  </p>
+                ))
+            }
           </div>
 
           {/* Terug-knop onderaan */}

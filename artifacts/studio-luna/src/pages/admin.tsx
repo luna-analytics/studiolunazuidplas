@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useAuth, getToken } from "@/hooks/use-auth";
 import { useLocation } from "wouter";
 import { BottomNav } from "@/components/bottom-nav";
+import { BlogEditor } from "@/components/blog-editor";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Plus, Trash2, PlusCircle, MinusCircle, ChevronDown, ChevronUp, X,
@@ -2696,8 +2697,10 @@ function BlogBeheerTab() {
           {/* Tekst */}
           <div>
             <label className="block text-xs font-semibold text-foreground/50 uppercase tracking-wider mb-1.5">Artikel tekst</label>
-            <textarea className={`${inputCls} leading-relaxed`} rows={14} placeholder={"Schrijf hier je artikel...\n\nGebruik een lege regel voor een nieuwe alinea."} value={editing.body || ""} onChange={(e) => setEditing((p) => p ? { ...p, body: e.target.value } : p)} />
-            <p className="text-xs text-foreground/35 mt-1">Lege regels worden automatisch alinea's op de website.</p>
+            <BlogEditor
+              value={editing.body || ""}
+              onChange={(html) => setEditing((p) => p ? { ...p, body: html } : p)}
+            />
           </div>
 
           {/* Publiceren */}
