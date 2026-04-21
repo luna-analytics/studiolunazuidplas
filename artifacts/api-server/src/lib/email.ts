@@ -275,7 +275,7 @@ export async function sendCustomEmail(params: {
     .join("");
 
   const inner = `
-    ${HEADER("Studio Luna")}
+    ${HEADER("Zwangerschapsyoga · Nieuwerkerk a/d IJssel")}
     <tr>
       <td style="padding:40px 45px;">
         <h2 style="margin:0 0 24px; font-family:'Playfair Display', serif; font-size:22px; color:#3A4F41; font-weight:normal;">Lieve ${toName},</h2>

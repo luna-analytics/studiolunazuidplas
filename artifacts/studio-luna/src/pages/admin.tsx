@@ -831,7 +831,7 @@ function AanvragenTab() {
       name: req.name,
       email: req.email,
       subject: `Studio Luna — Jouw aanvraag ${pkgLabel(req.package)}`,
-      body: `Bedankt voor je aanvraag voor een ${pkgLabel(req.package)}!\n\n\n\nMet warme groet,\nLuna`,
+      body: `Bedankt voor je aanvraag voor een ${pkgLabel(req.package)}!\n\n\n\nMet warme groet,\nStudio Luna`,
     });
   };
 
@@ -1920,7 +1920,7 @@ function ReserveeringenTab() {
       name: r.name,
       email: r.email,
       subject: `Bevestiging jouw plek — ${r.classTitle}`,
-      body: `Bedankt voor je aanmelding! Jouw plek is bevestigd voor:\n\n${r.classTitle}\n${dateLabel} · ${r.time} uur\nHuize Mooisteen, Pr. Beatrixstraat 2, Nieuwerkerk a/d IJssel\n\n\n\nMet warme groet,\nLuna`,
+      body: `Bedankt voor je aanmelding! Jouw plek is bevestigd voor:\n\n${r.classTitle}\n${dateLabel} · ${r.time} uur\nHuize Mooisteen, Pr. Beatrixstraat 2, Nieuwerkerk a/d IJssel\n\n\n\nMet warme groet,\nStudio Luna`,
     });
   };
 
