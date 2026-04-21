@@ -60,7 +60,7 @@ export function BottomNav() {
             onMouseLeave={cancelLongPress} onTouchStart={startLongPress}
             onTouchEnd={cancelLongPress} onTouchCancel={cancelLongPress}>
             {/* Logo */}
-            <img src="/images/studio-luna-logo.png" alt="Studio Luna" className="h-9 w-auto shrink-0" />
+            <img src={`/images/studio-luna-logo.png?v=5`} alt="Studio Luna" className="h-10 w-auto shrink-0" />
             {/* Naam */}
             <div className="flex flex-col leading-none">
               <span className="font-display text-[15px] font-medium text-foreground tracking-wide">Studio Luna</span>
