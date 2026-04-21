@@ -14,7 +14,7 @@ import { requireAuth } from "../middlewares/auth.js";
 import { readClassTypes } from "../lib/class-types.js";
 import { readTarieven } from "../lib/tarieven.js";
 import { createReservering, readReserveringen } from "../lib/reserveringen.js";
-import { sendReservationConfirmation } from "../lib/email.js";
+import { sendAdminNotification } from "../lib/email.js";
 import { readClasses } from "../lib/classes.js";
 import { getAllBookings } from "../lib/bookings.js";
 import { readPaginaTeksten } from "../lib/pagina-teksten.js";
@@ -101,7 +101,12 @@ router.post("/reserveer", async (req: any, res: any) => {
       }
     }
     const reservering = await createReservering({ name, email, classId, classTitle, dateStr, time, type });
-    sendReservationConfirmation({ toEmail: email, toName: name, classTitle, dateStr, time, type }).catch(console.error);
+    sendAdminNotification({
+      type: "reservering",
+      name,
+      email,
+      details: `Les: ${classTitle}\nDatum: ${dateStr}\nTijd: ${time}`,
+    }).catch(console.error);
     res.json(reservering);
   } catch (err: any) {
     res.status(500).json({ error: err.message });
@@ -129,6 +134,12 @@ router.post("/rittenkaart-request", async (req: any, res: any) => {
   }
   try {
     const request = await createRequest({ name, email, package: pkg as any });
+    sendAdminNotification({
+      type: "aanvraag",
+      name,
+      email,
+      details: `Pakket: ${pkg}`,
+    }).catch(console.error);
     res.json(request);
   } catch (err: any) {
     res.status(400).json({ error: err.message });

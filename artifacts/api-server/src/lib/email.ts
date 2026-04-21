@@ -205,6 +205,94 @@ export async function sendReminderEmail(params: {
   }
 }
 
+// ─── ADMIN NOTIFICATIE (bij nieuwe reservering / boeking / aanvraag) ─────────
+export async function sendAdminNotification(params: {
+  type: "reservering" | "boeking" | "aanvraag";
+  name: string;
+  email: string;
+  details: string;
+}) {
+  const { type, name, email, details } = params;
+  const labels = { reservering: "Nieuwe reservering", boeking: "Nieuwe boeking", aanvraag: "Nieuwe aanvraag" };
+  const label = labels[type];
+
+  const inner = `
+    ${HEADER(label)}
+    <tr>
+      <td style="padding:40px 45px;">
+        <h2 style="margin:0 0 20px; font-family:'Playfair Display', serif; font-size:22px; color:#3A4F41; font-weight:normal;">Er is een ${type} binnengekomen!</h2>
+
+        <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#F8F7F5; border-radius:8px; margin-bottom:20px;">
+          <tr><td style="padding:22px 25px;">
+            <p style="margin:0 0 10px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:2px; color:#8FA89B;">Klant</p>
+            <p style="margin:0 0 4px; font-size:16px; color:#3A4F41; font-weight:600;">${name}</p>
+            <p style="margin:0; font-size:14px; color:#8FA89B;">${email}</p>
+          </td></tr>
+        </table>
+
+        <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#F8F7F5; border-radius:8px; margin-bottom:25px;">
+          <tr><td style="padding:22px 25px;">
+            <p style="margin:0 0 10px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:2px; color:#8FA89B;">Details</p>
+            <p style="margin:0; font-size:14px; line-height:1.8; color:#3A4F41;">${details.replace(/\n/g, "<br/>")}</p>
+          </td></tr>
+        </table>
+
+        <div style="border-left:3px solid #3A4F41; background-color:#FDFBF9; padding:15px 20px;">
+          <p style="margin:0; font-size:14px; line-height:1.6; color:#3A4F41;">
+            <strong style="color:#3A4F41; text-transform:uppercase; font-size:11px; letter-spacing:1px;">Actie vereist</strong><br>
+            Log in op je admin-omgeving om de bevestigingsmail zelf samen te stellen en te verzenden.
+          </p>
+        </div>
+      </td>
+    </tr>
+    ${FOOTER}
+  `;
+
+  try {
+    await resend.emails.send({
+      from: FROM,
+      to: "info@studiolunazuidplas.nl",
+      subject: `[Studio Luna] ${label} — ${name}`,
+      html: WRAPPER(inner),
+    });
+  } catch (err) {
+    console.error("[email] Fout bij verzenden admin-notificatie:", err);
+  }
+}
+
+// ─── AANGEPASTE BEVESTIGINGSMAIL (door admin zelf geschreven) ────────────────
+export async function sendCustomEmail(params: {
+  toEmail: string;
+  toName: string;
+  subject: string;
+  body: string;
+}) {
+  const { toEmail, toName, subject, body } = params;
+
+  const bodyHtml = body
+    .split("\n\n")
+    .map((p) => `<p style="margin:0 0 16px; font-size:15px; line-height:1.8; color:#3A4F41; font-weight:300;">${p.replace(/\n/g, "<br/>")}</p>`)
+    .join("");
+
+  const inner = `
+    ${HEADER("Studio Luna")}
+    <tr>
+      <td style="padding:40px 45px;">
+        <h2 style="margin:0 0 24px; font-family:'Playfair Display', serif; font-size:22px; color:#3A4F41; font-weight:normal;">Lieve ${toName},</h2>
+        ${bodyHtml}
+      </td>
+    </tr>
+    ${FOOTER}
+  `;
+
+  await resend.emails.send({
+    from: FROM,
+    to: toEmail,
+    subject,
+    html: WRAPPER(inner),
+  });
+}
+
 // ─── BOOKING BEVESTIGING (via rittenkaart / proefles / losse les flow) ────────
 export async function sendBookingConfirmation(params: {
   toEmail: string;

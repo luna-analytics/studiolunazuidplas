@@ -3,7 +3,7 @@ import { requireAuth } from "../middlewares/auth.js";
 import { getMemberBookings, getMemberBookingCount, createBooking, deleteBooking, getAllBookings } from "../lib/bookings.js";
 import { findMemberById, updateMemberCredits } from "../lib/users.js";
 import { readClasses } from "../lib/classes.js";
-import { sendBookingConfirmation } from "../lib/email.js";
+import { sendAdminNotification } from "../lib/email.js";
 
 const router = Router();
 
@@ -50,17 +50,12 @@ router.post("/bookings", requireAuth, async (req, res) => {
     const updated = hasCredits ? await updateMemberCredits(userId, -1) : member;
     const credits = updated.credits;
 
-    sendBookingConfirmation({
-      toEmail: member.email,
-      toName: member.name,
-      className,
-      date,
-      time,
-      type,
-      isProefles,
-      isLosseLes,
-      creditsLeft: credits,
-    });
+    sendAdminNotification({
+      type: "boeking",
+      name: member.name,
+      email: member.email,
+      details: `Les: ${className}\nDatum: ${date}\nTijd: ${time}\nType: ${isProefles ? "Proefles" : isLosseLes ? "Losse les" : "Rittenkaart"}`,
+    }).catch(console.error);
 
     res.json({ booking, credits });
   } catch (err: any) {

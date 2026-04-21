@@ -711,6 +711,90 @@ function LestypesTab() {
   );
 }
 
+// ─── E-MAIL COMPOSE MODAL ────────────────────────────────────────────────────
+function EmailComposeModal({ defaultTo, defaultToName, defaultSubject, defaultBody, onClose }: {
+  defaultTo: string;
+  defaultToName: string;
+  defaultSubject: string;
+  defaultBody: string;
+  onClose: () => void;
+}) {
+  const [to, setTo] = useState(defaultTo);
+  const [subject, setSubject] = useState(defaultSubject);
+  const [body, setBody] = useState(defaultBody);
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [error, setError] = useState("");
+
+  const send = async () => {
+    setSending(true);
+    setError("");
+    try {
+      const res = await apiFetch("/admin/send-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ to, toName: defaultToName, subject, body }),
+      });
+      if (res.ok) {
+        setSent(true);
+        setTimeout(onClose, 1800);
+      } else {
+        const data = await res.json();
+        setError(data.error ?? "Er ging iets mis bij het verzenden.");
+      }
+    } catch {
+      setError("Kan geen verbinding maken. Probeer opnieuw.");
+    }
+    setSending(false);
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/50 p-0 md:p-4">
+      <div className="bg-background rounded-t-3xl md:rounded-3xl shadow-xl w-full max-w-xl max-h-[90vh] overflow-y-auto">
+        <div className="px-6 py-5 border-b border-border/20 flex items-center justify-between">
+          <div>
+            <h3 className="font-display text-lg font-medium">E-mail samenstellen</h3>
+            <p className="text-xs text-foreground/50 mt-0.5">Wordt verstuurd via Studio Luna</p>
+          </div>
+          <button onClick={onClose} className="p-2 text-foreground/40 hover:text-foreground transition-colors rounded-xl hover:bg-secondary">
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+        <div className="px-6 py-5 space-y-4">
+          <div>
+            <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Aan</label>
+            <input value={to} onChange={(e) => setTo(e.target.value)} type="email"
+              className="w-full bg-secondary border border-border/40 rounded-2xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+          </div>
+          <div>
+            <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Onderwerp</label>
+            <input value={subject} onChange={(e) => setSubject(e.target.value)}
+              className="w-full bg-secondary border border-border/40 rounded-2xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+          </div>
+          <div>
+            <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Bericht</label>
+            <p className="text-xs text-foreground/40 mb-1.5">Schrijf het bericht zoals je dat wilt. Dubbele enters worden nieuwe alinea's.</p>
+            <textarea value={body} onChange={(e) => setBody(e.target.value)} rows={10}
+              className="w-full bg-secondary border border-border/40 rounded-2xl px-3 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 resize-y font-sans leading-relaxed" />
+          </div>
+          {error && <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-2xl px-4 py-2">{error}</p>}
+          {sent && <p className="text-sm text-green-700 bg-green-50 border border-green-200 rounded-2xl px-4 py-2">✓ E-mail verstuurd!</p>}
+        </div>
+        <div className="px-6 pb-6 flex gap-3 justify-end border-t border-border/10 pt-4">
+          <button onClick={onClose} className="px-4 py-2.5 text-sm font-semibold text-foreground/60 hover:text-foreground transition-colors rounded-2xl hover:bg-secondary">
+            Annuleren
+          </button>
+          <button onClick={send} disabled={sending || sent}
+            className="flex items-center gap-2 bg-primary text-primary-foreground px-5 py-2.5 rounded-2xl font-semibold text-sm hover:bg-primary/90 transition-colors disabled:opacity-60">
+            {sent ? <Check className="w-4 h-4" /> : <Mail className="w-4 h-4" />}
+            {sent ? "Verstuurd!" : sending ? "Verzenden…" : "Verzenden"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── AANVRAGEN TAB ───────────────────────────────────────────────────────────
 function AanvragenTab() {
   const [requests, setRequests] = useState<RRequest[]>([]);
@@ -738,7 +822,18 @@ function AanvragenTab() {
     setRequests((r) => r.filter((x) => x.id !== id));
   };
 
+  const [composeFor, setComposeFor] = useState<{ name: string; email: string; subject: string; body: string } | null>(null);
+
   const pkgLabel = (pkg: string) => pkg === "5-rittenkaart" ? "5-rittenkaart (€ 105,-)" : pkg === "10-rittenkaart" ? "10-rittenkaart (€ 195,-)" : "Losse les (€ 22,50)";
+
+  const openCompose = (req: RRequest) => {
+    setComposeFor({
+      name: req.name,
+      email: req.email,
+      subject: `Studio Luna — Jouw aanvraag ${pkgLabel(req.package)}`,
+      body: `Bedankt voor je aanvraag voor een ${pkgLabel(req.package)}!\n\n\n\nMet warme groet,\nStudio Luna`,
+    });
+  };
 
   const open = requests.filter((r) => !r.done);
   const done = requests.filter((r) => r.done);
@@ -775,6 +870,10 @@ function AanvragenTab() {
                     <span className="text-xs font-semibold bg-accent/15 text-foreground px-2.5 py-0.5 rounded-full mt-1.5 inline-block">{pkgLabel(req.package)}</span>
                   </div>
                   <div className="flex flex-col items-end gap-2 shrink-0">
+                    <button onClick={() => openCompose(req)}
+                      className="flex items-center gap-1.5 bg-secondary text-foreground/70 px-3 py-1.5 rounded-xl text-xs font-semibold hover:bg-border/30 transition-colors">
+                      <Mail className="w-3.5 h-3.5" /> Stuur e-mail
+                    </button>
                     <button onClick={() => markDone(req.id)}
                       className="flex items-center gap-1.5 bg-primary/10 text-primary px-3 py-1.5 rounded-xl text-xs font-semibold hover:bg-primary/20 transition-colors">
                       <Check className="w-3.5 h-3.5" /> Afhandelen
@@ -830,6 +929,16 @@ function AanvragenTab() {
             ))}
           </div>
         </div>
+      )}
+
+      {composeFor && (
+        <EmailComposeModal
+          defaultTo={composeFor.email}
+          defaultToName={composeFor.name}
+          defaultSubject={composeFor.subject}
+          defaultBody={composeFor.body}
+          onClose={() => setComposeFor(null)}
+        />
       )}
     </div>
   );
@@ -1751,7 +1860,8 @@ function ReserveeringenTab() {
   const [loading, setLoading] = useState(true);
   const [classes, setClasses] = useState<StudioClass[]>([]);
   const [showInboeken, setShowInboeken] = useState(false);
-  const [inboekForm, setInboekForm] = useState({ name: "", email: "", classId: "", dateStr: "", stuurEmail: true, heelReeks: false });
+  const [inboekForm, setInboekForm] = useState({ name: "", email: "", classId: "", dateStr: "", heelReeks: false });
+  const [composeFor, setComposeFor] = useState<{ name: string; email: string; subject: string; body: string } | null>(null);
   const [inboekLoading, setInboekLoading] = useState(false);
   const [inboekError, setInboekError] = useState("");
   const [inboekVolWaarschuwing, setInboekVolWaarschuwing] = useState(false);
@@ -1803,6 +1913,17 @@ function ReserveeringenTab() {
     setTimeout(() => setCopied(null), 2000);
   };
 
+  const openCompose = (r: Reservering) => {
+    const [y, m, d] = r.dateStr.split("-").map(Number);
+    const dateLabel = new Date(y, m - 1, d).toLocaleDateString("nl-NL", { weekday: "long", day: "numeric", month: "long" });
+    setComposeFor({
+      name: r.name,
+      email: r.email,
+      subject: `Bevestiging jouw plek — ${r.classTitle}`,
+      body: `Bedankt voor je aanmelding! Jouw plek is bevestigd voor:\n\n${r.classTitle}\n${dateLabel} · ${r.time} uur\nHuize Mooisteen, Pr. Beatrixstraat 2, Nieuwerkerk a/d IJssel\n\n\n\nMet warme groet,\nStudio Luna`,
+    });
+  };
+
   const doInboeken = async (forceOverCapacity = false) => {
     const cls = classes.find((c) => c.id === inboekForm.classId);
     if (!cls) return;
@@ -1829,7 +1950,6 @@ function ReserveeringenTab() {
           dateStr,
           time: cls.time,
           type: cls.type,
-          stuurEmail: inboekForm.stuurEmail,
           forceOverCapacity,
         }),
       });
@@ -1854,7 +1974,7 @@ function ReserveeringenTab() {
     if (isVol) {
       setInboekVolWaarschuwing(true);
     } else if (!hasError) {
-      setInboekForm({ name: "", email: "", classId: "", dateStr: "", stuurEmail: true, heelReeks: false });
+      setInboekForm({ name: "", email: "", classId: "", dateStr: "", heelReeks: false });
       setShowInboeken(false);
       setInboekVolWaarschuwing(false);
     }
@@ -1951,11 +2071,9 @@ function ReserveeringenTab() {
                   })}
                 </div>
               )}
-              <label className="flex items-center gap-2.5 cursor-pointer">
-                <input type="checkbox" checked={inboekForm.stuurEmail} onChange={(e) => setInboekForm({ ...inboekForm, stuurEmail: e.target.checked })}
-                  className="rounded" />
-                <span className="text-sm text-foreground/70">Stuur bevestigingsmail naar deelnemer</span>
-              </label>
+              <p className="text-xs text-foreground/50 bg-secondary rounded-2xl px-4 py-2.5">
+                Bevestigingsmail stuur je zelf vanuit de reserveringenlijst.
+              </p>
               {inboekError && (
                 <p className="text-sm text-red-500 bg-red-50 rounded-2xl px-4 py-2">{inboekError}</p>
               )}
@@ -2047,6 +2165,11 @@ function ReserveeringenTab() {
                     <p className="text-xs text-foreground/50">{r.email}</p>
                   </div>
                   <div className="flex items-center gap-1.5 shrink-0">
+                    <button onClick={() => openCompose(r)}
+                      title="Bevestigingsmail sturen"
+                      className="p-1.5 rounded-xl text-foreground/40 hover:text-primary hover:bg-primary/10 transition-colors">
+                      <Mail className="w-4 h-4" />
+                    </button>
                     <button onClick={() => toggleAanwezig(r.id)}
                       title={r.aanwezig ? "Aanwezig — klik om te wisselen" : "Afwezig — klik om te markeren"}
                       className={`p-1.5 rounded-xl transition-colors ${r.aanwezig ? "text-primary bg-primary/10 hover:bg-primary/20" : "text-foreground/30 hover:text-primary hover:bg-primary/10"}`}>
@@ -2062,6 +2185,16 @@ function ReserveeringenTab() {
           </div>
         );
       })}
+
+      {composeFor && (
+        <EmailComposeModal
+          defaultTo={composeFor.email}
+          defaultToName={composeFor.name}
+          defaultSubject={composeFor.subject}
+          defaultBody={composeFor.body}
+          onClose={() => setComposeFor(null)}
+        />
+      )}
     </div>
   );
 }
@@ -3108,7 +3241,7 @@ export default function Admin() {
             <h1 className="font-display text-3xl md:text-4xl font-medium text-foreground">Studio Luna Admin</h1>
           </motion.div>
 
-          <div className="mt-5 flex gap-2 overflow-x-auto pb-0.5" style={{ scrollbarWidth: "none" }}>
+          <div className="mt-5 flex gap-2 overflow-x-auto md:overflow-x-visible pb-2 md:flex-wrap" style={{ scrollbarWidth: "none" }}>
             {tabs.map((t) => (
               <button key={t.key} onClick={() => setTab(t.key)}
                 className={`flex items-center gap-1.5 px-4 py-2 rounded-2xl font-semibold text-sm transition-all shrink-0 ${tab === t.key ? "bg-primary text-primary-foreground shadow-sm" : "bg-background/60 text-foreground/60 hover:text-foreground hover:bg-background/80"}`}>

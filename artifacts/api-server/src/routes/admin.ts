@@ -15,7 +15,7 @@ import { readTarieven, saveTarieven, addRittenkaart, updateRittenkaart, deleteRi
 import { readPaginaTeksten, savePaginaTeksten } from "../lib/pagina-teksten.js";
 import { getAllFotos, setFoto, FOTO_KEYS, type FotoKey } from "../lib/foto-store.js";
 import { readReserveringen, createReservering, toggleAanwezig, deleteReservering } from "../lib/reserveringen.js";
-import { sendReservationConfirmation, sendReminderEmail } from "../lib/email.js";
+import { sendReminderEmail, sendCustomEmail } from "../lib/email.js";
 import { readPosts, createPost, updatePost, deletePost } from "../lib/blog.js";
 import { getImage, setImage, deleteImage } from "../lib/image-store.js";
 import { readReviewsConfig, createReview, updateReview, deleteReview, setReviewsVisible } from "../lib/reviews.js";
@@ -400,9 +400,6 @@ router.post("/admin/reserveringen", requireAdmin, async (req, res) => {
   }
 
   const r = await createReservering({ name, email, classId, classTitle, dateStr, time, type });
-  if (stuurEmail) {
-    sendReservationConfirmation({ toEmail: email, toName: name, classTitle, dateStr, time, type }).catch(() => {});
-  }
   res.json(r);
 });
 
@@ -507,6 +504,21 @@ router.post("/admin/reviews/visible", requireAdmin, async (req, res) => {
   const { visible } = req.body as { visible: boolean };
   await setReviewsVisible(!!visible);
   res.json({ ok: true, visible: !!visible });
+});
+
+// ─── E-MAIL VERZENDEN (admin componeert zelf) ─────────────────────────────────
+router.post("/admin/send-email", requireAdmin, async (req, res) => {
+  const { to, toName, subject, body } = req.body as { to?: string; toName?: string; subject?: string; body?: string };
+  if (!to || !subject || !body) {
+    return res.status(400).json({ error: "Aan, onderwerp en bericht zijn verplicht" });
+  }
+  try {
+    await sendCustomEmail({ toEmail: to, toName: toName ?? to, subject, body });
+    res.json({ ok: true });
+  } catch (err: any) {
+    console.error("[email] Fout bij verzenden aangepaste mail:", err);
+    res.status(500).json({ error: "Mail kon niet worden verzonden. Controleer de configuratie." });
+  }
 });
 
 export default router;
