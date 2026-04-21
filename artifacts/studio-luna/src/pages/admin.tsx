@@ -1346,7 +1346,7 @@ function EmailInstellingenTab() {
     <form onSubmit={save} className="space-y-5 max-w-xl">
       <div>
         <p className="text-xs font-bold uppercase tracking-widest text-primary mb-1">E-mail teksten</p>
-        <p className="text-sm text-foreground/60">Stel per lestype de teksten in voor bevestigings- en herinneringsmails. Leden ontvangen de mail automatisch.</p>
+        <p className="text-sm text-foreground/60">Stel per lestype de teksten in voor bevestigings- en herinneringsmails. Gebruik de mail-knop bij een reservering of aanvraag om handmatig een bevestiging te versturen.</p>
       </div>
 
       {/* Sectie-tabs */}
