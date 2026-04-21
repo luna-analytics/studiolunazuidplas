@@ -59,12 +59,8 @@ export function BottomNav() {
             onMouseDown={startLongPress} onMouseUp={cancelLongPress}
             onMouseLeave={cancelLongPress} onTouchStart={startLongPress}
             onTouchEnd={cancelLongPress} onTouchCancel={cancelLongPress}>
-            {/* Maan-icoon */}
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
-              <circle cx="16" cy="16" r="16" fill="#3A4F41"/>
-              <circle cx="16" cy="16" r="9" fill="#F8F7F5"/>
-              <circle cx="19.5" cy="13" r="7.5" fill="#3A4F41"/>
-            </svg>
+            {/* Logo */}
+            <img src="/images/studio-luna-logo.png" alt="Studio Luna" className="h-8 w-auto shrink-0" />
             {/* Naam */}
             <div className="flex flex-col leading-none">
               <span className="font-display text-[15px] font-medium text-foreground tracking-wide">Studio Luna</span>
