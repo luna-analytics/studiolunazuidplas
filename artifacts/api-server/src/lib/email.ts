@@ -274,8 +274,10 @@ export async function sendCustomEmail(params: {
     .map((p) => `<p style="margin:0 0 16px; font-size:15px; line-height:1.8; color:#3A4F41; font-weight:300;">${p.replace(/\n/g, "<br/>")}</p>`)
     .join("");
 
+  const settings = await getEmailSettings();
+
   const inner = `
-    ${HEADER("Zwangerschapsyoga · Nieuwerkerk a/d IJssel")}
+    ${HEADER(settings.emailOndertitel)}
     <tr>
       <td style="padding:40px 45px;">
         <h2 style="margin:0 0 24px; font-family:'Playfair Display', serif; font-size:22px; color:#3A4F41; font-weight:normal;">Lieve ${toName},</h2>

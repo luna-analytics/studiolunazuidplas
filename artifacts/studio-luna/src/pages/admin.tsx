@@ -1291,6 +1291,7 @@ const EMAIL_DEFAULTS: EmailSettings = {
   persoonlijkBericht: "",
   annuleringsNote: "Kun je toch niet komen? Annuleer dan minimaal 7 uur voor de les via de website of via WhatsApp, zodat anderen jouw plek kunnen overnemen.",
   welkomstTekst: "",
+  emailOndertitel: "Zwangerschapsyoga · Nieuwerkerk a/d IJssel",
 };
 
 function EmailInstellingenTab() {
@@ -1347,6 +1348,18 @@ function EmailInstellingenTab() {
       <div>
         <p className="text-xs font-bold uppercase tracking-widest text-primary mb-1">E-mail teksten</p>
         <p className="text-sm text-foreground/60">Stel per lestype de teksten in voor bevestigings- en herinneringsmails. Gebruik de mail-knop bij een reservering of aanvraag om handmatig een bevestiging te versturen.</p>
+      </div>
+
+      <div className="space-y-1.5">
+        <label className="text-sm font-semibold text-foreground">E-mail ondertitel (koptekst)</label>
+        <p className="text-xs text-foreground/50">Staat onder "Studio Luna" bovenaan iedere uitgaande e-mail.</p>
+        <input
+          type="text"
+          value={form.emailOndertitel}
+          onChange={(e) => setForm({ ...form, emailOndertitel: e.target.value })}
+          className="w-full bg-background border border-border/40 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+          placeholder="Zwangerschapsyoga · Nieuwerkerk a/d IJssel"
+        />
       </div>
 
       {/* Sectie-tabs */}

@@ -11,9 +11,11 @@ export type EmailSettings = {
   persoonlijkBericht: string;
   annuleringsNote: string;
   welkomstTekst: string;
+  emailOndertitel: string;
 };
 
 export const EMAIL_DEFAULTS: EmailSettings = {
+  emailOndertitel: "Zwangerschapsyoga · Nieuwerkerk a/d IJssel",
   yogaWelkomst:
     "Je plekje is gereserveerd! We kijken er naar uit je te zien op de mat. 🌙",
   circleWelkomst:
@@ -64,6 +66,10 @@ export async function getEmailSettings(): Promise<EmailSettings> {
         typeof data.welkomstTekst === "string"
           ? data.welkomstTekst
           : EMAIL_DEFAULTS.welkomstTekst,
+      emailOndertitel:
+        typeof data.emailOndertitel === "string"
+          ? data.emailOndertitel
+          : EMAIL_DEFAULTS.emailOndertitel,
     };
   } catch {
     return { ...EMAIL_DEFAULTS };
