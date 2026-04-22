@@ -54,9 +54,7 @@ export default function Bookings() {
             <h1 className="font-display text-3xl md:text-4xl font-medium text-foreground">Boekingen</h1>
             <p className="text-foreground/60 mt-2 text-sm">Jouw geplande lessen en tegoed.</p>
           </motion.div>
-          <div className="overflow-hidden shrink-0" style={{ height: '95px' }}>
-            <img src={`${import.meta.env.BASE_URL}images/studio-luna-logo.png`} alt="Studio Luna" className="h-32 w-auto" loading="lazy" />
-          </div>
+          <img src={`${import.meta.env.BASE_URL}images/studio-luna-logo.png`} alt="Studio Luna" className="h-24 w-auto shrink-0" loading="lazy" />
         </div>
 
         <div className="px-6 md:px-12 lg:px-16 pt-6 mb-8 space-y-4">
