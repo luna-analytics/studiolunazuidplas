@@ -2733,15 +2733,22 @@ function blogFormatDate(iso: string) {
   return new Date(y, m - 1, d).toLocaleDateString("nl-NL", { day: "numeric", month: "long", year: "numeric" });
 }
 
+type BlogComment = { id: string; postId: string; name: string; body: string; createdAt: string; approved: boolean; reply?: string; repliedAt?: string };
+
 function BlogBeheerTab() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [editing, setEditing] = useState<Partial<BlogPost> | null>(null);
   const [saving, setSaving] = useState(false);
   const [coverPreview, setCoverPreview] = useState("");
   const [err, setErr] = useState("");
+  const [comments, setComments] = useState<BlogComment[]>([]);
+  const [replyingTo, setReplyingTo] = useState<string | null>(null);
+  const [replyText, setReplyText] = useState("");
+  const [replySaving, setReplySaving] = useState(false);
 
   useEffect(() => {
     apiFetch("/admin/blog").then((r) => r.json()).then(setPosts).catch(() => {});
+    apiFetch("/admin/blog/comments").then((r) => r.json()).then(setComments).catch(() => {});
   }, []);
 
   const startNew = () => {
@@ -2781,6 +2788,29 @@ function BlogBeheerTab() {
     if (!confirm("Artikel verwijderen? Dit kan niet ongedaan worden gemaakt.")) return;
     await apiFetch(`/admin/blog/${id}`, { method: "DELETE" });
     setPosts((prev) => prev.filter((p) => p.id !== id));
+  };
+
+  const approveComment = async (commentId: string) => {
+    const res = await apiFetch(`/admin/blog/comments/${commentId}/approve`, { method: "PATCH" });
+    const updated: BlogComment = await res.json();
+    setComments((prev) => prev.map((c) => c.id === updated.id ? updated : c));
+  };
+
+  const deleteComment = async (commentId: string) => {
+    if (!confirm("Reactie verwijderen?")) return;
+    await apiFetch(`/admin/blog/comments/${commentId}`, { method: "DELETE" });
+    setComments((prev) => prev.filter((c) => c.id !== commentId));
+  };
+
+  const sendReply = async (commentId: string) => {
+    if (!replyText.trim()) return;
+    setReplySaving(true);
+    const res = await apiFetch(`/admin/blog/comments/${commentId}/reply`, {
+      method: "PATCH", body: JSON.stringify({ reply: replyText }),
+    });
+    const updated: BlogComment = await res.json();
+    setComments((prev) => prev.map((c) => c.id === updated.id ? updated : c));
+    setReplyingTo(null); setReplyText(""); setReplySaving(false);
   };
 
   const togglePublished = async (post: BlogPost) => {
@@ -2986,6 +3016,81 @@ function BlogBeheerTab() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      )}
+
+      {/* ── REACTIES BEHEER ── */}
+      {comments.length > 0 && (
+        <div className="mt-10">
+          <div className="flex items-center gap-2 mb-4">
+            <p className="text-xs font-bold uppercase tracking-widest text-foreground/35">Reacties</p>
+            {comments.filter((c) => !c.approved).length > 0 && (
+              <span className="bg-primary text-primary-foreground text-[10px] font-bold px-2 py-0.5 rounded-full">
+                {comments.filter((c) => !c.approved).length} nieuw
+              </span>
+            )}
+          </div>
+          <div className="space-y-3">
+            {comments.map((comment) => {
+              const postTitle = posts.find((p) => p.id === comment.postId)?.title ?? comment.postId;
+              const isReplying = replyingTo === comment.id;
+              return (
+                <div key={comment.id} className={`border rounded-2xl p-4 ${comment.approved ? "border-border/20 bg-background" : "border-primary/20 bg-primary/5"}`}>
+                  <div className="flex items-start justify-between gap-3 mb-2">
+                    <div>
+                      <p className="text-sm font-semibold">{comment.name}</p>
+                      <p className="text-xs text-foreground/40">{postTitle} · {new Date(comment.createdAt).toLocaleDateString("nl-NL", { day: "numeric", month: "short", year: "numeric" })}</p>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      {!comment.approved && (
+                        <button onClick={() => approveComment(comment.id)} className="text-xs font-semibold text-primary hover:text-primary/70 transition-colors">
+                          Goedkeuren
+                        </button>
+                      )}
+                      <button onClick={() => deleteComment(comment.id)} className="text-foreground/30 hover:text-red-400 transition-colors">
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                  <p className="text-sm text-foreground/70 leading-relaxed mb-3">{comment.body}</p>
+
+                  {comment.reply && (
+                    <div className="bg-primary/8 border-l-2 border-primary/30 rounded-r-xl px-3 py-2 mb-3">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-primary/60 mb-1">Jouw reactie</p>
+                      <p className="text-sm text-foreground/70">{comment.reply}</p>
+                    </div>
+                  )}
+
+                  {isReplying ? (
+                    <div className="space-y-2">
+                      <textarea
+                        value={replyText}
+                        onChange={(e) => setReplyText(e.target.value)}
+                        rows={3}
+                        placeholder="Schrijf je reactie..."
+                        className="w-full bg-secondary border-0 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
+                      />
+                      <div className="flex gap-2">
+                        <button onClick={() => sendReply(comment.id)} disabled={replySaving}
+                          className="text-xs font-semibold bg-primary text-primary-foreground rounded-lg px-3 py-1.5 hover:bg-primary/90 transition-colors">
+                          {replySaving ? "Versturen..." : "Versturen"}
+                        </button>
+                        <button onClick={() => { setReplyingTo(null); setReplyText(""); }}
+                          className="text-xs font-semibold text-foreground/50 hover:text-foreground transition-colors px-2">
+                          Annuleren
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <button onClick={() => { setReplyingTo(comment.id); setReplyText(comment.reply ?? ""); }}
+                      className="text-xs font-semibold text-primary/70 hover:text-primary transition-colors">
+                      {comment.reply ? "Reactie aanpassen" : "Reageren"}
+                    </button>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
       )}

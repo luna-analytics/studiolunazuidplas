@@ -21,6 +21,7 @@ import { readPaginaTeksten } from "../lib/pagina-teksten.js";
 import { getAllFotos } from "../lib/foto-store.js";
 import { readPosts } from "../lib/blog.js";
 import { getImage } from "../lib/image-store.js";
+import { getCommentsForPost, addComment } from "../lib/blog-comments.js";
 import { readReviewsConfig } from "../lib/reviews.js";
 
 const router: IRouter = Router();
@@ -66,6 +67,24 @@ router.get("/blog/:id", async (req, res) => {
   if (!post) { res.status(404).json({ error: "Niet gevonden" }); return; }
   const coverImage = await getImage(`blog_cover_${post.id}`);
   res.json({ ...post, coverImage });
+});
+
+// Blog reacties (publiek: lezen + insturen)
+router.get("/blog/:id/comments", async (req, res) => {
+  const comments = await getCommentsForPost(req.params.id, true);
+  res.json(comments);
+});
+
+router.post("/blog/:id/comments", async (req, res) => {
+  const { name, body, email } = req.body as { name?: string; body?: string; email?: string };
+  if (!name?.trim() || !body?.trim()) {
+    res.status(400).json({ error: "Naam en reactie zijn verplicht" }); return;
+  }
+  if (body.trim().length > 1000) {
+    res.status(400).json({ error: "Reactie is te lang (max 1000 tekens)" }); return;
+  }
+  const comment = await addComment(req.params.id, name, body, email);
+  res.json({ ok: true, id: comment.id });
 });
 
 // Reservering voor openingsreeks (publiek, geen login nodig)

@@ -17,6 +17,7 @@ import { getAllFotos, setFoto, FOTO_KEYS, type FotoKey } from "../lib/foto-store
 import { readReserveringen, createReservering, toggleAanwezig, deleteReservering } from "../lib/reserveringen.js";
 import { sendReminderEmail, sendCustomEmail } from "../lib/email.js";
 import { readPosts, createPost, updatePost, deletePost } from "../lib/blog.js";
+import { getAllComments, approveComment, replyToComment, deleteComment } from "../lib/blog-comments.js";
 import { getImage, setImage, deleteImage } from "../lib/image-store.js";
 import { readReviewsConfig, createReview, updateReview, deleteReview, setReviewsVisible } from "../lib/reviews.js";
 
@@ -471,6 +472,29 @@ router.delete("/admin/blog/:id", requireAdmin, async (req, res) => {
   await deletePost(req.params.id);
   await deleteImage(`blog_cover_${req.params.id}`);
   res.json({ ok: true });
+});
+
+// ─── BLOG REACTIES (ADMIN) ───────────────────────────────────────────────────
+
+router.get("/admin/blog/comments", requireAdmin, async (_req, res) => {
+  res.json(await getAllComments());
+});
+
+router.patch("/admin/blog/comments/:id/approve", requireAdmin, async (req, res) => {
+  try { res.json(await approveComment(req.params.id)); }
+  catch (e: any) { res.status(404).json({ error: e.message }); }
+});
+
+router.patch("/admin/blog/comments/:id/reply", requireAdmin, async (req, res) => {
+  const { reply } = req.body as { reply?: string };
+  if (!reply?.trim()) { res.status(400).json({ error: "Reactie is verplicht" }); return; }
+  try { res.json(await replyToComment(req.params.id, reply)); }
+  catch (e: any) { res.status(404).json({ error: e.message }); }
+});
+
+router.delete("/admin/blog/comments/:id", requireAdmin, async (req, res) => {
+  try { await deleteComment(req.params.id); res.json({ ok: true }); }
+  catch (e: any) { res.status(404).json({ error: e.message }); }
 });
 
 // ─── REVIEWS ─────────────────────────────────────────────────────────────────
