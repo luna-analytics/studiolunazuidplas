@@ -443,28 +443,37 @@ router.get("/admin/blog", requireAdmin, async (_req, res) => {
 });
 
 router.post("/admin/blog", requireAdmin, async (req, res) => {
-  const { coverImage, ...rest } = req.body;
-  const post = await createPost({
-    title: rest.title ?? "",
-    slug: rest.slug,
-    category: rest.category ?? "Inspiratie",
-    body: rest.body ?? "",
-    publishedAt: rest.publishedAt ?? new Date().toISOString().slice(0, 10),
-    published: rest.published ?? false,
-  });
-  if (coverImage) await setImage(`blog_cover_${post.id}`, coverImage);
-  res.json({ ...post, coverImage: coverImage ?? "" });
+  try {
+    const { coverImage, ...rest } = req.body;
+    const post = await createPost({
+      title: rest.title ?? "",
+      slug: rest.slug,
+      category: rest.category ?? "Inspiratie",
+      body: rest.body ?? "",
+      publishedAt: rest.publishedAt ?? new Date().toISOString().slice(0, 10),
+      published: rest.published ?? false,
+    });
+    if (coverImage) await setImage(`blog_cover_${post.id}`, coverImage);
+    res.json({ ...post, coverImage: coverImage ?? "" });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message ?? "Aanmaken mislukt" });
+  }
 });
 
 router.patch("/admin/blog/:id", requireAdmin, async (req, res) => {
   try {
     const { coverImage, ...rest } = req.body;
-    const post = await updatePost(req.params.id, rest);
+    let post;
+    try {
+      post = await updatePost(req.params.id, rest);
+    } catch (err: any) {
+      res.status(404).json({ error: err.message }); return;
+    }
     if (coverImage !== undefined) await setImage(`blog_cover_${post.id}`, coverImage);
     const cover = await getImage(`blog_cover_${post.id}`);
     res.json({ ...post, coverImage: cover });
   } catch (err: any) {
-    res.status(404).json({ error: err.message });
+    res.status(500).json({ error: err.message ?? "Opslaan mislukt" });
   }
 });
 

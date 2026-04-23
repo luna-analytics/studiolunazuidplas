@@ -2773,7 +2773,11 @@ function BlogBeheerTab() {
       const method = editing.id ? "PATCH" : "POST";
       const path = editing.id ? `/admin/blog/${editing.id}` : "/admin/blog";
       const res = await apiFetch(path, { method, body: JSON.stringify(payload) });
-      if (!res.ok) throw new Error(`Fout bij opslaan (${res.status})`);
+      if (!res.ok) {
+        let msg = `Fout bij opslaan (${res.status})`;
+        try { const body = await res.json(); if (body?.error) msg = body.error; } catch {}
+        throw new Error(msg);
+      }
       const saved: BlogPost = await res.json();
       setPosts((prev) => editing.id ? prev.map((p) => p.id === saved.id ? saved : p) : [saved, ...prev]);
       setEditing(null); setCoverPreview("");

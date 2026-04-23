@@ -98,8 +98,19 @@ export function BlogEditor({ value, onChange }: Props) {
     if (!file) return;
     const reader = new FileReader();
     reader.onload = (ev) => {
-      const src = ev.target?.result as string;
-      if (src) editor.chain().focus().setImage({ src }).run();
+      const original = ev.target?.result as string;
+      const img = new window.Image();
+      img.onload = () => {
+        const MAX = 900;
+        const scale = Math.min(1, MAX / Math.max(img.width, img.height));
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.round(img.width * scale);
+        canvas.height = Math.round(img.height * scale);
+        canvas.getContext("2d")!.drawImage(img, 0, 0, canvas.width, canvas.height);
+        const src = canvas.toDataURL("image/jpeg", 0.80);
+        editor.chain().focus().setImage({ src }).run();
+      };
+      img.src = original;
     };
     reader.readAsDataURL(file);
     e.target.value = "";
