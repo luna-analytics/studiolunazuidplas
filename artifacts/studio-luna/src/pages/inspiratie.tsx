@@ -38,8 +38,8 @@ function formatDate(iso: string) {
 }
 
 function excerpt(body: string, max = 200) {
-  const clean = body?.replace(/\n+/g, " ").trim() ?? "";
-  return clean.length > max ? clean.slice(0, max) + "…" : clean;
+  const stripped = body?.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim() ?? "";
+  return stripped.length > max ? stripped.slice(0, max) + "…" : stripped;
 }
 
 export default function Inspiratie() {
