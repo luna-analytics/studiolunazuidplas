@@ -1379,47 +1379,68 @@ function MededelingenTab() {
 }
 
 // ─── EMAIL INSTELLINGEN TAB ───────────────────────────────────────────────────
-type EmailSettings = {
-  yogaWelkomst: string;
-  circleWelkomst: string;
-  yogaHerinnering: string;
-  circleHerinnering: string;
+type EmailSharedSettings = {
+  emailOndertitel: string;
   persoonlijkBericht: string;
   annuleringsNote: string;
-  welkomstTekst: string;
 };
 
-const EMAIL_DEFAULTS: EmailSettings = {
-  yogaWelkomst: "Je plekje is gereserveerd! We kijken er naar uit je te zien op de mat. 🌙",
-  circleWelkomst: "Je plekje in de Circle is gereserveerd! We kijken ernaar uit je te verwelkomen in de kring. 🌙",
-  yogaHerinnering: "Dit is een vriendelijke herinnering dat je morgen bij ons verwacht wordt op de mat! We kijken er naar uit. 🌙",
-  circleHerinnering: "Dit is een vriendelijke herinnering dat je morgen bij ons in de Circle verwacht wordt! We kijken er naar uit. 🌙",
-  persoonlijkBericht: "",
-  annuleringsNote: "Kun je toch niet komen? Annuleer dan minimaal 7 uur voor de les via de website of via WhatsApp, zodat anderen jouw plek kunnen overnemen.",
-  welkomstTekst: "",
-  emailOndertitel: "Zwangerschapsyoga · Nieuwerkerk a/d IJssel",
-};
+type LesTypeTemplate = { welkomst: string; herinnering: string };
 
 function EmailInstellingenTab() {
-  const [form, setForm] = useState<EmailSettings>(EMAIL_DEFAULTS);
+  const [shared, setShared] = useState<EmailSharedSettings>({
+    emailOndertitel: "Zwangerschapsyoga · Nieuwerkerk a/d IJssel",
+    persoonlijkBericht: "",
+    annuleringsNote: "Kun je toch niet komen? Annuleer dan minimaal 7 uur voor de les via de website of via WhatsApp, zodat anderen jouw plek kunnen overnemen.",
+  });
+  const [lesTypeTemplates, setLesTypeTemplates] = useState<Record<string, LesTypeTemplate>>({});
+  const [adminLesTypes, setAdminLesTypes] = useState<{ id: string; naam: string }[]>([]);
   const [loaded, setLoaded] = useState(false);
-  const [activeSection, setActiveSection] = useState<"yoga" | "circle" | "gedeeld">("yoga");
+  const [activeSection, setActiveSection] = useState<string>("gedeeld");
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    apiFetch("/admin/email-settings").then(async (res) => {
-      if (res.ok) { const d = await res.json(); setForm((prev) => ({ ...prev, ...d })); }
+    Promise.all([
+      apiFetch("/admin/email-settings").then((r) => r.ok ? r.json() : {}),
+      fetch(`${BASE}/api/class-types`).then((r) => r.ok ? r.json() : []),
+    ]).then(([settings, types]) => {
+      setShared({
+        emailOndertitel: settings.emailOndertitel ?? "Zwangerschapsyoga · Nieuwerkerk a/d IJssel",
+        persoonlijkBericht: settings.persoonlijkBericht ?? "",
+        annuleringsNote: settings.annuleringsNote ?? "Kun je toch niet komen? Annuleer dan minimaal 7 uur voor de les via de website of via WhatsApp, zodat anderen jouw plek kunnen overnemen.",
+      });
+      const savedTemplates: Record<string, LesTypeTemplate> = settings.lesTypeTemplates ?? {};
+      const typesArr = Array.isArray(types) ? types : [];
+      setAdminLesTypes(typesArr.map((t: any) => ({ id: t.id, naam: t.naam })));
+      const merged: Record<string, LesTypeTemplate> = {};
+      for (const t of typesArr) {
+        merged[t.id] = {
+          welkomst: savedTemplates[t.id]?.welkomst ?? (t.id === "circle"
+            ? "Je plekje in de Circle is gereserveerd! We kijken ernaar uit je te verwelkomen in de kring. 🌙"
+            : "Je plekje is gereserveerd! We kijken er naar uit je te zien op de mat. 🌙"),
+          herinnering: savedTemplates[t.id]?.herinnering ?? (t.id === "circle"
+            ? "Dit is een vriendelijke herinnering dat je morgen bij ons in de Circle verwacht wordt! We kijken er naar uit. 🌙"
+            : "Dit is een vriendelijke herinnering dat je morgen bij ons verwacht wordt op de mat! We kijken er naar uit. 🌙"),
+        };
+      }
+      setLesTypeTemplates(merged);
+      if (typesArr.length > 0) setActiveSection(typesArr[0].id);
       setLoaded(true);
     });
   }, []);
+
+  const setTemplate = (typeId: string, field: "welkomst" | "herinnering", value: string) => {
+    setLesTypeTemplates((prev) => ({ ...prev, [typeId]: { ...prev[typeId], [field]: value } }));
+  };
 
   const save = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true); setError(""); setSaved(false);
     try {
-      const res = await apiFetch("/admin/email-settings", { method: "PUT", body: JSON.stringify(form) });
+      const payload = { ...shared, lesTypeTemplates };
+      const res = await apiFetch("/admin/email-settings", { method: "PUT", body: JSON.stringify(payload) });
       if (!res.ok) throw new Error((await res.json()).error);
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
@@ -1432,28 +1453,18 @@ function EmailInstellingenTab() {
 
   if (!loaded) return <div className="flex justify-center py-10"><div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" /></div>;
 
-  const ta = (label: string, hint: string, key: keyof EmailSettings, rows = 4, placeholder = "") => (
-    <div className="space-y-1.5">
-      <label className="text-sm font-semibold text-foreground">{label}</label>
-      {hint && <p className="text-xs text-foreground/50">{hint}</p>}
-      <textarea value={form[key] as string}
-        onChange={(e) => setForm({ ...form, [key]: e.target.value })}
-        rows={rows} placeholder={placeholder}
-        className="w-full bg-background border border-border/40 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none leading-relaxed" />
-    </div>
-  );
-
-  const sections = [
-    { key: "yoga" as const, label: "🧘 Yoga" },
-    { key: "circle" as const, label: "🌸 Circle" },
-    { key: "gedeeld" as const, label: "Gedeeld" },
+  const allSections = [
+    ...adminLesTypes.map((t) => ({ key: t.id, label: t.naam })),
+    { key: "gedeeld", label: "Gedeeld" },
   ];
+
+  const activeLesType = adminLesTypes.find((t) => t.id === activeSection);
 
   return (
     <form onSubmit={save} className="space-y-5 max-w-xl">
       <div>
         <p className="text-xs font-bold uppercase tracking-widest text-primary mb-1">E-mail teksten</p>
-        <p className="text-sm text-foreground/60">Stel per lestype de teksten in voor bevestigings- en herinneringsmails. Gebruik de mail-knop bij een reservering of aanvraag om handmatig een bevestiging te versturen.</p>
+        <p className="text-sm text-foreground/60">Stel per lestype de teksten in voor bevestigings- en herinneringsmails.</p>
       </div>
 
       <div className="space-y-1.5">
@@ -1461,49 +1472,49 @@ function EmailInstellingenTab() {
         <p className="text-xs text-foreground/50">Staat onder "Studio Luna" bovenaan iedere uitgaande e-mail.</p>
         <input
           type="text"
-          value={form.emailOndertitel}
-          onChange={(e) => setForm({ ...form, emailOndertitel: e.target.value })}
+          value={shared.emailOndertitel}
+          onChange={(e) => setShared({ ...shared, emailOndertitel: e.target.value })}
           className="w-full bg-background border border-border/40 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
           placeholder="Zwangerschapsyoga · Nieuwerkerk a/d IJssel"
         />
       </div>
 
-      {/* Sectie-tabs */}
-      <div className="flex gap-1.5 bg-secondary rounded-2xl p-1">
-        {sections.map((s) => (
+      <div className="flex flex-wrap gap-1.5 bg-secondary rounded-2xl p-1">
+        {allSections.map((s) => (
           <button key={s.key} type="button" onClick={() => setActiveSection(s.key)}
-            className={`flex-1 py-2 rounded-xl text-sm font-semibold transition-colors ${activeSection === s.key ? "bg-card shadow-sm text-foreground" : "text-foreground/50 hover:text-foreground/70"}`}>
+            className={`flex-1 min-w-fit py-2 px-3 rounded-xl text-sm font-semibold transition-colors whitespace-nowrap ${activeSection === s.key ? "bg-card shadow-sm text-foreground" : "text-foreground/50 hover:text-foreground/70"}`}>
             {s.label}
           </button>
         ))}
       </div>
 
-      {activeSection === "yoga" && (
+      {activeLesType && lesTypeTemplates[activeLesType.id] && (
         <div className="space-y-4">
           <div className="bg-card border border-border/30 rounded-3xl p-5 space-y-4">
-            <h3 className="font-display text-base font-medium">Zwangerschapsyoga — Bevestiging</h3>
+            <h3 className="font-display text-base font-medium">{activeLesType.naam} — Bevestiging</h3>
             <p className="text-xs text-foreground/45">Tekst direct na "Lieve [naam]," in de bevestigingsmail.</p>
-            {ta("Bevestigingstekst", "", "yogaWelkomst", 5, "Je plekje is gereserveerd! We kijken er naar uit je te zien op de mat. 🌙")}
+            <div className="space-y-1.5">
+              <label className="text-sm font-semibold text-foreground">Bevestigingstekst</label>
+              <textarea
+                value={lesTypeTemplates[activeLesType.id].welkomst}
+                onChange={(e) => setTemplate(activeLesType.id, "welkomst", e.target.value)}
+                rows={5}
+                className="w-full bg-background border border-border/40 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none leading-relaxed"
+              />
+            </div>
           </div>
           <div className="bg-card border border-border/30 rounded-3xl p-5 space-y-4">
-            <h3 className="font-display text-base font-medium">Zwangerschapsyoga — Herinnering</h3>
+            <h3 className="font-display text-base font-medium">{activeLesType.naam} — Herinnering</h3>
             <p className="text-xs text-foreground/45">Tekst in de herinneringsmail (verstuurd de dag voor de les).</p>
-            {ta("Herinneringstekst", "", "yogaHerinnering", 5, "Dit is een vriendelijke herinnering dat je morgen bij ons verwacht wordt op de mat! 🌙")}
-          </div>
-        </div>
-      )}
-
-      {activeSection === "circle" && (
-        <div className="space-y-4">
-          <div className="bg-card border border-border/30 rounded-3xl p-5 space-y-4">
-            <h3 className="font-display text-base font-medium">Mama Circle — Bevestiging</h3>
-            <p className="text-xs text-foreground/45">Tekst direct na "Lieve [naam]," in de bevestigingsmail.</p>
-            {ta("Bevestigingstekst", "", "circleWelkomst", 5, "Je plekje in de Circle is gereserveerd! We kijken ernaar uit je te verwelkomen. 🌙")}
-          </div>
-          <div className="bg-card border border-border/30 rounded-3xl p-5 space-y-4">
-            <h3 className="font-display text-base font-medium">Mama Circle — Herinnering</h3>
-            <p className="text-xs text-foreground/45">Tekst in de herinneringsmail (verstuurd de dag voor de les).</p>
-            {ta("Herinneringstekst", "", "circleHerinnering", 5, "Dit is een vriendelijke herinnering dat je morgen bij ons in de Circle verwacht wordt! 🌙")}
+            <div className="space-y-1.5">
+              <label className="text-sm font-semibold text-foreground">Herinneringstekst</label>
+              <textarea
+                value={lesTypeTemplates[activeLesType.id].herinnering}
+                onChange={(e) => setTemplate(activeLesType.id, "herinnering", e.target.value)}
+                rows={5}
+                className="w-full bg-background border border-border/40 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none leading-relaxed"
+              />
+            </div>
           </div>
         </div>
       )}
@@ -1513,12 +1524,24 @@ function EmailInstellingenTab() {
           <div className="bg-card border border-border/30 rounded-3xl p-5 space-y-4">
             <h3 className="font-display text-base font-medium">Annuleringsregel</h3>
             <p className="text-xs text-foreground/45">Geldt voor alle lestypes.</p>
-            {ta("Annuleringstekst", "", "annuleringsNote", 3, "Kun je toch niet komen? Annuleer dan minimaal 7 uur van tevoren…")}
+            <div className="space-y-1.5">
+              <label className="text-sm font-semibold text-foreground">Annuleringstekst</label>
+              <textarea value={shared.annuleringsNote}
+                onChange={(e) => setShared({ ...shared, annuleringsNote: e.target.value })}
+                rows={3} placeholder="Kun je toch niet komen? Annuleer dan minimaal 7 uur van tevoren…"
+                className="w-full bg-background border border-border/40 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none leading-relaxed" />
+            </div>
           </div>
           <div className="bg-card border border-border/30 rounded-3xl p-5 space-y-4">
             <h3 className="font-display text-base font-medium">Persoonlijk bericht <span className="text-foreground/40 font-normal text-sm">(optioneel)</span></h3>
             <p className="text-xs text-foreground/45">Verschijnt cursief onderaan de bevestigingsmail bij alle lestypes.</p>
-            {ta("Extra bericht", "", "persoonlijkBericht", 3, "Bijv: Draag comfortabele kleding en neem een flesje water mee!")}
+            <div className="space-y-1.5">
+              <label className="text-sm font-semibold text-foreground">Extra bericht</label>
+              <textarea value={shared.persoonlijkBericht}
+                onChange={(e) => setShared({ ...shared, persoonlijkBericht: e.target.value })}
+                rows={3} placeholder="Bijv: Draag comfortabele kleding en neem een flesje water mee!"
+                className="w-full bg-background border border-border/40 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none leading-relaxed" />
+            </div>
           </div>
         </div>
       )}

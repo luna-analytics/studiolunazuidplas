@@ -93,7 +93,8 @@ export async function sendReservationConfirmation(params: {
   const intakeVereist = lesType?.intakeVereist ?? (type !== "circle");
   const isCircle = type === "circle";
 
-  const intro = isCircle ? settings.circleWelkomst : settings.yogaWelkomst;
+  const perType = settings.lesTypeTemplates?.[type];
+  const intro = perType?.welkomst || (isCircle ? settings.circleWelkomst : settings.yogaWelkomst);
 
   const intakeBlok = intakeVereist
     ? `<div style="border-left:3px solid #8FA89B; background-color:#FDFBF9; padding:15px 20px; margin-bottom:25px;">
@@ -163,7 +164,8 @@ export async function sendReminderEmail(params: {
   const isCircle = type === "circle";
   const settings = await getEmailSettings();
 
-  const intro = isCircle ? settings.circleHerinnering : settings.yogaHerinnering;
+  const perType = settings.lesTypeTemplates?.[type];
+  const intro = perType?.herinnering || (isCircle ? settings.circleHerinnering : settings.yogaHerinnering);
 
   const extraBlok = isCircle
     ? ""

@@ -3,6 +3,11 @@ import Database from "@replit/database";
 const db = new Database();
 const KEY = "studio_luna:email_settings";
 
+export type LesTypeTemplate = {
+  welkomst: string;
+  herinnering: string;
+};
+
 export type EmailSettings = {
   yogaWelkomst: string;
   circleWelkomst: string;
@@ -12,6 +17,7 @@ export type EmailSettings = {
   annuleringsNote: string;
   welkomstTekst: string;
   emailOndertitel: string;
+  lesTypeTemplates: Record<string, LesTypeTemplate>;
 };
 
 export const EMAIL_DEFAULTS: EmailSettings = {
@@ -29,6 +35,7 @@ export const EMAIL_DEFAULTS: EmailSettings = {
     "Kun je toch niet komen? Annuleer dan minimaal 7 uur voor de les via de website of via WhatsApp, zodat anderen jouw plek kunnen overnemen.",
   welkomstTekst:
     "Je reservering is bevestigd. We kijken ernaar uit je te zien!",
+  lesTypeTemplates: {},
 };
 
 export async function getEmailSettings(): Promise<EmailSettings> {
@@ -70,6 +77,10 @@ export async function getEmailSettings(): Promise<EmailSettings> {
         typeof data.emailOndertitel === "string"
           ? data.emailOndertitel
           : EMAIL_DEFAULTS.emailOndertitel,
+      lesTypeTemplates:
+        data.lesTypeTemplates && typeof data.lesTypeTemplates === "object"
+          ? data.lesTypeTemplates
+          : {},
     };
   } catch {
     return { ...EMAIL_DEFAULTS };
