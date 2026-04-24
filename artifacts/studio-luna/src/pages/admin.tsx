@@ -16,7 +16,7 @@ const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 type Member = { id: string; name: string; email: string; credits: number; notes: string; createdAt: string };
 type StudioClass = { id: string; title: string; time: string; teacher: string; spotsTotal: number; description: string; type: string; dates: string[] };
 type RRequest = { id: string; name: string; email: string; package: string; createdAt: string; done: boolean };
-type LesType = { id: string; naam: string; kleur: string; proeflesGeldig: boolean; actief: boolean };
+type LesType = { id: string; naam: string; kleur: string; proeflesGeldig: boolean; actief: boolean; beschrijving?: string; locatie?: string; tijd?: string };
 type Rittenkaart = { id: string; naam: string; prijs: number; geldigheid: string; communityAccess: boolean; beschrijving?: string };
 type SpeciaalPakket = { id: string; naam: string; prijs: number; beschrijving?: string; typeId?: string; proeflesGeldig: boolean; actief: boolean };
 type TarievenData = { proeflesPrijs: number; losseLes: number; rittenkaarten: Rittenkaart[]; specials: SpeciaalPakket[]; betalingInfo: string };
@@ -555,9 +555,9 @@ function LessenTab() {
 function LestypesTab() {
   const [types, setTypes] = useState<LesType[]>([]);
   const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState({ naam: "", kleur: "groen", proeflesGeldig: true });
+  const [form, setForm] = useState({ naam: "", kleur: "groen", proeflesGeldig: true, beschrijving: "", locatie: "", tijd: "" });
   const [editId, setEditId] = useState<string | null>(null);
-  const [editForm, setEditForm] = useState({ naam: "", kleur: "groen", proeflesGeldig: true, actief: true });
+  const [editForm, setEditForm] = useState({ naam: "", kleur: "groen", proeflesGeldig: true, actief: true, beschrijving: "", locatie: "", tijd: "" });
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
 
@@ -574,14 +574,14 @@ function LestypesTab() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
       setTypes((t) => [...t, data]);
-      setForm({ naam: "", kleur: "groen", proeflesGeldig: true });
+      setForm({ naam: "", kleur: "groen", proeflesGeldig: true, beschrijving: "", locatie: "", tijd: "" });
       setShowForm(false);
     } catch (e: any) { setErr(e.message); } finally { setLoading(false); }
   };
 
   const startEdit = (t: LesType) => {
     setEditId(t.id);
-    setEditForm({ naam: t.naam, kleur: t.kleur, proeflesGeldig: t.proeflesGeldig, actief: t.actief });
+    setEditForm({ naam: t.naam, kleur: t.kleur, proeflesGeldig: t.proeflesGeldig, actief: t.actief, beschrijving: t.beschrijving ?? "", locatie: t.locatie ?? "", tijd: t.tijd ?? "" });
   };
 
   const saveEdit = async (id: string) => {
@@ -632,6 +632,24 @@ function LestypesTab() {
               <input type="checkbox" checked={form.proeflesGeldig} onChange={(e) => setForm({ ...form, proeflesGeldig: e.target.checked })} className="w-4 h-4 rounded" />
               <span className="text-sm text-foreground/70">Proefles geldig voor dit type</span>
             </label>
+            <div>
+              <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Beschrijving (voor Aanbod-pagina)</label>
+              <textarea rows={4} value={form.beschrijving} onChange={(e) => setForm({ ...form, beschrijving: e.target.value })}
+                placeholder="Uitgebreide omschrijving van dit aanbod…"
+                className="w-full bg-secondary border border-border/40 rounded-2xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none" />
+            </div>
+            <div>
+              <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Locatie</label>
+              <input value={form.locatie} onChange={(e) => setForm({ ...form, locatie: e.target.value })}
+                placeholder="bijv. Mamamo, Nieuwerkerk a/d IJssel"
+                className="w-full bg-secondary border border-border/40 rounded-2xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+            </div>
+            <div>
+              <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Tijdstip</label>
+              <input value={form.tijd} onChange={(e) => setForm({ ...form, tijd: e.target.value })}
+                placeholder="bijv. Elke vrijdag 10:00"
+                className="w-full bg-secondary border border-border/40 rounded-2xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+            </div>
             {err && <p className="text-sm text-red-500 bg-red-50 rounded-2xl px-3 py-2">{err}</p>}
             <button type="submit" disabled={loading}
               className="bg-primary text-primary-foreground px-5 py-2.5 rounded-2xl font-semibold text-sm hover:bg-primary/90 disabled:opacity-60 transition-colors">
@@ -674,6 +692,24 @@ function LestypesTab() {
                     <input type="checkbox" checked={editForm.actief} onChange={(e) => setEditForm({ ...editForm, actief: e.target.checked })} className="w-4 h-4 rounded" />
                     <span className="text-sm text-foreground/70">Actief (zichtbaar in rooster)</span>
                   </label>
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Beschrijving (voor Aanbod-pagina)</label>
+                  <textarea rows={4} value={editForm.beschrijving} onChange={(e) => setEditForm({ ...editForm, beschrijving: e.target.value })}
+                    placeholder="Uitgebreide omschrijving van dit aanbod…"
+                    className="w-full bg-secondary border border-border/40 rounded-2xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none" />
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Locatie</label>
+                  <input value={editForm.locatie} onChange={(e) => setEditForm({ ...editForm, locatie: e.target.value })}
+                    placeholder="bijv. Mamamo, Nieuwerkerk a/d IJssel"
+                    className="w-full bg-secondary border border-border/40 rounded-2xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Tijdstip</label>
+                  <input value={editForm.tijd} onChange={(e) => setEditForm({ ...editForm, tijd: e.target.value })}
+                    placeholder="bijv. Elke vrijdag 10:00"
+                    className="w-full bg-secondary border border-border/40 rounded-2xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
                 </div>
                 <div className="flex gap-2 pt-1">
                   <button onClick={() => saveEdit(t.id)}

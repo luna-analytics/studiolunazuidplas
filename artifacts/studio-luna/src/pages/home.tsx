@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLocation } from "wouter";
 import { BottomNav } from "@/components/bottom-nav";
 import { SeoFooter } from "@/components/seo-footer";
@@ -9,6 +9,8 @@ import { ArrowRight, Calendar, MapPin, Coffee, Mail, ClipboardList } from "lucid
 import { IMAGES } from "@/lib/images";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+type LesType = { id: string; naam: string; kleur: string; beschrijving?: string; locatie?: string; tijd?: string; actief: boolean };
 
 const DEFAULT_TEKSTEN = {
   aanbod_yoga_heading: "Sterk en vol\nvertrouwen richting\nje bevalling.",
@@ -57,6 +59,8 @@ export default function Home() {
   const [isInterestOpen, setIsInterestOpen] = useState(false);
   const [teksten, setTeksten] = useState(DEFAULT_TEKSTEN);
   const [photosReady, setPhotosReady] = useState(false);
+  const [extraTypes, setExtraTypes] = useState<LesType[]>([]);
+  const scrolledRef = useRef(false);
 
   useEffect(() => {
     fetch(`${BASE}/api/pagina-teksten`)
@@ -64,6 +68,23 @@ export default function Home() {
       .then((d) => { if (d) setTeksten((prev) => ({ ...prev, ...d })); })
       .catch(() => {})
       .finally(() => setPhotosReady(true));
+
+    fetch(`${BASE}/api/class-types`)
+      .then((r) => r.ok ? r.json() : [])
+      .then((types: LesType[]) => {
+        setExtraTypes(types.filter((t) => t.actief && t.beschrijving?.trim()));
+        if (!scrolledRef.current) {
+          const hash = window.location.hash.slice(1);
+          if (hash) {
+            scrolledRef.current = true;
+            setTimeout(() => {
+              const el = document.getElementById(hash);
+              if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+            }, 300);
+          }
+        }
+      })
+      .catch(() => {});
   }, []);
 
   return (
@@ -249,6 +270,70 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        {/* ══════════════════════════════════════════════════════════
+            2b — DYNAMISCHE EXTRA AANBOD SECTIES (beheerd via admin)
+        ══════════════════════════════════════════════════════════ */}
+        {extraTypes.map((type) => (
+          <section key={type.id} id={type.id} className="relative px-7 md:px-14 lg:px-18 py-20 md:py-28">
+            <div className="absolute inset-0 bg-gradient-to-b from-background via-secondary/25 to-background pointer-events-none" />
+            <div className="relative">
+              <motion.p
+                variants={fadeUp} initial="hidden" whileInView="show"
+                viewport={{ once: true, margin: "-60px" }} custom={0}
+                className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary/60 mb-5 flex items-center gap-3"
+              >
+                <span className="inline-block w-8 h-px bg-primary/40" />
+                Nieuw aanbod
+              </motion.p>
+
+              <motion.h2
+                variants={fadeUp} initial="hidden" whileInView="show"
+                viewport={{ once: true, margin: "-60px" }} custom={0.08}
+                className="font-display text-3xl md:text-4xl font-medium text-foreground leading-[1.15] mb-8"
+              >
+                {type.naam}
+              </motion.h2>
+
+              <div className="md:grid md:grid-cols-[1.2fr_1fr] md:gap-20 md:items-start">
+                <motion.div
+                  variants={fadeUp} initial="hidden" whileInView="show"
+                  viewport={{ once: true, margin: "-60px" }} custom={0.12}
+                >
+                  <p className="text-[15px] text-foreground/60 leading-[1.95] mb-8">{type.beschrijving}</p>
+                  <button
+                    onClick={() => navigate("/rooster")}
+                    className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-7 py-3.5 rounded-2xl font-semibold text-sm hover:bg-primary/88 shadow-soft group"
+                  >
+                    Bekijk het rooster
+                    <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+                  </button>
+                </motion.div>
+
+                {(type.tijd || type.locatie) && (
+                  <motion.div
+                    variants={fadeUp} initial="hidden" whileInView="show"
+                    viewport={{ once: true, margin: "-60px" }} custom={0.2}
+                    className="mt-10 md:mt-0 space-y-4 text-sm text-foreground/55"
+                  >
+                    {type.tijd && (
+                      <div className="flex items-start gap-3">
+                        <Calendar className="w-4 h-4 shrink-0 text-primary mt-0.5" />
+                        <span className="leading-[1.8]">{type.tijd}</span>
+                      </div>
+                    )}
+                    {type.locatie && (
+                      <div className="flex items-start gap-3">
+                        <MapPin className="w-4 h-4 shrink-0 text-primary mt-0.5" />
+                        <span className="leading-[1.8]">{type.locatie}</span>
+                      </div>
+                    )}
+                  </motion.div>
+                )}
+              </div>
+            </div>
+          </section>
+        ))}
 
         {/* ══════════════════════════════════════════════════════════
             3 — BEVALLINGS SPECIALS

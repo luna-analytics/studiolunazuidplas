@@ -10,6 +10,9 @@ export type LesType = {
   kleur: "groen" | "terra" | "roze" | "beige" | "donkergroen" | "lila" | "geel" | "blauw";
   proeflesGeldig: boolean;
   actief: boolean;
+  beschrijving?: string;
+  locatie?: string;
+  tijd?: string;
 };
 
 const SEED: LesType[] = [

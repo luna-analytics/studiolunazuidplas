@@ -6,11 +6,12 @@ import { ReserveerModal } from "@/components/reserveer-modal";
 import { BottomNav } from "@/components/bottom-nav";
 import { SeoFooter } from "@/components/seo-footer";
 import { motion } from "framer-motion";
-import { Clock, Users, MapPin } from "lucide-react";
+import { Clock, Users, MapPin, Info } from "lucide-react";
+import { useLocation } from "wouter";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
-type LesType = { id: string; naam: string; kleur: string };
+type LesType = { id: string; naam: string; kleur: string; beschrijving?: string };
 
 const KLEUR_MAP: Record<string, { bg: string; text: string }> = {
   groen:       { bg: "#8fa89b", text: "#ffffff" },
@@ -40,6 +41,7 @@ type ClassInstance = {
 };
 
 export default function Rooster() {
+  const [, navigate] = useLocation();
   const [modalOpen, setModalOpen] = useState(false);
   const [selected, setSelected] = useState<ClassInstance | null>(null);
   const { classes, loading: classesLoading, refetch: refetchClasses } = useClasses();
@@ -59,6 +61,9 @@ export default function Rooster() {
 
   const getLabel = (typeId: string) =>
     lesTypes.find((t) => t.id === typeId)?.naam ?? typeId;
+
+  const hasBeschrijving = (typeId: string) =>
+    !!(lesTypes.find((t) => t.id === typeId)?.beschrijving?.trim());
 
   const upcomingInstances = useMemo((): ClassInstance[] => {
     const instances: ClassInstance[] = [];
@@ -165,19 +170,30 @@ export default function Rooster() {
                         </span>
                       </div>
 
-                      {isFull ? (
-                        <div className="w-full py-2.5 rounded-2xl text-center text-sm font-semibold bg-foreground/10 text-foreground/40">
-                          Vol
-                        </div>
-                      ) : (
-                        <button
-                          onClick={() => handleReserveer(instance)}
-                          className="w-full py-2.5 rounded-2xl text-sm font-semibold transition-all active:scale-[0.98]"
-                          style={{ backgroundColor: colors.bg, color: colors.text }}
-                        >
-                          Reserveer jouw plekje
-                        </button>
-                      )}
+                      <div className="flex flex-col gap-2">
+                        {isFull ? (
+                          <div className="w-full py-2.5 rounded-2xl text-center text-sm font-semibold bg-foreground/10 text-foreground/40">
+                            Vol
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => handleReserveer(instance)}
+                            className="w-full py-2.5 rounded-2xl text-sm font-semibold transition-all active:scale-[0.98]"
+                            style={{ backgroundColor: colors.bg, color: colors.text }}
+                          >
+                            Reserveer jouw plekje
+                          </button>
+                        )}
+                        {hasBeschrijving(instance.type) && (
+                          <button
+                            onClick={() => navigate(`/aanbod#${instance.type}`)}
+                            className="w-full py-2 rounded-2xl text-sm font-medium flex items-center justify-center gap-1.5 text-foreground/50 hover:text-foreground transition-colors"
+                          >
+                            <Info className="w-3.5 h-3.5" />
+                            Meer info over dit aanbod
+                          </button>
+                        )}
+                      </div>
                     </div>
                   </motion.div>
                 );
