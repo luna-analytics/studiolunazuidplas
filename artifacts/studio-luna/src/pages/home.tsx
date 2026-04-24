@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { BottomNav } from "@/components/bottom-nav";
 import { SeoFooter } from "@/components/seo-footer";
@@ -63,18 +63,6 @@ export default function Home() {
   const [teksten, setTeksten] = useState(DEFAULT_TEKSTEN);
   const [photosReady, setPhotosReady] = useState(false);
   const [extraTypes, setExtraTypes] = useState<LesType[]>([]);
-  const scrolledRef = useRef(false);
-
-  useEffect(() => {
-    const hash = window.location.hash.slice(1);
-    if (hash && !scrolledRef.current) {
-      scrolledRef.current = true;
-      setTimeout(() => {
-        const el = document.getElementById(hash);
-        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-      }, 400);
-    }
-  }, []);
 
   useEffect(() => {
     fetch(`${BASE}/api/pagina-teksten`)
@@ -87,17 +75,23 @@ export default function Home() {
       .then((r) => r.ok ? r.json() : [])
       .then((types: LesType[]) => {
         setExtraTypes(types.filter((t) => t.actief && t.beschrijving?.trim() && t.id !== "yoga" && t.id !== "circle"));
-        const hash = window.location.hash.slice(1);
-        if (hash && !scrolledRef.current) {
-          scrolledRef.current = true;
-          setTimeout(() => {
-            const el = document.getElementById(hash);
-            if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-          }, 300);
-        }
       })
       .catch(() => {});
   }, []);
+
+  useEffect(() => {
+    const hash = window.location.hash.slice(1);
+    if (!hash) return;
+    const attempt = (retries: number) => {
+      const el = document.getElementById(hash);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else if (retries > 0) {
+        setTimeout(() => attempt(retries - 1), 200);
+      }
+    };
+    setTimeout(() => attempt(10), 300);
+  }, [extraTypes]);
 
   return (
     <div className="min-h-screen bg-background pb-28 md:pb-16 md:pt-16 flex justify-center">
