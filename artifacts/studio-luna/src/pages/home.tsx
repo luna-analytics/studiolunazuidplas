@@ -83,7 +83,7 @@ export default function Home() {
     fetch(`${BASE}/api/class-types`)
       .then((r) => r.ok ? r.json() : [])
       .then((types: LesType[]) => {
-        setExtraTypes(types.filter((t) => t.actief && t.beschrijving?.trim()));
+        setExtraTypes(types.filter((t) => t.actief && t.beschrijving?.trim() && t.id !== "yoga" && t.id !== "circle"));
         const hash = window.location.hash.slice(1);
         if (hash && !scrolledRef.current) {
           scrolledRef.current = true;
