@@ -10,14 +10,15 @@ export type LesType = {
   kleur: "groen" | "terra" | "roze" | "beige" | "donkergroen" | "lila" | "geel" | "blauw";
   proeflesGeldig: boolean;
   actief: boolean;
+  intakeVereist: boolean;
   beschrijving?: string;
   locatie?: string;
   tijd?: string;
 };
 
 const SEED: LesType[] = [
-  { id: "yoga", naam: "Yoga", kleur: "groen", proeflesGeldig: true, actief: true },
-  { id: "circle", naam: "Circle", kleur: "roze", proeflesGeldig: false, actief: true },
+  { id: "yoga", naam: "Yoga", kleur: "groen", proeflesGeldig: true, actief: true, intakeVereist: true },
+  { id: "circle", naam: "Circle", kleur: "roze", proeflesGeldig: false, actief: true, intakeVereist: false },
 ];
 
 async function read(): Promise<LesType[]> {

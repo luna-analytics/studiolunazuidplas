@@ -13,10 +13,11 @@ interface ReserveerModalProps {
   dateStr: string;
   time: string;
   type: string;
+  intakeVereist?: boolean;
 }
 
 export function ReserveerModal({
-  isOpen, onClose, classId, classTitle, dateLabel, dateStr, time, type,
+  isOpen, onClose, classId, classTitle, dateLabel, dateStr, time, type, intakeVereist = true,
 }: ReserveerModalProps) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -24,7 +25,7 @@ export function ReserveerModal({
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
 
-  const isCircle = type === "circle";
+  const showIntake = intakeVereist;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -100,7 +101,7 @@ export function ReserveerModal({
                       Je ontvangt een bevestiging op <strong className="text-foreground">{email}</strong>.
                     </p>
                   </div>
-                  {!isCircle && (
+                  {showIntake && (
                     <a
                       href="https://tally.so/r/XxED7j"
                       target="_blank"
@@ -123,7 +124,7 @@ export function ReserveerModal({
                     <p className="text-foreground/70 font-medium capitalize">{dateLabel} · {time}</p>
                   </div>
 
-                  {!isCircle && (
+                  {showIntake && (
                     <div className="bg-secondary rounded-2xl px-4 py-3 mb-4 flex items-start gap-3">
                       <ClipboardList className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                       <div>

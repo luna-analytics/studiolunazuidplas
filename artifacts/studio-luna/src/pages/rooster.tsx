@@ -11,7 +11,7 @@ import { useLocation } from "wouter";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
-type LesType = { id: string; naam: string; kleur: string; beschrijving?: string; locatie?: string };
+type LesType = { id: string; naam: string; kleur: string; beschrijving?: string; locatie?: string; intakeVereist?: boolean };
 
 const toSlug = (naam: string) =>
   naam.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -229,6 +229,7 @@ export default function Rooster() {
             dateStr={selected.dateStr}
             time={selected.time}
             type={selected.type}
+            intakeVereist={lesTypes.find((t) => t.id === selected.type)?.intakeVereist ?? true}
           />
         )}
       </div>

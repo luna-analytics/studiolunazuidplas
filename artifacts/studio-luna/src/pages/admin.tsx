@@ -16,7 +16,7 @@ const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 type Member = { id: string; name: string; email: string; credits: number; notes: string; createdAt: string };
 type StudioClass = { id: string; title: string; time: string; teacher: string; spotsTotal: number; description: string; type: string; dates: string[] };
 type RRequest = { id: string; name: string; email: string; package: string; createdAt: string; done: boolean };
-type LesType = { id: string; naam: string; kleur: string; proeflesGeldig: boolean; actief: boolean; beschrijving?: string; locatie?: string; tijd?: string };
+type LesType = { id: string; naam: string; kleur: string; proeflesGeldig: boolean; actief: boolean; intakeVereist: boolean; beschrijving?: string; locatie?: string; tijd?: string };
 type Rittenkaart = { id: string; naam: string; prijs: number; geldigheid: string; communityAccess: boolean; beschrijving?: string };
 type SpeciaalPakket = { id: string; naam: string; prijs: number; beschrijving?: string; typeId?: string; proeflesGeldig: boolean; actief: boolean };
 type TarievenData = { proeflesPrijs: number; losseLes: number; rittenkaarten: Rittenkaart[]; specials: SpeciaalPakket[]; betalingInfo: string };
@@ -555,9 +555,9 @@ function LessenTab() {
 function LestypesTab() {
   const [types, setTypes] = useState<LesType[]>([]);
   const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState({ naam: "", kleur: "groen", proeflesGeldig: true, beschrijving: "", locatie: "", tijd: "" });
+  const [form, setForm] = useState({ naam: "", kleur: "groen", proeflesGeldig: true, intakeVereist: true, beschrijving: "", locatie: "", tijd: "" });
   const [editId, setEditId] = useState<string | null>(null);
-  const [editForm, setEditForm] = useState({ naam: "", kleur: "groen", proeflesGeldig: true, actief: true, beschrijving: "", locatie: "", tijd: "" });
+  const [editForm, setEditForm] = useState({ naam: "", kleur: "groen", proeflesGeldig: true, actief: true, intakeVereist: true, beschrijving: "", locatie: "", tijd: "" });
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
 
@@ -574,14 +574,14 @@ function LestypesTab() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
       setTypes((t) => [...t, data]);
-      setForm({ naam: "", kleur: "groen", proeflesGeldig: true, beschrijving: "", locatie: "", tijd: "" });
+      setForm({ naam: "", kleur: "groen", proeflesGeldig: true, intakeVereist: true, beschrijving: "", locatie: "", tijd: "" });
       setShowForm(false);
     } catch (e: any) { setErr(e.message); } finally { setLoading(false); }
   };
 
   const startEdit = (t: LesType) => {
     setEditId(t.id);
-    setEditForm({ naam: t.naam, kleur: t.kleur, proeflesGeldig: t.proeflesGeldig, actief: t.actief, beschrijving: t.beschrijving ?? "", locatie: t.locatie ?? "", tijd: t.tijd ?? "" });
+    setEditForm({ naam: t.naam, kleur: t.kleur, proeflesGeldig: t.proeflesGeldig, actief: t.actief, intakeVereist: t.intakeVereist ?? true, beschrijving: t.beschrijving ?? "", locatie: t.locatie ?? "", tijd: t.tijd ?? "" });
   };
 
   const saveEdit = async (id: string) => {
@@ -631,6 +631,10 @@ function LestypesTab() {
             <label className="flex items-center gap-3 cursor-pointer">
               <input type="checkbox" checked={form.proeflesGeldig} onChange={(e) => setForm({ ...form, proeflesGeldig: e.target.checked })} className="w-4 h-4 rounded" />
               <span className="text-sm text-foreground/70">Proefles geldig voor dit type</span>
+            </label>
+            <label className="flex items-center gap-3 cursor-pointer">
+              <input type="checkbox" checked={form.intakeVereist} onChange={(e) => setForm({ ...form, intakeVereist: e.target.checked })} className="w-4 h-4 rounded" />
+              <span className="text-sm text-foreground/70">Intake vereist (tally-formulier tonen)</span>
             </label>
             <div>
               <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Beschrijving (voor Aanbod-pagina)</label>
@@ -691,6 +695,10 @@ function LestypesTab() {
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input type="checkbox" checked={editForm.actief} onChange={(e) => setEditForm({ ...editForm, actief: e.target.checked })} className="w-4 h-4 rounded" />
                     <span className="text-sm text-foreground/70">Actief (zichtbaar in rooster)</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" checked={editForm.intakeVereist} onChange={(e) => setEditForm({ ...editForm, intakeVereist: e.target.checked })} className="w-4 h-4 rounded" />
+                    <span className="text-sm text-foreground/70">Intake vereist</span>
                   </label>
                 </div>
                 <div>

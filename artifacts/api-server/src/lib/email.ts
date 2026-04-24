@@ -1,5 +1,6 @@
 import { Resend } from "resend";
 import { getEmailSettings } from "./email-settings.js";
+import { readClassTypes } from "./class-types.js";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -83,19 +84,22 @@ export async function sendReservationConfirmation(params: {
 }) {
   const { toEmail, toName, classTitle, dateStr, time, type } = params;
   const formattedDate = formatDate(dateStr);
-  const isCircle = type === "circle";
   const settings = await getEmailSettings();
+  const allTypes = await readClassTypes();
+  const lesType = allTypes.find((t) => t.id === type);
+  const intakeVereist = lesType?.intakeVereist ?? (type !== "circle");
+  const isCircle = type === "circle";
 
   const intro = isCircle ? settings.circleWelkomst : settings.yogaWelkomst;
 
-  const intakeBlok = isCircle
-    ? ""
-    : `<div style="border-left:3px solid #8FA89B; background-color:#FDFBF9; padding:15px 20px; margin-bottom:25px;">
+  const intakeBlok = intakeVereist
+    ? `<div style="border-left:3px solid #8FA89B; background-color:#FDFBF9; padding:15px 20px; margin-bottom:25px;">
         <p style="margin:0; font-size:14px; line-height:1.6; color:#3A4F41;">
           <strong style="color:#8FA89B; text-transform:uppercase; font-size:11px; letter-spacing:1px;">Intake</strong><br>
           Heb je de intake nog niet ingevuld? Doe dat dan via <a href="https://tally.so/r/XxED7j" style="color:#3A4F41;">tally.so/r/XxED7j</a> zodat Studio Luna je goed kan begeleiden.
         </p>
-      </div>`;
+      </div>`
+    : "";
 
   const inner = `
     ${HEADER("Reservering ontvangen")}
