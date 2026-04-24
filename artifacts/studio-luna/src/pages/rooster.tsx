@@ -11,7 +11,10 @@ import { useLocation } from "wouter";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
-type LesType = { id: string; naam: string; kleur: string; beschrijving?: string };
+type LesType = { id: string; naam: string; kleur: string; beschrijving?: string; locatie?: string };
+
+const toSlug = (naam: string) =>
+  naam.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
 const KLEUR_MAP: Record<string, { bg: string; text: string }> = {
   groen:       { bg: "#8fa89b", text: "#ffffff" },
@@ -189,7 +192,10 @@ export default function Rooster() {
                         )}
                         {hasAanbodLink(instance.type) && (
                           <button
-                            onClick={() => navigate(`/aanbod#${instance.type}`)}
+                            onClick={() => {
+                              const naam = lesTypes.find((t) => t.id === instance.type)?.naam;
+                              navigate(`/aanbod#${naam ? toSlug(naam) : instance.type}`);
+                            }}
                             className="w-full py-2 rounded-2xl text-sm font-medium flex items-center justify-center gap-1.5 text-foreground/50 hover:text-foreground transition-colors"
                           >
                             <Info className="w-3.5 h-3.5" />

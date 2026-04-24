@@ -12,6 +12,9 @@ const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 type LesType = { id: string; naam: string; kleur: string; beschrijving?: string; locatie?: string; tijd?: string; actief: boolean };
 
+const toSlug = (naam: string) =>
+  naam.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
 const DEFAULT_TEKSTEN = {
   aanbod_yoga_heading: "Sterk en vol\nvertrouwen richting\nje bevalling.",
   aanbod_yoga_tekst1: "Sterk, ontspannen en vol vertrouwen richting je bevalling. Met zachte houdingen houden we je veranderende lichaam in balans. We oefenen met ademhaling en maken contact met je baby.",
@@ -284,7 +287,7 @@ export default function Home() {
             2b — DYNAMISCHE EXTRA AANBOD SECTIES (beheerd via admin)
         ══════════════════════════════════════════════════════════ */}
         {extraTypes.map((type) => (
-          <section key={type.id} id={type.id} className="relative px-7 md:px-14 lg:px-18 py-20 md:py-28">
+          <section key={type.id} id={toSlug(type.naam)} className="relative px-7 md:px-14 lg:px-18 py-20 md:py-28">
             <div className="absolute inset-0 bg-gradient-to-b from-background via-secondary/25 to-background pointer-events-none" />
             <div className="relative">
               <motion.p
