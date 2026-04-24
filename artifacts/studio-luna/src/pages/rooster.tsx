@@ -62,8 +62,10 @@ export default function Rooster() {
   const getLabel = (typeId: string) =>
     lesTypes.find((t) => t.id === typeId)?.naam ?? typeId;
 
-  const hasBeschrijving = (typeId: string) =>
-    !!(lesTypes.find((t) => t.id === typeId)?.beschrijving?.trim());
+  const hasAanbodLink = (typeId: string) => {
+    if (typeId === "yoga" || typeId === "circle") return true;
+    return !!(lesTypes.find((t) => t.id === typeId)?.beschrijving?.trim());
+  };
 
   const upcomingInstances = useMemo((): ClassInstance[] => {
     const instances: ClassInstance[] = [];
@@ -184,7 +186,7 @@ export default function Rooster() {
                             Reserveer jouw plekje
                           </button>
                         )}
-                        {hasBeschrijving(instance.type) && (
+                        {hasAanbodLink(instance.type) && (
                           <button
                             onClick={() => navigate(`/aanbod#${instance.type}`)}
                             className="w-full py-2 rounded-2xl text-sm font-medium flex items-center justify-center gap-1.5 text-foreground/50 hover:text-foreground transition-colors"

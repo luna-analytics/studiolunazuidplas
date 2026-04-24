@@ -63,6 +63,17 @@ export default function Home() {
   const scrolledRef = useRef(false);
 
   useEffect(() => {
+    const hash = window.location.hash.slice(1);
+    if (hash && !scrolledRef.current) {
+      scrolledRef.current = true;
+      setTimeout(() => {
+        const el = document.getElementById(hash);
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 400);
+    }
+  }, []);
+
+  useEffect(() => {
     fetch(`${BASE}/api/pagina-teksten`)
       .then((r) => r.ok ? r.json() : null)
       .then((d) => { if (d) setTeksten((prev) => ({ ...prev, ...d })); })
@@ -73,15 +84,13 @@ export default function Home() {
       .then((r) => r.ok ? r.json() : [])
       .then((types: LesType[]) => {
         setExtraTypes(types.filter((t) => t.actief && t.beschrijving?.trim()));
-        if (!scrolledRef.current) {
-          const hash = window.location.hash.slice(1);
-          if (hash) {
-            scrolledRef.current = true;
-            setTimeout(() => {
-              const el = document.getElementById(hash);
-              if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-            }, 300);
-          }
+        const hash = window.location.hash.slice(1);
+        if (hash && !scrolledRef.current) {
+          scrolledRef.current = true;
+          setTimeout(() => {
+            const el = document.getElementById(hash);
+            if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+          }, 300);
         }
       })
       .catch(() => {});
@@ -108,7 +117,7 @@ export default function Home() {
             1 — ZWANGERSCHAPSYOGA
             Grote foto boven, tekst eronder, geen kaders
         ══════════════════════════════════════════════════════════ */}
-        <section className="relative py-16 md:py-24">
+        <section id="yoga" className="relative py-16 md:py-24">
           {/* Subtiele achtergrond-overgang */}
           <div className="absolute inset-0 bg-gradient-to-b from-background via-secondary/20 to-background pointer-events-none" />
 
@@ -212,7 +221,7 @@ export default function Home() {
             2 — MAMA CIRCLE
             Omgekeerde volgorde: tekst breed, geen foto (sfeer door achtergrond)
         ══════════════════════════════════════════════════════════ */}
-        <section className="relative px-7 md:px-14 lg:px-18 py-20 md:py-32">
+        <section id="circle" className="relative px-7 md:px-14 lg:px-18 py-20 md:py-32">
           <div className="absolute inset-0 bg-gradient-to-b from-background via-secondary/30 to-background pointer-events-none" />
 
           <div className="relative">
@@ -300,7 +309,7 @@ export default function Home() {
                   variants={fadeUp} initial="hidden" whileInView="show"
                   viewport={{ once: true, margin: "-60px" }} custom={0.12}
                 >
-                  <p className="text-[15px] text-foreground/60 leading-[1.95] mb-8">{type.beschrijving}</p>
+                  <p className="text-[15px] text-foreground/60 leading-[1.95] mb-8 whitespace-pre-line">{type.beschrijving}</p>
                   <button
                     onClick={() => navigate("/rooster")}
                     className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-7 py-3.5 rounded-2xl font-semibold text-sm hover:bg-primary/88 shadow-soft group"
