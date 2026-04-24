@@ -65,6 +65,9 @@ export default function Rooster() {
   const hasAanbodLink = (typeId: string) =>
     !!(lesTypes.find((t) => t.id === typeId)?.beschrijving?.trim());
 
+  const getLocatie = (typeId: string) =>
+    lesTypes.find((t) => t.id === typeId)?.locatie?.trim() || "Huize Mooisteen";
+
   const upcomingInstances = useMemo((): ClassInstance[] => {
     const instances: ClassInstance[] = [];
     for (const cls of classes) {
@@ -166,7 +169,7 @@ export default function Rooster() {
                         </span>
                         <span className="flex items-center gap-1 text-foreground/60">
                           <MapPin className="w-3.5 h-3.5" />
-                          Huize Mooisteen
+                          {getLocatie(instance.type)}
                         </span>
                       </div>
 
