@@ -62,10 +62,8 @@ export default function Rooster() {
   const getLabel = (typeId: string) =>
     lesTypes.find((t) => t.id === typeId)?.naam ?? typeId;
 
-  const hasAanbodLink = (typeId: string) => {
-    if (typeId === "yoga" || typeId === "circle") return true;
-    return !!(lesTypes.find((t) => t.id === typeId)?.beschrijving?.trim());
-  };
+  const hasAanbodLink = (typeId: string) =>
+    !!(lesTypes.find((t) => t.id === typeId)?.beschrijving?.trim());
 
   const upcomingInstances = useMemo((): ClassInstance[] => {
     const instances: ClassInstance[] = [];
