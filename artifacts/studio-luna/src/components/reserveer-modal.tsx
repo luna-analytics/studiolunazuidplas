@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, CheckCircle2, Mail, User, ClipboardList, ExternalLink } from "lucide-react";
 
@@ -28,6 +28,14 @@ export function ReserveerModal({
   const [stripeLoading, setStripeLoading] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
+  const [betalingInfo, setBetalingInfo] = useState("Betaling vindt in de studio plaats — contant of via Tikkie");
+
+  useEffect(() => {
+    fetch(`${BASE}/api/tarieven`)
+      .then((r) => r.ok ? r.json() : null)
+      .then((d) => { if (d?.betalingInfo) setBetalingInfo(d.betalingInfo); })
+      .catch(() => {});
+  }, []);
 
   const showIntake = intakeVereist;
 
@@ -219,7 +227,7 @@ export function ReserveerModal({
                     <p className="text-xs text-center text-foreground/40 pt-1">
                       {stripeBetaling
                         ? "Je wordt doorgestuurd naar Stripe voor veilige betaling"
-                        : "Betaling vindt in de studio plaats — contant of via Tikkie"}
+                        : betalingInfo}
                     </p>
                   </form>
                 </>

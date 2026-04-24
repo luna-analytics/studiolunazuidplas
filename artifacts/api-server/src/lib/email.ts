@@ -1,6 +1,7 @@
 import { Resend } from "resend";
 import { getEmailSettings } from "./email-settings.js";
 import { readClassTypes } from "./class-types.js";
+import { readTarieven } from "./tarieven.js";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -86,6 +87,8 @@ export async function sendReservationConfirmation(params: {
   const formattedDate = formatDate(dateStr);
   const settings = await getEmailSettings();
   const allTypes = await readClassTypes();
+  const tarieven = await readTarieven();
+  const betalingInfo = tarieven.betalingInfo || "Betaling vindt in de studio plaats — contant of via Tikkie.";
   const lesType = allTypes.find((t) => t.id === type);
   const intakeVereist = lesType?.intakeVereist ?? (type !== "circle");
   const isCircle = type === "circle";
@@ -122,7 +125,7 @@ export async function sendReservationConfirmation(params: {
         <div style="border-left:3px solid #C78D76; background-color:#FDFBF9; padding:15px 20px; margin-bottom:25px;">
           <p style="margin:0; font-size:14px; line-height:1.6; color:#3A4F41;">
             <strong style="color:#C78D76; text-transform:uppercase; font-size:11px; letter-spacing:1px;">Betaling</strong><br>
-            Betaling vindt in de studio plaats — contant of via Tikkie.
+            ${betalingInfo}
           </p>
         </div>
 
