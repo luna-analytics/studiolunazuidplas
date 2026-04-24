@@ -41,6 +41,8 @@ type ClassInstance = {
   date: Date;
   dateStr: string;
   dateLabel: string;
+  stripeBetaling?: boolean;
+  stripeBedrag?: number;
 };
 
 export default function Rooster() {
@@ -89,6 +91,8 @@ export default function Rooster() {
             date,
             dateStr,
             dateLabel: format(date, "EEEE d MMMM", { locale: nl }),
+            stripeBetaling: (cls as any).stripeBetaling,
+            stripeBedrag: (cls as any).stripeBedrag,
           });
         }
       }
@@ -230,6 +234,8 @@ export default function Rooster() {
             time={selected.time}
             type={selected.type}
             intakeVereist={lesTypes.find((t) => t.id === selected.type)?.intakeVereist ?? true}
+            stripeBetaling={selected.stripeBetaling}
+            stripeBedrag={selected.stripeBedrag}
           />
         )}
       </div>

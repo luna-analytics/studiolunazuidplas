@@ -14,7 +14,7 @@ import {
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 type Member = { id: string; name: string; email: string; credits: number; notes: string; createdAt: string };
-type StudioClass = { id: string; title: string; time: string; teacher: string; spotsTotal: number; description: string; type: string; dates: string[] };
+type StudioClass = { id: string; title: string; time: string; teacher: string; spotsTotal: number; description: string; type: string; dates: string[]; stripeBetaling?: boolean; stripeBedrag?: number };
 type RRequest = { id: string; name: string; email: string; package: string; createdAt: string; done: boolean };
 type LesType = { id: string; naam: string; kleur: string; proeflesGeldig: boolean; actief: boolean; intakeVereist: boolean; beschrijving?: string; locatie?: string; tijd?: string };
 type Rittenkaart = { id: string; naam: string; prijs: number; geldigheid: string; communityAccess: boolean; beschrijving?: string };
@@ -258,7 +258,7 @@ function LessenTab() {
   const [lesTypes, setLesTypes] = useState<LesType[]>([]);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState({ title: "", time: "19:00", teacher: "Marjolein", spotsTotal: "8", description: "", type: "", newDate: "" });
+  const [form, setForm] = useState({ title: "", time: "19:00", teacher: "Marjolein", spotsTotal: "8", description: "", type: "", newDate: "", stripeBetaling: false, stripeBedrag: "" });
   const [classDates, setClassDates] = useState<string[]>([]);
   const [formLoading, setFormLoading] = useState(false);
   const [formError, setFormError] = useState("");
@@ -288,12 +288,18 @@ function LessenTab() {
     try {
       const res = await apiFetch("/admin/classes", {
         method: "POST",
-        body: JSON.stringify({ ...form, spotsTotal: Number(form.spotsTotal), dates: classDates }),
+        body: JSON.stringify({
+          ...form,
+          spotsTotal: Number(form.spotsTotal),
+          dates: classDates,
+          stripeBetaling: form.stripeBetaling,
+          stripeBedrag: form.stripeBetaling && form.stripeBedrag ? Number(form.stripeBedrag) : undefined,
+        }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
       setClasses((c) => [...c, data]);
-      setForm({ title: "", time: "19:00", teacher: "Marjolein", spotsTotal: "8", description: "", type: lesTypes[0]?.id ?? "", newDate: "" });
+      setForm({ title: "", time: "19:00", teacher: "Marjolein", spotsTotal: "8", description: "", type: lesTypes[0]?.id ?? "", newDate: "", stripeBetaling: false, stripeBedrag: "" });
       setClassDates([]);
       setShowForm(false);
     } catch (err: any) {
@@ -419,6 +425,20 @@ function LessenTab() {
                 ))}
               </div>
             </div>
+            <div className="border border-border/30 rounded-2xl p-3 space-y-2">
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input type="checkbox" checked={form.stripeBetaling} onChange={(e) => setForm({ ...form, stripeBetaling: e.target.checked })} className="w-4 h-4 rounded" />
+                <span className="text-sm font-semibold text-foreground/70">Online betaling via Stripe</span>
+              </label>
+              {form.stripeBetaling && (
+                <div>
+                  <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Bedrag (€)</label>
+                  <input type="number" min="0" step="0.01" value={form.stripeBedrag} onChange={(e) => setForm({ ...form, stripeBedrag: e.target.value })}
+                    placeholder="bijv. 12.50"
+                    className="w-full bg-secondary border border-border/40 rounded-2xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                </div>
+              )}
+            </div>
             {formError && <p className="text-sm text-red-500 bg-red-50 rounded-2xl px-3 py-2">{formError}</p>}
             <button type="submit" disabled={formLoading}
               className="bg-primary text-primary-foreground px-5 py-2.5 rounded-2xl font-semibold text-sm hover:bg-primary/90 transition-colors disabled:opacity-60">
@@ -539,6 +559,8 @@ function LessenTab() {
                 </div>
               </div>
 
+              <StripeBetalingEditor cls={cls} onUpdate={(updated) => setClasses((c) => c.map((x) => x.id === updated.id ? updated : x))} />
+
               <button onClick={() => deleteClass(cls.id)}
                 className="flex items-center gap-1.5 text-red-500 hover:text-red-600 text-xs font-semibold transition-colors">
                 <Trash2 className="w-3.5 h-3.5" /> Les verwijderen
@@ -547,6 +569,46 @@ function LessenTab() {
           )}
         </motion.div>
       ))}
+    </div>
+  );
+}
+
+function StripeBetalingEditor({ cls, onUpdate }: { cls: StudioClass; onUpdate: (c: StudioClass) => void }) {
+  const [stripeBetaling, setStripeBetaling] = useState(cls.stripeBetaling ?? false);
+  const [stripeBedrag, setStripeBedrag] = useState(cls.stripeBedrag ? String(cls.stripeBedrag) : "");
+  const [saving, setSaving] = useState(false);
+
+  const save = async () => {
+    setSaving(true);
+    const body: any = { stripeBetaling };
+    if (stripeBetaling && stripeBedrag) body.stripeBedrag = Number(stripeBedrag);
+    else body.stripeBedrag = null;
+    const res = await apiFetch(`/admin/classes/${cls.id}`, { method: "PATCH", body: JSON.stringify(body) });
+    if (res.ok) onUpdate(await res.json());
+    setSaving(false);
+  };
+
+  return (
+    <div>
+      <p className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-2">Online betaling (Stripe)</p>
+      <div className="bg-secondary rounded-2xl p-3 space-y-2">
+        <label className="flex items-center gap-3 cursor-pointer">
+          <input type="checkbox" checked={stripeBetaling} onChange={(e) => setStripeBetaling(e.target.checked)} className="w-4 h-4 rounded" />
+          <span className="text-sm text-foreground/70">Online betaling verplicht voor deze les</span>
+        </label>
+        {stripeBetaling && (
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-foreground/60">€</span>
+            <input type="number" min="0" step="0.01" value={stripeBedrag} onChange={(e) => setStripeBedrag(e.target.value)}
+              placeholder="0.00"
+              className="w-32 bg-background border border-border/40 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+          </div>
+        )}
+        <button onClick={save} disabled={saving}
+          className="px-4 py-1.5 bg-primary/10 text-primary rounded-xl text-xs font-semibold hover:bg-primary/20 transition-colors disabled:opacity-60">
+          {saving ? "Opslaan…" : "Opslaan"}
+        </button>
+      </div>
     </div>
   );
 }

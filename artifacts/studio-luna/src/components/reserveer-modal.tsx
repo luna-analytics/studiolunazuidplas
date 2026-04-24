@@ -14,18 +14,50 @@ interface ReserveerModalProps {
   time: string;
   type: string;
   intakeVereist?: boolean;
+  stripeBetaling?: boolean;
+  stripeBedrag?: number;
 }
 
 export function ReserveerModal({
   isOpen, onClose, classId, classTitle, dateLabel, dateStr, time, type, intakeVereist = true,
+  stripeBetaling = false, stripeBedrag,
 }: ReserveerModalProps) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
+  const [stripeLoading, setStripeLoading] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
 
   const showIntake = intakeVereist;
+
+  const handleStripeCheckout = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name.trim() || !email.trim()) {
+      setError("Vul je naam en e-mailadres in.");
+      return;
+    }
+    setStripeLoading(true);
+    setError("");
+    try {
+      const res = await fetch(`${BASE}/api/stripe/checkout`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, classId, classTitle, dateStr, time, type }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        if (data.error === "Vol") throw new Error("Deze les is helaas vol.");
+        if (data.error === "DubbelReservering") throw new Error("Je hebt al een plek gereserveerd voor deze les.");
+        throw new Error(data.message ?? data.error ?? "Er ging iets mis.");
+      }
+      window.location.href = data.url;
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setStripeLoading(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -138,7 +170,7 @@ export function ReserveerModal({
                     </div>
                   )}
 
-                  <form onSubmit={handleSubmit} className="space-y-3">
+                  <form onSubmit={stripeBetaling ? handleStripeCheckout : handleSubmit} className="space-y-3">
                     <div>
                       <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1.5 block">Naam</label>
                       <div className="relative">
@@ -173,17 +205,21 @@ export function ReserveerModal({
 
                     <button
                       type="submit"
-                      disabled={loading}
+                      disabled={loading || stripeLoading}
                       className="w-full py-4 rounded-2xl bg-primary text-primary-foreground font-semibold text-base hover:bg-primary/90 disabled:opacity-60 transition-colors flex items-center justify-center gap-2 active:scale-[0.98]"
                     >
-                      {loading ? (
+                      {(loading || stripeLoading) ? (
                         <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
                           className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full" />
+                      ) : stripeBetaling ? (
+                        <>Betalen{stripeBedrag ? ` — € ${stripeBedrag.toFixed(2).replace(".", ",")}` : ""}</>
                       ) : "Plekje reserveren"}
                     </button>
 
                     <p className="text-xs text-center text-foreground/40 pt-1">
-                      Betaling vindt in de studio plaats — contant of via Tikkie
+                      {stripeBetaling
+                        ? "Je wordt doorgestuurd naar Stripe voor veilige betaling"
+                        : "Betaling vindt in de studio plaats — contant of via Tikkie"}
                     </p>
                   </form>
                 </>

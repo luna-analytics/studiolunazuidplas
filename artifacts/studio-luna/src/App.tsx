@@ -18,6 +18,7 @@ import Village from "./pages/village";
 import Inspiratie from "./pages/inspiratie";
 import BlogArtikel from "./pages/blog-artikel";
 import OverMij from "./pages/over-mij";
+import { BetalingSucces } from "./pages/betaling-succes";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -52,6 +53,7 @@ function Router() {
         <Route path="/blog" component={Inspiratie} />
         <Route path="/over-mij" component={OverMij} />
         <Route path="/profile" component={Profile} />
+        <Route path="/betaling/succes" component={BetalingSucces} />
         <Route component={NotFound} />
       </Switch>
     </>

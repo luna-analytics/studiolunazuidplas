@@ -20,6 +20,7 @@ runButton = "Project"
 [agent]
 stack = "PNPM_WORKSPACE"
 expertMode = true
+integrations = ["stripe:1.0.0"]
 
 [postMerge]
 path = "scripts/post-merge.sh"
@@ -30,3 +31,6 @@ timeoutMs = 20000
 [userenv.shared]
 JWT_SECRET = "c0b4e704cebe30708040bd1843e5680002b0d74b610bab50830190bd8af081ee"
 ADMIN_EMAIL = "info@studiolunazuidplas.nl"
+
+[nix]
+channel = "stable-25_05"

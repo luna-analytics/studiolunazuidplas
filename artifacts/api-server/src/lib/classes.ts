@@ -13,6 +13,8 @@ export type StudioClass = {
   description: string;
   type: string;
   dates: string[];
+  stripeBetaling?: boolean;
+  stripeBedrag?: number;
 };
 
 export async function readClasses(): Promise<StudioClass[]> {
