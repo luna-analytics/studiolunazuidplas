@@ -2394,6 +2394,7 @@ type PaginaTeksten = {
   aanbod_yoga_tekst1: string; aanbod_yoga_tekst2: string;
   aanbod_yoga_tijd: string; aanbod_yoga_locatie: string; aanbod_yoga_extra: string;
   aanbod_circle_titel: string; aanbod_circle_tekst: string;
+  tarieven_ondertitel: string;
   tarieven_aanvraag_tekst: string;
   over_mij_naam: string; over_mij_functie: string;
   over_mij_quote: string; over_mij_tekst: string; over_mij_foto: string;
@@ -2422,6 +2423,7 @@ const DEFAULT_PT: PaginaTeksten = {
   aanbod_yoga_extra: "Na afloop: verse thee en tijd voor verbinding",
   aanbod_circle_titel: "Zwanger & Mama Circle",
   aanbod_circle_tekst: "Bij Studio Luna geloven we in de kracht van de 'village'. Naast de fysieke lessen creëren we een veilige cirkel waarin je ervaringen deelt, vragen stelt en naar elkaar omkijkt. We gebruiken zachte yoga- en ademhalingsoefeningen om samen te vertragen, zodat er ruimte ontstaat om echt te luisteren naar jezelf en elkaar. Echte verbinding met andere zwangeren en mama's in Zuidplas!",
+  tarieven_ondertitel: "Gun jezelf dit wekelijkse rustmoment tijdens je zwangerschap.",
   tarieven_aanvraag_tekst: "Studio Luna voegt zo snel mogelijk je credits toe aan je account. De betaling vindt in de studio plaats bij je eerstvolgende les.",
   over_mij_naam: "Jouw naam",
   over_mij_functie: "Zwangerschapsyoga docente & oprichter Studio Luna",
@@ -2637,12 +2639,13 @@ function InhoudTab() {
         })}
       </div>
 
-      {/* TARIEVEN — AANVRAAG TEKST */}
+      {/* TARIEVEN */}
       <div className="bg-card border border-border/30 rounded-3xl p-5 space-y-4">
-        <h3 className="font-display text-lg font-medium">Tarieven — aanvraag tekst</h3>
-        <p className="text-xs text-foreground/50">Deze tekst verschijnt in het aanvraagformulier als iemand een rittenkaart, circle of reeks aanvraagt.</p>
+        <h3 className="font-display text-lg font-medium">Tarieven pagina</h3>
+        <p className="text-xs text-foreground/50">Teksten op de tarieven-pagina.</p>
+        {field("Ondertitel (onder 'Tarieven')", "tarieven_ondertitel", false, "bijv. Gun jezelf dit wekelijkse rustmoment…")}
         {field("Informatietekst in aanvraagformulier", "tarieven_aanvraag_tekst", true)}
-        {saveBtn("tarieven_aanvraag", { tarieven_aanvraag_tekst: teksten.tarieven_aanvraag_tekst })}
+        {saveBtn("tarieven_aanvraag", { tarieven_ondertitel: teksten.tarieven_ondertitel, tarieven_aanvraag_tekst: teksten.tarieven_aanvraag_tekst })}
       </div>
 
       {/* OVER MIJ */}

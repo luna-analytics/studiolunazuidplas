@@ -138,6 +138,7 @@ export default function Tarieven() {
   const [tarieven, setTarieven] = useState<TarievenData>(DEFAULT_TARIEVEN);
   const [loading, setLoading] = useState(true);
   const [aanvraagTekst, setAanvraagTekst] = useState(DEFAULT_AANVRAAG_TEKST);
+  const [ondertitel, setOndertitel] = useState("Gun jezelf dit wekelijkse rustmoment tijdens je zwangerschap.");
 
   useEffect(() => {
     Promise.all([
@@ -146,6 +147,7 @@ export default function Tarieven() {
     ]).then(([tarData, ptData]) => {
       if (tarData) setTarieven(tarData);
       if (ptData?.tarieven_aanvraag_tekst) setAanvraagTekst(ptData.tarieven_aanvraag_tekst);
+      if (ptData?.tarieven_ondertitel) setOndertitel(ptData.tarieven_ondertitel);
     }).catch(() => {}).finally(() => setLoading(false));
   }, []);
 
@@ -280,7 +282,7 @@ export default function Tarieven() {
         <div className="px-6 md:px-12 lg:px-16 pt-14 md:pt-12 pb-12 bg-secondary md:rounded-3xl md:mx-6 md:mt-6 flex items-start justify-between gap-4">
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
             <h1 className="font-display text-3xl md:text-4xl font-medium text-foreground">Tarieven</h1>
-            <p className="text-foreground/60 mt-2 text-sm leading-relaxed">Gun jezelf dit wekelijkse rustmoment tijdens je zwangerschap.</p>
+            <p className="text-foreground/60 mt-2 text-sm leading-relaxed">{ondertitel}</p>
           </motion.div>
           <img src={`${import.meta.env.BASE_URL}images/studio-luna-logo.png`} alt="Studio Luna" className="h-24 w-auto shrink-0" loading="lazy" />
         </div>
