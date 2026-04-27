@@ -106,7 +106,7 @@ export async function sendReservationConfirmation(params: {
     : "";
 
   const inner = `
-    ${HEADER("Reservering ontvangen")}
+    ${HEADER(perType?.ondertitel || settings.emailOndertitel)}
     <tr>
       <td style="padding:40px 45px;">
         <h2 style="margin:0 0 15px; font-family:'Playfair Display', serif; font-size:22px; color:#3A4F41; font-weight:normal;">Lieve ${toName},</h2>
@@ -177,7 +177,7 @@ export async function sendReminderEmail(params: {
       </div>`;
 
   const inner = `
-    ${HEADER("Herinnering")}
+    ${HEADER(perType?.ondertitel || settings.emailOndertitel)}
     <tr>
       <td style="padding:40px 45px;">
         <h2 style="margin:0 0 15px; font-family:'Playfair Display', serif; font-size:22px; color:#3A4F41; font-weight:normal;">Lieve ${toName},</h2>

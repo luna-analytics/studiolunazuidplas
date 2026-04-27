@@ -1438,7 +1438,7 @@ type EmailSharedSettings = {
   annuleringsNote: string;
 };
 
-type LesTypeTemplate = { welkomst: string; herinnering: string };
+type LesTypeTemplate = { welkomst: string; herinnering: string; ondertitel: string };
 
 function EmailInstellingenTab() {
   const [shared, setShared] = useState<EmailSharedSettings>({
@@ -1476,6 +1476,7 @@ function EmailInstellingenTab() {
           herinnering: savedTemplates[t.id]?.herinnering ?? (t.id === "circle"
             ? "Dit is een vriendelijke herinnering dat je morgen bij ons in de Circle verwacht wordt! We kijken er naar uit. 🌙"
             : "Dit is een vriendelijke herinnering dat je morgen bij ons verwacht wordt op de mat! We kijken er naar uit. 🌙"),
+          ondertitel: (savedTemplates[t.id] as any)?.ondertitel ?? "",
         };
       }
       setLesTypeTemplates(merged);
@@ -1484,7 +1485,7 @@ function EmailInstellingenTab() {
     });
   }, []);
 
-  const setTemplate = (typeId: string, field: "welkomst" | "herinnering", value: string) => {
+  const setTemplate = (typeId: string, field: "welkomst" | "herinnering" | "ondertitel", value: string) => {
     setLesTypeTemplates((prev) => ({ ...prev, [typeId]: { ...prev[typeId], [field]: value } }));
   };
 
@@ -1543,6 +1544,20 @@ function EmailInstellingenTab() {
 
       {activeLesType && lesTypeTemplates[activeLesType.id] && (
         <div className="space-y-4">
+          <div className="bg-card border border-border/30 rounded-3xl p-5 space-y-4">
+            <h3 className="font-display text-base font-medium">{activeLesType.naam} — E-mail koptekst</h3>
+            <p className="text-xs text-foreground/45">Staat onder "Studio Luna" in de kop van bevestigings- en herinneringsmails voor dit lestype. Laat leeg om de algemene ondertitel te gebruiken.</p>
+            <div className="space-y-1.5">
+              <label className="text-sm font-semibold text-foreground">Ondertitel</label>
+              <input
+                type="text"
+                value={lesTypeTemplates[activeLesType.id].ondertitel}
+                onChange={(e) => setTemplate(activeLesType.id, "ondertitel", e.target.value)}
+                className="w-full bg-background border border-border/40 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+                placeholder={shared.emailOndertitel || "Bijv. Mama Circle · Studio Luna"}
+              />
+            </div>
+          </div>
           <div className="bg-card border border-border/30 rounded-3xl p-5 space-y-4">
             <h3 className="font-display text-base font-medium">{activeLesType.naam} — Bevestiging</h3>
             <p className="text-xs text-foreground/45">Tekst direct na "Lieve [naam]," in de bevestigingsmail.</p>

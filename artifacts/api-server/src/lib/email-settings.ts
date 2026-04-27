@@ -6,6 +6,7 @@ const KEY = "studio_luna:email_settings";
 export type LesTypeTemplate = {
   welkomst: string;
   herinnering: string;
+  ondertitel?: string;
 };
 
 export type EmailSettings = {
