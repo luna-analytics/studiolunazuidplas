@@ -865,12 +865,13 @@ function LestypesTab() {
 }
 
 // ─── E-MAIL COMPOSE MODAL ────────────────────────────────────────────────────
-function EmailComposeModal({ defaultTo, defaultToName, defaultSubject, defaultBody, onClose }: {
+function EmailComposeModal({ defaultTo, defaultToName, defaultSubject, defaultBody, onClose, onSent }: {
   defaultTo: string;
   defaultToName: string;
   defaultSubject: string;
   defaultBody: string;
   onClose: () => void;
+  onSent?: () => void;
 }) {
   const [to, setTo] = useState(defaultTo);
   const [subject, setSubject] = useState(defaultSubject);
@@ -890,7 +891,8 @@ function EmailComposeModal({ defaultTo, defaultToName, defaultSubject, defaultBo
       });
       if (res.ok) {
         setSent(true);
-        setTimeout(onClose, 1800);
+        onSent?.();
+        setTimeout(onClose, 3000);
       } else {
         const data = await res.json();
         setError(data.error ?? "Er ging iets mis bij het verzenden.");
@@ -975,12 +977,14 @@ function AanvragenTab() {
     setRequests((r) => r.filter((x) => x.id !== id));
   };
 
-  const [composeFor, setComposeFor] = useState<{ name: string; email: string; subject: string; body: string } | null>(null);
+  const [composeFor, setComposeFor] = useState<{ id: string; name: string; email: string; subject: string; body: string } | null>(null);
+  const [sentIds, setSentIds] = useState<Set<string>>(new Set());
 
   const pkgLabel = (pkg: string) => pkg === "5-rittenkaart" ? "5-rittenkaart (€ 105,-)" : pkg === "10-rittenkaart" ? "10-rittenkaart (€ 195,-)" : "Losse les (€ 22,50)";
 
   const openCompose = (req: RRequest) => {
     setComposeFor({
+      id: req.id,
       name: req.name,
       email: req.email,
       subject: `Studio Luna — Jouw aanvraag ${pkgLabel(req.package)}`,
@@ -1024,8 +1028,9 @@ function AanvragenTab() {
                   </div>
                   <div className="flex flex-col items-end gap-2 shrink-0">
                     <button onClick={() => openCompose(req)}
-                      className="flex items-center gap-1.5 bg-secondary text-foreground/70 px-3 py-1.5 rounded-xl text-xs font-semibold hover:bg-border/30 transition-colors">
-                      <Mail className="w-3.5 h-3.5" /> Stuur e-mail
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-colors ${sentIds.has(req.id) ? "bg-green-50 text-green-600" : "bg-secondary text-foreground/70 hover:bg-border/30"}`}>
+                      {sentIds.has(req.id) ? <Check className="w-3.5 h-3.5" /> : <Mail className="w-3.5 h-3.5" />}
+                      {sentIds.has(req.id) ? "Verstuurd" : "Stuur e-mail"}
                     </button>
                     <button onClick={() => markDone(req.id)}
                       className="flex items-center gap-1.5 bg-primary/10 text-primary px-3 py-1.5 rounded-xl text-xs font-semibold hover:bg-primary/20 transition-colors">
@@ -1091,6 +1096,7 @@ function AanvragenTab() {
           defaultSubject={composeFor.subject}
           defaultBody={composeFor.body}
           onClose={() => setComposeFor(null)}
+          onSent={() => setSentIds((prev) => new Set(prev).add(composeFor.id))}
         />
       )}
     </div>
@@ -2050,7 +2056,8 @@ function ReserveeringenTab() {
   const [classes, setClasses] = useState<StudioClass[]>([]);
   const [showInboeken, setShowInboeken] = useState(false);
   const [inboekForm, setInboekForm] = useState({ name: "", email: "", classId: "", dateStr: "", heelReeks: false });
-  const [composeFor, setComposeFor] = useState<{ name: string; email: string; subject: string; body: string } | null>(null);
+  const [composeFor, setComposeFor] = useState<{ id: string; name: string; email: string; subject: string; body: string } | null>(null);
+  const [sentIds, setSentIds] = useState<Set<string>>(new Set());
   const [inboekLoading, setInboekLoading] = useState(false);
   const [inboekError, setInboekError] = useState("");
   const [inboekVolWaarschuwing, setInboekVolWaarschuwing] = useState(false);
@@ -2106,6 +2113,7 @@ function ReserveeringenTab() {
     const [y, m, d] = r.dateStr.split("-").map(Number);
     const dateLabel = new Date(y, m - 1, d).toLocaleDateString("nl-NL", { weekday: "long", day: "numeric", month: "long" });
     setComposeFor({
+      id: r.id,
       name: r.name,
       email: r.email,
       subject: `Bevestiging jouw plek — ${r.classTitle}`,
@@ -2355,9 +2363,9 @@ function ReserveeringenTab() {
                   </div>
                   <div className="flex items-center gap-1.5 shrink-0">
                     <button onClick={() => openCompose(r)}
-                      title="Bevestigingsmail sturen"
-                      className="p-1.5 rounded-xl text-foreground/40 hover:text-primary hover:bg-primary/10 transition-colors">
-                      <Mail className="w-4 h-4" />
+                      title={sentIds.has(r.id) ? "Mail verstuurd" : "Bevestigingsmail sturen"}
+                      className={`p-1.5 rounded-xl transition-colors ${sentIds.has(r.id) ? "text-green-600 bg-green-50" : "text-foreground/40 hover:text-primary hover:bg-primary/10"}`}>
+                      {sentIds.has(r.id) ? <Check className="w-4 h-4" /> : <Mail className="w-4 h-4" />}
                     </button>
                     <button onClick={() => toggleAanwezig(r.id)}
                       title={r.aanwezig ? "Aanwezig — klik om te wisselen" : "Afwezig — klik om te markeren"}
@@ -2382,6 +2390,7 @@ function ReserveeringenTab() {
           defaultSubject={composeFor.subject}
           defaultBody={composeFor.body}
           onClose={() => setComposeFor(null)}
+          onSent={() => setSentIds((prev) => new Set(prev).add(composeFor.id))}
         />
       )}
     </div>
