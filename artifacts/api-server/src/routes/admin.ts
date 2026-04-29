@@ -546,7 +546,17 @@ router.post("/admin/send-email", requireAdmin, async (req, res) => {
     return res.status(400).json({ error: "Aan, onderwerp en bericht zijn verplicht" });
   }
   try {
-    await sendCustomEmail({ toEmail: to, toName: toName ?? to, subject, body });
+    let ondertitel: string | undefined;
+    if (reserveringId) {
+      const reserveringen = await readReserveringen();
+      const r = reserveringen.find((x) => x.id === reserveringId);
+      if (r) {
+        const settings = await getEmailSettings();
+        const tpl = settings.lesTypeTemplates?.[r.type];
+        ondertitel = tpl?.ondertitel || settings.emailOndertitel || undefined;
+      }
+    }
+    await sendCustomEmail({ toEmail: to, toName: toName ?? to, subject, body, ondertitel });
     if (reserveringId) await markMailVerstuurd(reserveringId);
     res.json({ ok: true });
   } catch (err: any) {

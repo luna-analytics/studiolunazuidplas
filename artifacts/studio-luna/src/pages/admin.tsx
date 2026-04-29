@@ -1524,18 +1524,6 @@ function EmailInstellingenTab() {
         <p className="text-sm text-foreground/60">Stel per lestype de teksten in voor bevestigings- en herinneringsmails.</p>
       </div>
 
-      <div className="space-y-1.5">
-        <label className="text-sm font-semibold text-foreground">E-mail ondertitel (koptekst)</label>
-        <p className="text-xs text-foreground/50">Staat onder "Studio Luna" bovenaan iedere uitgaande e-mail.</p>
-        <input
-          type="text"
-          value={shared.emailOndertitel}
-          onChange={(e) => setShared({ ...shared, emailOndertitel: e.target.value })}
-          className="w-full bg-background border border-border/40 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
-          placeholder="Zwangerschapsyoga · Nieuwerkerk a/d IJssel"
-        />
-      </div>
-
       <div className="flex flex-wrap gap-1.5 bg-secondary rounded-2xl p-1">
         {allSections.map((s) => (
           <button key={s.key} type="button" onClick={() => setActiveSection(s.key)}
@@ -1557,7 +1545,7 @@ function EmailInstellingenTab() {
                 value={lesTypeTemplates[activeLesType.id].ondertitel}
                 onChange={(e) => setTemplate(activeLesType.id, "ondertitel", e.target.value)}
                 className="w-full bg-background border border-border/40 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
-                placeholder={shared.emailOndertitel || "Bijv. Mama Circle · Studio Luna"}
+                placeholder="Bijv. Mama Circle · Nieuwerkerk a/d IJssel"
               />
             </div>
           </div>

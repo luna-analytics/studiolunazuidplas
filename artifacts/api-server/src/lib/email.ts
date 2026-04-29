@@ -275,8 +275,9 @@ export async function sendCustomEmail(params: {
   toName: string;
   subject: string;
   body: string;
+  ondertitel?: string;
 }) {
-  const { toEmail, toName, subject, body } = params;
+  const { toEmail, toName, subject, body, ondertitel } = params;
 
   const bodyHtml = body
     .split("\n\n")
@@ -286,7 +287,7 @@ export async function sendCustomEmail(params: {
   const settings = await getEmailSettings();
 
   const inner = `
-    ${HEADER(settings.emailOndertitel)}
+    ${HEADER(ondertitel || settings.emailOndertitel)}
     <tr>
       <td style="padding:40px 45px;">
         <h2 style="margin:0 0 24px; font-family:'Playfair Display', serif; font-size:22px; color:#3A4F41; font-weight:normal;">Lieve ${toName},</h2>
