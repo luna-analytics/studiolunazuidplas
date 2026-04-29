@@ -7,6 +7,8 @@ export type LesTypeTemplate = {
   welkomst: string;
   herinnering: string;
   ondertitel?: string;
+  emailSubject?: string;
+  emailBody?: string;
 };
 
 export type EmailSettings = {

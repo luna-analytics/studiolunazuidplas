@@ -14,7 +14,7 @@ import { readClassTypes, createClassType, updateClassType, deleteClassType } fro
 import { readTarieven, saveTarieven, addRittenkaart, updateRittenkaart, deleteRittenkaart, addSpecial, updateSpecial, deleteSpecial } from "../lib/tarieven.js";
 import { readPaginaTeksten, savePaginaTeksten } from "../lib/pagina-teksten.js";
 import { getAllFotos, setFoto, FOTO_KEYS, type FotoKey } from "../lib/foto-store.js";
-import { readReserveringen, createReservering, toggleAanwezig, deleteReservering } from "../lib/reserveringen.js";
+import { readReserveringen, createReservering, toggleAanwezig, deleteReservering, markMailVerstuurd } from "../lib/reserveringen.js";
 import { sendReminderEmail, sendCustomEmail } from "../lib/email.js";
 import { readPosts, createPost, updatePost, deletePost } from "../lib/blog.js";
 import { getAllComments, approveComment, replyToComment, deleteComment } from "../lib/blog-comments.js";
@@ -541,12 +541,13 @@ router.post("/admin/reviews/visible", requireAdmin, async (req, res) => {
 
 // ─── E-MAIL VERZENDEN (admin componeert zelf) ─────────────────────────────────
 router.post("/admin/send-email", requireAdmin, async (req, res) => {
-  const { to, toName, subject, body } = req.body as { to?: string; toName?: string; subject?: string; body?: string };
+  const { to, toName, subject, body, reserveringId } = req.body as { to?: string; toName?: string; subject?: string; body?: string; reserveringId?: string };
   if (!to || !subject || !body) {
     return res.status(400).json({ error: "Aan, onderwerp en bericht zijn verplicht" });
   }
   try {
     await sendCustomEmail({ toEmail: to, toName: toName ?? to, subject, body });
+    if (reserveringId) await markMailVerstuurd(reserveringId);
     res.json({ ok: true });
   } catch (err: any) {
     console.error("[email] Fout bij verzenden aangepaste mail:", err);

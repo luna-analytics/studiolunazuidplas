@@ -865,13 +865,14 @@ function LestypesTab() {
 }
 
 // ─── E-MAIL COMPOSE MODAL ────────────────────────────────────────────────────
-function EmailComposeModal({ defaultTo, defaultToName, defaultSubject, defaultBody, onClose, onSent }: {
+function EmailComposeModal({ defaultTo, defaultToName, defaultSubject, defaultBody, onClose, onSent, reserveringId }: {
   defaultTo: string;
   defaultToName: string;
   defaultSubject: string;
   defaultBody: string;
   onClose: () => void;
   onSent?: () => void;
+  reserveringId?: string;
 }) {
   const [to, setTo] = useState(defaultTo);
   const [subject, setSubject] = useState(defaultSubject);
@@ -887,7 +888,7 @@ function EmailComposeModal({ defaultTo, defaultToName, defaultSubject, defaultBo
       const res = await apiFetch("/admin/send-email", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ to, toName: defaultToName, subject, body }),
+        body: JSON.stringify({ to, toName: defaultToName, subject, body, reserveringId }),
       });
       if (res.ok) {
         setSent(true);
@@ -1438,7 +1439,7 @@ type EmailSharedSettings = {
   annuleringsNote: string;
 };
 
-type LesTypeTemplate = { welkomst: string; herinnering: string; ondertitel: string };
+type LesTypeTemplate = { welkomst: string; herinnering: string; ondertitel: string; emailSubject: string; emailBody: string };
 
 function EmailInstellingenTab() {
   const [shared, setShared] = useState<EmailSharedSettings>({
@@ -1477,6 +1478,8 @@ function EmailInstellingenTab() {
             ? "Dit is een vriendelijke herinnering dat je morgen bij ons in de Circle verwacht wordt! We kijken er naar uit. 🌙"
             : "Dit is een vriendelijke herinnering dat je morgen bij ons verwacht wordt op de mat! We kijken er naar uit. 🌙"),
           ondertitel: (savedTemplates[t.id] as any)?.ondertitel ?? "",
+          emailSubject: (savedTemplates[t.id] as any)?.emailSubject ?? "",
+          emailBody: (savedTemplates[t.id] as any)?.emailBody ?? "",
         };
       }
       setLesTypeTemplates(merged);
@@ -1485,7 +1488,7 @@ function EmailInstellingenTab() {
     });
   }, []);
 
-  const setTemplate = (typeId: string, field: "welkomst" | "herinnering" | "ondertitel", value: string) => {
+  const setTemplate = (typeId: string, field: "welkomst" | "herinnering" | "ondertitel" | "emailSubject" | "emailBody", value: string) => {
     setLesTypeTemplates((prev) => ({ ...prev, [typeId]: { ...prev[typeId], [field]: value } }));
   };
 
@@ -1559,10 +1562,34 @@ function EmailInstellingenTab() {
             </div>
           </div>
           <div className="bg-card border border-border/30 rounded-3xl p-5 space-y-4">
-            <h3 className="font-display text-base font-medium">{activeLesType.naam} — Bevestiging</h3>
-            <p className="text-xs text-foreground/45">Tekst direct na "Lieve [naam]," in de bevestigingsmail.</p>
+            <h3 className="font-display text-base font-medium">{activeLesType.naam} — Bevestigingsmail</h3>
+            <p className="text-xs text-foreground/45">Vul hier de volledige bevestigingsmail in. Wordt automatisch ingevuld als je op het mail-icoontje klikt bij een reservering. Gebruik tokens: <span className="font-mono bg-secondary px-1 rounded">{"{naam}"}</span> <span className="font-mono bg-secondary px-1 rounded">{"{les}"}</span> <span className="font-mono bg-secondary px-1 rounded">{"{datum}"}</span> <span className="font-mono bg-secondary px-1 rounded">{"{tijd}"}</span></p>
             <div className="space-y-1.5">
-              <label className="text-sm font-semibold text-foreground">Bevestigingstekst</label>
+              <label className="text-sm font-semibold text-foreground">Onderwerp</label>
+              <input
+                type="text"
+                value={lesTypeTemplates[activeLesType.id].emailSubject}
+                onChange={(e) => setTemplate(activeLesType.id, "emailSubject", e.target.value)}
+                className="w-full bg-background border border-border/40 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+                placeholder={`Bevestiging jouw plek — {les}`}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-sm font-semibold text-foreground">Berichttekst</label>
+              <textarea
+                value={lesTypeTemplates[activeLesType.id].emailBody}
+                onChange={(e) => setTemplate(activeLesType.id, "emailBody", e.target.value)}
+                rows={8}
+                className="w-full bg-background border border-border/40 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none leading-relaxed font-sans"
+                placeholder={`Bedankt voor je aanmelding! Jouw plek is bevestigd voor:\n\n{les}\n{datum} · {tijd} uur\nHuize Mooisteen, Pr. Beatrixstraat 2, Nieuwerkerk a/d IJssel\n\n\nMet warme groet,\nStudio Luna`}
+              />
+            </div>
+          </div>
+          <div className="bg-card border border-border/30 rounded-3xl p-5 space-y-4">
+            <h3 className="font-display text-base font-medium">{activeLesType.naam} — Automatische bevestiging <span className="text-xs font-sans font-normal text-foreground/40">(via rooster)</span></h3>
+            <p className="text-xs text-foreground/45">Tekst direct na "Lieve [naam]," in de <em>automatische</em> bevestigingsmail bij aanmelden via het rooster.</p>
+            <div className="space-y-1.5">
+              <label className="text-sm font-semibold text-foreground">Welkomsttekst</label>
               <textarea
                 value={lesTypeTemplates[activeLesType.id].welkomst}
                 onChange={(e) => setTemplate(activeLesType.id, "welkomst", e.target.value)}
@@ -2062,7 +2089,7 @@ function TarievenTab() {
 type Reservering = {
   id: string; name: string; email: string; classId: string;
   classTitle: string; dateStr: string; time: string; type: string;
-  aanwezig?: boolean; createdAt: string;
+  aanwezig?: boolean; mailVerstuurd?: boolean; createdAt: string;
 };
 
 function ReserveeringenTab() {
@@ -2072,7 +2099,7 @@ function ReserveeringenTab() {
   const [showInboeken, setShowInboeken] = useState(false);
   const [inboekForm, setInboekForm] = useState({ name: "", email: "", classId: "", dateStr: "", heelReeks: false });
   const [composeFor, setComposeFor] = useState<{ id: string; name: string; email: string; subject: string; body: string } | null>(null);
-  const [sentIds, setSentIds] = useState<Set<string>>(new Set());
+  const [emailTemplates, setEmailTemplates] = useState<Record<string, { emailSubject: string; emailBody: string }>>({});
   const [inboekLoading, setInboekLoading] = useState(false);
   const [inboekError, setInboekError] = useState("");
   const [inboekVolWaarschuwing, setInboekVolWaarschuwing] = useState(false);
@@ -2081,9 +2108,25 @@ function ReserveeringenTab() {
 
   const load = async () => {
     setLoading(true);
-    const [res, clsRes] = await Promise.all([apiFetch("/admin/reserveringen"), apiFetch("/classes")]);
+    const [res, clsRes, settingsRes] = await Promise.all([
+      apiFetch("/admin/reserveringen"),
+      apiFetch("/classes"),
+      apiFetch("/admin/email-settings"),
+    ]);
     if (res.ok) setItems(await res.json());
     if (clsRes.ok) setClasses(await clsRes.json());
+    if (settingsRes.ok) {
+      const s = await settingsRes.json();
+      const tpl: Record<string, { emailSubject: string; emailBody: string }> = {};
+      const lesTypeTemplates = s.lesTypeTemplates ?? {};
+      for (const [typeId, t] of Object.entries(lesTypeTemplates as Record<string, any>)) {
+        tpl[typeId] = {
+          emailSubject: t.emailSubject ?? "",
+          emailBody: t.emailBody ?? "",
+        };
+      }
+      setEmailTemplates(tpl);
+    }
     setLoading(false);
   };
 
@@ -2127,12 +2170,20 @@ function ReserveeringenTab() {
   const openCompose = (r: Reservering) => {
     const [y, m, d] = r.dateStr.split("-").map(Number);
     const dateLabel = new Date(y, m - 1, d).toLocaleDateString("nl-NL", { weekday: "long", day: "numeric", month: "long" });
+    const tokens = (s: string) => s
+      .replace(/\{naam\}/gi, r.name)
+      .replace(/\{les\}/gi, r.classTitle)
+      .replace(/\{datum\}/gi, dateLabel)
+      .replace(/\{tijd\}/gi, r.time);
+    const tpl = emailTemplates[r.type];
+    const fallbackSubject = `Bevestiging jouw plek — ${r.classTitle}`;
+    const fallbackBody = `Bedankt voor je aanmelding! Jouw plek is bevestigd voor:\n\n${r.classTitle}\n${dateLabel} · ${r.time} uur\nHuize Mooisteen, Pr. Beatrixstraat 2, Nieuwerkerk a/d IJssel\n\n\n\nMet warme groet,\nStudio Luna`;
     setComposeFor({
       id: r.id,
       name: r.name,
       email: r.email,
-      subject: `Bevestiging jouw plek — ${r.classTitle}`,
-      body: `Bedankt voor je aanmelding! Jouw plek is bevestigd voor:\n\n${r.classTitle}\n${dateLabel} · ${r.time} uur\nHuize Mooisteen, Pr. Beatrixstraat 2, Nieuwerkerk a/d IJssel\n\n\n\nMet warme groet,\nStudio Luna`,
+      subject: tpl?.emailSubject ? tokens(tpl.emailSubject) : fallbackSubject,
+      body: tpl?.emailBody ? tokens(tpl.emailBody) : fallbackBody,
     });
   };
 
@@ -2378,9 +2429,9 @@ function ReserveeringenTab() {
                   </div>
                   <div className="flex items-center gap-1.5 shrink-0">
                     <button onClick={() => openCompose(r)}
-                      title={sentIds.has(r.id) ? "Mail verstuurd" : "Bevestigingsmail sturen"}
-                      className={`p-1.5 rounded-xl transition-colors ${sentIds.has(r.id) ? "text-green-600 bg-green-50" : "text-foreground/40 hover:text-primary hover:bg-primary/10"}`}>
-                      {sentIds.has(r.id) ? <Check className="w-4 h-4" /> : <Mail className="w-4 h-4" />}
+                      title={r.mailVerstuurd ? "Mail verstuurd — klik om opnieuw te openen" : "Bevestigingsmail sturen"}
+                      className={`p-1.5 rounded-xl transition-colors ${r.mailVerstuurd ? "text-green-600 bg-green-50" : "text-foreground/40 hover:text-primary hover:bg-primary/10"}`}>
+                      {r.mailVerstuurd ? <Check className="w-4 h-4" /> : <Mail className="w-4 h-4" />}
                     </button>
                     <button onClick={() => toggleAanwezig(r.id)}
                       title={r.aanwezig ? "Aanwezig — klik om te wisselen" : "Afwezig — klik om te markeren"}
@@ -2404,8 +2455,9 @@ function ReserveeringenTab() {
           defaultToName={composeFor.name}
           defaultSubject={composeFor.subject}
           defaultBody={composeFor.body}
+          reserveringId={composeFor.id}
           onClose={() => setComposeFor(null)}
-          onSent={() => setSentIds((prev) => new Set(prev).add(composeFor.id))}
+          onSent={() => setItems((prev) => prev.map((r) => r.id === composeFor.id ? { ...r, mailVerstuurd: true } : r))}
         />
       )}
     </div>
