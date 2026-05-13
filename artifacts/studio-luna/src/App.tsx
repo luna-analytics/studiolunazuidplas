@@ -14,7 +14,6 @@ import Tarieven from "./pages/tarieven";
 import Profile from "./pages/profile";
 import StudioLuna from "./pages/studio-luna";
 import Admin from "./pages/admin";
-import Village from "./pages/village";
 import Inspiratie from "./pages/inspiratie";
 import BlogArtikel from "./pages/blog-artikel";
 import OverMij from "./pages/over-mij";
@@ -51,7 +50,6 @@ function Router() {
         <Route path="/tarieven" component={Tarieven} />
         <Route path="/bookings" component={Bookings} />
         <Route path="/admin" component={Admin} />
-        <Route path="/village" component={Village} />
         <Route path="/blog/:id" component={BlogArtikel} />
         <Route path="/blog" component={Inspiratie} />
         <Route path="/over-mij" component={OverMij} />

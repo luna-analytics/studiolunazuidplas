@@ -8,7 +8,6 @@ import { readAnnouncements, markAnnouncementSeen, deleteAnnouncement } from "../
 import { readTips, createTip, activateTip, deleteTip } from "../lib/tips.js";
 import { readEvents, createEvent, deleteEvent } from "../lib/events.js";
 import { readJournal, createQuestion, activateQuestion, deleteQuestion } from "../lib/journal.js";
-import { readProfiles } from "../lib/village-profiles.js";
 import { getEmailSettings, saveEmailSettings } from "../lib/email-settings.js";
 import { readClassTypes, createClassType, updateClassType, deleteClassType } from "../lib/class-types.js";
 import { readTarieven, saveTarieven, addRittenkaart, updateRittenkaart, deleteRittenkaart, addSpecial, updateSpecial, deleteSpecial } from "../lib/tarieven.js";
@@ -229,13 +228,6 @@ router.post("/admin/journal/:id/activate", requireAdmin, async (req, res) => {
 
 router.delete("/admin/journal/:id", requireAdmin, async (req, res) => {
   await deleteQuestion(req.params.id); res.json({ ok: true });
-});
-
-// ─── VILLAGE INTROS ──────────────────────────────────────────────────────────
-
-router.get("/admin/village/intros", requireAdmin, async (_req, res) => {
-  const profiles = (await readProfiles()).filter((p) => p.intro?.trim());
-  res.json(profiles);
 });
 
 // ─── EMAIL INSTELLINGEN ───────────────────────────────────────────────────────

@@ -90,9 +90,6 @@ export default function Bookings() {
                         </p>
                       </div>
                     </div>
-                    <Link href="/village" className="inline-flex items-center gap-2 bg-secondary border border-border/30 text-foreground px-4 py-2.5 rounded-2xl font-semibold text-sm hover:bg-secondary/80 transition-colors">
-                      De Village
-                    </Link>
                   </div>
                 )}
                 {user.isAdmin && (

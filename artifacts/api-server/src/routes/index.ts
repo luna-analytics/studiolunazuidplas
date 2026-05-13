@@ -5,7 +5,6 @@ import authRouter from "./auth";
 import adminRouter from "./admin";
 import bookingsRouter from "./bookings";
 import classesRouter from "./classes";
-import villageRouter from "./village";
 import stripeRouter from "./stripe";
 
 // Public rittenkaart request endpoint
@@ -34,7 +33,6 @@ router.use(authRouter);
 router.use(adminRouter);
 router.use(bookingsRouter);
 router.use(classesRouter);
-router.use(villageRouter);
 router.use(stripeRouter);
 
 // Publieke class-types endpoint

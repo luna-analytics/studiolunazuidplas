@@ -20,7 +20,7 @@ export default function Profile() {
             </div>
             
             <h1 className="font-display text-3xl font-medium text-foreground mb-1">Mama</h1>
-            <p className="text-muted-foreground font-medium mb-6">Welkom in jouw village</p>
+            <p className="text-muted-foreground font-medium mb-6">Welkom bij Studio Luna</p>
             
             <div className="w-full bg-background rounded-2xl p-5 shadow-inner-soft italic text-foreground/80 font-display">
               "Er is geen perfecte manier om een goede moeder te zijn, maar er zijn een miljoen manieren om een goede moeder te zijn."

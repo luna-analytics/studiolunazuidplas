@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback } from "react";
 import { Link, useLocation } from "wouter";
-import { CalendarDays, Bookmark, Tag, Home, Sparkles, Heart, LogOut, LogIn, Feather, User, Menu, X, ArrowRight } from "lucide-react";
+import { CalendarDays, Bookmark, Tag, Home, Sparkles, LogOut, LogIn, Feather, User, Menu, X, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { AlgemeneVoorwaardenModal } from "./algemene-voorwaarden-modal";
@@ -16,7 +16,6 @@ const ALL_NAV = [
   { href: "/over-mij", label: "Over mij", icon: User },
   { href: "/blog", label: "Blog", icon: Feather },
   { href: "/bookings", label: "Boekingen", icon: Bookmark },
-  { href: "/village", label: "Village", icon: Heart },
 ];
 
 // Vier tabs die altijd zichtbaar zijn in de balk
@@ -43,10 +42,7 @@ export function BottomNav() {
     if (longPressTimer.current) clearTimeout(longPressTimer.current);
   }, []);
 
-  const visibleNav = ALL_NAV.filter((n) => {
-    if (n.href === "/village") return user?.isAdmin;
-    return true;
-  });
+  const visibleNav = ALL_NAV;
   const primaryItems = visibleNav.filter((n) => PRIMARY_NAV.includes(n.href));
   const isMenuActive = !PRIMARY_NAV.includes(location);
 
