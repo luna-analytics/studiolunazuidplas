@@ -16,6 +16,8 @@ export type Reservering = {
   aanwezig?: boolean;
   notitie?: string;
   mailVerstuurd?: boolean;
+  betaaldContant?: boolean;
+  betaaldStripe?: boolean;
   createdAt: string;
 };
 
@@ -60,6 +62,12 @@ export async function updateNotitie(id: string, notitie: string): Promise<Reserv
   r.notitie = notitie;
   await saveReserveringen(list);
   return r;
+}
+
+export async function markBetaaldContant(id: string): Promise<void> {
+  const list = await readReserveringen();
+  const r = list.find((x) => x.id === id);
+  if (r) { r.betaaldContant = true; await saveReserveringen(list); }
 }
 
 export async function markMailVerstuurd(id: string): Promise<void> {

@@ -1,6 +1,11 @@
 import { Router } from "express";
 import { signToken, requireAuth } from "../middlewares/auth.js";
-import { verifyMemberPassword, findMemberById, createMember } from "../lib/users.js";
+import { verifyMemberPassword, findMemberById, createMember, readMembers, saveMembers } from "../lib/users.js";
+import { Resend } from "resend";
+import crypto from "crypto";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+const resetTokens = new Map<string, { email: string; expires: number }>();
 
 const router = Router();
 
@@ -64,6 +69,57 @@ router.get("/auth/me", requireAuth, async (req, res) => {
     return;
   }
   res.json({ id: member.id, name: member.name, email: member.email, isAdmin: false, credits: member.credits });
+});
+
+// ─── WACHTWOORD VERGETEN ──────────────────────────────────────────────────────
+router.post("/auth/wachtwoord-vergeten", async (req, res) => {
+  const { email } = req.body as { email?: string };
+  if (!email) { res.status(400).json({ error: "E-mailadres verplicht" }); return; }
+  const members = await readMembers();
+  const member = members.find((m) => m.email.toLowerCase() === email.toLowerCase());
+  // Altijd 200 teruggeven — geen info lekken of account bestaat
+  if (!member) { res.json({ ok: true }); return; }
+
+  const token = crypto.randomBytes(32).toString("hex");
+  resetTokens.set(token, { email: member.email, expires: Date.now() + 1000 * 60 * 30 }); // 30 min
+
+  const domain = process.env.REPLIT_DOMAINS?.split(",")[0];
+  const baseUrl = domain ? `https://${domain}` : "http://localhost:23125";
+  const link = `${baseUrl}/wachtwoord-reset?token=${token}`;
+
+  try {
+    await resend.emails.send({
+      from: "Studio Luna <info@studiolunazuidplas.nl>",
+      to: member.email,
+      subject: "Wachtwoord opnieuw instellen — Studio Luna",
+      html: `<p>Hoi ${member.name},</p><p>Klik op de link om je wachtwoord opnieuw in te stellen. De link is 30 minuten geldig.</p><p><a href="${link}">${link}</a></p><p>Met warme groet,<br/>Studio Luna</p>`,
+    });
+  } catch (err) {
+    console.error("[auth] Reset mail fout:", err);
+  }
+  res.json({ ok: true });
+});
+
+router.post("/auth/wachtwoord-reset", async (req, res) => {
+  const { token, password } = req.body as { token?: string; password?: string };
+  if (!token || !password) { res.status(400).json({ error: "Token en wachtwoord zijn verplicht" }); return; }
+  if (password.length < 6) { res.status(400).json({ error: "Wachtwoord moet minimaal 6 tekens zijn" }); return; }
+
+  const entry = resetTokens.get(token);
+  if (!entry || Date.now() > entry.expires) {
+    res.status(400).json({ error: "Link is verlopen of ongeldig. Vraag een nieuwe aan." }); return;
+  }
+
+  const members = await readMembers();
+  const member = members.find((m) => m.email === entry.email);
+  if (!member) { res.status(404).json({ error: "Gebruiker niet gevonden" }); return; }
+
+  const bcrypt = await import("bcryptjs");
+  member.passwordHash = await bcrypt.hash(password, 10);
+  await saveMembers(members);
+  resetTokens.delete(token);
+
+  res.json({ ok: true });
 });
 
 export default router;

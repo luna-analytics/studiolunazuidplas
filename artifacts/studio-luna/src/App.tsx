@@ -19,6 +19,9 @@ import Inspiratie from "./pages/inspiratie";
 import BlogArtikel from "./pages/blog-artikel";
 import OverMij from "./pages/over-mij";
 import { BetalingSucces } from "./pages/betaling-succes";
+import { PakketSucces } from "./pages/pakket-succes";
+import { LidSucces } from "./pages/lid-succes";
+import { WachtwoordReset } from "./pages/wachtwoord-reset";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -54,6 +57,10 @@ function Router() {
         <Route path="/over-mij" component={OverMij} />
         <Route path="/profile" component={Profile} />
         <Route path="/betaling/succes" component={BetalingSucces} />
+        <Route path="/betaling/pakket-succes" component={PakketSucces} />
+        <Route path="/betaling/lid-succes" component={LidSucces} />
+        <Route path="/betaling/geannuleerd" component={() => { const [,nav] = useLocation(); nav("/rooster"); return null; }} />
+        <Route path="/wachtwoord-reset" component={WachtwoordReset} />
         <Route component={NotFound} />
       </Switch>
     </>

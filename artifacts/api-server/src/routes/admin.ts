@@ -14,7 +14,7 @@ import { readClassTypes, createClassType, updateClassType, deleteClassType } fro
 import { readTarieven, saveTarieven, addRittenkaart, updateRittenkaart, deleteRittenkaart, addSpecial, updateSpecial, deleteSpecial } from "../lib/tarieven.js";
 import { readPaginaTeksten, savePaginaTeksten } from "../lib/pagina-teksten.js";
 import { getAllFotos, setFoto, FOTO_KEYS, type FotoKey } from "../lib/foto-store.js";
-import { readReserveringen, createReservering, toggleAanwezig, deleteReservering, markMailVerstuurd } from "../lib/reserveringen.js";
+import { readReserveringen, createReservering, toggleAanwezig, deleteReservering, markMailVerstuurd, markBetaaldContant } from "../lib/reserveringen.js";
 import { sendReminderEmail, sendCustomEmail } from "../lib/email.js";
 import { readPosts, createPost, updatePost, deletePost } from "../lib/blog.js";
 import { getAllComments, approveComment, replyToComment, deleteComment } from "../lib/blog-comments.js";
@@ -422,6 +422,15 @@ router.patch("/admin/reserveringen/:id/aanwezig", requireAdmin, async (req, res)
   try {
     const updated = await toggleAanwezig(req.params.id);
     res.json(updated);
+  } catch {
+    res.status(404).json({ error: "Niet gevonden" });
+  }
+});
+
+router.patch("/admin/reserveringen/:id/betaald-contant", requireAdmin, async (req, res) => {
+  try {
+    await markBetaaldContant(req.params.id);
+    res.json({ ok: true });
   } catch {
     res.status(404).json({ error: "Niet gevonden" });
   }

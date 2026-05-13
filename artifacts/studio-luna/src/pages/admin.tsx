@@ -8,7 +8,7 @@ import {
   Plus, Trash2, PlusCircle, MinusCircle, ChevronDown, ChevronUp, X,
   BookOpen, Users, ClipboardList, Check, CalendarDays, Baby, Share2,
   Sparkles, MessageCircle, MapPin, Clock, Mail, Palette, Tag, Receipt, Edit2, Save,
-  Copy, BellRing, UserPlus, CheckCircle2, Circle, RefreshCw, FileText, Feather, Eye, EyeOff, ArrowLeft, Star,
+  Copy, BellRing, UserPlus, CheckCircle2, Circle, RefreshCw, FileText, Feather, Eye, EyeOff, ArrowLeft, Star, Banknote,
 } from "lucide-react";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -2077,7 +2077,7 @@ function TarievenTab() {
 type Reservering = {
   id: string; name: string; email: string; classId: string;
   classTitle: string; dateStr: string; time: string; type: string;
-  aanwezig?: boolean; mailVerstuurd?: boolean; createdAt: string;
+  aanwezig?: boolean; mailVerstuurd?: boolean; betaaldContant?: boolean; betaaldStripe?: boolean; createdAt: string;
 };
 
 function ReserveeringenTab() {
@@ -2416,6 +2416,24 @@ function ReserveeringenTab() {
                     <p className="text-xs text-foreground/50">{r.email}</p>
                   </div>
                   <div className="flex items-center gap-1.5 shrink-0">
+                    {r.betaaldStripe && (
+                      <span title="Betaald via Stripe" className="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-700 font-semibold">Stripe</span>
+                    )}
+                    {!r.betaaldStripe && r.betaaldContant === false && (
+                      <button
+                        onClick={async () => {
+                          await apiFetch(`/admin/reserveringen/${r.id}/betaald-contant`, { method: "PATCH" });
+                          setItems((prev) => prev.map((x) => x.id === r.id ? { ...x, betaaldContant: true } : x));
+                        }}
+                        title="Contant betaald — klik om af te vinken"
+                        className="p-1.5 rounded-xl text-orange-400 hover:text-orange-600 hover:bg-orange-50 transition-colors"
+                      >
+                        <Banknote className="w-4 h-4" />
+                      </button>
+                    )}
+                    {!r.betaaldStripe && r.betaaldContant === true && (
+                      <span title="Contant betaald" className="text-xs px-2 py-0.5 rounded-full bg-orange-100 text-orange-700 font-semibold">Contant ✓</span>
+                    )}
                     <button onClick={() => openCompose(r)}
                       title={r.mailVerstuurd ? "Mail verstuurd — klik om opnieuw te openen" : "Bevestigingsmail sturen"}
                       className={`p-1.5 rounded-xl transition-colors ${r.mailVerstuurd ? "text-green-600 bg-green-50" : "text-foreground/40 hover:text-primary hover:bg-primary/10"}`}>

@@ -15,7 +15,8 @@ import { requireAuth } from "../middlewares/auth.js";
 import { readClassTypes } from "../lib/class-types.js";
 import { readTarieven } from "../lib/tarieven.js";
 import { createReservering, readReserveringen } from "../lib/reserveringen.js";
-import { sendAdminNotification } from "../lib/email.js";
+import { sendAdminNotification, sendReservationConfirmation } from "../lib/email.js";
+import { updateMemberCredits } from "../lib/users.js";
 import { readClasses } from "../lib/classes.js";
 import { getAllBookings } from "../lib/bookings.js";
 import { readPaginaTeksten } from "../lib/pagina-teksten.js";
@@ -129,6 +130,59 @@ router.post("/reserveer", async (req: any, res: any) => {
       details: `Les: ${classTitle}\nDatum: ${dateStr}\nTijd: ${time}`,
     }).catch(console.error);
     res.json(reservering);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Ingelogd lid boekt les met credits
+router.post("/boek-les", requireAuth, async (req: any, res: any) => {
+  const { classId, classTitle, dateStr, time, type } = req.body as {
+    classId?: string; classTitle?: string; dateStr?: string; time?: string; type?: string;
+  };
+  if (!classId || !classTitle || !dateStr || !time || !type) {
+    res.status(400).json({ error: "Verplichte velden ontbreken" }); return;
+  }
+  try {
+    const member = await findMemberById(req.userId);
+    if (!member) { res.status(404).json({ error: "Lid niet gevonden" }); return; }
+    if ((member.credits ?? 0) < 1) {
+      res.status(400).json({ error: "Onvoldoende tegoed. Koop een pakket om lessen te reserveren." }); return;
+    }
+
+    const [classes, allBookings, allReserveringen] = await Promise.all([
+      readClasses(), getAllBookings(), readReserveringen(),
+    ]);
+    const cls = classes.find((c) => c.id === classId);
+    if (cls) {
+      const takenByBookings = allBookings.filter((b) => b.classId === classId && b.date === dateStr).length;
+      const takenByReserveringen = allReserveringen.filter((r) => r.classId === classId && r.dateStr === dateStr).length;
+      if (cls.spotsTotal - takenByBookings - takenByReserveringen <= 0) {
+        res.status(409).json({ error: "Vol", message: "Deze les is helaas vol." }); return;
+      }
+      const dubbel = allReserveringen.find(
+        (r) => r.classId === classId && r.dateStr === dateStr && r.email.toLowerCase() === member.email.toLowerCase()
+      );
+      if (dubbel) {
+        res.status(409).json({ error: "DubbelReservering", message: "Je hebt al een plek gereserveerd voor deze les." }); return;
+      }
+    }
+
+    // Schrijf credit af
+    await updateMemberCredits(member.id, -1);
+
+    // Maak reservering aan
+    const reservering = await createReservering({
+      name: member.name, email: member.email, classId, classTitle, dateStr, time, type, betaaldStripe: true,
+    });
+
+    sendReservationConfirmation({ toEmail: member.email, toName: member.name, classTitle, dateStr, time, type }).catch(console.error);
+    sendAdminNotification({
+      type: "reservering", name: member.name, email: member.email,
+      details: `Les: ${classTitle}\nDatum: ${dateStr}\nTijd: ${time}\n(lid met rittenkaart)`,
+    }).catch(console.error);
+
+    res.json({ ok: true, id: reservering.id });
   } catch (err: any) {
     res.status(500).json({ error: err.message });
   }
