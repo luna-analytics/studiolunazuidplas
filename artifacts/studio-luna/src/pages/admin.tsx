@@ -16,7 +16,7 @@ const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 type Member = { id: string; name: string; email: string; credits: number; notes: string; createdAt: string };
 type StudioClass = { id: string; title: string; time: string; teacher: string; spotsTotal: number; description: string; type: string; dates: string[]; stripeBetaling?: boolean; stripeBedrag?: number };
 type RRequest = { id: string; name: string; email: string; package: string; createdAt: string; done: boolean };
-type LesType = { id: string; naam: string; kleur: string; proeflesGeldig: boolean; actief: boolean; intakeVereist: boolean; beschrijving?: string; locatie?: string; tijd?: string };
+type LesType = { id: string; naam: string; kleur: string; proeflesGeldig: boolean; actief: boolean; intakeVereist: boolean; beschrijving?: string; locatie?: string; tijd?: string; boekingType?: "tarieven" | "vast_tarief"; vastTarief?: number };
 type Rittenkaart = { id: string; naam: string; prijs: number; geldigheid: string; communityAccess: boolean; beschrijving?: string };
 type SpeciaalPakket = { id: string; naam: string; prijs: number; beschrijving?: string; typeId?: string; proeflesGeldig: boolean; actief: boolean };
 type TarievenData = { proeflesPrijs: number; losseLes: number; rittenkaarten: Rittenkaart[]; specials: SpeciaalPakket[]; betalingInfo: string };
@@ -664,9 +664,9 @@ function StripeBetalingEditor({ cls, onUpdate }: { cls: StudioClass; onUpdate: (
 function LestypesTab() {
   const [types, setTypes] = useState<LesType[]>([]);
   const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState({ naam: "", kleur: "groen", proeflesGeldig: true, intakeVereist: true, beschrijving: "", locatie: "", tijd: "" });
+  const [form, setForm] = useState({ naam: "", kleur: "groen", proeflesGeldig: true, intakeVereist: true, beschrijving: "", locatie: "", tijd: "", boekingType: "tarieven" as "tarieven" | "vast_tarief", vastTarief: "" });
   const [editId, setEditId] = useState<string | null>(null);
-  const [editForm, setEditForm] = useState({ naam: "", kleur: "groen", proeflesGeldig: true, actief: true, intakeVereist: true, beschrijving: "", locatie: "", tijd: "" });
+  const [editForm, setEditForm] = useState({ naam: "", kleur: "groen", proeflesGeldig: true, actief: true, intakeVereist: true, beschrijving: "", locatie: "", tijd: "", boekingType: "tarieven" as "tarieven" | "vast_tarief", vastTarief: "" });
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
 
@@ -679,22 +679,24 @@ function LestypesTab() {
   const create = async (e: React.FormEvent) => {
     e.preventDefault(); setErr(""); setLoading(true);
     try {
-      const res = await apiFetch("/admin/class-types", { method: "POST", body: JSON.stringify(form) });
+      const payload = { ...form, vastTarief: form.boekingType === "vast_tarief" && form.vastTarief ? Number(form.vastTarief) : undefined };
+      const res = await apiFetch("/admin/class-types", { method: "POST", body: JSON.stringify(payload) });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
       setTypes((t) => [...t, data]);
-      setForm({ naam: "", kleur: "groen", proeflesGeldig: true, intakeVereist: true, beschrijving: "", locatie: "", tijd: "" });
+      setForm({ naam: "", kleur: "groen", proeflesGeldig: true, intakeVereist: true, beschrijving: "", locatie: "", tijd: "", boekingType: "tarieven", vastTarief: "" });
       setShowForm(false);
     } catch (e: any) { setErr(e.message); } finally { setLoading(false); }
   };
 
   const startEdit = (t: LesType) => {
     setEditId(t.id);
-    setEditForm({ naam: t.naam, kleur: t.kleur, proeflesGeldig: t.proeflesGeldig, actief: t.actief, intakeVereist: t.intakeVereist ?? true, beschrijving: t.beschrijving ?? "", locatie: t.locatie ?? "", tijd: t.tijd ?? "" });
+    setEditForm({ naam: t.naam, kleur: t.kleur, proeflesGeldig: t.proeflesGeldig, actief: t.actief, intakeVereist: t.intakeVereist ?? true, beschrijving: t.beschrijving ?? "", locatie: t.locatie ?? "", tijd: t.tijd ?? "", boekingType: t.boekingType ?? "tarieven", vastTarief: t.vastTarief ? String(t.vastTarief) : "" });
   };
 
   const saveEdit = async (id: string) => {
-    const res = await apiFetch(`/admin/class-types/${id}`, { method: "PATCH", body: JSON.stringify(editForm) });
+    const payload = { ...editForm, vastTarief: editForm.boekingType === "vast_tarief" && editForm.vastTarief ? Number(editForm.vastTarief) : undefined };
+    const res = await apiFetch(`/admin/class-types/${id}`, { method: "PATCH", body: JSON.stringify(payload) });
     if (res.ok) { const updated = await res.json(); setTypes((t) => t.map((x) => x.id === id ? updated : x)); setEditId(null); }
   };
 
@@ -763,6 +765,26 @@ function LestypesTab() {
                 placeholder="bijv. Elke vrijdag 10:00"
                 className="w-full bg-secondary border border-border/40 rounded-2xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
             </div>
+            <div>
+              <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1.5 block">Boekingsflow</label>
+              <div className="flex gap-2">
+                <button type="button" onClick={() => setForm({ ...form, boekingType: "tarieven" })}
+                  className={`flex-1 py-2.5 rounded-2xl border text-sm font-semibold transition-all ${form.boekingType === "tarieven" ? "bg-primary/10 border-primary/40 text-primary" : "border-border/30 text-foreground/50 hover:text-foreground"}`}>
+                  Tarieven opties
+                </button>
+                <button type="button" onClick={() => setForm({ ...form, boekingType: "vast_tarief" })}
+                  className={`flex-1 py-2.5 rounded-2xl border text-sm font-semibold transition-all ${form.boekingType === "vast_tarief" ? "bg-primary/10 border-primary/40 text-primary" : "border-border/30 text-foreground/50 hover:text-foreground"}`}>
+                  Vast tarief
+                </button>
+              </div>
+              {form.boekingType === "vast_tarief" && (
+                <div className="mt-2">
+                  <label className="text-xs text-foreground/50 mb-1 block">Prijs (bijv. 14.95)</label>
+                  <input type="number" min="0" step="0.01" value={form.vastTarief} onChange={(e) => setForm({ ...form, vastTarief: e.target.value })}
+                    placeholder="14.95" className="w-full bg-secondary border border-border/40 rounded-2xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                </div>
+              )}
+            </div>
             {err && <p className="text-sm text-red-500 bg-red-50 rounded-2xl px-3 py-2">{err}</p>}
             <button type="submit" disabled={loading}
               className="bg-primary text-primary-foreground px-5 py-2.5 rounded-2xl font-semibold text-sm hover:bg-primary/90 disabled:opacity-60 transition-colors">
@@ -828,6 +850,26 @@ function LestypesTab() {
                     placeholder="bijv. Elke vrijdag 10:00"
                     className="w-full bg-secondary border border-border/40 rounded-2xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
                 </div>
+                <div>
+                  <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1.5 block">Boekingsflow</label>
+                  <div className="flex gap-2">
+                    <button type="button" onClick={() => setEditForm({ ...editForm, boekingType: "tarieven" })}
+                      className={`flex-1 py-2.5 rounded-2xl border text-sm font-semibold transition-all ${editForm.boekingType === "tarieven" ? "bg-primary/10 border-primary/40 text-primary" : "border-border/30 text-foreground/50 hover:text-foreground"}`}>
+                      Tarieven opties
+                    </button>
+                    <button type="button" onClick={() => setEditForm({ ...editForm, boekingType: "vast_tarief" })}
+                      className={`flex-1 py-2.5 rounded-2xl border text-sm font-semibold transition-all ${editForm.boekingType === "vast_tarief" ? "bg-primary/10 border-primary/40 text-primary" : "border-border/30 text-foreground/50 hover:text-foreground"}`}>
+                      Vast tarief
+                    </button>
+                  </div>
+                  {editForm.boekingType === "vast_tarief" && (
+                    <div className="mt-2">
+                      <label className="text-xs text-foreground/50 mb-1 block">Prijs (bijv. 14.95)</label>
+                      <input type="number" min="0" step="0.01" value={editForm.vastTarief} onChange={(e) => setEditForm({ ...editForm, vastTarief: e.target.value })}
+                        placeholder="14.95" className="w-full bg-secondary border border-border/40 rounded-2xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                    </div>
+                  )}
+                </div>
                 <div className="flex gap-2 pt-1">
                   <button onClick={() => saveEdit(t.id)}
                     className="flex items-center gap-1.5 bg-primary text-primary-foreground px-4 py-2 rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors">
@@ -843,7 +885,7 @@ function LestypesTab() {
                   <div>
                     <p className="font-semibold text-foreground text-sm">{t.naam}</p>
                     <p className="text-xs text-foreground/45 mt-0.5">
-                      {t.proeflesGeldig ? "Proefles geldig" : "Geen proefles"} · {t.actief ? "Actief" : "Inactief"}
+                      {t.proeflesGeldig ? "Proefles geldig" : "Geen proefles"} · {t.actief ? "Actief" : "Inactief"} · {t.boekingType === "vast_tarief" ? `€ ${t.vastTarief?.toFixed(2).replace(".", ",")}` : "Tarieven opties"}
                     </p>
                   </div>
                 </div>

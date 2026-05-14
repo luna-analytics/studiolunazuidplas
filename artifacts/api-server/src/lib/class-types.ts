@@ -14,6 +14,8 @@ export type LesType = {
   beschrijving?: string;
   locatie?: string;
   tijd?: string;
+  boekingType?: "tarieven" | "vast_tarief";
+  vastTarief?: number;
 };
 
 const SEED: LesType[] = [

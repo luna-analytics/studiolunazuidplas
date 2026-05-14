@@ -11,7 +11,7 @@ import { useLocation } from "wouter";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
-type LesType = { id: string; naam: string; kleur: string; beschrijving?: string; locatie?: string; intakeVereist?: boolean };
+type LesType = { id: string; naam: string; kleur: string; beschrijving?: string; locatie?: string; intakeVereist?: boolean; boekingType?: "tarieven" | "vast_tarief"; vastTarief?: number };
 
 const toSlug = (naam: string) =>
   naam.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -91,8 +91,8 @@ export default function Rooster() {
             date,
             dateStr,
             dateLabel: format(date, "EEEE d MMMM", { locale: nl }),
-            stripeBetaling: (cls as any).stripeBetaling,
-            stripeBedrag: (cls as any).stripeBedrag,
+            stripeBetaling: lesTypes.find((t) => t.id === cls.type)?.boekingType === "vast_tarief" ? true : (cls as any).stripeBetaling,
+            stripeBedrag: lesTypes.find((t) => t.id === cls.type)?.boekingType === "vast_tarief" ? lesTypes.find((t) => t.id === cls.type)?.vastTarief : (cls as any).stripeBedrag,
           });
         }
       }
