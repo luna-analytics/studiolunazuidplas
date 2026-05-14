@@ -28,6 +28,7 @@ type Stap = "pakket" | "gegevens" | "betaling" | "succes";
 
 export function ReserveerModal({
   isOpen, onClose, classId, classTitle, dateLabel, dateStr, time, type, intakeVereist = true,
+  stripeBetaling = false, stripeBedrag,
 }: ReserveerModalProps) {
   const { user } = useAuth();
 
@@ -46,8 +47,11 @@ export function ReserveerModal({
   const isLid = !!user && !user.isAdmin;
   const lidHeeftCredits = isLid && (user?.credits ?? 0) > 0;
 
+  // Vaste prijs flow (bijv. Mama Circle) — sla pakketkeuze over
+  const isVastePrijs = stripeBetaling && !!stripeBedrag;
+
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen || isVastePrijs) return;
     fetch(`${BASE}/api/tarieven`)
       .then((r) => r.ok ? r.json() : null)
       .then((d: TarievenData | null) => {
@@ -65,20 +69,23 @@ export function ReserveerModal({
         setPakketten(lijst);
       })
       .catch(() => {});
-  }, [isOpen]);
+  }, [isOpen, isVastePrijs]);
 
   useEffect(() => {
     if (isOpen) {
       // Reset
       setError("");
       setSuccessData(null);
-      if (lidHeeftCredits) {
+      if (isVastePrijs) {
+        // Vaste prijs: ga direct naar gegevens (of direct betaling als al ingelogd)
+        setStap(isLid ? "betaling" : "gegevens");
+      } else if (lidHeeftCredits) {
         setStap("succes-direct");
       } else {
         setStap("pakket");
       }
     }
-  }, [isOpen, lidHeeftCredits]);
+  }, [isOpen, lidHeeftCredits, isVastePrijs, isLid]);
 
   // Vul naam/email in van ingelogd lid
   useEffect(() => {
@@ -145,6 +152,47 @@ export function ReserveerModal({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, pakketId: gekozenPakket.id, classId, classTitle, dateStr, time, type }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message ?? data.error ?? "Er ging iets mis.");
+      setSuccessData({ heeftAccount: data.heeftAccount });
+      setStap("succes");
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Vaste prijs: Stripe betaling via /api/stripe/checkout (gebruikt cls.stripeBedrag)
+  const handleStripeVastePrijs = async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const res = await fetch(`${BASE}/api/stripe/checkout`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, classId, classTitle, dateStr, time, type }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message ?? data.error ?? "Er ging iets mis.");
+      window.location.href = data.url;
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Vaste prijs: contant reserveren zonder pakketkoppeling
+  const handleContantVastePrijs = async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const res = await fetch(`${BASE}/api/stripe/contant`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, pakketId: "losse_les", classId, classTitle, dateStr, time, type }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message ?? data.error ?? "Er ging iets mis.");
@@ -274,6 +322,12 @@ export function ReserveerModal({
               {/* ─── STAP: GEGEVENS (niet-ingelogd) ─── */}
               {stap === "gegevens" && (
                 <form onSubmit={handleGegevensSubmit} className="space-y-3">
+                  {isVastePrijs && stripeBedrag && (
+                    <div className="bg-secondary rounded-2xl px-4 py-3 mb-1">
+                      <p className="text-xs text-foreground/50 uppercase tracking-wide font-semibold mb-0.5">Prijs</p>
+                      <span className="font-bold text-primary text-base">{priceStr(stripeBedrag)}</span>
+                    </div>
+                  )}
                   <div>
                     <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1.5 block">Naam</label>
                     <div className="relative">
@@ -298,10 +352,12 @@ export function ReserveerModal({
                   </div>
                   {error && <p className="text-sm text-red-500 bg-red-50 rounded-2xl px-4 py-2">{error}</p>}
                   <div className="flex gap-2 pt-1">
-                    <button type="button" onClick={() => setStap("pakket")}
-                      className="flex-1 py-3.5 rounded-2xl border border-border/40 text-foreground/70 font-semibold text-sm hover:bg-secondary transition-colors">
-                      Terug
-                    </button>
+                    {!isVastePrijs && (
+                      <button type="button" onClick={() => setStap("pakket")}
+                        className="flex-1 py-3.5 rounded-2xl border border-border/40 text-foreground/70 font-semibold text-sm hover:bg-secondary transition-colors">
+                        Terug
+                      </button>
+                    )}
                     <button type="submit"
                       className="flex-[2] py-3.5 rounded-2xl bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 transition-colors">
                       Verder
@@ -311,36 +367,47 @@ export function ReserveerModal({
               )}
 
               {/* ─── STAP: BETALING KIEZEN ─── */}
-              {stap === "betaling" && gekozenPakket && (
+              {stap === "betaling" && (isVastePrijs ? !!stripeBedrag : !!gekozenPakket) && (
                 <div className="space-y-4">
                   <div className="bg-secondary rounded-2xl px-4 py-3">
-                    <p className="text-xs text-foreground/50 uppercase tracking-wide font-semibold mb-0.5">Gekozen pakket</p>
-                    <div className="flex items-center justify-between">
-                      <span className="font-semibold text-foreground text-sm">{gekozenPakket.label}</span>
-                      <span className="font-bold text-primary">{priceStr(gekozenPakket.prijs)}</span>
-                    </div>
-                    {!isLid && (
-                      <p className="text-xs text-foreground/50 mt-0.5">{name} · {email}</p>
+                    {isVastePrijs ? (
+                      <>
+                        <p className="text-xs text-foreground/50 uppercase tracking-wide font-semibold mb-0.5">Prijs</p>
+                        <div className="flex items-center justify-between">
+                          <span className="font-semibold text-foreground text-sm">{classTitle}</span>
+                          <span className="font-bold text-primary">{priceStr(stripeBedrag!)}</span>
+                        </div>
+                        {!isLid && <p className="text-xs text-foreground/50 mt-0.5">{name} · {email}</p>}
+                      </>
+                    ) : (
+                      <>
+                        <p className="text-xs text-foreground/50 uppercase tracking-wide font-semibold mb-0.5">Gekozen pakket</p>
+                        <div className="flex items-center justify-between">
+                          <span className="font-semibold text-foreground text-sm">{gekozenPakket!.label}</span>
+                          <span className="font-bold text-primary">{priceStr(gekozenPakket!.prijs)}</span>
+                        </div>
+                        {!isLid && <p className="text-xs text-foreground/50 mt-0.5">{name} · {email}</p>}
+                      </>
                     )}
                   </div>
 
                   {error && <p className="text-sm text-red-500 bg-red-50 rounded-2xl px-4 py-2">{error}</p>}
 
                   <button
-                    onClick={handleStripe}
+                    onClick={isVastePrijs ? handleStripeVastePrijs : handleStripe}
                     disabled={loading}
                     className="w-full py-4 rounded-2xl bg-primary text-primary-foreground font-semibold text-base hover:bg-primary/90 disabled:opacity-60 transition-colors flex items-center justify-center gap-2.5"
                   >
                     {loading ? <Spinner /> : (
                       <>
                         <CreditCard className="w-4 h-4" />
-                        Online betalen — {priceStr(gekozenPakket.prijs)}
+                        Online betalen — {isVastePrijs ? priceStr(stripeBedrag!) : priceStr(gekozenPakket!.prijs)}
                       </>
                     )}
                   </button>
 
                   <button
-                    onClick={handleContant}
+                    onClick={isVastePrijs ? handleContantVastePrijs : handleContant}
                     disabled={loading}
                     className="w-full py-4 rounded-2xl border-2 border-primary/20 text-primary font-semibold text-base hover:bg-primary/5 disabled:opacity-60 transition-colors flex items-center justify-center gap-2.5"
                   >
@@ -357,7 +424,7 @@ export function ReserveerModal({
                     Contant betalen reserveert jouw plek — betaling in de studio.
                   </p>
 
-                  <button onClick={() => setStap(isLid ? "pakket" : "gegevens")}
+                  <button onClick={() => setStap(isVastePrijs ? "gegevens" : isLid ? "pakket" : "gegevens")}
                     className="w-full text-center text-sm text-foreground/40 hover:text-foreground/70 underline underline-offset-2">
                     Terug
                   </button>
