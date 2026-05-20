@@ -113,16 +113,29 @@ router.post("/admin/classes", requireAdmin, async (req, res) => {
 });
 
 router.get("/admin/classes/bookings", requireAdmin, async (_req, res) => {
-  const allBookings = await readBookings();
-  const members = await readMembers();
+  const [allBookings, allReserveringen, members] = await Promise.all([readBookings(), readReserveringen(), readMembers()]);
   const memberMap = Object.fromEntries(members.map((m) => [m.id, { name: m.name, email: m.email }]));
   const byClass: Record<string, Record<string, { count: number; bookings: any[] }>> = {};
+
   for (const b of allBookings) {
     if (!byClass[b.classId]) byClass[b.classId] = {};
     if (!byClass[b.classId][b.date]) byClass[b.classId][b.date] = { count: 0, bookings: [] };
     byClass[b.classId][b.date].count++;
-    byClass[b.classId][b.date].bookings.push({ ...b, memberName: memberMap[b.memberId]?.name ?? "Onbekend", memberEmail: memberMap[b.memberId]?.email ?? "" });
+    byClass[b.classId][b.date].bookings.push({ ...b, memberName: memberMap[b.memberId]?.name ?? "Onbekend", memberEmail: memberMap[b.memberId]?.email ?? "", isReservering: false });
   }
+
+  for (const r of allReserveringen) {
+    if (!byClass[r.classId]) byClass[r.classId] = {};
+    if (!byClass[r.classId][r.dateStr]) byClass[r.classId][r.dateStr] = { count: 0, bookings: [] };
+    byClass[r.classId][r.dateStr].count++;
+    byClass[r.classId][r.dateStr].bookings.push({
+      id: r.id, classId: r.classId, date: r.dateStr,
+      memberName: r.name, memberEmail: r.email,
+      betaaldStripe: r.betaaldStripe, betaaldContant: r.betaaldContant,
+      isReservering: true, isProefles: false, isLosseLes: false,
+    });
+  }
+
   res.json(byClass);
 });
 

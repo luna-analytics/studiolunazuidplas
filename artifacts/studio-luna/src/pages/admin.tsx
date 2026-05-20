@@ -341,9 +341,10 @@ function LessenTab() {
     if (res.ok) { const updated = await res.json(); setClasses((c) => c.map((x) => x.id === cls.id ? updated : x)); }
   };
 
-  const cancelClassBooking = async (bookingId: string, classId: string, date: string) => {
+  const cancelClassBooking = async (bookingId: string, classId: string, date: string, isReservering: boolean) => {
     if (!confirm("Boeking annuleren? Credits worden waar van toepassing teruggestort.")) return;
-    const res = await apiFetch(`/admin/bookings/${bookingId}`, { method: "DELETE" });
+    const endpoint = isReservering ? `/admin/reserveringen/${bookingId}` : `/admin/bookings/${bookingId}`;
+    const res = await apiFetch(endpoint, { method: "DELETE" });
     if (res.ok) {
       setClassBookings((prev) => {
         const updated = { ...prev };
@@ -526,9 +527,13 @@ function LessenTab() {
                               <div key={b.id} className="flex items-center justify-between gap-2">
                                 <div className="min-w-0">
                                   <span className="text-xs font-semibold text-foreground">{b.memberName}</span>
-                                  <span className="text-xs text-foreground/40 ml-2">{b.isProefles ? "proefles" : b.isLosseLes ? "los" : "rittenkaart"}</span>
+                                  <span className="text-xs text-foreground/40 ml-2">
+                                    {b.isReservering
+                                      ? (b.betaaldStripe ? "Stripe" : b.betaaldContant ? "contant" : "handmatig")
+                                      : (b.isProefles ? "proefles" : b.isLosseLes ? "los" : "rittenkaart")}
+                                  </span>
                                 </div>
-                                <button onClick={() => cancelClassBooking(b.id, cls.id, d)}
+                                <button onClick={() => cancelClassBooking(b.id, cls.id, d, b.isReservering ?? false)}
                                   className="shrink-0 text-red-400 hover:text-red-600 transition-colors p-1 rounded-lg hover:bg-red-50">
                                   <Trash2 className="w-3 h-3" />
                                 </button>
