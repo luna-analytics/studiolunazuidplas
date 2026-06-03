@@ -30,7 +30,7 @@ export default function Bookings() {
 
   useEffect(() => {
     if (!user || user.isAdmin) return;
-    const token = localStorage.getItem("studio_luna_token");
+    const token = localStorage.getItem("sl_token");
     fetch(`${BASE}/api/reserveringen/mijn`, {
       headers: { Authorization: `Bearer ${token}` },
     })
