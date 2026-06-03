@@ -142,7 +142,7 @@ router.post("/boek-les", requireAuth, async (req: any, res: any) => {
     res.status(400).json({ error: "Verplichte velden ontbreken" }); return;
   }
   try {
-    const member = await findMemberById(req.userId);
+    const member = await findMemberById(req.user.userId);
     if (!member) { res.status(404).json({ error: "Lid niet gevonden" }); return; }
     if ((member.credits ?? 0) < 1) {
       res.status(400).json({ error: "Onvoldoende tegoed. Koop een pakket om lessen te reserveren." }); return;
@@ -189,7 +189,7 @@ router.post("/boek-les", requireAuth, async (req: any, res: any) => {
 // Reserveringen voor ingelogde gebruiker (op basis van e-mail)
 router.get("/reserveringen/mijn", requireAuth, async (req: any, res: any) => {
   try {
-    const member = await findMemberById(req.userId);
+    const member = await findMemberById(req.user.userId);
     if (!member) { res.status(404).json({ error: "Lid niet gevonden" }); return; }
     const alle = await readReserveringen();
     const mijn = alle.filter((r) => r.email.toLowerCase() === member.email.toLowerCase());
