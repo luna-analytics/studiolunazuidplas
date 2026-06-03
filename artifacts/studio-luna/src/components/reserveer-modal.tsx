@@ -454,13 +454,6 @@ export function ReserveerModal({
                       </div>
                     )}
                   </div>
-                  {intakeVereist && (
-                    <a href="https://tally.so/r/XxED7j" target="_blank" rel="noopener noreferrer"
-                      className="flex items-center gap-2 text-primary text-sm font-semibold underline underline-offset-2">
-                      <ExternalLink className="w-3.5 h-3.5" />
-                      Intake invullen (yoga)
-                    </a>
-                  )}
                   <button onClick={handleClose} className="text-sm text-foreground/40 hover:text-foreground/70 transition-colors underline underline-offset-2 pt-2">
                     Sluiten
                   </button>
