@@ -129,91 +129,55 @@ export default function Bookings() {
             )
           )}
 
-          {/* RESERVERINGEN — gereserveerd via het rooster (zonder rittenkaart) */}
-          {user && !user.isAdmin && reserveringen.length > 0 && (
+          {/* GEPLANDE LESSEN — reserveringen + (oude) bookings samengevoegd */}
+          {user && !user.isAdmin && (reserveringen.length > 0 || sortedBookings.length > 0) && (
             <div>
-              <h2 className="font-display text-xl font-medium text-foreground mb-3">Gereserveerde lessen</h2>
+              <h2 className="font-display text-xl font-medium text-foreground mb-3">Geplande lessen</h2>
               <div className="space-y-3">
-                {[...reserveringen]
-                  .sort((a, b) => a.dateStr.localeCompare(b.dateStr))
-                  .map((r, i) => {
-                    const [y, m, d] = r.dateStr.split("-").map(Number);
-                    const dateObj = new Date(y, m - 1, d);
-                    const isYoga = r.type === "yoga";
+                {[
+                  ...reserveringen.map((r) => ({
+                    key: r.id,
+                    dateSort: r.dateStr,
+                    dateLabel: new Date(...(r.dateStr.split("-").map(Number) as [number, number, number]).map((v, i) => i === 1 ? v - 1 : v) as [number, number, number]).toLocaleDateString("nl-NL", { weekday: "long", day: "numeric", month: "long" }),
+                    title: r.classTitle,
+                    time: r.time,
+                    type: r.type,
+                    tag: null as string | null,
+                  })),
+                  ...sortedBookings.map((b) => ({
+                    key: b.id,
+                    dateSort: b.date,
+                    dateLabel: format(parseISO(b.date), "EEEE d MMMM", { locale: nl }),
+                    title: b.className,
+                    time: b.time,
+                    type: b.type,
+                    tag: b.isProefles ? "Proefles" : b.isLosseLes ? "Losse les" : null,
+                  })),
+                ]
+                  .sort((a, b) => a.dateSort.localeCompare(b.dateSort))
+                  .map((item, i) => {
+                    const isYoga = item.type === "yoga";
                     return (
                       <motion.div
-                        key={r.id}
+                        key={item.key}
                         initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.05 }}
                         className="bg-card border border-border/30 rounded-3xl p-5 relative overflow-hidden"
                       >
                         <div className={cn("absolute left-0 top-0 bottom-0 w-2", isYoga ? "bg-primary" : "bg-accent")} />
-                        <div className="pl-3">
-                          <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">
-                            {dateObj.toLocaleDateString("nl-NL", { weekday: "long", day: "numeric", month: "long" })}
-                          </p>
-                          <h3 className="font-display text-lg font-medium mb-0.5">{r.classTitle}</h3>
-                          <p className="text-foreground/70 text-sm">{r.time}</p>
+                        <div className="pl-3 flex items-start justify-between">
+                          <div>
+                            <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">{item.dateLabel}</p>
+                            <h3 className="font-display text-lg font-medium mb-0.5">{item.title}</h3>
+                            <p className="text-foreground/70 text-sm">{item.time}</p>
+                          </div>
+                          {item.tag && (
+                            <span className="text-xs font-semibold bg-secondary text-foreground/60 px-3 py-1 rounded-xl shrink-0 ml-3">{item.tag}</span>
+                          )}
                         </div>
                       </motion.div>
                     );
                   })}
-              </div>
-            </div>
-          )}
-
-          {/* BOOKINGS LIST — alleen tonen als er daadwerkelijk (oude) bookings zijn */}
-          {user && !user.isAdmin && isLoaded && sortedBookings.length > 0 && (
-            <div>
-              <h2 className="font-display text-xl font-medium text-foreground mb-3">Geplande lessen</h2>
-              <div className="space-y-4">
-                {sortedBookings.map((booking, index) => {
-                  const dateObj = parseISO(booking.date);
-                  const isYoga = booking.type === 'yoga';
-                  return (
-                    <motion.div
-                      key={booking.id}
-                      initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.05 }}
-                      className="bg-card border border-border/30 rounded-3xl p-5 relative overflow-hidden flex flex-col"
-                    >
-                      <div className={cn("absolute left-0 top-0 bottom-0 w-2", isYoga ? "bg-primary" : "bg-accent")} />
-                      <div className="pl-3 flex justify-between items-start">
-                        <div>
-                          <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">
-                            {format(dateObj, 'EEEE d MMMM', { locale: nl })}
-                          </p>
-                          <h3 className="font-display text-lg font-medium mb-0.5">{booking.className}</h3>
-                          <p className="text-foreground/70 text-sm">{booking.time}</p>
-                        </div>
-                      </div>
-                      <div className="mt-4 pl-3 flex justify-between items-center">
-                        {booking.isProefles && (
-                          <span className="text-xs font-semibold bg-accent/30 text-foreground/60 px-3 py-1 rounded-xl">Proefles</span>
-                        )}
-                        {booking.isLosseLes && (
-                          <span className="text-xs font-semibold bg-secondary text-foreground/60 px-3 py-1 rounded-xl">Losse les</span>
-                        )}
-                        <div className="ml-auto">
-                          <button
-                            onClick={async () => {
-                              const msg = booking.isProefles || booking.isLosseLes
-                                ? "Weet je zeker dat je deze les wilt annuleren?"
-                                : "Weet je zeker dat je deze les wilt annuleren? Let op: binnen 7 uur voor de les ontvang je geen credit terug.";
-                              if (window.confirm(msg)) {
-                                await cancelBooking(booking.id);
-                                await refreshUser();
-                              }
-                            }}
-                            className="text-sm font-medium text-destructive hover:bg-destructive/10 px-4 py-2 rounded-xl transition-colors"
-                          >
-                            Annuleren
-                          </button>
-                        </div>
-                      </div>
-                    </motion.div>
-                  );
-                })}
               </div>
             </div>
           )}
