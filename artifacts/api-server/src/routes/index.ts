@@ -186,6 +186,44 @@ router.post("/boek-les", requireAuth, async (req: any, res: any) => {
   }
 });
 
+// Annuleer eigen reservering
+router.delete("/reserveringen/:id", requireAuth, async (req: any, res: any) => {
+  try {
+    const member = await findMemberById(req.user.userId);
+    if (!member) { res.status(404).json({ error: "Lid niet gevonden" }); return; }
+
+    const alle = await readReserveringen();
+    const r = alle.find((x) => x.id === req.params.id);
+    if (!r) { res.status(404).json({ error: "Reservering niet gevonden" }); return; }
+    if (r.email.toLowerCase() !== member.email.toLowerCase()) {
+      res.status(403).json({ error: "Geen toegang" }); return;
+    }
+
+    // 7-uur annuleringsgrens
+    try {
+      const [y, mo, d] = r.dateStr.split("-").map(Number);
+      const [h, min] = r.time.split(":").map(Number);
+      const lesStart = new Date(y, mo - 1, d, h, min);
+      const grens = new Date(lesStart.getTime() - 7 * 60 * 60 * 1000);
+      if (new Date() >= grens) {
+        res.status(400).json({ error: "Te laat om te annuleren. Annuleren is mogelijk tot 7 uur voor de les." }); return;
+      }
+    } catch { /* laat door als datum niet parseable */ }
+
+    await deleteReservering(r.id);
+
+    // Credit terugstorten als lid een account heeft
+    let credits = member.credits ?? 0;
+    if (r.betaaldStripe === true && member.credits !== undefined) {
+      credits = (await updateMemberCredits(member.id, 1)).credits;
+    }
+
+    res.json({ ok: true, credits });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Reserveringen voor ingelogde gebruiker (op basis van e-mail)
 router.get("/reserveringen/mijn", requireAuth, async (req: any, res: any) => {
   try {

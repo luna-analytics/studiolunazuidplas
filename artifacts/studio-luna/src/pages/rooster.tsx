@@ -52,8 +52,11 @@ export default function Rooster() {
   const [selected, setSelected] = useState<ClassInstance | null>(null);
   const { classes, loading: classesLoading, refetch: refetchClasses } = useClasses();
   const [lesTypes, setLesTypes] = useState<LesType[]>([]);
-  const { user } = useAuth();
-  const [mijnReserveringen, setMijnReserveringen] = useState<Set<string>>(new Set());
+  const { user, refreshUser } = useAuth();
+  const [mijnReserveringen, setMijnReserveringen] = useState<Map<string, { id: string; time: string; dateStr: string }>>(new Map());
+  const [openAnnuleerKey, setOpenAnnuleerKey] = useState<string | null>(null);
+  const [annuleerLoading, setAnnuleerLoading] = useState(false);
+  const [annuleerError, setAnnuleerError] = useState("");
 
   useEffect(() => {
     fetch(`${BASE}/api/class-types`)
@@ -68,8 +71,8 @@ export default function Rooster() {
     if (!token) return;
     fetch(`${BASE}/api/reserveringen/mijn`, { headers: { Authorization: `Bearer ${token}` } })
       .then((r) => r.ok ? r.json() : [])
-      .then((list: { classId: string; dateStr: string }[]) => {
-        setMijnReserveringen(new Set(list.map((r) => `${r.classId}__${r.dateStr}`)));
+      .then((list: { id: string; classId: string; dateStr: string; time: string }[]) => {
+        setMijnReserveringen(new Map(list.map((r) => [`${r.classId}__${r.dateStr}`, { id: r.id, time: r.time, dateStr: r.dateStr }])));
       })
       .catch(() => {});
   };
@@ -126,6 +129,42 @@ export default function Rooster() {
     setModalOpen(false);
     refetchClasses();
     fetchMijnReserveringen();
+  };
+
+  const deadlineTekst = (dateStr: string, time: string) => {
+    try {
+      const [y, mo, d] = dateStr.split("-").map(Number);
+      const [h, min] = time.split(":").map(Number);
+      const grens = new Date(y, mo - 1, d, h - 7, min);
+      const grensUur = grens.getHours().toString().padStart(2, "0") + ":" + grens.getMinutes().toString().padStart(2, "0");
+      const grensDatum = format(grens, "EEEE d MMMM", { locale: nl });
+      return `Annuleren kan tot ${grensUur} op ${grensDatum}.`;
+    } catch {
+      return "Annuleren kan tot 7 uur voor de les.";
+    }
+  };
+
+  const handleAnnuleer = async (reserveringId: string, key: string) => {
+    if (!confirm("Weet je zeker dat je wilt annuleren?")) return;
+    setAnnuleerLoading(true);
+    setAnnuleerError("");
+    const token = localStorage.getItem("sl_token");
+    try {
+      const res = await fetch(`${BASE}/api/reserveringen/${reserveringId}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (!res.ok) { setAnnuleerError(data.error ?? "Annuleren mislukt."); return; }
+      setMijnReserveringen((prev) => { const next = new Map(prev); next.delete(key); return next; });
+      setOpenAnnuleerKey(null);
+      refetchClasses();
+      refreshUser();
+    } catch {
+      setAnnuleerError("Er ging iets mis. Probeer het opnieuw.");
+    } finally {
+      setAnnuleerLoading(false);
+    }
   };
 
   return (
@@ -203,12 +242,35 @@ export default function Rooster() {
                           <div className="w-full py-2.5 rounded-2xl text-center text-sm font-semibold bg-foreground/10 text-foreground/40">
                             Vol
                           </div>
-                        ) : mijnReserveringen.has(`${instance.classId}__${instance.dateStr}`) ? (
-                          <div className="w-full py-2.5 rounded-2xl text-center text-sm font-semibold flex items-center justify-center gap-2 bg-primary/10 text-primary border border-primary/30">
-                            <CheckCircle2 className="w-4 h-4" />
-                            Al gereserveerd
-                          </div>
-                        ) : (
+                        ) : mijnReserveringen.has(`${instance.classId}__${instance.dateStr}`) ? (() => {
+                          const key = `${instance.classId}__${instance.dateStr}`;
+                          const res = mijnReserveringen.get(key)!;
+                          const isOpen = openAnnuleerKey === key;
+                          return (
+                            <div className="flex flex-col gap-2">
+                              <button
+                                onClick={() => { setOpenAnnuleerKey(isOpen ? null : key); setAnnuleerError(""); }}
+                                className="w-full py-2.5 rounded-2xl text-sm font-semibold flex items-center justify-center gap-2 bg-primary/10 text-primary border border-primary/30 hover:bg-primary/15 transition-colors"
+                              >
+                                <CheckCircle2 className="w-4 h-4" />
+                                Al gereserveerd
+                              </button>
+                              {isOpen && (
+                                <div className="rounded-2xl border border-border/30 bg-secondary px-4 py-3 space-y-2">
+                                  <p className="text-xs text-foreground/50">{deadlineTekst(res.dateStr, res.time)}</p>
+                                  {annuleerError && <p className="text-xs text-red-500">{annuleerError}</p>}
+                                  <button
+                                    onClick={() => handleAnnuleer(res.id, key)}
+                                    disabled={annuleerLoading}
+                                    className="w-full py-2 rounded-xl text-sm font-semibold text-red-500 border border-red-200 hover:bg-red-50 transition-colors disabled:opacity-50"
+                                  >
+                                    {annuleerLoading ? "Bezig…" : "Annuleren"}
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })() : (
                           <button
                             onClick={() => handleReserveer(instance)}
                             className="w-full py-2.5 rounded-2xl text-sm font-semibold transition-all active:scale-[0.98]"
