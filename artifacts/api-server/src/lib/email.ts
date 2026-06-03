@@ -123,13 +123,6 @@ export async function sendReservationConfirmation(params: {
           </td></tr>
         </table>
 
-        <div style="border-left:3px solid #C78D76; background-color:#FDFBF9; padding:15px 20px; margin-bottom:25px;">
-          <p style="margin:0; font-size:14px; line-height:1.6; color:#3A4F41;">
-            <strong style="color:#C78D76; text-transform:uppercase; font-size:11px; letter-spacing:1px;">Betaling</strong><br>
-            ${betalingInfo}
-          </p>
-        </div>
-
         ${intakeBlok}
 
         <p style="margin:0; font-size:13px; color:#8FA89B; line-height:1.6;">${settings.annuleringsNote.replace(/\n/g, "<br/>")}</p>
@@ -142,7 +135,7 @@ export async function sendReservationConfirmation(params: {
     await resend.emails.send({
       from: FROM,
       to: toEmail,
-      subject: `Je plekje is gereserveerd — ${classTitle} op ${formattedDate}`,
+      subject: `${classTitle} ${formattedDate} Studio Luna`,
       html: WRAPPER(inner),
     });
   } catch (err) {
@@ -355,13 +348,6 @@ export async function sendBookingConfirmation(params: {
           </td></tr>
         </table>
 
-        <div style="border-left:3px solid #C78D76; background-color:#FDFBF9; padding:15px 20px; margin-bottom:25px;">
-          <p style="margin:0; font-size:14px; line-height:1.6; color:#3A4F41;">
-            <strong style="color:#C78D76; text-transform:uppercase; font-size:11px; letter-spacing:1px;">Betaling</strong><br>
-            ${betaling}
-          </p>
-        </div>
-
         <p style="margin:0; font-size:13px; color:#8FA89B; line-height:1.6;">${settings.annuleringsNote.replace(/\n/g, "<br/>")}</p>
         ${persoonlijkBlok}
       </td>
@@ -373,7 +359,7 @@ export async function sendBookingConfirmation(params: {
     await resend.emails.send({
       from: FROM,
       to: toEmail,
-      subject: `Bevestiging: ${className} op ${formattedDate}`,
+      subject: `${className} ${formattedDate} Studio Luna`,
       html: WRAPPER(inner),
     });
   } catch (err) {
