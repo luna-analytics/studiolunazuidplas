@@ -42,6 +42,7 @@ export function ReserveerModal({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [successData, setSuccessData] = useState<{ heeftAccount: boolean } | null>(null);
+  const [alGereserveerd, setAlGereserveerd] = useState(false);
 
   // Als ingelogd lid: sla stap pakket/gegevens over als ze credits hebben
   const isLid = !!user && !user.isAdmin;
@@ -73,11 +74,10 @@ export function ReserveerModal({
 
   useEffect(() => {
     if (isOpen) {
-      // Reset
       setError("");
       setSuccessData(null);
+      setAlGereserveerd(false);
       if (isVastePrijs) {
-        // Vaste prijs: ga direct naar gegevens (of direct betaling als al ingelogd)
         setStap(isLid ? "betaling" : "gegevens");
       } else if (lidHeeftCredits) {
         setStap("succes-direct");
@@ -86,6 +86,21 @@ export function ReserveerModal({
       }
     }
   }, [isOpen, lidHeeftCredits, isVastePrijs, isLid]);
+
+  // Check of lid al gereserveerd heeft voor deze les+datum
+  useEffect(() => {
+    if (!isOpen || !isLid) return;
+    const token = localStorage.getItem("sl_token");
+    if (!token) return;
+    fetch(`${BASE}/api/reserveringen/mijn`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((r) => r.ok ? r.json() : [])
+      .then((list: { classId: string; dateStr: string }[]) => {
+        setAlGereserveerd(list.some((r) => r.classId === classId && r.dateStr === dateStr));
+      })
+      .catch(() => {});
+  }, [isOpen, isLid, classId, dateStr]);
 
   // Vul naam/email in van ingelogd lid
   useEffect(() => {
@@ -270,24 +285,36 @@ export function ReserveerModal({
                     <h2 className="font-display text-2xl font-semibold text-foreground mb-1">{classTitle}</h2>
                     <p className="text-foreground/70 font-medium capitalize">{dateLabel} · {time}</p>
                   </div>
-                  <div className="w-full bg-secondary rounded-2xl px-4 py-3 text-left mb-2">
-                    <p className="text-sm font-semibold text-foreground">Je hebt nog <span className="text-primary">{user?.credits} les{(user?.credits ?? 0) !== 1 ? "sen" : ""}</span> tegoed</p>
-                    <p className="text-xs text-foreground/60 mt-0.5">Er wordt één les van je rittenkaart afgeschreven.</p>
-                  </div>
-                  {error && <p className="text-sm text-red-500 bg-red-50 rounded-2xl px-4 py-2 w-full text-left">{error}</p>}
-                  <button
-                    onClick={handleLidDirectBoeken}
-                    disabled={loading}
-                    className="w-full py-4 rounded-2xl bg-primary text-primary-foreground font-semibold text-base hover:bg-primary/90 disabled:opacity-60 transition-colors flex items-center justify-center gap-2"
-                  >
-                    {loading ? <Spinner /> : "Plekje reserveren"}
-                  </button>
-                  <button
-                    onClick={() => setStap("pakket")}
-                    className="text-sm text-foreground/50 hover:text-foreground/80 underline underline-offset-2"
-                  >
-                    Toch een nieuw pakket kopen
-                  </button>
+                  {alGereserveerd ? (
+                    <div className="w-full bg-primary/10 border border-primary/30 rounded-2xl px-4 py-4 text-left flex items-center gap-3">
+                      <CheckCircle2 className="w-5 h-5 text-primary shrink-0" />
+                      <div>
+                        <p className="text-sm font-semibold text-primary">Al gereserveerd</p>
+                        <p className="text-xs text-primary/70 mt-0.5">Je hebt al een plekje voor deze les.</p>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="w-full bg-secondary rounded-2xl px-4 py-3 text-left mb-2">
+                        <p className="text-sm font-semibold text-foreground">Je hebt nog <span className="text-primary">{user?.credits} les{(user?.credits ?? 0) !== 1 ? "sen" : ""}</span> tegoed</p>
+                        <p className="text-xs text-foreground/60 mt-0.5">Er wordt één les van je rittenkaart afgeschreven.</p>
+                      </div>
+                      {error && <p className="text-sm text-red-500 bg-red-50 rounded-2xl px-4 py-2 w-full text-left">{error}</p>}
+                      <button
+                        onClick={handleLidDirectBoeken}
+                        disabled={loading}
+                        className="w-full py-4 rounded-2xl bg-primary text-primary-foreground font-semibold text-base hover:bg-primary/90 disabled:opacity-60 transition-colors flex items-center justify-center gap-2"
+                      >
+                        {loading ? <Spinner /> : "Plekje reserveren"}
+                      </button>
+                      <button
+                        onClick={() => setStap("pakket")}
+                        className="text-sm text-foreground/50 hover:text-foreground/80 underline underline-offset-2"
+                      >
+                        Toch een nieuw pakket kopen
+                      </button>
+                    </>
+                  )}
                 </div>
               )}
 
