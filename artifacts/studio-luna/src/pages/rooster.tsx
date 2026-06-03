@@ -6,8 +6,9 @@ import { ReserveerModal } from "@/components/reserveer-modal";
 import { BottomNav } from "@/components/bottom-nav";
 import { SeoFooter } from "@/components/seo-footer";
 import { motion } from "framer-motion";
-import { Clock, Users, MapPin, Info } from "lucide-react";
+import { Clock, Users, MapPin, Info, CheckCircle2 } from "lucide-react";
 import { useLocation } from "wouter";
+import { useAuth } from "@/hooks/use-auth";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -51,6 +52,8 @@ export default function Rooster() {
   const [selected, setSelected] = useState<ClassInstance | null>(null);
   const { classes, loading: classesLoading, refetch: refetchClasses } = useClasses();
   const [lesTypes, setLesTypes] = useState<LesType[]>([]);
+  const { user } = useAuth();
+  const [mijnReserveringen, setMijnReserveringen] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     fetch(`${BASE}/api/class-types`)
@@ -58,6 +61,20 @@ export default function Rooster() {
       .then(setLesTypes)
       .catch(() => {});
   }, []);
+
+  const fetchMijnReserveringen = () => {
+    if (!user || user.isAdmin) return;
+    const token = localStorage.getItem("sl_token");
+    if (!token) return;
+    fetch(`${BASE}/api/reserveringen/mijn`, { headers: { Authorization: `Bearer ${token}` } })
+      .then((r) => r.ok ? r.json() : [])
+      .then((list: { classId: string; dateStr: string }[]) => {
+        setMijnReserveringen(new Set(list.map((r) => `${r.classId}__${r.dateStr}`)));
+      })
+      .catch(() => {});
+  };
+
+  useEffect(() => { fetchMijnReserveringen(); }, [user]);
 
   const getColors = (typeId: string) => {
     const lesType = lesTypes.find((t) => t.id === typeId);
@@ -108,6 +125,7 @@ export default function Rooster() {
   const handleClose = () => {
     setModalOpen(false);
     refetchClasses();
+    fetchMijnReserveringen();
   };
 
   return (
@@ -184,6 +202,11 @@ export default function Rooster() {
                         {isFull ? (
                           <div className="w-full py-2.5 rounded-2xl text-center text-sm font-semibold bg-foreground/10 text-foreground/40">
                             Vol
+                          </div>
+                        ) : mijnReserveringen.has(`${instance.classId}__${instance.dateStr}`) ? (
+                          <div className="w-full py-2.5 rounded-2xl text-center text-sm font-semibold flex items-center justify-center gap-2 bg-primary/10 text-primary border border-primary/30">
+                            <CheckCircle2 className="w-4 h-4" />
+                            Al gereserveerd
                           </div>
                         ) : (
                           <button
