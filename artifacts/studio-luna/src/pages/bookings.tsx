@@ -162,31 +162,10 @@ export default function Bookings() {
             </div>
           )}
 
-          {/* BOOKINGS LIST — alleen voor ingelogde leden */}
-          {user && !user.isAdmin && <div>
-            <h2 className="font-display text-xl font-medium text-foreground mb-3">Geplande lessen</h2>
-            {!isLoaded ? (
-              <div className=" p-10">
-                <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-              </div>
-            ) : sortedBookings.length === 0 ? (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-                className="bg-card rounded-3xl p-8 text-center"
-              >
-                <div className="w-14 h-14 bg-background rounded-full flex items-center justify-center mx-auto mb-4 text-muted-foreground">
-                  <CalendarX2 className="w-7 h-7" />
-                </div>
-                <h3 className="font-display text-lg font-medium mb-2">Nog geen boekingen</h3>
-                <p className="text-muted-foreground mb-5 text-sm leading-relaxed">
-                  Je hebt nog geen lessen gepland. Tijd voor wat me-time?
-                </p>
-                <Link href="/rooster" className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-5 py-2.5 rounded-2xl font-semibold text-sm hover:bg-primary/90 transition-colors">
-                  Bekijk het rooster
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-              </motion.div>
-            ) : (
+          {/* BOOKINGS LIST — alleen tonen als er daadwerkelijk (oude) bookings zijn */}
+          {user && !user.isAdmin && isLoaded && sortedBookings.length > 0 && (
+            <div>
+              <h2 className="font-display text-xl font-medium text-foreground mb-3">Geplande lessen</h2>
               <div className="space-y-4">
                 {sortedBookings.map((booking, index) => {
                   const dateObj = parseISO(booking.date);
@@ -236,8 +215,28 @@ export default function Bookings() {
                   );
                 })}
               </div>
-            )}
-          </div>}
+            </div>
+          )}
+
+          {/* Lege staat — alleen als er écht niets is */}
+          {user && !user.isAdmin && isLoaded && sortedBookings.length === 0 && reserveringen.length === 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+              className="bg-card rounded-3xl p-8 text-center"
+            >
+              <div className="w-14 h-14 bg-background rounded-full flex items-center justify-center mx-auto mb-4 text-muted-foreground">
+                <CalendarX2 className="w-7 h-7" />
+              </div>
+              <h3 className="font-display text-lg font-medium mb-2">Nog geen boekingen</h3>
+              <p className="text-muted-foreground mb-5 text-sm leading-relaxed">
+                Je hebt nog geen lessen gepland. Tijd voor wat me-time?
+              </p>
+              <Link href="/rooster" className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-5 py-2.5 rounded-2xl font-semibold text-sm hover:bg-primary/90 transition-colors">
+                Bekijk het rooster
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </motion.div>
+          )}
         </div>
 
         <SeoFooter />
