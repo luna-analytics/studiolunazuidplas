@@ -1919,8 +1919,9 @@ function ReserveeringenTab() {
   const [items, setItems] = useState<Reservering[]>([]);
   const [loading, setLoading] = useState(true);
   const [classes, setClasses] = useState<StudioClass[]>([]);
+  const [members, setMembers] = useState<{ id: string; name: string; email: string; credits: number }[]>([]);
   const [showInboeken, setShowInboeken] = useState(false);
-  const [inboekForm, setInboekForm] = useState({ name: "", email: "", classId: "", dateStr: "", heelReeks: false });
+  const [inboekForm, setInboekForm] = useState({ memberId: "", name: "", email: "", classId: "", dateStr: "", heelReeks: false, gebruikCredit: false });
   const [composeFor, setComposeFor] = useState<{ id: string; name: string; email: string; subject: string; body: string } | null>(null);
   const [emailTemplates, setEmailTemplates] = useState<Record<string, { emailSubject: string; emailBody: string }>>({});
   const [inboekLoading, setInboekLoading] = useState(false);
@@ -1931,13 +1932,15 @@ function ReserveeringenTab() {
 
   const load = async () => {
     setLoading(true);
-    const [res, clsRes, settingsRes] = await Promise.all([
+    const [res, clsRes, settingsRes, membersRes] = await Promise.all([
       apiFetch("/admin/reserveringen"),
       apiFetch("/classes"),
       apiFetch("/admin/email-settings"),
+      apiFetch("/admin/members"),
     ]);
     if (res.ok) setItems(await res.json());
     if (clsRes.ok) setClasses(await clsRes.json());
+    if (membersRes.ok) setMembers(await membersRes.json());
     if (settingsRes.ok) {
       const s = await settingsRes.json();
       const tpl: Record<string, { emailSubject: string; emailBody: string }> = {};
@@ -2037,6 +2040,8 @@ function ReserveeringenTab() {
           time: cls.time,
           type: cls.type,
           forceOverCapacity,
+          memberId: inboekForm.memberId || undefined,
+          gebruikCredit: inboekForm.gebruikCredit,
         }),
       });
       if (res.ok) {
@@ -2060,8 +2065,9 @@ function ReserveeringenTab() {
     if (isVol) {
       setInboekVolWaarschuwing(true);
     } else if (!hasError) {
-      setInboekForm({ name: "", email: "", classId: "", dateStr: "", heelReeks: false });
+      setInboekForm({ memberId: "", name: "", email: "", classId: "", dateStr: "", heelReeks: false, gebruikCredit: false });
       setShowInboeken(false);
+      load(); // refresh members zodat credits direct bijgewerkt zijn
       setInboekVolWaarschuwing(false);
     }
     setInboekLoading(false);
@@ -2105,6 +2111,41 @@ function ReserveeringenTab() {
             className="bg-card border border-border/30 rounded-3xl p-5">
             <h3 className="font-display text-lg font-medium mb-4">Iemand inboeken</h3>
             <form onSubmit={submitInboeken} className="space-y-3">
+              {/* Lid kiezen of handmatig invullen */}
+              <div>
+                <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Lid</label>
+                <select
+                  value={inboekForm.memberId}
+                  onChange={(e) => {
+                    const m = members.find((x) => x.id === e.target.value);
+                    setInboekForm({ ...inboekForm, memberId: e.target.value, name: m?.name ?? "", email: m?.email ?? "", gebruikCredit: false });
+                  }}
+                  className="w-full bg-secondary border border-border/40 rounded-2xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+                >
+                  <option value="">— Extern (geen lid) —</option>
+                  {[...members].sort((a, b) => a.name.localeCompare(b.name)).map((m) => (
+                    <option key={m.id} value={m.id}>{m.name} ({m.credits} credit{m.credits !== 1 ? "s" : ""})</option>
+                  ))}
+                </select>
+              </div>
+              {/* Credits aftrekken optie */}
+              {inboekForm.memberId && (() => {
+                const m = members.find((x) => x.id === inboekForm.memberId);
+                return m ? (
+                  <label className={`flex items-center gap-2.5 cursor-pointer rounded-2xl px-4 py-3 border ${m.credits > 0 ? "bg-primary/5 border-primary/20" : "bg-secondary border-border/30 opacity-60"}`}>
+                    <input
+                      type="checkbox"
+                      checked={inboekForm.gebruikCredit}
+                      disabled={m.credits <= 0}
+                      onChange={(e) => setInboekForm({ ...inboekForm, gebruikCredit: e.target.checked })}
+                      className="rounded"
+                    />
+                    <span className="text-sm text-foreground/80">
+                      Trek 1 credit af <span className="text-foreground/50">({m.credits} beschikbaar)</span>
+                    </span>
+                  </label>
+                ) : null;
+              })()}
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Naam</label>

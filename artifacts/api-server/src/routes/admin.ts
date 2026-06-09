@@ -380,7 +380,7 @@ router.get("/admin/reserveringen", requireAdmin, async (_req, res) => {
 });
 
 router.post("/admin/reserveringen", requireAdmin, async (req, res) => {
-  const { name, email, classId, classTitle, dateStr, time, type, stuurEmail, forceOverCapacity } = req.body;
+  const { name, email, classId, classTitle, dateStr, time, type, stuurEmail, forceOverCapacity, memberId, gebruikCredit } = req.body;
   if (!name || !email || !classId || !classTitle || !dateStr || !time || !type) {
     return res.status(400).json({ error: "Verplichte velden ontbreken" });
   }
@@ -403,6 +403,14 @@ router.post("/admin/reserveringen", requireAdmin, async (req, res) => {
         return res.status(409).json({ error: "Vol", spotsTotal: cls.spotsTotal, taken: takenByBookings + takenByReserveringen });
       }
     }
+  }
+
+  // Credit aftrekken van lid indien gevraagd
+  if (gebruikCredit && memberId) {
+    const member = await findMemberById(memberId);
+    if (!member) return res.status(404).json({ error: "Lid niet gevonden" });
+    if (member.credits <= 0) return res.status(400).json({ error: `${member.name} heeft geen credits meer` });
+    await updateMember(memberId, { credits: member.credits - 1 });
   }
 
   const r = await createReservering({ name, email, classId, classTitle, dateStr, time, type });
