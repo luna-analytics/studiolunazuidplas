@@ -59,6 +59,10 @@ export default function Rooster() {
   const [annuleerError, setAnnuleerError] = useState("");
 
   useEffect(() => {
+    document.title = "Rooster – Zwangerschapsyoga lessen inplannen & boeken | Studio Luna";
+  }, []);
+
+  useEffect(() => {
     fetch(`${BASE}/api/class-types`)
       .then((r) => r.ok ? r.json() : [])
       .then(setLesTypes)

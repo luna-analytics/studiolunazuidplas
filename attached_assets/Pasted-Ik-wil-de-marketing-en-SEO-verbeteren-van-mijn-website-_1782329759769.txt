@@ -1,0 +1,47 @@
+Ik wil de marketing en SEO verbeteren van mijn website: https://www.studiolunazuidplas.nl
+
+Dit is Studio Luna — een zwangerschapsyogastudio in Nieuwerkerk aan den IJssel (gemeente Zuidplas), 
+gevestigd in Huize Mooisteen. Ik geef zwangerschapsyoga, een Zwanger Circle, Mama Circle 
+en geboortevoorbereiding. Prijzen: losse les €22,50, reeks van 8 lessen €160.
+
+Doe het volgende:
+
+**1. SEO-analyse & verbeteringen**
+- Analyseer de huidige HTML/meta-tags en verbeter title tags, meta descriptions en heading 
+  structuur (H1/H2/H3) per pagina
+- Voeg LocalBusiness structured data toe (JSON-LD) met naam, adres, locatie, openingstijden, 
+  prijs en servicegebied (Nieuwerkerk aan den IJssel, Zuidplas, Gouda, Capelle aan den IJssel, 
+  Waddinxveen, Rotterdam-oost)
+- Voeg FAQPage structured data toe met minimaal 5 veelgestelde vragen over zwangerschapsyoga
+- Controleer of canonical tags correct staan en voeg sitemap.xml toe als die ontbreekt
+- Optimaliseer afbeelding alt-teksten voor SEO
+
+**2. Lokale SEO**
+- Schrijf een geoptimaliseerde "Over ons" sectie met lokale zoekwoorden verwerkt
+- Schrijf een aparte landingspagina-tekst gericht op elke omliggende gemeente 
+  (bijv. "zwangerschapsyoga Gouda", "zwangerschapsyoga Capelle aan den IJssel")
+- Voeg een Google Maps embed toe als die er nog niet is
+
+**3. Content & zoekwoorden**
+Verwerk deze zoekwoorden op de juiste plekken in de website:
+- zwangerschapsyoga Nieuwerkerk aan den IJssel
+- prenatale yoga Zuidplas
+- zwangerschapsyoga Gouda
+- geboortevoorbereiding Zuidplas
+- yoga zwanger [plaatsnaam]
+- zwangerschapsyoga verzekering vergoeding
+
+**4. Technische SEO**
+- Controleer paginasnelheid en geef concrete verbeterpunten
+- Zorg dat de website mobile-first is
+- Voeg breadcrumbs toe als ze ontbreken
+- Controleer of er broken links zijn
+
+**5. Conversie-optimalisatie**
+- Voeg een duidelijke call-to-action toe op elke pagina ("Plan je gratis kennismaking" 
+  of "Schrijf je in voor de volgende reeks")
+- Voeg een sectie toe voor testimonials/ervaringen van deelnemers
+- Maak een eenvoudig contactformulier als dat er nog niet is
+
+Geef per onderdeel de concrete code-wijzigingen die ik moet maken in mijn Replit project, 
+en leg kort uit waarom elke wijziging helpt.

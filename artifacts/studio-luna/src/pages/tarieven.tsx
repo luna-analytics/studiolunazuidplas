@@ -141,6 +141,10 @@ export default function Tarieven() {
   const [ondertitel, setOndertitel] = useState("Gun jezelf dit wekelijkse rustmoment tijdens je zwangerschap.");
 
   useEffect(() => {
+    document.title = "Tarieven – Zwangerschapsyoga lessen & rittenkaarten | Studio Luna Nieuwerkerk";
+  }, []);
+
+  useEffect(() => {
     Promise.all([
       fetch(`${BASE}/api/tarieven`).then((r) => r.ok ? r.json() : null),
       fetch(`${BASE}/api/pagina-teksten`).then((r) => r.ok ? r.json() : null),

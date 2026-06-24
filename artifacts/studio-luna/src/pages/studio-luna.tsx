@@ -48,6 +48,10 @@ export default function StudioLuna() {
   const [reviewsConfig, setReviewsConfig] = useState<ReviewsConfig | null>(null);
 
   useEffect(() => {
+    document.title = "Studio Luna – Zwangerschapsyoga Nieuwerkerk aan den IJssel | Mama Community Zuidplas";
+  }, []);
+
+  useEffect(() => {
     fetch(`${BASE}/api/pagina-teksten`)
       .then((r) => r.ok ? r.json() : null)
       .then((d) => { if (d) setTeksten((prev) => ({ ...prev, ...d })); })

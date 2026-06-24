@@ -27,6 +27,10 @@ export default function OverMij() {
   const [data, setData] = useState(DEFAULTS);
 
   useEffect(() => {
+    document.title = "Over mij – Zwangerschapsyoga docente Nieuwerkerk aan den IJssel | Studio Luna";
+  }, []);
+
+  useEffect(() => {
     fetch(`${BASE}/api/pagina-teksten`)
       .then((r) => r.ok ? r.json() : null)
       .then((d) => { if (d) setData((prev) => ({ ...prev, ...d })); })

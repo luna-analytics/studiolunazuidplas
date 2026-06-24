@@ -65,6 +65,10 @@ export default function Home() {
   const [extraTypes, setExtraTypes] = useState<LesType[]>([]);
 
   useEffect(() => {
+    document.title = "Aanbod – Zwangerschapsyoga, Zwanger Circle & Mama Circle | Studio Luna Zuidplas";
+  }, []);
+
+  useEffect(() => {
     fetch(`${BASE}/api/pagina-teksten`)
       .then((r) => r.ok ? r.json() : null)
       .then((d) => { if (d) setTeksten((prev) => ({ ...prev, ...d })); })
