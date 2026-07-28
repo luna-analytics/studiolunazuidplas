@@ -31,6 +31,8 @@ const queryClient = new QueryClient({
   },
 });
 
+const CANONICAL_BASE = "https://www.studiolunazuidplas.nl";
+
 function ScrollToTop() {
   const [location] = useLocation();
   useEffect(() => {
@@ -39,10 +41,27 @@ function ScrollToTop() {
   return null;
 }
 
+function CanonicalUpdater() {
+  const [location] = useLocation();
+  useEffect(() => {
+    const path = location === "/" ? "" : location;
+    const canonical = `${CANONICAL_BASE}${path}`;
+    let tag = document.querySelector<HTMLLinkElement>("link[rel='canonical']");
+    if (!tag) {
+      tag = document.createElement("link");
+      tag.setAttribute("rel", "canonical");
+      document.head.appendChild(tag);
+    }
+    tag.setAttribute("href", canonical);
+  }, [location]);
+  return null;
+}
+
 function Router() {
   return (
     <>
       <ScrollToTop />
+      <CanonicalUpdater />
       <Switch>
         <Route path="/" component={StudioLuna} />
         <Route path="/aanbod" component={Home} />
