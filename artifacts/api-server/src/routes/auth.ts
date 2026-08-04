@@ -83,8 +83,9 @@ router.post("/auth/wachtwoord-vergeten", async (req, res) => {
   const expiresAt = new Date(Date.now() + 1000 * 60 * 30).toISOString();
   await savePasswordResetToken(token, member.email, expiresAt);
 
-  const domain = process.env.REPLIT_DOMAINS?.split(",")[0];
-  const baseUrl = domain ? `https://${domain}` : "http://localhost:23125";
+  const replitDomain = process.env.REPLIT_DOMAINS?.split(",")[0];
+  const baseUrl = process.env.SITE_URL
+    ?? (replitDomain ? `https://${replitDomain}` : "http://localhost:23125");
   const link = `${baseUrl}/wachtwoord-reset?token=${token}`;
 
   try {

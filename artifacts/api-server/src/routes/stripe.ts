@@ -12,6 +12,7 @@ import { requireAuth } from "../middlewares/auth.js";
 const router = Router();
 
 const BASE_URL = (() => {
+  if (process.env.SITE_URL) return process.env.SITE_URL;
   const domain = process.env.REPLIT_DOMAINS?.split(",")[0];
   return domain ? `https://${domain}` : "http://localhost:8080";
 })();

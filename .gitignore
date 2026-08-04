@@ -53,3 +53,8 @@ Thumbs.db
 # Replit
 .cache/
 .local/
+
+# Geheime sleutels — nooit committen
+.env
+.env.local
+.env.*.local
