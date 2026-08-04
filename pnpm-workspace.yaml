@@ -7,6 +7,14 @@ packages:
 allowBuilds:
   esbuild: true
 
+# Windows (lokaal) + Linux (Vercel/Replit): beide platform-binaries in de lockfile
+supportedArchitectures:
+  os:
+    - linux
+    - win32
+  cpu:
+    - x64
+
 autoInstallPeers: false
 
 catalog:
