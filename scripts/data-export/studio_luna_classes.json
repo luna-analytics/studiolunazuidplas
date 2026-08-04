@@ -1,0 +1,35 @@
+{
+  "ok": true,
+  "value": [
+    {
+      "title": "Mama Circle @ Mamamo",
+      "time": "09.30",
+      "teacher": "Marjolein",
+      "spotsTotal": 7,
+      "description": " Verbinden met andere mama’s met koffie, thee en bites",
+      "type": "2498cd69-ba83-4d7f-925b-86588cdd34f2",
+      "dates": [
+        "2026-06-26",
+        "2026-07-31"
+      ],
+      "id": "80591852-c9db-4ede-ad45-43242217c591",
+      "stripeBetaling": true,
+      "stripeBedrag": 14.95
+    },
+    {
+      "title": "Zwangerschapsyoga",
+      "time": "19:00",
+      "teacher": "Marjolein",
+      "spotsTotal": 6,
+      "description": "",
+      "type": "yoga",
+      "dates": [
+        "2026-08-11",
+        "2026-08-25"
+      ],
+      "id": "6d51705a-709d-4d54-a6ea-5e3614bf550d",
+      "stripeBetaling": false,
+      "stripeBedrag": null
+    }
+  ]
+}

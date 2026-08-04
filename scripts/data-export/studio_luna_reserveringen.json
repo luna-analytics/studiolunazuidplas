@@ -1,0 +1,50 @@
+{
+  "ok": true,
+  "value": [
+    {
+      "name": "Miloe",
+      "email": "miloesmit@gmail.com",
+      "classId": "6d51705a-709d-4d54-a6ea-5e3614bf550d",
+      "classTitle": "Zwangerschapsyoga",
+      "dateStr": "2026-07-07",
+      "time": "19:00",
+      "type": "yoga",
+      "betaaldStripe": true,
+      "id": "8b3c62a6-19b9-4cbf-8a49-02bb68f02334",
+      "createdAt": "2026-07-07T11:48:41.079Z"
+    },
+    {
+      "name": "Renske Lopes Monteiro",
+      "email": "willemser@hotmail.com",
+      "classId": "80591852-c9db-4ede-ad45-43242217c591",
+      "classTitle": "Mama Circle @ Mamamo",
+      "dateStr": "2026-07-31",
+      "time": "09.30",
+      "type": "2498cd69-ba83-4d7f-925b-86588cdd34f2",
+      "id": "b32f52a8-deba-4d2e-a861-094880275291",
+      "createdAt": "2026-07-21T19:58:18.376Z"
+    },
+    {
+      "name": "Nathalie",
+      "email": "nathalievandam7@gmail.com",
+      "classId": "6d51705a-709d-4d54-a6ea-5e3614bf550d",
+      "classTitle": "Zwangerschapsyoga",
+      "dateStr": "2026-07-28",
+      "time": "19:00",
+      "type": "yoga",
+      "id": "77794298-481b-4f83-8d1f-fe49aef148a5",
+      "createdAt": "2026-07-28T10:41:21.149Z"
+    },
+    {
+      "name": "Miloe",
+      "email": "miloesmit@gmail.com",
+      "classId": "6d51705a-709d-4d54-a6ea-5e3614bf550d",
+      "classTitle": "Zwangerschapsyoga",
+      "dateStr": "2026-07-28",
+      "time": "19:00",
+      "type": "yoga",
+      "id": "6ec408fc-668d-432d-b2ba-4e8c74f48273",
+      "createdAt": "2026-07-28T10:41:35.072Z"
+    }
+  ]
+}

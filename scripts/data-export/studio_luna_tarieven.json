@@ -1,0 +1,26 @@
+{
+  "ok": true,
+  "value": {
+    "proeflesPrijs": 10,
+    "losseLes": 22.5,
+    "rittenkaarten": [],
+    "specials": [
+      {
+        "naam": "ZOMERPAKKET",
+        "prijs": 60,
+        "beschrijving": "4 zwangerschapsyoga lessen te gebruiken in juli en augustus",
+        "typeId": "yoga",
+        "proeflesGeldig": false,
+        "actief": true,
+        "id": "ded5d3af-d8cc-4601-8db4-2d20ea3a9717"
+      }
+    ],
+    "betalingInfo": "Contact of online ",
+    "volgorde": [
+      "special-ded5d3af-d8cc-4601-8db4-2d20ea3a9717",
+      "proefles",
+      "losseles",
+      "rit-rk10"
+    ]
+  }
+}

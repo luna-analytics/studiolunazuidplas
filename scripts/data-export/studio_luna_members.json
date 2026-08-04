@@ -1,0 +1,41 @@
+{
+  "ok": true,
+  "value": [
+    {
+      "id": "fa756e61-0eb7-4754-9e92-c8732d8daebf",
+      "name": "Marjolein",
+      "email": "marjoleinvdvlegel@gmail.com",
+      "passwordHash": "$2b$10$o6uFVeXOSpCAM4wWS/AaHOo29y/UXkGFhb9is21tfFuRagbijTIuK",
+      "credits": 8,
+      "notes": "",
+      "createdAt": "2026-03-24T22:53:55.464Z"
+    },
+    {
+      "id": "b624e659-671e-4385-b8b5-df589007ebed",
+      "name": "Kirsi",
+      "email": "kirsi@live.nl",
+      "passwordHash": "$2b$10$ZIeLEL4o.jeFNl9ngID39eYAZFfprqtyOxs5w2SgVUJl3oUTNZ8Lu",
+      "credits": 0,
+      "notes": "3 credits",
+      "createdAt": "2026-06-09T05:10:32.316Z"
+    },
+    {
+      "id": "a17592e5-f99c-4b36-a288-ecf82933f4a1",
+      "name": "Miloe",
+      "email": "miloesmit@gmail.com",
+      "passwordHash": "$2b$10$bru/lptM67GD/c.z7Bw9qOXL8dCmcNDu2gwtqvOu6ETp.VTvi1qsy",
+      "credits": 0,
+      "notes": "3-rittenkaart",
+      "createdAt": "2026-06-14T10:34:00.345Z"
+    },
+    {
+      "id": "5324d393-f084-4af4-8b01-0248c250a61c",
+      "name": "Nathalie",
+      "email": "nathalievandam7@gmail.com",
+      "passwordHash": "$2b$10$y4NohDkjFgdeaZhvToKiTeaReWLh3TO4E1nlEirle7ecnIoPZ677W",
+      "credits": 1,
+      "notes": "3-rittenkaart",
+      "createdAt": "2026-06-14T10:36:32.517Z"
+    }
+  ]
+}

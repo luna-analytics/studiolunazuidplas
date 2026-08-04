@@ -1,0 +1,38 @@
+{
+  "ok": true,
+  "value": [
+    {
+      "id": "yoga",
+      "naam": "Zwangerschapsyoga",
+      "kleur": "groen",
+      "proeflesGeldig": true,
+      "actief": true,
+      "intakeVereist": true,
+      "beschrijving": "",
+      "locatie": "Huize Mooisteen, Nieuwerkerk aan den IJssel",
+      "tijd": "Dinsdag 19.00 uur"
+    },
+    {
+      "id": "circle",
+      "naam": "Zwanger Circle",
+      "kleur": "roze",
+      "proeflesGeldig": false,
+      "actief": true,
+      "beschrijving": "Naast de actieve yogalessen creëren we een vrouwencirkel speciaal voor zwangeren en mama’s waarin je ervaringen deelt, vragen stelt en naar elkaar omkijkt. Daarnaast gebruiken zachte yoga- en ademhalingsoefeningen, ter voorbereiding op je bevalling en zodat er ruimte ontstaat om echt te luisteren naar jezelf en elkaar. Echte verbinding met andere zwangeren en mama's in Zuidplas!\n",
+      "locatie": "Huize Mooisteen, Nieuwerkerk aan den IJssel",
+      "tijd": "19.00",
+      "intakeVereist": false
+    },
+    {
+      "naam": "Mama Circle @ Mamamo",
+      "kleur": "terra",
+      "proeflesGeldig": false,
+      "actief": true,
+      "id": "2498cd69-ba83-4d7f-925b-86588cdd34f2",
+      "beschrijving": "Het moederschap is prachtig, maar kan soms ook veel zijn. Verlang jij naar een plek waar je ervaringen kunt delen en echt kunt verbinden met andere mama’s? \n\nSchuif dan aan bij onze maandelijkse Mama Circle @ Mamamo! \n\nAan de grote tafel bij Mamamo creëren we een \"village\" gevoel. We nemen de tijd voor kennismaking en waardevolle gesprekken aan de hand van thema's of gesprekskaartjes. Een ochtend vol herkenning, fijne connecties en lekkere koffie of thee. \n\nWanneer: Elke laatste vrijdag van de maand \nTijd: 09.30 – 11.00 uur \nInvestering: Kennismakingsprijs € 14,95 (inclusief 2 drankjes en lekkere bites) \nVoor wie: Alle mama’s die willen verbinden met andere moeders. Kindjes zijn welkom, Mamamo heeft een heerlijke speelhoek! \n\nZien we je bij de allereerste editie op vrijdag 29 mei?",
+      "locatie": "Mamamo, Nieuwerkerk aan den IJssel",
+      "tijd": "Elke laatste vrijdag van de maand om 09.30 uur",
+      "intakeVereist": false
+    }
+  ]
+}

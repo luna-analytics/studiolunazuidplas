@@ -1,0 +1,30 @@
+{
+  "ok": true,
+  "value": {
+    "yogaWelkomst": "Je plekje is gereserveerd! We kijken er naar uit je te zien op de mat. 🌙",
+    "circleWelkomst": "Je plekje in voor de 3-weekse Zwanger Circle is gereserveerd! Ik kijk er naar uit je te verwelkomen in de kring. 🌙",
+    "yogaHerinnering": "Dit is een vriendelijke herinnering dat je morgen bij ons verwacht wordt op de mat! We kijken er naar uit. 🌙",
+    "circleHerinnering": "Morgen vindt de Zwanger Circle plaats! Trek comfortabele kleding aan. Tot morgen. Veel liefs, Studio Luna🌙",
+    "persoonlijkBericht": "Draag comfortabele kleding. Mocht je nog iets willen melden voorafgaand aan de les of circle dan mag je mij altijd een berichtje sturen. ",
+    "annuleringsNote": "Lukt het toch niet om erbij te zijn? Annuleer dan minimaal om 12.00 uur op de dag van de les via de website of een whatsapp bericht. ",
+    "welkomstTekst": "We zien je graag op de mat!",
+    "emailOndertitel": "Zwangerschapsyoga · Nieuwerkerk a/d IJssel",
+    "lesTypeTemplates": {
+      "yoga": {
+        "welkomst": "Je plekje is gereserveerd! We kijken er naar uit je te zien op de mat. 🌙",
+        "herinnering": "Dit is een vriendelijke herinnering dat je morgen bij ons verwacht wordt op de mat! We kijken er naar uit. 🌙",
+        "ondertitel": ""
+      },
+      "circle": {
+        "welkomst": "Je plekje in de Circle is gereserveerd! We kijken ernaar uit je te verwelkomen in de kring. 🌙",
+        "herinnering": "Dit is een vriendelijke herinnering dat je morgen bij ons in de Circle verwacht wordt! We kijken er naar uit. 🌙",
+        "ondertitel": ""
+      },
+      "2498cd69-ba83-4d7f-925b-86588cdd34f2": {
+        "welkomst": "Je plekje is gereserveerd. We kijken er naar uit je te zien bij Mamamo!",
+        "herinnering": "Een kleine herinnering dat morgen om 9.30 de Mama Circle @ Mamamo zal plaatsvinden!",
+        "ondertitel": "Mama circle @ Mamamo"
+      }
+    }
+  }
+}
