@@ -269,7 +269,7 @@ router.post("/admin/class-types", requireAdmin, async (req, res) => {
   const { naam, kleur, proeflesGeldig, actief } = req.body;
   if (!naam || !kleur) { res.status(400).json({ error: "Naam en kleur zijn verplicht" }); return; }
   try {
-    res.json(await createClassType({ naam, kleur, proeflesGeldig: proeflesGeldig ?? true, actief: actief ?? true, intakeVereist: null, beschrijving: null, locatie: null, tijd: null, boekingType: null }));
+    res.json(await createClassType({ naam, kleur, proeflesGeldig: proeflesGeldig ?? true, actief: actief ?? true, intakeVereist: null, beschrijving: null, locatie: null, tijd: null, boekingType: null, vastTarief: null }));
   } catch (err: any) { res.status(400).json({ error: err.message }); }
 });
 
