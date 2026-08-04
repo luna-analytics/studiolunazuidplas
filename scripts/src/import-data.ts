@@ -16,7 +16,8 @@ import fs from "node:fs";
 import path from "node:path";
 import crypto from "node:crypto";
 
-const EXPORT_DIR = path.join(process.cwd(), "scripts", "data-export");
+// Vast pad relatief aan dit scriptbestand, zodat het werkt ongeacht de werkmap
+const EXPORT_DIR = path.join(import.meta.dirname, "..", "data-export");
 
 function readJson<T>(filename: string): T | null {
   const filepath = path.join(EXPORT_DIR, filename);

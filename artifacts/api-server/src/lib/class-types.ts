@@ -5,8 +5,8 @@ import crypto from "node:crypto";
 export type LesType = typeof classTypes.$inferSelect;
 
 const SEED: LesType[] = [
-  { id: "yoga", naam: "Yoga", kleur: "groen", proeflesGeldig: true, actief: true, intakeVereist: true, beschrijving: null, locatie: null, tijd: null, boekingType: null },
-  { id: "circle", naam: "Circle", kleur: "roze", proeflesGeldig: false, actief: true, intakeVereist: false, beschrijving: null, locatie: null, tijd: null, boekingType: null },
+  { id: "yoga", naam: "Yoga", kleur: "groen", proeflesGeldig: true, actief: true, intakeVereist: true, beschrijving: null, locatie: null, tijd: null, boekingType: null, vastTarief: null },
+  { id: "circle", naam: "Circle", kleur: "roze", proeflesGeldig: false, actief: true, intakeVereist: false, beschrijving: null, locatie: null, tijd: null, boekingType: null, vastTarief: null },
 ];
 
 export async function readClassTypes(): Promise<LesType[]> {
@@ -27,7 +27,8 @@ export async function createClassType(data: Omit<LesType, "id">): Promise<LesTyp
     locatie: data.locatie ?? null,
     tijd: data.tijd ?? null,
     boekingType: data.boekingType ?? null,
-    id: crypto.randomUUID() 
+    vastTarief: data.vastTarief ?? null,
+    id: crypto.randomUUID()
   };
   const result = await db.insert(classTypes).values(item).returning();
   return result[0];

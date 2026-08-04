@@ -1,4 +1,4 @@
-import { pgTable, text, integer, boolean, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, text, integer, boolean, jsonb, doublePrecision } from "drizzle-orm/pg-core";
 
 // ─── Members (leden) ─────────────────────────────────────────────────────────
 export const members = pgTable("members", {
@@ -143,6 +143,7 @@ export const classTypes = pgTable("class_types", {
   locatie: text("locatie"),
   tijd: text("tijd"),
   boekingType: text("boeking_type"),
+  vastTarief: doublePrecision("vast_tarief"),
 });
 export type LesType = typeof classTypes.$inferSelect;
 
@@ -157,7 +158,8 @@ export const classes = pgTable("classes", {
   type: text("type").notNull(),
   dates: jsonb("dates").$type<string[]>().notNull().default([]),
   stripeBetaling: boolean("stripe_betaling").default(false),
-  stripeBedrag: integer("stripe_bedrag"),
+  // Bedrag in euro's met decimalen (bijv. 14.95)
+  stripeBedrag: doublePrecision("stripe_bedrag"),
 });
 export type StudioClass = typeof classes.$inferSelect;
 
