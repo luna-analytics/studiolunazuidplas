@@ -674,6 +674,9 @@ importers:
       '@replit/database':
         specifier: ^3.0.1
         version: 3.0.1
+      '@workspace/db':
+        specifier: workspace:*
+        version: link:../lib/db
     devDependencies:
       '@types/node':
         specifier: 'catalog:'

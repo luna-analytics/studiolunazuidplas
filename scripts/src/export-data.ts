@@ -59,7 +59,7 @@ async function main() {
 
   for (const key of allExportKeys) {
     try {
-      const value = await db.get(key);
+      const value = (await db.get(key)) as unknown;
       const filename = keyToFilename(key);
       const filepath = path.join(EXPORT_DIR, filename);
 

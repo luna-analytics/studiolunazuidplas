@@ -22,7 +22,13 @@ function readJson<T>(filename: string): T | null {
   const filepath = path.join(EXPORT_DIR, filename);
   if (!fs.existsSync(filepath)) return null;
   try {
-    return JSON.parse(fs.readFileSync(filepath, "utf-8")) as T;
+    const parsed = JSON.parse(fs.readFileSync(filepath, "utf-8"));
+    // Replit DB-exports zijn verpakt als {ok, value} — uitpakken
+    if (parsed && typeof parsed === "object" && "ok" in parsed) {
+      if (parsed.ok !== true) return null;
+      return (parsed.value ?? null) as T | null;
+    }
+    return parsed as T;
   } catch {
     return null;
   }
@@ -40,7 +46,7 @@ async function importTable<T extends Record<string, unknown>>(
     return;
   }
   const rows = data.map((row) => {
-    const r = transform ? transform(row) : row;
+    const r = (transform ? transform(row) : row) as Record<string, unknown>;
     // Ensure every row has an id
     if (!r.id) r.id = crypto.randomUUID();
     return r;
@@ -100,6 +106,13 @@ async function main() {
   await importAsset("foto_foto_yoga",      "studio_luna_foto_foto_yoga.json");
   await importAsset("foto_foto_circle",    "studio_luna_foto_foto_circle.json");
   await importAsset("foto_over_mij_foto",  "studio_luna_foto_over_mij_foto.json");
+
+  // Blog-omslagfoto's en overige losse afbeeldingen (studio_luna_image_*.json)
+  // image-store gebruikt sleutels met img_-prefix (bijv. img_blog_cover_<id>)
+  for (const f of fs.readdirSync(EXPORT_DIR)) {
+    const m = f.match(/^studio_luna_image_(.+)\.json$/);
+    if (m) await importAsset(`img_${m[1]}`, f);
+  }
 
   console.log("\n✅ Import klaar! Controleer de data in je Neon dashboard.\n");
   process.exit(0);
