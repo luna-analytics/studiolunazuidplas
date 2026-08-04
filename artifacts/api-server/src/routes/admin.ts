@@ -47,7 +47,7 @@ router.post("/admin/members", requireAdmin, async (req, res) => {
 router.patch("/admin/members/:id", requireAdmin, async (req, res) => {
   const { name, email, credits, notes } = req.body;
   try {
-    const member = await updateMember(req.params.id, { name, email, credits, notes });
+    const member = await updateMember(req.params.id as string, { name, email, credits, notes });
     res.json({ id: member.id, name: member.name, email: member.email, credits: member.credits, notes: member.notes });
   } catch (err: any) {
     res.status(400).json({ error: err.message });
@@ -60,7 +60,7 @@ router.post("/admin/members/:id/credits", requireAdmin, async (req, res) => {
     res.status(400).json({ error: "Geef een aantal credits op" }); return;
   }
   try {
-    const member = await updateMemberCredits(req.params.id, delta);
+    const member = await updateMemberCredits(req.params.id as string, delta);
     res.json({ id: member.id, credits: member.credits });
   } catch (err: any) {
     res.status(400).json({ error: err.message });
@@ -68,7 +68,7 @@ router.post("/admin/members/:id/credits", requireAdmin, async (req, res) => {
 });
 
 router.delete("/admin/members/:id", requireAdmin, async (req, res) => {
-  const memberId = req.params.id;
+  const memberId = req.params.id as string;
   const allBookings = await readBookings();
   await saveBookings(allBookings.filter((b) => b.memberId !== memberId));
   await deleteMember(memberId);
@@ -76,7 +76,7 @@ router.delete("/admin/members/:id", requireAdmin, async (req, res) => {
 });
 
 router.get("/admin/members/:id/bookings", requireAdmin, async (req, res) => {
-  const bookings = await getMemberBookings(req.params.id);
+  const bookings = await getMemberBookings(req.params.id as string);
   res.json(bookings);
 });
 
@@ -84,12 +84,12 @@ router.get("/admin/members/:id/bookings", requireAdmin, async (req, res) => {
 
 router.delete("/admin/bookings/:id", requireAdmin, async (req, res) => {
   const allBookings = await readBookings();
-  const booking = allBookings.find((b) => b.id === req.params.id);
+  const booking = allBookings.find((b) => b.id === req.params.id as string);
   if (!booking) { res.status(404).json({ error: "Boeking niet gevonden" }); return; }
   if (!booking.isProefles && !booking.isLosseLes) {
     try { await updateMemberCredits(booking.memberId, 1); } catch { /* lid wellicht verwijderd */ }
   }
-  await saveBookings(allBookings.filter((b) => b.id !== req.params.id));
+  await saveBookings(allBookings.filter((b) => b.id !== req.params.id as string));
   res.json({ ok: true });
 });
 
@@ -141,7 +141,7 @@ router.get("/admin/classes/bookings", requireAdmin, async (_req, res) => {
 
 router.patch("/admin/classes/:id", requireAdmin, async (req, res) => {
   try {
-    const cls = await updateClass(req.params.id, req.body);
+    const cls = await updateClass(req.params.id as string, req.body);
     res.json(cls);
   } catch (err: any) {
     res.status(400).json({ error: err.message });
@@ -149,7 +149,7 @@ router.patch("/admin/classes/:id", requireAdmin, async (req, res) => {
 });
 
 router.delete("/admin/classes/:id", requireAdmin, async (req, res) => {
-  await deleteClass(req.params.id);
+  await deleteClass(req.params.id as string);
   res.json({ ok: true });
 });
 
@@ -161,7 +161,7 @@ router.get("/admin/requests", requireAdmin, async (_req, res) => {
 
 router.post("/admin/requests/:id/done", requireAdmin, async (req, res) => {
   try {
-    const req2 = await markRequestDone(req.params.id);
+    const req2 = await markRequestDone(req.params.id as string);
     res.json(req2);
   } catch (err: any) {
     res.status(400).json({ error: err.message });
@@ -169,7 +169,7 @@ router.post("/admin/requests/:id/done", requireAdmin, async (req, res) => {
 });
 
 router.delete("/admin/requests/:id", requireAdmin, async (req, res) => {
-  await deleteRequest(req.params.id);
+  await deleteRequest(req.params.id as string);
   res.json({ ok: true });
 });
 
@@ -181,7 +181,7 @@ router.get("/admin/announcements", requireAdmin, async (_req, res) => {
 
 router.post("/admin/announcements/:id/seen", requireAdmin, async (req, res) => {
   try {
-    const a = await markAnnouncementSeen(req.params.id);
+    const a = await markAnnouncementSeen(req.params.id as string);
     res.json(a);
   } catch (err: any) {
     res.status(400).json({ error: err.message });
@@ -189,7 +189,7 @@ router.post("/admin/announcements/:id/seen", requireAdmin, async (req, res) => {
 });
 
 router.delete("/admin/announcements/:id", requireAdmin, async (req, res) => {
-  await deleteAnnouncement(req.params.id);
+  await deleteAnnouncement(req.params.id as string);
   res.json({ ok: true });
 });
 
@@ -204,11 +204,11 @@ router.post("/admin/tips", requireAdmin, async (req, res) => {
 });
 
 router.post("/admin/tips/:id/activate", requireAdmin, async (req, res) => {
-  try { res.json(await activateTip(req.params.id)); } catch (e: any) { res.status(400).json({ error: e.message }); }
+  try { res.json(await activateTip(req.params.id as string)); } catch (e: any) { res.status(400).json({ error: e.message }); }
 });
 
 router.delete("/admin/tips/:id", requireAdmin, async (req, res) => {
-  await deleteTip(req.params.id); res.json({ ok: true });
+  await deleteTip(req.params.id as string); res.json({ ok: true });
 });
 
 // ─── EVENTS ──────────────────────────────────────────────────────────────────
@@ -222,7 +222,7 @@ router.post("/admin/events", requireAdmin, async (req, res) => {
 });
 
 router.delete("/admin/events/:id", requireAdmin, async (req, res) => {
-  await deleteEvent(req.params.id); res.json({ ok: true });
+  await deleteEvent(req.params.id as string); res.json({ ok: true });
 });
 
 // ─── JOURNAL ─────────────────────────────────────────────────────────────────
@@ -236,11 +236,11 @@ router.post("/admin/journal", requireAdmin, async (req, res) => {
 });
 
 router.post("/admin/journal/:id/activate", requireAdmin, async (req, res) => {
-  try { res.json(await activateQuestion(req.params.id)); } catch (e: any) { res.status(400).json({ error: e.message }); }
+  try { res.json(await activateQuestion(req.params.id as string)); } catch (e: any) { res.status(400).json({ error: e.message }); }
 });
 
 router.delete("/admin/journal/:id", requireAdmin, async (req, res) => {
-  await deleteQuestion(req.params.id); res.json({ ok: true });
+  await deleteQuestion(req.params.id as string); res.json({ ok: true });
 });
 
 // ─── EMAIL INSTELLINGEN ───────────────────────────────────────────────────────
@@ -269,18 +269,18 @@ router.post("/admin/class-types", requireAdmin, async (req, res) => {
   const { naam, kleur, proeflesGeldig, actief } = req.body;
   if (!naam || !kleur) { res.status(400).json({ error: "Naam en kleur zijn verplicht" }); return; }
   try {
-    res.json(await createClassType({ naam, kleur, proeflesGeldig: proeflesGeldig ?? true, actief: actief ?? true }));
+    res.json(await createClassType({ naam, kleur, proeflesGeldig: proeflesGeldig ?? true, actief: actief ?? true, intakeVereist: null, beschrijving: null, locatie: null, tijd: null, boekingType: null }));
   } catch (err: any) { res.status(400).json({ error: err.message }); }
 });
 
 router.patch("/admin/class-types/:id", requireAdmin, async (req, res) => {
   try {
-    res.json(await updateClassType(req.params.id, req.body));
+    res.json(await updateClassType(req.params.id as string, req.body));
   } catch (err: any) { res.status(400).json({ error: err.message }); }
 });
 
 router.delete("/admin/class-types/:id", requireAdmin, async (req, res) => {
-  await deleteClassType(req.params.id);
+  await deleteClassType(req.params.id as string);
   res.json({ ok: true });
 });
 
@@ -309,12 +309,12 @@ router.patch("/admin/tarieven/rittenkaarten/:id", requireAdmin, async (req, res)
   try {
     const data = { ...req.body };
     if (data.prijs != null) data.prijs = Number(data.prijs);
-    res.json(await updateRittenkaart(req.params.id, data));
+    res.json(await updateRittenkaart(req.params.id as string, data));
   } catch (err: any) { res.status(400).json({ error: err.message }); }
 });
 
 router.delete("/admin/tarieven/rittenkaarten/:id", requireAdmin, async (req, res) => {
-  res.json(await deleteRittenkaart(req.params.id));
+  res.json(await deleteRittenkaart(req.params.id as string));
 });
 
 router.post("/admin/tarieven/specials", requireAdmin, async (req, res) => {
@@ -329,17 +329,17 @@ router.patch("/admin/tarieven/specials/:id", requireAdmin, async (req, res) => {
   try {
     const data = { ...req.body };
     if (data.prijs != null) data.prijs = Number(data.prijs);
-    res.json(await updateSpecial(req.params.id, data));
+    res.json(await updateSpecial(req.params.id as string, data));
   } catch (err: any) { res.status(400).json({ error: err.message }); }
 });
 
 router.delete("/admin/tarieven/specials/:id", requireAdmin, async (req, res) => {
-  res.json(await deleteSpecial(req.params.id));
+  res.json(await deleteSpecial(req.params.id as string));
 });
 
 router.patch("/admin/tarieven/volgorde", requireAdmin, async (req, res) => {
   const { volgorde } = req.body;
-  if (!Array.isArray(volgorde)) return res.status(400).json({ error: "volgorde moet een array zijn" });
+  if (!Array.isArray(volgorde)) { res.status(400).json({ error: "volgorde moet een array zijn" }); return; }
   res.json(await saveTarieven({ volgorde }));
 });
 
@@ -361,7 +361,7 @@ router.patch("/admin/pagina-teksten", requireAdmin, async (req, res) => {
 
 // Directe foto-route voor toekomstige uploads
 router.patch("/admin/foto/:key", requireAdmin, async (req, res) => {
-  const key = req.params.key as FotoKey;
+  const key = req.params.key as string as FotoKey;
   if (!(FOTO_KEYS as readonly string[]).includes(key)) {
     res.status(400).json({ error: "Onbekende foto-sleutel" }); return;
   }
@@ -382,7 +382,7 @@ router.get("/admin/reserveringen", requireAdmin, async (_req, res) => {
 router.post("/admin/reserveringen", requireAdmin, async (req, res) => {
   const { name, email, classId, classTitle, dateStr, time, type, stuurEmail, forceOverCapacity, memberId, gebruikCredit } = req.body;
   if (!name || !email || !classId || !classTitle || !dateStr || !time || !type) {
-    return res.status(400).json({ error: "Verplichte velden ontbreken" });
+    res.status(400).json({ error: "Verplichte velden ontbreken" }); return;
   }
 
   // Capaciteitscontrole (admin kan overschrijven met forceOverCapacity)
@@ -400,7 +400,7 @@ router.post("/admin/reserveringen", requireAdmin, async (req, res) => {
       const takenByReserveringen = allReserveringen.filter((r) => r.classId === classId && r.dateStr === dateStr).length;
       const available = cls.spotsTotal - takenByBookings - takenByReserveringen;
       if (available <= 0) {
-        return res.status(409).json({ error: "Vol", spotsTotal: cls.spotsTotal, taken: takenByBookings + takenByReserveringen });
+        res.status(409).json({ error: "Vol", spotsTotal: cls.spotsTotal, taken: takenByBookings + takenByReserveringen }); return;
       }
     }
   }
@@ -408,8 +408,8 @@ router.post("/admin/reserveringen", requireAdmin, async (req, res) => {
   // Credit aftrekken van lid indien gevraagd
   if (gebruikCredit && memberId) {
     const member = await findMemberById(memberId);
-    if (!member) return res.status(404).json({ error: "Lid niet gevonden" });
-    if (member.credits <= 0) return res.status(400).json({ error: `${member.name} heeft geen credits meer` });
+    if (!member) { res.status(404).json({ error: "Lid niet gevonden" }); return; }
+    if (member.credits <= 0) { res.status(400).json({ error: `${member.name} heeft geen credits meer` }); return; }
     await updateMember(memberId, { credits: member.credits - 1 });
   }
 
@@ -419,10 +419,10 @@ router.post("/admin/reserveringen", requireAdmin, async (req, res) => {
 
 router.post("/admin/reserveringen/herinnering", requireAdmin, async (req, res) => {
   const { classTitle, dateStr, time, type } = req.body;
-  if (!classTitle || !dateStr) return res.status(400).json({ error: "Verplichte velden ontbreken" });
+  if (!classTitle || !dateStr) { res.status(400).json({ error: "Verplichte velden ontbreken" }); return; }
   const all = await readReserveringen();
   const groep = all.filter((r) => r.classTitle === classTitle && r.dateStr === dateStr);
-  if (groep.length === 0) return res.json({ sent: 0 });
+  if (groep.length === 0) { res.json({ sent: 0 }); return; }
   await Promise.all(
     groep.map((r) =>
       sendReminderEmail({ toEmail: r.email, toName: r.name, classTitle, dateStr, time: time ?? r.time, type: type ?? r.type })
@@ -433,7 +433,7 @@ router.post("/admin/reserveringen/herinnering", requireAdmin, async (req, res) =
 
 router.patch("/admin/reserveringen/:id/aanwezig", requireAdmin, async (req, res) => {
   try {
-    const updated = await toggleAanwezig(req.params.id);
+    const updated = await toggleAanwezig(req.params.id as string);
     res.json(updated);
   } catch {
     res.status(404).json({ error: "Niet gevonden" });
@@ -442,7 +442,7 @@ router.patch("/admin/reserveringen/:id/aanwezig", requireAdmin, async (req, res)
 
 router.patch("/admin/reserveringen/:id/betaald-contant", requireAdmin, async (req, res) => {
   try {
-    await markBetaaldContant(req.params.id);
+    await markBetaaldContant(req.params.id as string);
     res.json({ ok: true });
   } catch {
     res.status(404).json({ error: "Niet gevonden" });
@@ -450,7 +450,7 @@ router.patch("/admin/reserveringen/:id/betaald-contant", requireAdmin, async (re
 });
 
 router.delete("/admin/reserveringen/:id", requireAdmin, async (req, res) => {
-  await deleteReservering(req.params.id);
+  await deleteReservering(req.params.id as string);
   res.json({ ok: true });
 });
 
@@ -487,7 +487,7 @@ router.patch("/admin/blog/:id", requireAdmin, async (req, res) => {
     const { coverImage, ...rest } = req.body;
     let post;
     try {
-      post = await updatePost(req.params.id, rest);
+      post = await updatePost(req.params.id as string, rest);
     } catch (err: any) {
       res.status(404).json({ error: err.message }); return;
     }
@@ -500,8 +500,8 @@ router.patch("/admin/blog/:id", requireAdmin, async (req, res) => {
 });
 
 router.delete("/admin/blog/:id", requireAdmin, async (req, res) => {
-  await deletePost(req.params.id);
-  await deleteImage(`blog_cover_${req.params.id}`);
+  await deletePost(req.params.id as string);
+  await deleteImage(`blog_cover_${req.params.id as string}`);
   res.json({ ok: true });
 });
 
@@ -512,19 +512,19 @@ router.get("/admin/blog/comments", requireAdmin, async (_req, res) => {
 });
 
 router.patch("/admin/blog/comments/:id/approve", requireAdmin, async (req, res) => {
-  try { res.json(await approveComment(req.params.id)); }
+  try { res.json(await approveComment(req.params.id as string)); }
   catch (e: any) { res.status(404).json({ error: e.message }); }
 });
 
 router.patch("/admin/blog/comments/:id/reply", requireAdmin, async (req, res) => {
   const { reply } = req.body as { reply?: string };
   if (!reply?.trim()) { res.status(400).json({ error: "Reactie is verplicht" }); return; }
-  try { res.json(await replyToComment(req.params.id, reply)); }
+  try { res.json(await replyToComment(req.params.id as string, reply)); }
   catch (e: any) { res.status(404).json({ error: e.message }); }
 });
 
 router.delete("/admin/blog/comments/:id", requireAdmin, async (req, res) => {
-  try { await deleteComment(req.params.id); res.json({ ok: true }); }
+  try { await deleteComment(req.params.id as string); res.json({ ok: true }); }
   catch (e: any) { res.status(404).json({ error: e.message }); }
 });
 
@@ -545,13 +545,13 @@ router.post("/admin/reviews", requireAdmin, async (req, res) => {
 
 router.patch("/admin/reviews/:id", requireAdmin, async (req, res) => {
   try {
-    const review = await updateReview(req.params.id, req.body);
+    const review = await updateReview(req.params.id as string, req.body);
     res.json(review);
   } catch (err: any) { res.status(404).json({ error: err.message }); }
 });
 
 router.delete("/admin/reviews/:id", requireAdmin, async (req, res) => {
-  await deleteReview(req.params.id);
+  await deleteReview(req.params.id as string);
   res.json({ ok: true });
 });
 
@@ -565,7 +565,7 @@ router.post("/admin/reviews/visible", requireAdmin, async (req, res) => {
 router.post("/admin/send-email", requireAdmin, async (req, res) => {
   const { to, toName, subject, body, reserveringId } = req.body as { to?: string; toName?: string; subject?: string; body?: string; reserveringId?: string };
   if (!to || !subject || !body) {
-    return res.status(400).json({ error: "Aan, onderwerp en bericht zijn verplicht" });
+    res.status(400).json({ error: "Aan, onderwerp en bericht zijn verplicht" }); return;
   }
   try {
     let ondertitel: string | undefined;

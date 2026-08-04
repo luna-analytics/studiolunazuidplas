@@ -18,7 +18,7 @@ export async function saveRequests(reqs: RittenkaartRequest[]): Promise<void> {
   }
 }
 
-export async function createRequest(data: Omit<RittenkaartRequest, "id" | "createdAt" | "done">): Promise<RittenkaartRequest> {
+export async function createRequest(data: Omit<RittenkaartRequest, "id" | "createdAt" | "done" | "userId"> & { userId?: string | null }): Promise<RittenkaartRequest> {
   const req: RittenkaartRequest = {
     ...data,
     id: crypto.randomUUID(),

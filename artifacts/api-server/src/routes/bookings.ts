@@ -68,7 +68,7 @@ router.delete("/bookings/:id", requireAuth, async (req, res) => {
   if (isAdmin) { res.status(403).json({ error: "Geen toegang" }); return; }
 
   const allBookings = await getAllBookings();
-  const booking = allBookings.find((b) => b.id === req.params.id && b.memberId === userId);
+  const booking = allBookings.find((b) => b.id === req.params.id as string && b.memberId === userId);
   if (!booking) { res.status(404).json({ error: "Boeking niet gevonden" }); return; }
 
   let withinSevenHours = false;
@@ -84,7 +84,7 @@ router.delete("/bookings/:id", requireAuth, async (req, res) => {
     }
   }
 
-  const cancelled = await deleteBooking(req.params.id, userId);
+  const cancelled = await deleteBooking(req.params.id as string, userId);
   if (!cancelled) { res.status(404).json({ error: "Boeking niet gevonden" }); return; }
 
   const member = await findMemberById(userId);

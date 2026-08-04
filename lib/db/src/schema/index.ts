@@ -15,33 +15,33 @@ export type Member = typeof members.$inferSelect;
 // ─── Bookings (rittenkaart / proefles / losse les) ────────────────────────────
 export const bookings = pgTable("bookings", {
   id: text("id").primaryKey(),
-  memberId: text("member_id"),
-  classId: text("class_id"),
-  className: text("class_name"),
-  date: text("date"),
-  time: text("time"),
-  type: text("type"),
-  isProefles: boolean("is_proefles").default(false),
-  isLosseLes: boolean("is_losse_les").default(false),
-  bookedAt: text("booked_at"),
+  memberId: text("member_id").notNull(),
+  classId: text("class_id").notNull(),
+  className: text("class_name").notNull(),
+  date: text("date").notNull(),
+  time: text("time").notNull(),
+  type: text("type").notNull(),
+  isProefles: boolean("is_proefles").default(false).notNull(),
+  isLosseLes: boolean("is_losse_les").default(false).notNull(),
+  bookedAt: text("booked_at").notNull(),
 });
 export type Booking = typeof bookings.$inferSelect;
 
 // ─── Reserveringen (via rooster) ──────────────────────────────────────────────
 export const reserveringen = pgTable("reserveringen", {
   id: text("id").primaryKey(),
-  name: text("name"),
-  email: text("email"),
-  classId: text("class_id"),
-  classTitle: text("class_title"),
-  dateStr: text("date_str"),
-  time: text("time"),
-  type: text("type"),
-  aanwezig: boolean("aanwezig").default(false),
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  classId: text("class_id").notNull(),
+  classTitle: text("class_title").notNull(),
+  dateStr: text("date_str").notNull(),
+  time: text("time").notNull(),
+  type: text("type").notNull(),
+  aanwezig: boolean("aanwezig").default(false).notNull(),
   notitie: text("notitie"),
-  mailVerstuurd: boolean("mail_verstuurd").default(false),
-  betaaldContant: boolean("betaald_contant").default(false),
-  betaaldStripe: boolean("betaald_stripe").default(false),
+  mailVerstuurd: boolean("mail_verstuurd").default(false).notNull(),
+  betaaldContant: boolean("betaald_contant").default(false).notNull(),
+  betaaldStripe: boolean("betaald_stripe").default(false).notNull(),
   createdAt: text("created_at"),
 });
 export type Reservering = typeof reserveringen.$inferSelect;
@@ -149,14 +149,14 @@ export type LesType = typeof classTypes.$inferSelect;
 // ─── Classes (reeksen) ────────────────────────────────────────────────────────
 export const classes = pgTable("classes", {
   id: text("id").primaryKey(),
-  title: text("title"),
-  time: text("time"),
+  title: text("title").notNull(),
+  time: text("time").notNull(),
   teacher: text("teacher"),
-  spotsTotal: integer("spots_total"),
+  spotsTotal: integer("spots_total").notNull().default(10),
   description: text("description"),
-  type: text("type"),
-  dates: jsonb("dates").$type<string[]>(),
-  stripeBetaling: boolean("stripe_betaling"),
+  type: text("type").notNull(),
+  dates: jsonb("dates").$type<string[]>().notNull().default([]),
+  stripeBetaling: boolean("stripe_betaling").default(false),
   stripeBedrag: integer("stripe_bedrag"),
 });
 export type StudioClass = typeof classes.$inferSelect;

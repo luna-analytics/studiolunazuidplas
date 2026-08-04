@@ -13,7 +13,7 @@ import { findMemberById } from "../lib/users.js";
 import { requireAuth } from "../middlewares/auth.js";
 import { readClassTypes } from "../lib/class-types.js";
 import { readTarieven } from "../lib/tarieven.js";
-import { createReservering, readReserveringen } from "../lib/reserveringen.js";
+import { createReservering, readReserveringen, deleteReservering } from "../lib/reserveringen.js";
 import { sendAdminNotification, sendReservationConfirmation } from "../lib/email.js";
 import { updateMemberCredits } from "../lib/users.js";
 import { readClasses } from "../lib/classes.js";
@@ -63,7 +63,7 @@ router.get("/blog", async (_req, res) => {
 // Enkel artikel ophalen (publiek)
 router.get("/blog/:id", async (req, res) => {
   const posts = await readPosts();
-  const param = req.params.id;
+  const param = req.params.id as string;
   const post = posts.find((p) => p.published && (p.slug === param || p.id === param));
   if (!post) { res.status(404).json({ error: "Niet gevonden" }); return; }
   const coverImage = await getImage(`blog_cover_${post.id}`);
@@ -72,7 +72,7 @@ router.get("/blog/:id", async (req, res) => {
 
 // Blog reacties (publiek: lezen + insturen)
 router.get("/blog/:id/comments", async (req, res) => {
-  const comments = await getCommentsForPost(req.params.id, true);
+  const comments = await getCommentsForPost(req.params.id as string, true);
   res.json(comments);
 });
 
@@ -84,7 +84,7 @@ router.post("/blog/:id/comments", async (req, res) => {
   if (body.trim().length > 1000) {
     res.status(400).json({ error: "Reactie is te lang (max 1000 tekens)" }); return;
   }
-  const comment = await addComment(req.params.id, name, body, email);
+  const comment = await addComment(req.params.id as string, name, body, email);
   res.json({ ok: true, id: comment.id });
 });
 
@@ -193,7 +193,7 @@ router.delete("/reserveringen/:id", requireAuth, async (req: any, res: any) => {
     if (!member) { res.status(404).json({ error: "Lid niet gevonden" }); return; }
 
     const alle = await readReserveringen();
-    const r = alle.find((x) => x.id === req.params.id);
+    const r = alle.find((x) => x.id === req.params.id as string);
     if (!r) { res.status(404).json({ error: "Reservering niet gevonden" }); return; }
     if (r.email.toLowerCase() !== member.email.toLowerCase()) {
       res.status(403).json({ error: "Geen toegang" }); return;
