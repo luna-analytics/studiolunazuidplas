@@ -1,0 +1,9 @@
+{
+  "version": 2,
+  "installCommand": "pnpm install",
+  "buildCommand": "pnpm --filter @workspace/studio-luna run build",
+  "outputDirectory": "artifacts/studio-luna/dist/public",
+  "rewrites": [
+    { "source": "/api/:path*", "destination": "/api/index" }
+  ]
+}
