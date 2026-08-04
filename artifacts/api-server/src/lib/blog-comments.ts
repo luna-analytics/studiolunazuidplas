@@ -1,81 +1,53 @@
-import Database from "@replit/database";
+import { db, blogComments } from "@workspace/db";
+import { eq, and } from "drizzle-orm";
 
-const db = new Database();
-const KEY = "studio_luna:blog_comments";
+export type BlogComment = typeof blogComments.$inferSelect;
 
-export type BlogComment = {
-  id: string;
-  postId: string;
-  name: string;
-  email?: string;
-  body: string;
-  createdAt: string;
-  approved: boolean;
-  reply?: string;
-  repliedAt?: string;
-};
-
-async function readAll(): Promise<BlogComment[]> {
-  try {
-    const result = (await db.get(KEY)) as any;
-    if (result?.ok === false) return [];
-    const data = result?.value ?? result;
-    return Array.isArray(data) ? data : [];
-  } catch {
-    return [];
-  }
-}
-
-async function saveAll(comments: BlogComment[]): Promise<void> {
-  await db.set(KEY, comments);
+export async function getAllComments(): Promise<BlogComment[]> {
+  const all = await db.select().from(blogComments);
+  return all.sort((a, b) => new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime());
 }
 
 export async function getCommentsForPost(postId: string, approvedOnly = true): Promise<BlogComment[]> {
-  const all = await readAll();
+  const all = await db.select().from(blogComments).where(eq(blogComments.postId, postId));
   return all
-    .filter((c) => c.postId === postId && (approvedOnly ? c.approved : true))
-    .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
-}
-
-export async function getAllComments(): Promise<BlogComment[]> {
-  const all = await readAll();
-  return all.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    .filter((c) => (approvedOnly ? c.approved : true))
+    .sort((a, b) => new Date(a.createdAt!).getTime() - new Date(b.createdAt!).getTime());
 }
 
 export async function addComment(postId: string, name: string, body: string, email?: string): Promise<BlogComment> {
-  const all = await readAll();
   const comment: BlogComment = {
     id: Date.now().toString(),
     postId,
     name: name.trim(),
     body: body.trim(),
-    email: email?.trim() || undefined,
+    email: email?.trim() || null,
     createdAt: new Date().toISOString(),
     approved: false,
+    reply: null,
+    repliedAt: null,
   };
-  await saveAll([...all, comment]);
-  return comment;
+  const result = await db.insert(blogComments).values(comment).returning();
+  return result[0];
 }
 
 export async function approveComment(id: string): Promise<BlogComment> {
-  const all = await readAll();
-  const idx = all.findIndex((c) => c.id === id);
-  if (idx === -1) throw new Error("Reactie niet gevonden");
-  all[idx] = { ...all[idx], approved: true };
-  await saveAll(all);
-  return all[idx];
+  const updated = await db.update(blogComments).set({ approved: true }).where(eq(blogComments.id, id)).returning();
+  if (updated.length === 0) throw new Error("Reactie niet gevonden");
+  return updated[0];
 }
 
 export async function replyToComment(id: string, reply: string): Promise<BlogComment> {
-  const all = await readAll();
-  const idx = all.findIndex((c) => c.id === id);
-  if (idx === -1) throw new Error("Reactie niet gevonden");
-  all[idx] = { ...all[idx], reply: reply.trim(), repliedAt: new Date().toISOString(), approved: true };
-  await saveAll(all);
-  return all[idx];
+  const updated = await db.update(blogComments).set({ 
+    reply: reply.trim(), 
+    repliedAt: new Date().toISOString(), 
+    approved: true 
+  }).where(eq(blogComments.id, id)).returning();
+  
+  if (updated.length === 0) throw new Error("Reactie niet gevonden");
+  return updated[0];
 }
 
 export async function deleteComment(id: string): Promise<void> {
-  const all = await readAll();
-  await saveAll(all.filter((c) => c.id !== id));
+  await db.delete(blogComments).where(eq(blogComments.id, id));
 }

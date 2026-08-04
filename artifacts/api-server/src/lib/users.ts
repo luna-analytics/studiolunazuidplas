@@ -1,42 +1,32 @@
-import Database from "@replit/database";
+import { db, members, passwordResetTokens } from "@workspace/db";
+import { eq } from "drizzle-orm";
 import bcrypt from "bcryptjs";
-import crypto from "crypto";
+import crypto from "node:crypto";
 
-export type Member = {
-  id: string;
-  name: string;
-  email: string;
-  passwordHash: string;
-  credits: number;
-  notes: string;
-  createdAt: string;
-};
-
-const db = new Database();
-const MEMBERS_KEY = "studio_luna:members";
+export type Member = typeof members.$inferSelect;
 
 export async function readMembers(): Promise<Member[]> {
-  try {
-    const result = (await db.get(MEMBERS_KEY)) as any;
-    const data = result?.value ?? result;
-    return Array.isArray(data) ? (data as Member[]) : [];
-  } catch {
-    return [];
+  return await db.select().from(members);
+}
+
+export async function saveMembers(memberList: Member[]): Promise<void> {
+  if (memberList.length === 0) return;
+  for (const m of memberList) {
+    await db.insert(members).values(m).onConflictDoUpdate({
+      target: members.id,
+      set: m,
+    });
   }
 }
 
-export async function saveMembers(members: Member[]): Promise<void> {
-  await db.set(MEMBERS_KEY, members);
-}
-
 export async function findMemberByEmail(email: string): Promise<Member | undefined> {
-  const members = await readMembers();
-  return members.find((m) => m.email.toLowerCase() === email.toLowerCase());
+  const result = await db.select().from(members).where(eq(members.email, email.toLowerCase())).limit(1);
+  return result[0];
 }
 
 export async function findMemberById(id: string): Promise<Member | undefined> {
-  const members = await readMembers();
-  return members.find((m) => m.id === id);
+  const result = await db.select().from(members).where(eq(members.id, id)).limit(1);
+  return result[0];
 }
 
 export async function createMember(data: {
@@ -46,8 +36,8 @@ export async function createMember(data: {
   credits?: number;
   notes?: string;
 }): Promise<Member> {
-  const members = await readMembers();
-  if (members.some((m) => m.email.toLowerCase() === data.email.toLowerCase())) {
+  const existing = await findMemberByEmail(data.email);
+  if (existing) {
     throw new Error("E-mailadres is al in gebruik");
   }
   const member: Member = {
@@ -59,8 +49,7 @@ export async function createMember(data: {
     notes: data.notes ?? "",
     createdAt: new Date().toISOString(),
   };
-  members.push(member);
-  await saveMembers(members);
+  await db.insert(members).values(member);
   return member;
 }
 
@@ -72,30 +61,44 @@ export async function verifyMemberPassword(email: string, password: string): Pro
 }
 
 export async function updateMemberCredits(id: string, delta: number): Promise<Member> {
-  const members = await readMembers();
-  const member = members.find((m) => m.id === id);
+  const member = await findMemberById(id);
   if (!member) throw new Error("Lid niet gevonden");
-  member.credits = Math.max(0, member.credits + delta);
-  await saveMembers(members);
-  return member;
+  const newCredits = Math.max(0, member.credits + delta);
+  const updated = await db.update(members).set({ credits: newCredits }).where(eq(members.id, id)).returning();
+  return updated[0];
 }
 
 export async function updateMember(
   id: string,
   data: Partial<Pick<Member, "name" | "email" | "credits" | "notes">>
 ): Promise<Member> {
-  const members = await readMembers();
-  const member = members.find((m) => m.id === id);
+  const member = await findMemberById(id);
   if (!member) throw new Error("Lid niet gevonden");
-  if (data.name !== undefined) member.name = data.name;
-  if (data.email !== undefined) member.email = data.email.toLowerCase();
-  if (data.credits !== undefined) member.credits = Math.max(0, data.credits);
-  if (data.notes !== undefined) member.notes = data.notes;
-  await saveMembers(members);
-  return member;
+  
+  const updates: Partial<Member> = {};
+  if (data.name !== undefined) updates.name = data.name;
+  if (data.email !== undefined) updates.email = data.email.toLowerCase();
+  if (data.credits !== undefined) updates.credits = Math.max(0, data.credits);
+  if (data.notes !== undefined) updates.notes = data.notes;
+  
+  const updated = await db.update(members).set(updates).where(eq(members.id, id)).returning();
+  return updated[0];
 }
 
 export async function deleteMember(id: string): Promise<void> {
-  const members = (await readMembers()).filter((m) => m.id !== id);
-  await saveMembers(members);
+  await db.delete(members).where(eq(members.id, id));
+}
+
+// Password reset token functions
+export async function savePasswordResetToken(token: string, email: string, expiresAt: string): Promise<void> {
+  await db.insert(passwordResetTokens).values({ token, email, expiresAt });
+}
+
+export async function getPasswordResetToken(token: string) {
+  const result = await db.select().from(passwordResetTokens).where(eq(passwordResetTokens.token, token)).limit(1);
+  return result[0];
+}
+
+export async function deletePasswordResetToken(token: string): Promise<void> {
+  await db.delete(passwordResetTokens).where(eq(passwordResetTokens.token, token));
 }

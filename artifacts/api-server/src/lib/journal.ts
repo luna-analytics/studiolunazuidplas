@@ -1,8 +1,8 @@
-import Database from "@replit/database";
-import crypto from "crypto";
+import { db, studioSettings } from "@workspace/db";
+import { eq } from "drizzle-orm";
+import crypto from "node:crypto";
 
-const db = new Database();
-const KEY = "studio_luna:journal";
+const KEY = "journal";
 
 export type JournalAnswer = {
   memberId: string;
@@ -31,17 +31,18 @@ const SEED: JournalQuestion[] = [
 ];
 
 async function read(): Promise<JournalQuestion[]> {
-  try {
-    const result = (await db.get(KEY)) as any;
-    if (result?.ok === false) return SEED;
-    const data = result?.value ?? result;
-    if (!Array.isArray(data) || data.length === 0) return SEED;
-    return data;
-  } catch { return SEED; }
+  const result = await db.select().from(studioSettings).where(eq(studioSettings.key, KEY)).limit(1);
+  if (result.length === 0) return SEED;
+  const data = result[0].value;
+  if (!Array.isArray(data) || data.length === 0) return SEED;
+  return data as JournalQuestion[];
 }
 
 async function save(items: JournalQuestion[]): Promise<void> {
-  await db.set(KEY, items);
+  await db.insert(studioSettings).values({ key: KEY, value: items }).onConflictDoUpdate({
+    target: studioSettings.key,
+    set: { value: items },
+  });
 }
 
 export async function readJournal(): Promise<JournalQuestion[]> {

@@ -39,6 +39,10 @@ export const reserveringen = pgTable("reserveringen", {
   type: text("type"),
   aanwezig: boolean("aanwezig").default(false),
   notitie: text("notitie"),
+  mailVerstuurd: boolean("mail_verstuurd").default(false),
+  betaaldContant: boolean("betaald_contant").default(false),
+  betaaldStripe: boolean("betaald_stripe").default(false),
+  createdAt: text("created_at"),
 });
 export type Reservering = typeof reserveringen.$inferSelect;
 

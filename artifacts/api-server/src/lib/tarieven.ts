@@ -1,8 +1,8 @@
-import Database from "@replit/database";
-import crypto from "crypto";
+import { db, studioSettings } from "@workspace/db";
+import { eq } from "drizzle-orm";
+import crypto from "node:crypto";
 
-const db = new Database();
-const KEY = "studio_luna:tarieven";
+const KEY = "tarieven";
 
 export type Rittenkaart = {
   id: string;
@@ -58,17 +58,18 @@ const DEFAULT: TarievenData = {
 };
 
 async function read(): Promise<TarievenData> {
-  try {
-    const result = (await db.get(KEY)) as any;
-    if (result?.ok === false) return DEFAULT;
-    const data = result?.value ?? result;
-    if (!data || typeof data !== "object" || !data.rittenkaarten) return DEFAULT;
-    return data as TarievenData;
-  } catch { return DEFAULT; }
+  const result = await db.select().from(studioSettings).where(eq(studioSettings.key, KEY)).limit(1);
+  if (result.length === 0) return DEFAULT;
+  const data = result[0].value;
+  if (!data || typeof data !== "object" || !(data as any).rittenkaarten) return DEFAULT;
+  return data as TarievenData;
 }
 
 async function save(data: TarievenData): Promise<void> {
-  await db.set(KEY, data);
+  await db.insert(studioSettings).values({ key: KEY, value: data }).onConflictDoUpdate({
+    target: studioSettings.key,
+    set: { value: data },
+  });
 }
 
 export async function readTarieven(): Promise<TarievenData> {

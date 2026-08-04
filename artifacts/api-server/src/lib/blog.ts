@@ -1,18 +1,7 @@
-import Database from "@replit/database";
+import { db, blogPosts } from "@workspace/db";
+import { eq } from "drizzle-orm";
 
-const db = new Database();
-const KEY = "studio_luna:blog";
-
-export type BlogPost = {
-  id: string;
-  slug: string;
-  title: string;
-  category: string;
-  body: string;
-  publishedAt: string;
-  published: boolean;
-  createdAt: string;
-};
+export type BlogPost = typeof blogPosts.$inferSelect;
 
 export function generateSlug(title: string, existingSlugs: string[] = [], currentId?: string): string {
   let base = title
@@ -33,80 +22,79 @@ export function generateSlug(title: string, existingSlugs: string[] = [], curren
 
   if (!existingSlugs.includes(base)) return base;
 
-  // Add suffix if slug already exists (for a different post)
   let n = 2;
   while (existingSlugs.includes(`${base}-${n}`)) n++;
   return `${base}-${n}`;
 }
 
 export async function readPosts(): Promise<BlogPost[]> {
-  try {
-    const result = (await db.get(KEY)) as any;
-    if (result?.ok === false) return [];
-    const data = result?.value ?? result;
-    const posts: BlogPost[] = Array.isArray(data) ? data : [];
-    // Migrate: add slug to posts that don't have one yet
-    let dirty = false;
-    const usedSlugs: string[] = posts.filter((p) => p.slug).map((p) => p.slug);
-    for (const p of posts) {
-      if (!p.slug) {
-        p.slug = generateSlug(p.title, usedSlugs);
-        usedSlugs.push(p.slug);
-        dirty = true;
-      }
+  const posts = await db.select().from(blogPosts);
+  let dirty = false;
+  const usedSlugs: string[] = posts.filter((p) => p.slug).map((p) => p.slug!);
+  
+  for (const p of posts) {
+    if (!p.slug) {
+      p.slug = generateSlug(p.title || "", usedSlugs);
+      usedSlugs.push(p.slug);
+      await db.update(blogPosts).set({ slug: p.slug }).where(eq(blogPosts.id, p.id));
     }
-    if (dirty) await db.set(KEY, posts);
-    return posts;
-  } catch {
-    return [];
   }
-}
-
-async function savePosts(posts: BlogPost[]): Promise<void> {
-  await db.set(KEY, posts);
+  
+  if (dirty) {
+    return await db.select().from(blogPosts);
+  }
+  return posts;
 }
 
 export async function createPost(
   input: Omit<BlogPost, "id" | "createdAt" | "slug"> & { slug?: string }
 ): Promise<BlogPost> {
-  const posts = await readPosts();
-  const usedSlugs = posts.map((p) => p.slug);
+  const posts = await db.select().from(blogPosts);
+  const usedSlugs = posts.map((p) => p.slug!);
   const slug = input.slug?.trim()
     ? generateSlug(input.slug, usedSlugs)
-    : generateSlug(input.title, usedSlugs);
+    : generateSlug(input.title || "", usedSlugs);
+    
   const post: BlogPost = {
     ...input,
     slug,
     id: Date.now().toString(),
     createdAt: new Date().toISOString(),
+    published: input.published ?? false,
+    category: input.category ?? null,
+    title: input.title ?? null,
+    body: input.body ?? null,
+    publishedAt: input.publishedAt ?? null,
   };
-  await savePosts([post, ...posts]);
-  return post;
+  
+  const result = await db.insert(blogPosts).values(post).returning();
+  return result[0];
 }
 
 export async function updatePost(
   id: string,
   updates: Partial<BlogPost>
 ): Promise<BlogPost> {
-  const posts = await readPosts();
-  const idx = posts.findIndex((p) => p.id === id);
-  if (idx === -1) throw new Error("Artikel niet gevonden");
+  const posts = await db.select().from(blogPosts);
+  const post = posts.find((p) => p.id === id);
+  if (!post) throw new Error("Artikel niet gevonden");
 
-  // Regenerate slug if title changed and no explicit slug provided
+  let slug = updates.slug;
   if (updates.title && !updates.slug) {
-    const otherSlugs = posts.filter((_, i) => i !== idx).map((p) => p.slug);
-    updates.slug = generateSlug(updates.title, otherSlugs);
+    const otherSlugs = posts.filter((p) => p.id !== id).map((p) => p.slug!);
+    slug = generateSlug(updates.title, otherSlugs);
   } else if (updates.slug) {
-    const otherSlugs = posts.filter((_, i) => i !== idx).map((p) => p.slug);
-    updates.slug = generateSlug(updates.slug, otherSlugs);
+    const otherSlugs = posts.filter((p) => p.id !== id).map((p) => p.slug!);
+    slug = generateSlug(updates.slug, otherSlugs);
   }
+  
+  const toUpdate = { ...updates };
+  if (slug) toUpdate.slug = slug;
 
-  posts[idx] = { ...posts[idx], ...updates };
-  await savePosts(posts);
-  return posts[idx];
+  const updated = await db.update(blogPosts).set(toUpdate).where(eq(blogPosts.id, id)).returning();
+  return updated[0];
 }
 
 export async function deletePost(id: string): Promise<void> {
-  const posts = await readPosts();
-  await savePosts(posts.filter((p) => p.id !== id));
+  await db.delete(blogPosts).where(eq(blogPosts.id, id));
 }

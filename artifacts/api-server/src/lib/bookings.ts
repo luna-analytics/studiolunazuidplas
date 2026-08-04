@@ -1,74 +1,69 @@
-import Database from "@replit/database";
-import crypto from "crypto";
+import { db, bookings } from "@workspace/db";
+import { eq, and } from "drizzle-orm";
+import crypto from "node:crypto";
 
-export type Booking = {
-  id: string;
-  memberId: string;
-  classId: string;
-  className: string;
-  date: string;
-  time: string;
-  type: "yoga" | "circle";
-  isProefles: boolean;
-  isLosseLes: boolean;
-  bookedAt: string;
-};
-
-const db = new Database();
-const BOOKINGS_KEY = "studio_luna:bookings";
+export type Booking = typeof bookings.$inferSelect;
 
 export async function readBookings(): Promise<Booking[]> {
-  try {
-    const result = (await db.get(BOOKINGS_KEY)) as any;
-    const data = result?.value ?? result;
-    return Array.isArray(data) ? (data as Booking[]) : [];
-  } catch {
-    return [];
+  return await db.select().from(bookings);
+}
+
+export async function saveBookings(bookingList: Booking[]): Promise<void> {
+  if (bookingList.length === 0) return;
+  for (const b of bookingList) {
+    await db.insert(bookings).values(b).onConflictDoUpdate({
+      target: bookings.id,
+      set: b,
+    });
   }
 }
 
-export async function saveBookings(bookings: Booking[]): Promise<void> {
-  await db.set(BOOKINGS_KEY, bookings);
-}
-
 export async function getMemberBookings(memberId: string): Promise<Booking[]> {
-  const bookings = await readBookings();
-  return bookings.filter((b) => b.memberId === memberId);
+  return await db.select().from(bookings).where(eq(bookings.memberId, memberId));
 }
 
 export async function getMemberBookingCount(memberId: string): Promise<number> {
-  const bookings = await readBookings();
-  return bookings.filter((b) => b.memberId === memberId).length;
+  const list = await getMemberBookings(memberId);
+  return list.length;
 }
 
 export async function getAllBookings(): Promise<Booking[]> {
-  return readBookings();
+  return await readBookings();
 }
 
 export async function createBooking(
   data: Omit<Booking, "id" | "bookedAt"> & { isProefles?: boolean; isLosseLes?: boolean }
 ): Promise<Booking> {
-  const bookings = await readBookings();
-  const existing = bookings.find(
-    (b) => b.memberId === data.memberId && b.classId === data.classId && b.date === data.date
+  const existingList = await db.select().from(bookings).where(
+    and(
+      eq(bookings.memberId, data.memberId!),
+      eq(bookings.classId, data.classId!),
+      eq(bookings.date, data.date!)
+    )
   );
-  if (existing) throw new Error("Je hebt deze les al geboekt");
+  if (existingList.length > 0) throw new Error("Je hebt deze les al geboekt");
+  
   const booking: Booking = {
     ...data,
+    memberId: data.memberId ?? null,
+    classId: data.classId ?? null,
+    className: data.className ?? null,
+    date: data.date ?? null,
+    time: data.time ?? null,
+    type: data.type ?? null,
     isProefles: data.isProefles ?? false,
     isLosseLes: data.isLosseLes ?? false,
     id: crypto.randomUUID(),
     bookedAt: new Date().toISOString(),
   };
-  bookings.push(booking);
-  await saveBookings(bookings);
-  return booking;
+  
+  const result = await db.insert(bookings).values(booking).returning();
+  return result[0];
 }
 
 export async function deleteBooking(id: string, memberId: string): Promise<boolean> {
-  const bookings = await readBookings();
-  const booking = bookings.find((b) => b.id === id && b.memberId === memberId);
-  if (!booking) return false;
-  await saveBookings(bookings.filter((b) => b.id !== id));
+  const list = await db.select().from(bookings).where(and(eq(bookings.id, id), eq(bookings.memberId, memberId)));
+  if (list.length === 0) return false;
+  await db.delete(bookings).where(eq(bookings.id, id));
   return true;
 }

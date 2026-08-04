@@ -1,63 +1,44 @@
-import Database from "@replit/database";
-import crypto from "crypto";
+import { db, classTypes } from "@workspace/db";
+import { eq } from "drizzle-orm";
+import crypto from "node:crypto";
 
-const db = new Database();
-const KEY = "studio_luna:class_types";
-
-export type LesType = {
-  id: string;
-  naam: string;
-  kleur: "groen" | "terra" | "roze" | "beige" | "donkergroen" | "lila" | "geel" | "blauw";
-  proeflesGeldig: boolean;
-  actief: boolean;
-  intakeVereist: boolean;
-  beschrijving?: string;
-  locatie?: string;
-  tijd?: string;
-  boekingType?: "tarieven" | "vast_tarief";
-  vastTarief?: number;
-};
+export type LesType = typeof classTypes.$inferSelect;
 
 const SEED: LesType[] = [
-  { id: "yoga", naam: "Yoga", kleur: "groen", proeflesGeldig: true, actief: true, intakeVereist: true },
-  { id: "circle", naam: "Circle", kleur: "roze", proeflesGeldig: false, actief: true, intakeVereist: false },
+  { id: "yoga", naam: "Yoga", kleur: "groen", proeflesGeldig: true, actief: true, intakeVereist: true, beschrijving: null, locatie: null, tijd: null, boekingType: null },
+  { id: "circle", naam: "Circle", kleur: "roze", proeflesGeldig: false, actief: true, intakeVereist: false, beschrijving: null, locatie: null, tijd: null, boekingType: null },
 ];
 
-async function read(): Promise<LesType[]> {
-  try {
-    const result = (await db.get(KEY)) as any;
-    if (result?.ok === false) return SEED;
-    const data = result?.value ?? result;
-    if (!Array.isArray(data) || data.length === 0) return SEED;
-    return data;
-  } catch { return SEED; }
-}
-
-async function save(items: LesType[]): Promise<void> {
-  await db.set(KEY, items);
-}
-
 export async function readClassTypes(): Promise<LesType[]> {
-  return read();
+  const list = await db.select().from(classTypes);
+  if (list.length === 0) {
+    for (const s of SEED) {
+      await db.insert(classTypes).values(s);
+    }
+    return SEED;
+  }
+  return list;
 }
 
 export async function createClassType(data: Omit<LesType, "id">): Promise<LesType> {
-  const items = await read();
-  const item: LesType = { ...data, id: crypto.randomUUID() };
-  items.push(item);
-  await save(items);
-  return item;
+  const item: LesType = { 
+    ...data, 
+    beschrijving: data.beschrijving ?? null,
+    locatie: data.locatie ?? null,
+    tijd: data.tijd ?? null,
+    boekingType: data.boekingType ?? null,
+    id: crypto.randomUUID() 
+  };
+  const result = await db.insert(classTypes).values(item).returning();
+  return result[0];
 }
 
 export async function updateClassType(id: string, data: Partial<Omit<LesType, "id">>): Promise<LesType> {
-  const items = await read();
-  const item = items.find((t) => t.id === id);
-  if (!item) throw new Error("Lestype niet gevonden");
-  Object.assign(item, data);
-  await save(items);
-  return item;
+  const updated = await db.update(classTypes).set(data).where(eq(classTypes.id, id)).returning();
+  if (updated.length === 0) throw new Error("Lestype niet gevonden");
+  return updated[0];
 }
 
 export async function deleteClassType(id: string): Promise<void> {
-  await save((await read()).filter((t) => t.id !== id));
+  await db.delete(classTypes).where(eq(classTypes.id, id));
 }

@@ -1,16 +1,8 @@
-import Database from "@replit/database";
-import crypto from "crypto";
+import { db, tips } from "@workspace/db";
+import { eq } from "drizzle-orm";
+import crypto from "node:crypto";
 
-const db = new Database();
-const KEY = "studio_luna:tips";
-
-export type Tip = {
-  id: string;
-  text: string;
-  emoji: string;
-  active: boolean;
-  createdAt: string;
-};
+export type Tip = typeof tips.$inferSelect;
 
 const SEED_TIPS: Tip[] = [
   {
@@ -22,42 +14,43 @@ const SEED_TIPS: Tip[] = [
   },
 ];
 
-async function read(): Promise<Tip[]> {
-  try {
-    const result = (await db.get(KEY)) as any;
-    if (result?.ok === false) return SEED_TIPS;
-    const data = result?.value ?? result;
-    if (!Array.isArray(data) || data.length === 0) return SEED_TIPS;
-    return data;
-  } catch { return SEED_TIPS; }
-}
-
-async function save(tips: Tip[]): Promise<void> {
-  await db.set(KEY, tips);
-}
-
 export async function readTips(): Promise<Tip[]> {
-  return read();
+  const list = await db.select().from(tips);
+  if (list.length === 0) {
+    for (const t of SEED_TIPS) {
+      await db.insert(tips).values(t);
+    }
+    return SEED_TIPS;
+  }
+  return list;
 }
 
 export async function getActiveTip(): Promise<Tip | null> {
-  return (await read()).find((t) => t.active) ?? null;
+  const list = await readTips();
+  return list.find((t) => t.active) ?? null;
 }
 
 export async function createTip(data: { text: string; emoji?: string }): Promise<Tip> {
-  const tips = (await read()).map((t) => ({ ...t, active: false }));
-  const tip: Tip = { id: crypto.randomUUID(), text: data.text, emoji: data.emoji ?? "🌿", active: true, createdAt: new Date().toISOString() };
-  tips.push(tip);
-  await save(tips);
-  return tip;
+  // deactivate others
+  await db.update(tips).set({ active: false });
+  
+  const tip: Tip = {
+    id: crypto.randomUUID(),
+    text: data.text,
+    emoji: data.emoji ?? "🌿",
+    active: true,
+    createdAt: new Date().toISOString()
+  };
+  const result = await db.insert(tips).values(tip).returning();
+  return result[0];
 }
 
 export async function activateTip(id: string): Promise<Tip> {
-  const tips = (await read()).map((t) => ({ ...t, active: t.id === id }));
-  await save(tips);
-  return tips.find((t) => t.id === id)!;
+  await db.update(tips).set({ active: false });
+  const result = await db.update(tips).set({ active: true }).where(eq(tips.id, id)).returning();
+  return result[0];
 }
 
 export async function deleteTip(id: string): Promise<void> {
-  await save((await read()).filter((t) => t.id !== id));
+  await db.delete(tips).where(eq(tips.id, id));
 }

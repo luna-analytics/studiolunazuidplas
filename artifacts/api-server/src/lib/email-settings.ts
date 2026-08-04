@@ -1,7 +1,7 @@
-import Database from "@replit/database";
+import { db, studioSettings } from "@workspace/db";
+import { eq } from "drizzle-orm";
 
-const db = new Database();
-const KEY = "studio_luna:email_settings";
+const KEY = "email_settings";
 
 export type LesTypeTemplate = {
   welkomst: string;
@@ -42,59 +42,30 @@ export const EMAIL_DEFAULTS: EmailSettings = {
 };
 
 export async function getEmailSettings(): Promise<EmailSettings> {
-  try {
-    const result = (await db.get(KEY)) as any;
-    if (result?.ok === false) return { ...EMAIL_DEFAULTS };
-    const data = result?.value ?? result;
-    if (!data || typeof data !== "object") return { ...EMAIL_DEFAULTS };
-    return {
-      yogaWelkomst:
-        typeof data.yogaWelkomst === "string"
-          ? data.yogaWelkomst
-          : EMAIL_DEFAULTS.yogaWelkomst,
-      circleWelkomst:
-        typeof data.circleWelkomst === "string"
-          ? data.circleWelkomst
-          : EMAIL_DEFAULTS.circleWelkomst,
-      yogaHerinnering:
-        typeof data.yogaHerinnering === "string"
-          ? data.yogaHerinnering
-          : EMAIL_DEFAULTS.yogaHerinnering,
-      circleHerinnering:
-        typeof data.circleHerinnering === "string"
-          ? data.circleHerinnering
-          : EMAIL_DEFAULTS.circleHerinnering,
-      persoonlijkBericht:
-        typeof data.persoonlijkBericht === "string"
-          ? data.persoonlijkBericht
-          : EMAIL_DEFAULTS.persoonlijkBericht,
-      annuleringsNote:
-        typeof data.annuleringsNote === "string"
-          ? data.annuleringsNote
-          : EMAIL_DEFAULTS.annuleringsNote,
-      welkomstTekst:
-        typeof data.welkomstTekst === "string"
-          ? data.welkomstTekst
-          : EMAIL_DEFAULTS.welkomstTekst,
-      emailOndertitel:
-        typeof data.emailOndertitel === "string"
-          ? data.emailOndertitel
-          : EMAIL_DEFAULTS.emailOndertitel,
-      lesTypeTemplates:
-        data.lesTypeTemplates && typeof data.lesTypeTemplates === "object"
-          ? data.lesTypeTemplates
-          : {},
-    };
-  } catch {
-    return { ...EMAIL_DEFAULTS };
-  }
+  const result = await db.select().from(studioSettings).where(eq(studioSettings.key, KEY)).limit(1);
+  if (result.length === 0) return { ...EMAIL_DEFAULTS };
+  const data = result[0].value as any;
+  if (!data || typeof data !== "object") return { ...EMAIL_DEFAULTS };
+  
+  return {
+    yogaWelkomst: typeof data.yogaWelkomst === "string" ? data.yogaWelkomst : EMAIL_DEFAULTS.yogaWelkomst,
+    circleWelkomst: typeof data.circleWelkomst === "string" ? data.circleWelkomst : EMAIL_DEFAULTS.circleWelkomst,
+    yogaHerinnering: typeof data.yogaHerinnering === "string" ? data.yogaHerinnering : EMAIL_DEFAULTS.yogaHerinnering,
+    circleHerinnering: typeof data.circleHerinnering === "string" ? data.circleHerinnering : EMAIL_DEFAULTS.circleHerinnering,
+    persoonlijkBericht: typeof data.persoonlijkBericht === "string" ? data.persoonlijkBericht : EMAIL_DEFAULTS.persoonlijkBericht,
+    annuleringsNote: typeof data.annuleringsNote === "string" ? data.annuleringsNote : EMAIL_DEFAULTS.annuleringsNote,
+    welkomstTekst: typeof data.welkomstTekst === "string" ? data.welkomstTekst : EMAIL_DEFAULTS.welkomstTekst,
+    emailOndertitel: typeof data.emailOndertitel === "string" ? data.emailOndertitel : EMAIL_DEFAULTS.emailOndertitel,
+    lesTypeTemplates: data.lesTypeTemplates && typeof data.lesTypeTemplates === "object" ? data.lesTypeTemplates : {},
+  };
 }
 
-export async function saveEmailSettings(
-  settings: Partial<EmailSettings>
-): Promise<EmailSettings> {
+export async function saveEmailSettings(settings: Partial<EmailSettings>): Promise<EmailSettings> {
   const current = await getEmailSettings();
   const updated = { ...current, ...settings };
-  await db.set(KEY, updated);
+  await db.insert(studioSettings).values({ key: KEY, value: updated }).onConflictDoUpdate({
+    target: studioSettings.key,
+    set: { value: updated },
+  });
   return updated;
 }

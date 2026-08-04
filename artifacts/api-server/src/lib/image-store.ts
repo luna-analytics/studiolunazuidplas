@@ -1,22 +1,21 @@
-import Database from "@replit/database";
+import { db, assets } from "@workspace/db";
+import { eq } from "drizzle-orm";
 
-const db = new Database();
+const prefixKey = (key: string) => `img_${key}`;
 
 export async function getImage(key: string): Promise<string> {
-  try {
-    const result = (await db.get(`studio_luna:image:${key}`)) as any;
-    if (result?.ok === false) return "";
-    const data = result?.value ?? result;
-    return typeof data === "string" ? data : "";
-  } catch {
-    return "";
-  }
+  const result = await db.select().from(assets).where(eq(assets.key, prefixKey(key))).limit(1);
+  if (result.length === 0) return "";
+  return result[0].data;
 }
 
 export async function setImage(key: string, data: string): Promise<void> {
-  await db.set(`studio_luna:image:${key}`, data);
+  await db.insert(assets).values({ key: prefixKey(key), data }).onConflictDoUpdate({
+    target: assets.key,
+    set: { data },
+  });
 }
 
 export async function deleteImage(key: string): Promise<void> {
-  await (db as any).delete(`studio_luna:image:${key}`);
+  await db.delete(assets).where(eq(assets.key, prefixKey(key)));
 }

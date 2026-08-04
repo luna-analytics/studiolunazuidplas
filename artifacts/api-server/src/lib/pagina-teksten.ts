@@ -1,63 +1,49 @@
-import Database from "@replit/database";
-import { FOTO_KEYS, migrateFotosIfNeeded } from "./foto-store";
+import { db, studioSettings } from "@workspace/db";
+import { eq } from "drizzle-orm";
+import { FOTO_KEYS } from "./foto-store.js";
 
-const db = new Database();
-const KEY = "studio_luna:pagina_teksten";
-
+const KEY = "pagina_teksten";
 const FOTO_FIELD_SET = new Set<string>(FOTO_KEYS);
 
 export type PaginaTeksten = {
-  // Studio Luna pagina
   home_hero: string;
   home_missie_tekst: string;
   home_missie_bullets: string;
-  // Aanbod pagina — Yoga
   aanbod_yoga_tekst1: string;
   aanbod_yoga_tekst2: string;
   aanbod_yoga_tijd: string;
   aanbod_yoga_locatie: string;
   aanbod_yoga_extra: string;
-  // Aanbod pagina — Circle
   aanbod_circle_titel: string;
   aanbod_circle_tekst: string;
-  // Tarieven — aanvraag modal
   tarieven_aanvraag_tekst: string;
-  // Over mij pagina
   over_mij_naam: string;
   over_mij_functie: string;
   over_mij_quote: string;
   over_mij_tekst: string;
-  over_mij_foto: string; // base64 data URL of externe URL
-  // Site-foto's (base64 data URL — leeg = gebruik standaard statische foto)
+  over_mij_foto: string;
   foto_hero: string;
   foto_yoga: string;
   foto_circle: string;
-  // Foto-weergave-instellingen
-  foto_hero_positie: string;   // "top" | "center" | "bottom"
-  foto_yoga_hoogte: string;    // "smal" | "normaal" | "hoog" | "portret"
-  foto_yoga_positie: string;   // "top" | "center" | "bottom"
-  foto_circle_hoogte: string;  // "smal" | "normaal" | "hoog" | "portret"
-  foto_circle_positie: string; // "top" | "center" | "bottom"
-  // Studio Luna pagina — missie sectie
+  foto_hero_positie: string;
+  foto_yoga_hoogte: string;
+  foto_yoga_positie: string;
+  foto_circle_hoogte: string;
+  foto_circle_positie: string;
   home_missie_heading: string;
   home_village_tagline: string;
-  // Studio Luna pagina — aanbod sectie
   home_aanbod_heading: string;
-  home_aanbod_items: string; // één item per regel
-  // Studio Luna pagina — locatie & contact
+  home_aanbod_items: string;
   home_locatie_naam: string;
   home_locatie_adres: string;
   home_contact_email: string;
   home_contact_telefoon: string;
   home_contact_instagram: string;
-  // Aanbod pagina — yoga
   aanbod_yoga_heading: string;
-  // Aanbod pagina — bevallings specials
   aanbod_specials_heading: string;
-  aanbod_specials_items: string; // formaat: "Titel | Ondertitel | Prijs" per regel
-  aanbod_specials_bundel: string; // formaat: "Titel | Ondertitel | Korting | Prijs"
+  aanbod_specials_items: string;
+  aanbod_specials_bundel: string;
   aanbod_verzekering_tekst: string;
-  // CTA-knop instellingen
   cta_url: string;
   cta_label: string;
 };
@@ -111,34 +97,32 @@ const DEFAULT: PaginaTeksten = {
     "Bij Studio Luna geloven we in de kracht van de 'village'. Naast de fysieke lessen creëren we een veilige cirkel waarin je ervaringen deelt, vragen stelt en naar elkaar omkijkt. We gebruiken zachte yoga- en ademhalingsoefeningen om samen te vertragen, zodat er ruimte ontstaat om echt te luisteren naar jezelf en elkaar. Echte verbinding met andere zwangeren en mama's in Zuidplas!",
 };
 
-/** Strip base64 foto-velden — die worden in aparte DB-sleutels opgeslagen */
 function stripFotoFields(data: Record<string, any>): Record<string, any> {
   return Object.fromEntries(Object.entries(data).filter(([k]) => !FOTO_FIELD_SET.has(k)));
 }
 
 export async function readPaginaTeksten(): Promise<PaginaTeksten> {
-  try {
-    const result = (await db.get(KEY)) as any;
-    if (result?.ok === false) return DEFAULT;
-    const data = result?.value ?? result;
-    if (!data || typeof data !== "object") return DEFAULT;
-    // Eénmalige migratie: als er foto-data in het oude object zit, verplaats naar eigen sleutels
-    await migrateFotosIfNeeded(data as Record<string, any>);
-    // Strip foto-velden zodat het teksten-object licht blijft
-    const stripped = stripFotoFields(data as Record<string, any>);
-    return { ...DEFAULT, ...stripped } as PaginaTeksten;
-  } catch {
-    return DEFAULT;
-  }
+  const result = await db.select().from(studioSettings).where(eq(studioSettings.key, KEY)).limit(1);
+  if (result.length === 0) return DEFAULT;
+  
+  const data = result[0].value;
+  if (!data || typeof data !== "object") return DEFAULT;
+  
+  const stripped = stripFotoFields(data as Record<string, any>);
+  return { ...DEFAULT, ...stripped } as PaginaTeksten;
 }
 
 export async function savePaginaTeksten(
   updates: Partial<PaginaTeksten>
 ): Promise<PaginaTeksten> {
   const current = await readPaginaTeksten();
-  // Sla nooit base64 foto-data op in het teksten-object
   const safeUpdates = stripFotoFields(updates as Record<string, any>);
   const updated = { ...current, ...safeUpdates };
-  await db.set(KEY, updated);
+  
+  await db.insert(studioSettings).values({ key: KEY, value: updated }).onConflictDoUpdate({
+    target: studioSettings.key,
+    set: { value: updated },
+  });
+  
   return updated as PaginaTeksten;
 }

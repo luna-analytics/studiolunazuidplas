@@ -1,11 +1,10 @@
 import { Router } from "express";
 import { signToken, requireAuth } from "../middlewares/auth.js";
-import { verifyMemberPassword, findMemberById, createMember, readMembers, saveMembers } from "../lib/users.js";
+import { verifyMemberPassword, findMemberById, createMember, readMembers, saveMembers, savePasswordResetToken, getPasswordResetToken, deletePasswordResetToken } from "../lib/users.js";
 import { Resend } from "resend";
 import crypto from "crypto";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
-const resetTokens = new Map<string, { email: string; expires: number }>();
 
 const router = Router();
 
@@ -81,7 +80,8 @@ router.post("/auth/wachtwoord-vergeten", async (req, res) => {
   if (!member) { res.json({ ok: true }); return; }
 
   const token = crypto.randomBytes(32).toString("hex");
-  resetTokens.set(token, { email: member.email, expires: Date.now() + 1000 * 60 * 30 }); // 30 min
+  const expiresAt = new Date(Date.now() + 1000 * 60 * 30).toISOString();
+  await savePasswordResetToken(token, member.email, expiresAt);
 
   const domain = process.env.REPLIT_DOMAINS?.split(",")[0];
   const baseUrl = domain ? `https://${domain}` : "http://localhost:23125";
@@ -105,8 +105,8 @@ router.post("/auth/wachtwoord-reset", async (req, res) => {
   if (!token || !password) { res.status(400).json({ error: "Token en wachtwoord zijn verplicht" }); return; }
   if (password.length < 6) { res.status(400).json({ error: "Wachtwoord moet minimaal 6 tekens zijn" }); return; }
 
-  const entry = resetTokens.get(token);
-  if (!entry || Date.now() > entry.expires) {
+  const entry = await getPasswordResetToken(token);
+  if (!entry || Date.now() > new Date(entry.expiresAt).getTime()) {
     res.status(400).json({ error: "Link is verlopen of ongeldig. Vraag een nieuwe aan." }); return;
   }
 
@@ -117,7 +117,7 @@ router.post("/auth/wachtwoord-reset", async (req, res) => {
   const bcrypt = await import("bcryptjs");
   member.passwordHash = await bcrypt.hash(password, 10);
   await saveMembers(members);
-  resetTokens.delete(token);
+  await deletePasswordResetToken(token);
 
   res.json({ ok: true });
 });

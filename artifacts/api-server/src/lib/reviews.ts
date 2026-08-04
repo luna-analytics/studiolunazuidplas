@@ -1,7 +1,7 @@
-import Database from "@replit/database";
+import { db, studioSettings } from "@workspace/db";
+import { eq } from "drizzle-orm";
 
-const db = new Database();
-const KEY = "studio_luna:reviews";
+const KEY = "reviews";
 
 export type Review = {
   id: string;
@@ -20,17 +20,18 @@ export type ReviewsConfig = {
 const DEFAULT_CONFIG: ReviewsConfig = { visible: false, items: [] };
 
 export async function readReviewsConfig(): Promise<ReviewsConfig> {
-  try {
-    const result = (await db.get(KEY)) as any;
-    if (result?.ok === false) return DEFAULT_CONFIG;
-    const data = result?.value ?? result;
-    if (!data || typeof data !== "object") return DEFAULT_CONFIG;
-    return { visible: data.visible ?? false, items: Array.isArray(data.items) ? data.items : [] };
-  } catch { return DEFAULT_CONFIG; }
+  const result = await db.select().from(studioSettings).where(eq(studioSettings.key, KEY)).limit(1);
+  if (result.length === 0) return DEFAULT_CONFIG;
+  const data = result[0].value;
+  if (!data || typeof data !== "object") return DEFAULT_CONFIG;
+  return { visible: (data as any).visible ?? false, items: Array.isArray((data as any).items) ? (data as any).items : [] };
 }
 
 async function saveConfig(config: ReviewsConfig) {
-  await db.set(KEY, config);
+  await db.insert(studioSettings).values({ key: KEY, value: config }).onConflictDoUpdate({
+    target: studioSettings.key,
+    set: { value: config },
+  });
 }
 
 export async function createReview(input: Omit<Review, "id" | "createdAt">): Promise<Review> {
