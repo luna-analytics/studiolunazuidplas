@@ -182,8 +182,9 @@ export default function Inspiratie() {
                   <div className="relative w-full overflow-hidden rounded-2xl bg-secondary shadow-sm mb-3" style={{ paddingTop: "125%" }}>
                     {post.coverImage
                       ? <img src={post.coverImage} alt={post.title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
-                      : <div className="absolute inset-0 flex items-end p-3">
-                          <span className={`text-[9px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full ${categoryColor(post.category)}`}>{post.category}</span>
+                      : <div className="absolute inset-0 bg-gradient-to-br from-secondary via-muted to-accent/20 flex flex-col justify-between p-3">
+                          <span className="font-display text-4xl text-primary/30 leading-none select-none">Sl</span>
+                          <span className={`self-start text-[9px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full ${categoryColor(post.category)}`}>{post.category}</span>
                         </div>
                     }
                     {post.coverImage && (

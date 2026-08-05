@@ -19,9 +19,9 @@ import { updateMemberCredits } from "../lib/users.js";
 import { readClasses } from "../lib/classes.js";
 import { getAllBookings } from "../lib/bookings.js";
 import { readPaginaTeksten } from "../lib/pagina-teksten.js";
-import { getAllFotos } from "../lib/foto-store.js";
+import { getAllFotos, getFoto, FOTO_KEYS, type FotoKey } from "../lib/foto-store.js";
 import { readPosts } from "../lib/blog.js";
-import { getImage } from "../lib/image-store.js";
+import { getImage, listImageKeys } from "../lib/image-store.js";
 import { getCommentsForPost, addComment } from "../lib/blog-comments.js";
 import { readReviewsConfig } from "../lib/reviews.js";
 
@@ -45,29 +45,62 @@ router.get("/tarieven", async (_req, res) => {
   res.json(await readTarieven());
 });
 
-// Publieke pagina-teksten endpoint (inclusief foto's van aparte sleutels)
-router.get("/pagina-teksten", async (_req, res) => {
-  const [teksten, fotos] = await Promise.all([readPaginaTeksten(), getAllFotos()]);
-  res.json({ ...teksten, ...fotos });
+// Data-URL (base64) uit de database als echte afbeelding serveren, met caching
+function sendDataUrlImage(res: any, dataUrl: string) {
+  const m = /^data:([^;,]+)?(;base64)?,([\s\S]*)$/.exec(dataUrl);
+  if (!m) { res.status(404).end(); return; }
+  const mime = m[1] || "image/jpeg";
+  const buf = m[2] ? Buffer.from(m[3], "base64") : Buffer.from(decodeURIComponent(m[3]));
+  res.set("Content-Type", mime);
+  res.set("Cache-Control", "public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800");
+  res.send(buf);
+}
+
+// Paginafoto's als afbeeldings-URL (bijv. /api/foto/foto_hero)
+router.get("/foto/:naam", async (req, res) => {
+  const naam = req.params.naam as FotoKey;
+  if (!FOTO_KEYS.includes(naam)) { res.status(404).end(); return; }
+  const data = await getFoto(naam);
+  if (!data) { res.status(404).end(); return; }
+  sendDataUrlImage(res, data);
 });
 
-// Publieke blog-endpoint (alleen gepubliceerde artikelen)
+// Blog-omslagfoto als afbeeldings-URL
+router.get("/blog-cover/:id", async (req, res) => {
+  const data = await getImage(`blog_cover_${req.params.id}`);
+  if (!data) { res.status(404).end(); return; }
+  sendDataUrlImage(res, data);
+});
+
+// Publieke pagina-teksten endpoint. Foto's gaan als URL mee in plaats van
+// base64: dat scheelt megabytes per paginabezoek.
+router.get("/pagina-teksten", async (_req, res) => {
+  const [teksten, fotos] = await Promise.all([readPaginaTeksten(), getAllFotos()]);
+  const fotoUrls = Object.fromEntries(
+    Object.entries(fotos).map(([k, v]) => [k, v ? `/api/foto/${k}` : ""])
+  );
+  res.json({ ...teksten, ...fotoUrls });
+});
+
+// Publieke blog-endpoint (alleen gepubliceerde artikelen); covers als URL
 router.get("/blog", async (_req, res) => {
   const posts = (await readPosts()).filter((p) => p.published);
-  const withCovers = await Promise.all(
-    posts.map(async (p) => ({ ...p, coverImage: await getImage(`blog_cover_${p.id}`) }))
-  );
+  const coverKeys = new Set(await listImageKeys("blog_cover_"));
+  const withCovers = posts.map((p) => ({
+    ...p,
+    coverImage: coverKeys.has(`blog_cover_${p.id}`) ? `/api/blog-cover/${p.id}` : "",
+  }));
   res.json(withCovers);
 });
 
-// Enkel artikel ophalen (publiek)
+// Enkel artikel ophalen (publiek); cover als URL
 router.get("/blog/:id", async (req, res) => {
   const posts = await readPosts();
   const param = req.params.id as string;
   const post = posts.find((p) => p.published && (p.slug === param || p.id === param));
   if (!post) { res.status(404).json({ error: "Niet gevonden" }); return; }
-  const coverImage = await getImage(`blog_cover_${post.id}`);
-  res.json({ ...post, coverImage });
+  const heeftCover = (await getImage(`blog_cover_${post.id}`)).length > 0;
+  res.json({ ...post, coverImage: heeftCover ? `/api/blog-cover/${post.id}` : "" });
 });
 
 // Blog reacties (publiek: lezen + insturen)

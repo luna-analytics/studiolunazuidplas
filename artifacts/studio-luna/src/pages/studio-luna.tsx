@@ -44,7 +44,6 @@ export default function StudioLuna() {
   const [, navigate] = useLocation();
   const { user } = useAuth();
   const [teksten, setTeksten] = useState(DEFAULT_TEKSTEN);
-  const [photosReady, setPhotosReady] = useState(false);
   const [reviewsConfig, setReviewsConfig] = useState<ReviewsConfig | null>(null);
 
   useEffect(() => {
@@ -54,9 +53,13 @@ export default function StudioLuna() {
   useEffect(() => {
     fetch(`${BASE}/api/pagina-teksten`)
       .then((r) => r.ok ? r.json() : null)
-      .then((d) => { if (d) setTeksten((prev) => ({ ...prev, ...d })); })
-      .catch(() => {})
-      .finally(() => setPhotosReady(true));
+      .then((d) => {
+        if (!d) return;
+        // Lege velden overschrijven de standaardtekst niet
+        const gevuld = Object.fromEntries(Object.entries(d).filter(([, v]) => v !== ""));
+        setTeksten((prev) => ({ ...prev, ...gevuld }));
+      })
+      .catch(() => {});
 
     const token = localStorage.getItem("sl_token");
     const reviewsUrl = token ? `${BASE}/api/admin/reviews` : `${BASE}/api/reviews`;
@@ -79,13 +82,10 @@ export default function StudioLuna() {
           style={{ minHeight: "clamp(420px, 65vw, 720px)" }}
         >
           <img
-            src={photosReady ? (teksten.foto_hero || IMAGES.hero) : undefined}
+            src={teksten.foto_hero || IMAGES.hero}
             alt="Zwangerschapsyoga Studio Luna"
-            className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700"
-            style={{
-              objectPosition: teksten.foto_hero_positie || "center",
-              opacity: photosReady ? 1 : 0,
-            }}
+            className="absolute inset-0 w-full h-full object-cover"
+            style={{ objectPosition: teksten.foto_hero_positie || "center" }}
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/35 to-black/75 md:bg-gradient-to-r md:from-black/65 md:via-black/35 md:to-transparent" />
 
@@ -120,10 +120,10 @@ export default function StudioLuna() {
                   <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
                 </button>
                 <button
-                  onClick={() => navigate("/blog")}
+                  onClick={() => navigate("/tarieven")}
                   className="inline-flex items-center gap-2 bg-white/12 backdrop-blur-sm border border-white/25 text-white px-7 py-3.5 rounded-2xl font-semibold text-sm hover:bg-white/22"
                 >
-                  Ga naar blog
+                  Boek een proefles
                 </button>
               </motion.div>
             </div>

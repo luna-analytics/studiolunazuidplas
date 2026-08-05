@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "regions": ["fra1"],
   "installCommand": "pnpm install",
   "buildCommand": "pnpm --filter @workspace/api-server run build && pnpm --filter @workspace/studio-luna run build",
   "outputDirectory": "artifacts/studio-luna/dist/public",
