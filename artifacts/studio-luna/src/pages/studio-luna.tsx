@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { MapPin, ArrowRight, Mail, Phone, Instagram, Star, Calendar, BookOpen } from "lucide-react";
 import { IMAGES } from "@/lib/images";
 import { useAuth } from "@/hooks/use-auth";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 type Review = { id: string; name: string; role: string; text: string; stars: number };
 type ReviewsConfig = { visible: boolean; items: Review[] };
@@ -30,7 +31,35 @@ const DEFAULT_TEKSTEN = {
   home_contact_instagram: "@studiolunazuidplas",
   foto_hero: "",
   foto_hero_positie: "center",
+  over_mij_foto: "",
 };
+
+const FAQ_ITEMS = [
+  {
+    vraag: "Vanaf hoeveel weken kan ik meedoen?",
+    antwoord: "Instromen kan op elk moment vanaf 14 weken zwangerschap.",
+  },
+  {
+    vraag: "Heb ik yoga-ervaring nodig?",
+    antwoord: "Nee, ervaring is niet nodig. De lessen worden rustig opgebouwd en stap voor stap uitgelegd, in een kleine groep met veel persoonlijke aandacht.",
+  },
+  {
+    vraag: "Kan ik eerst een keer proberen?",
+    antwoord: "Ja, je boekt een proefles voor €10. Zo ervaar je vrijblijvend of het bij je past.",
+  },
+  {
+    vraag: "Wat kost een les?",
+    antwoord: "Een losse les kost €22,50 en er zijn voordelige pakketten. Alle actuele prijzen vind je op de tarievenpagina.",
+  },
+  {
+    vraag: "Waar zijn de lessen?",
+    antwoord: "Bij Huize Mooisteen, Pr. Beatrixstraat 2 in Nieuwerkerk aan den IJssel.",
+  },
+  {
+    vraag: "Hoe werkt de eerste les?",
+    antwoord: "Voor je eerste les vul je een korte intake in, zodat de les goed op jou en je zwangerschap afgestemd kan worden.",
+  },
+];
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
@@ -253,6 +282,48 @@ export default function StudioLuna() {
           </motion.div>
         </section>
 
+        {/* ── OVER MIJ — kort blok met gezicht en link naar het volledige verhaal ── */}
+        <section className="px-7 md:px-14 lg:px-18 py-16 md:py-24">
+          <div className="md:grid md:grid-cols-[auto_1fr] md:gap-14 md:items-center">
+            {teksten.over_mij_foto && (
+              <motion.div
+                variants={fadeUp} initial="hidden" whileInView="show"
+                viewport={{ once: true, margin: "-60px" }} custom={0}
+              >
+                <img
+                  src={teksten.over_mij_foto}
+                  alt="Maddie, oprichter van Studio Luna"
+                  className="w-40 h-40 md:w-52 md:h-52 rounded-3xl object-cover shadow-md mb-8 md:mb-0"
+                  loading="lazy"
+                />
+              </motion.div>
+            )}
+            <motion.div
+              variants={fadeUp} initial="hidden" whileInView="show"
+              viewport={{ once: true, margin: "-60px" }} custom={0.1}
+            >
+              <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary/60 mb-5 flex items-center gap-3">
+                <span className="inline-block w-8 h-px bg-primary/40" />
+                Over mij
+              </p>
+              <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground mb-5 leading-[1.15]">
+                Hoi, ik ben Maddie.
+              </h2>
+              <p className="text-[15px] text-foreground/60 leading-[1.9] md:max-w-xl">
+                Moeder, gepromoveerd onderzoeker en yogadocente. Bij Studio Luna combineer ik gevoel en wetenschap:
+                je bereidt je sterk en met vertrouwen voor op je bevalling, en je leert andere moeders uit Zuidplas kennen.
+              </p>
+              <button
+                onClick={() => navigate("/over-mij")}
+                className="inline-flex items-center gap-2 mt-7 text-sm font-semibold text-primary group"
+              >
+                Lees mijn verhaal
+                <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+              </button>
+            </motion.div>
+          </div>
+        </section>
+
         {/* ── REVIEWS — zichtbaar als admin ze heeft aangezet (of admin bekijkt pagina) ── */}
         {reviewsConfig && (reviewsConfig.visible || user?.isAdmin) && reviewsConfig.items.length > 0 && (
           <section className="px-7 md:px-14 lg:px-18 py-16 md:py-24">
@@ -297,6 +368,48 @@ export default function StudioLuna() {
             </div>
           </section>
         )}
+
+        {/* ── FAQ — veelgestelde vragen ── */}
+        <section className="px-7 md:px-14 lg:px-18 py-16 md:py-24">
+          <motion.div
+            variants={fadeUp} initial="hidden" whileInView="show"
+            viewport={{ once: true, margin: "-60px" }} custom={0}
+            className="mb-10"
+          >
+            <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary/60 mb-5 flex items-center gap-3">
+              <span className="inline-block w-8 h-px bg-primary/40" />
+              Veelgestelde vragen
+            </p>
+            <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground leading-[1.15]">
+              Goed om te weten
+            </h2>
+          </motion.div>
+          <motion.div
+            variants={fadeUp} initial="hidden" whileInView="show"
+            viewport={{ once: true, margin: "-60px" }} custom={0.1}
+            className="md:max-w-2xl"
+          >
+            <Accordion type="single" collapsible className="w-full">
+              {FAQ_ITEMS.map((item, i) => (
+                <AccordionItem key={i} value={`faq-${i}`} className="border-border/20">
+                  <AccordionTrigger className="text-left text-[15px] font-semibold text-foreground/80 hover:no-underline">
+                    {item.vraag}
+                  </AccordionTrigger>
+                  <AccordionContent className="text-[15px] text-foreground/60 leading-[1.85]">
+                    {item.antwoord}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+            <button
+              onClick={() => navigate("/tarieven")}
+              className="inline-flex items-center gap-2 mt-8 text-sm font-semibold text-primary group"
+            >
+              Bekijk alle tarieven
+              <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+            </button>
+          </motion.div>
+        </section>
 
         {/* ── LOCATIE & CONTACT — plain tekst, geen kaarten ── */}
         <section className="relative px-7 md:px-14 lg:px-18 py-20 md:py-28 mb-4">
