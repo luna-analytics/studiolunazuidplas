@@ -101,7 +101,7 @@ export default function StudioLuna() {
 
   return (
     <div className="min-h-screen bg-background pb-28 md:pb-16 md:pt-16 flex justify-center">
-      <div className="w-full max-w-5xl bg-background min-h-screen relative overflow-x-hidden">
+      <div className="w-full max-w-7xl bg-background min-h-screen relative overflow-x-hidden">
 
         {/* ── HERO — full-bleed, tekst zweeft over foto ── */}
         <motion.div

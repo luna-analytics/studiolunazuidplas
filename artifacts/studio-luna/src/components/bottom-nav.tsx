@@ -50,7 +50,7 @@ export function BottomNav() {
     <>
       {/* ── DESKTOP TOP NAV ── */}
       <div className="hidden md:flex fixed top-0 left-0 right-0 z-40 bg-background/90 backdrop-blur-xl border-b border-border/30 h-16 items-center px-8">
-        <div className="max-w-5xl mx-auto w-full flex items-center justify-between">
+        <div className="max-w-7xl mx-auto w-full flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5 select-none"
             onMouseDown={startLongPress} onMouseUp={cancelLongPress}
             onMouseLeave={cancelLongPress} onTouchStart={startLongPress}

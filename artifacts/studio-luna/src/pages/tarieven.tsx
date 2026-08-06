@@ -281,7 +281,7 @@ export default function Tarieven() {
 
   return (
     <div className="min-h-screen bg-background pb-28 md:pb-16 md:pt-16 flex justify-center">
-      <div className="w-full max-w-5xl bg-background min-h-screen relative">
+      <div className="w-full max-w-7xl bg-background min-h-screen relative">
 
         <div className="px-6 md:px-12 lg:px-16 pt-14 md:pt-12 pb-12 bg-secondary md:rounded-3xl md:mx-6 md:mt-6 flex items-start justify-between gap-4">
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
@@ -291,10 +291,10 @@ export default function Tarieven() {
           <img src={`${import.meta.env.BASE_URL}images/studio-luna-logo.png`} alt="Studio Luna" className="h-24 w-auto shrink-0" loading="lazy" />
         </div>
 
-        <div className="px-6 md:px-12 lg:px-16 pt-8 space-y-3 pb-8">
+        <div className="px-6 md:px-12 lg:px-16 pt-8 space-y-3 pb-8 lg:space-y-0 lg:grid lg:grid-cols-2 lg:gap-4 lg:items-start">
 
           {loading ? (
-            <div className="flex justify-center py-10">
+            <div className="flex justify-center py-10 lg:col-span-2">
               <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
             </div>
           ) : (
@@ -302,7 +302,7 @@ export default function Tarieven() {
               {computeVolgorde().map((key, i) => renderBlock(key, i))}
 
               {/* BETALING */}
-              <div className="rounded-3xl border border-dashed border-accent/50 bg-accent/10 px-5 py-4">
+              <div className="rounded-3xl border border-dashed border-accent/50 bg-accent/10 px-5 py-4 lg:col-span-2">
                 <p className="text-sm font-semibold text-foreground mb-1">💳 Betaling</p>
                 <p className="text-sm text-foreground/65 leading-relaxed">{tarieven.betalingInfo || "Betalen kan contant in de studio of via Tikkie."}</p>
               </div>

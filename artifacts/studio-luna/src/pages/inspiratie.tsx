@@ -77,7 +77,7 @@ export default function Inspiratie() {
   if (!loading && postsLoaded && posts.length === 0 && !user?.isAdmin) {
     return (
       <div className="min-h-screen bg-background pb-28 flex justify-center">
-        <div className="w-full max-w-5xl flex flex-col items-center justify-center px-8 text-center" style={{ minHeight: "70vh" }}>
+        <div className="w-full max-w-7xl flex flex-col items-center justify-center px-8 text-center" style={{ minHeight: "70vh" }}>
           <span className="text-5xl mb-6">🌙</span>
           <h1 className="font-display text-3xl font-medium text-foreground mb-3">Binnenkort</h1>
           <p className="text-foreground/55 text-sm leading-relaxed max-w-xs">
@@ -93,7 +93,7 @@ export default function Inspiratie() {
 
   return (
     <div className="min-h-screen bg-background pb-28 md:pb-16 md:pt-16 flex justify-center">
-      <div className="w-full max-w-5xl bg-background min-h-screen relative">
+      <div className="w-full max-w-7xl bg-background min-h-screen relative">
 
         {/* HEADER */}
         <div className="px-6 md:px-12 lg:px-16 pt-14 md:pt-12 pb-10 bg-secondary md:rounded-3xl md:mx-6 md:mt-6">

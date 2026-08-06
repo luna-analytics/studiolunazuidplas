@@ -173,7 +173,7 @@ export default function Rooster() {
 
   return (
     <div className="min-h-screen bg-background pb-28 md:pb-16 md:pt-16 flex justify-center">
-      <div className="w-full max-w-5xl bg-background min-h-screen relative">
+      <div className="w-full max-w-7xl bg-background min-h-screen relative">
 
         {/* HEADER */}
         <div className="px-6 md:px-12 lg:px-16 pt-14 md:pt-12 pb-12 bg-secondary md:rounded-3xl md:mx-6 md:mt-6 flex items-start justify-between gap-4">
@@ -186,9 +186,9 @@ export default function Rooster() {
 
         {/* LESSEN */}
         <div className="px-6 md:px-12 lg:px-16 pt-6 mb-6">
-          <div className="space-y-4">
+          <div className="space-y-4 lg:space-y-0 lg:grid lg:grid-cols-2 lg:gap-5 lg:items-start">
             {classesLoading ? (
-              <div className="flex justify-center py-10">
+              <div className="flex justify-center py-10 lg:col-span-2">
                 <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
               </div>
             ) : upcomingInstances.length > 0 ? (
