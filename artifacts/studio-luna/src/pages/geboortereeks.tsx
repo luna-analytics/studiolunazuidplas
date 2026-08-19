@@ -47,11 +47,11 @@ const FAQ_ITEMS = [
   },
   {
     vraag: "Hoe meld ik me aan?",
-    antwoord: "Je reserveert je plekje door het intakeformulier in te vullen. Daarna ontvang je persoonlijk bericht met de bevestiging en de factuur. Je plek is definitief zodra de factuur is voldaan.",
+    antwoord: "Je reserveert je plekje door het intakeformulier in te vullen. Daarna ontvang je persoonlijk bericht met de bevestiging en de factuur.",
   },
   {
     vraag: "Wordt de reeks vergoed door mijn zorgverzekering?",
-    antwoord: "Veel zorgverzekeraars vergoeden een zwangerschapscursus geheel of gedeeltelijk vanuit de aanvullende verzekering. Je ontvangt een factuur die je zelf bij je verzekeraar kunt indienen. Of en hoeveel er vergoed wordt verschilt per polis, dus check dat vooraf; Studio Luna kan daar geen garanties over geven.",
+    antwoord: "Veel zorgverzekeraars vergoeden een zwangerschapscursus geheel of gedeeltelijk vanuit de aanvullende verzekering. Je ontvangt na aanmelding een factuur die je zelf kunt indienen bij je zorgverzekeraar. Of en hoeveel er vergoed wordt verschilt per polis, dus check vooraf je polisvoorwaarden; aan deze informatie kunnen geen rechten worden ontleend.",
   },
   {
     vraag: "Is mijn partner er ook bij?",
@@ -190,9 +190,9 @@ export default function Geboortereeks() {
                 </p>
                 <p className="text-xs text-foreground/50 leading-[1.8] mt-3">
                   Veel zorgverzekeraars vergoeden een zwangerschapscursus geheel of gedeeltelijk
-                  vanuit de aanvullende verzekering. Je dient de factuur zelf in bij je
-                  verzekeraar; check vooraf je polis, want garanties kan Studio Luna daar niet
-                  op geven.
+                  vanuit de aanvullende verzekering. Je ontvangt na aanmelding een factuur die
+                  je zelf kunt indienen bij je zorgverzekeraar. Check vooraf je polisvoorwaarden;
+                  aan deze informatie kunnen geen rechten worden ontleend.
                 </p>
               </div>
             </motion.div>
