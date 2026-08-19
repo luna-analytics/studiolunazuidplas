@@ -37,7 +37,7 @@ const DEFAULT_TEKSTEN = {
 const FAQ_ITEMS = [
   {
     vraag: "Vanaf hoeveel weken kan ik meedoen?",
-    antwoord: "De Geboortereeks past het beste als je bij de start tussen de 22 en 28 weken zwanger bent. De eerstvolgende reeks start op dinsdag 29 september.",
+    antwoord: "Je kunt meedoen als je bij de start tussen de 15 en 28 weken zwanger bent. De eerstvolgende reeks start op dinsdag 29 september.",
   },
   {
     vraag: "Heb ik yoga-ervaring nodig?",
@@ -52,8 +52,8 @@ const FAQ_ITEMS = [
     antwoord: "Bij Huize Mooisteen, Pr. Beatrixstraat 2 in Nieuwerkerk aan den IJssel.",
   },
   {
-    vraag: "Hoe werkt de eerste les?",
-    antwoord: "Voor je eerste les vul je een korte intake in, zodat de les goed op jou en je zwangerschap afgestemd kan worden.",
+    vraag: "Hoe meld ik me aan?",
+    antwoord: "Je reserveert je plekje door het intakeformulier in te vullen. Daarna ontvang je persoonlijk bericht met de bevestiging en de factuur.",
   },
 ];
 
@@ -310,7 +310,7 @@ export default function StudioLuna() {
               >
                 <img
                   src={teksten.over_mij_foto}
-                  alt="Maddie, oprichter van Studio Luna"
+                  alt="Marjolein, oprichter van Studio Luna"
                   className="w-40 h-40 md:w-52 md:h-52 rounded-3xl object-cover shadow-md mb-8 md:mb-0"
                   loading="lazy"
                 />
@@ -325,7 +325,7 @@ export default function StudioLuna() {
                 Over mij
               </p>
               <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground mb-5 leading-[1.15]">
-                Hoi, ik ben Maddie.
+                Hoi, ik ben Marjolein.
               </h2>
               <p className="text-[15px] text-foreground/60 leading-[1.9] md:max-w-xl">
                 Moeder, gepromoveerd onderzoeker en yogadocente. Bij Studio Luna combineer ik gevoel en wetenschap:

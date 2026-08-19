@@ -215,7 +215,7 @@ export default function Geboortezorg() {
                   ? "Niets gevonden. Probeer een ander woord of haal een filter weg."
                   : `${aantalGevonden} van ${aantalAanbieders} aanbieders`}
                 <button
-                  onClick={() => { setZoek(""); setActieveTags([]); setCategorie(null); }}
+                  onClick={() => { setZoek(""); setActieveTags([]); }}
                   className="ml-3 text-primary font-semibold hover:text-primary/75"
                 >
                   Wis filters

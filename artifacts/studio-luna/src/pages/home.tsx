@@ -137,7 +137,7 @@ export default function Home() {
               Negen lessen zwangerschapsyoga en geboortevoorbereiding in een vaste groep van
               maximaal acht zwangeren, met een bekkenfysiotherapeut, een partnerles, een
               mamaspa-avond en een mama-en-babyles als afsluiting. Je stapt in wanneer je bij
-              de start tussen de 22 en 28 weken zwanger bent.
+              de start tussen de 15 en 28 weken zwanger bent.
             </p>
             <button
               onClick={() => navigate("/geboortereeks")}

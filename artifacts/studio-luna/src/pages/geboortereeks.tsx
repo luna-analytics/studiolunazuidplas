@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "wouter";
 import { BottomNav } from "@/components/bottom-nav";
 import { SeoFooter } from "@/components/seo-footer";
 import { InterestModal } from "@/components/interest-modal";
@@ -30,7 +31,7 @@ const KALENDER = [
 const PRAKTISCH = [
   { label: "Start", waarde: "dinsdag 29 september, daarna elke week op de dinsdagavond" },
   { label: "Groep", waarde: "maximaal 8 zwangeren, een vaste groep" },
-  { label: "Voor wie", waarde: "bij de start ben je tussen de 22 en 28 weken zwanger" },
+  { label: "Voor wie", waarde: "bij de start ben je tussen de 15 en 28 weken zwanger" },
   { label: "Locatie", waarde: "Nieuwerkerk aan den IJssel, gemeente Zuidplas" },
   { label: "Inclusief", waarde: "goodiebag, reader, twee gastexperts en de mama-en-babyles" },
   { label: "Prijs", waarde: "€195; de eerste groep betaalt eenmalig de introductieprijs van €175" },
@@ -48,7 +49,7 @@ const INBEGREPEN = [
 const FAQ_ITEMS = [
   {
     vraag: "Voor wie is de Geboortereeks?",
-    antwoord: "De reeks past het beste als je bij de start op 29 september tussen de 22 en 28 weken zwanger bent. Yoga-ervaring is niet nodig, alles wordt rustig opgebouwd en uitgelegd.",
+    antwoord: "Je kunt meedoen als je bij de start op 29 september tussen de 15 en 28 weken zwanger bent. Yoga-ervaring is niet nodig, alles wordt rustig opgebouwd en uitgelegd.",
   },
   {
     vraag: "Wat kost de reeks?",
@@ -181,10 +182,8 @@ export default function Geboortereeks() {
                 ))}
               </div>
               <p className="text-xs text-foreground/45 leading-[1.8] mt-4">
-                Veel zorgverzekeraars vergoeden een zwangerschapscursus geheel of gedeeltelijk
-                vanuit de aanvullende verzekering. Je ontvangt na aanmelding een factuur die je
-                zelf kunt indienen bij je zorgverzekeraar. Check vooraf je polisvoorwaarden; aan
-                deze informatie kunnen geen rechten worden ontleend.
+                Veel aanvullende verzekeringen vergoeden een zwangerschapscursus geheel of
+                gedeeltelijk; hoe dat werkt lees je bij de veelgestelde vragen onderaan.
               </p>
             </motion.div>
           </div>
@@ -300,6 +299,38 @@ export default function Geboortereeks() {
           </div>
         </section>
 
+        {/* ── WIE GEEFT DE LESSEN ── */}
+        <section className="relative px-7 md:px-14 lg:px-18 py-12 md:py-16">
+          <div className="absolute inset-0 bg-gradient-to-b from-background via-secondary/20 to-background pointer-events-none" />
+          <motion.div
+            variants={fadeUp} initial="hidden" whileInView="show"
+            viewport={{ once: true, margin: "-60px" }} custom={0}
+            className="relative max-w-2xl"
+          >
+            <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary/60 mb-5 flex items-center gap-3">
+              <span className="inline-block w-8 h-px bg-primary/40" />
+              Wie je lesgeeft
+            </p>
+            <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground leading-[1.15] mb-6">
+              Hoi, ik ben Marjolein
+            </h2>
+            <p className="text-[15px] text-foreground/60 leading-[1.95]">
+              Moeder, gepromoveerd onderzoeker en yogadocente. Ik geef alle lessen van de
+              Geboortereeks zelf en haal er voor twee lessen een fysiotherapeut en een
+              bekkenfysiotherapeut bij. Bij Studio Luna combineer ik gevoel en wetenschap: je
+              bereidt je sterk en met vertrouwen voor op je bevalling, en je leert andere
+              moeders uit Zuidplas kennen.
+            </p>
+            <Link
+              href="/over-mij"
+              className="inline-flex items-center gap-2 mt-6 text-sm font-semibold text-primary group"
+            >
+              Lees mijn verhaal
+              <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+            </Link>
+          </motion.div>
+        </section>
+
         {/* ── FAQ ── */}
         <section className="px-7 md:px-14 lg:px-18 py-12 md:py-16">
           <motion.div
@@ -347,6 +378,7 @@ export default function Geboortereeks() {
           onClose={() => setIsInterestOpen(false)}
           title="Interesselijst Geboortereeks"
           description="Laat je e-mailadres achter en we houden je op de hoogte van de Geboortereeks en volgende startdata. Vrijblijvend, je zit nergens aan vast."
+          successDescription="We houden je op de hoogte van de Geboortereeks en de volgende startdata."
         />
         <SeoFooter />
         <BottomNav />

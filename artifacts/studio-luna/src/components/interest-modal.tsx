@@ -7,9 +7,10 @@ interface InterestModalProps {
   onClose: () => void;
   title?: string;
   description?: string;
+  successDescription?: string;
 }
 
-export function InterestModal({ isOpen, onClose, title, description }: InterestModalProps) {
+export function InterestModal({ isOpen, onClose, title, description, successDescription }: InterestModalProps) {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
@@ -79,7 +80,7 @@ export function InterestModal({ isOpen, onClose, title, description }: InterestM
                 <div className="rounded-2xl bg-primary/10 border border-primary/20 p-5 text-center">
                   <p className="text-2xl mb-2">🌙</p>
                   <p className="font-semibold text-foreground mb-1">Fijn, je staat op de lijst!</p>
-                  <p className="text-sm text-foreground/60">We laten je weten zodra er genoeg animo is.</p>
+                  <p className="text-sm text-foreground/60">{successDescription ?? "We laten je weten zodra er genoeg animo is."}</p>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-3">

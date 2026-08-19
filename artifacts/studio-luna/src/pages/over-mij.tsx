@@ -8,9 +8,9 @@ import { Instagram, Mail, ArrowRight } from "lucide-react";
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 const DEFAULTS = {
-  over_mij_naam: "Jouw naam",
+  over_mij_naam: "Marjolein",
   over_mij_functie: "Zwangerschapsyoga docente & oprichter Studio Luna",
-  over_mij_quote: "Ik geloof dat elke vrouw kracht in zich draagt — soms moet je die alleen even leren voelen.",
+  over_mij_quote: "Ik geloof dat elke vrouw kracht in zich draagt, soms moet je die alleen even leren voelen.",
   over_mij_tekst: "",
   over_mij_foto: "",
 };
@@ -77,7 +77,7 @@ export default function OverMij() {
                 variants={fadeUp} initial="hidden" whileInView="show"
                 viewport={{ once: true, margin: "-60px" }} custom={0}
               >
-                {data.over_mij_foto ? (
+                {data.over_mij_foto && (
                   <div className="overflow-hidden rounded-2xl" style={{ aspectRatio: "3/4" }}>
                     <img
                       src={data.over_mij_foto}
@@ -85,15 +85,6 @@ export default function OverMij() {
                       className="w-full h-full object-cover object-top"
                       loading="lazy"
                     />
-                  </div>
-                ) : (
-                  <div
-                    className="overflow-hidden rounded-2xl bg-secondary flex items-center justify-center"
-                    style={{ aspectRatio: "3/4" }}
-                  >
-                    <p className="text-foreground/30 text-sm text-center px-6">
-                      Voeg via de admin-pagina een foto toe
-                    </p>
                   </div>
                 )}
               </motion.div>
@@ -111,7 +102,7 @@ export default function OverMij() {
                 </blockquote>
 
                 <p className="text-sm font-semibold text-foreground/55 tracking-widest uppercase">
-                  — {data.over_mij_naam}
+                  {data.over_mij_naam}
                 </p>
               </motion.div>
 
