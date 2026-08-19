@@ -42,6 +42,9 @@ export type Zorgverlener = {
   website: string;
   beschrijving: string;
   tags: ZorgTag[];
+  /** Optioneel voordeel dat deze zorgverlener via Studio Luna aanbiedt,
+   *  bijvoorbeeld een kortingscode of gratis kennismaking. Eén lopende zin. */
+  voordeel?: string;
 };
 
 export type ZorgCategorie = {
@@ -572,28 +575,6 @@ export const ZORGKAART: ZorgCategorie[] = [
         website: "https://www.cjgzuidplas.nl/",
         beschrijving: "Het Centrum voor Jeugd en Gezin verzorgt de jeugdgezondheidszorg in gemeente Zuidplas met consultatiebureaulocaties in Nieuwerkerk aan den IJssel (Raadhuisplein 35), Zevenhuizen en Moordrecht, en organiseert daarnaast babybijeenkomsten en cursussen zoals babymassage.",
         tags: ["op-locatie", "groepslessen"],
-      },
-    ],
-  },
-  {
-    id: "ziekenhuizen",
-    titel: "Ziekenhuizen",
-    intro: "De dichtstbijzijnde ziekenhuizen met een afdeling verloskunde, voor een poliklinische of medische bevalling.",
-    zoektermen: "ziekenhuis gynaecoloog poliklinisch bevallen geboortecentrum medisch",
-    aanbieders: [
-      {
-        naam: "IJsselland Ziekenhuis (Geboortecentrum IJsselland)",
-        plaats: "Capelle aan den IJssel",
-        website: "https://www.ysl.nl/geboortecentrumijsselland/",
-        beschrijving: "Geboortecentrum van het IJsselland Ziekenhuis aan de Prins Constantijnweg 2 in Capelle aan den IJssel, met verloskamers en kraamsuites voor poliklinisch en medisch bevallen, waar partners 24 uur per dag welkom zijn.",
-        tags: ["op-locatie", "partner-welkom"],
-      },
-      {
-        naam: "Groene Hart Ziekenhuis (Vrouw Kind Centrum)",
-        plaats: "Gouda",
-        website: "https://www.ghz.nl/specialismen-en-afdelingen/gynaecologie-en-verloskunde/",
-        beschrijving: "De afdeling gynaecologie en verloskunde van het Groene Hart Ziekenhuis in Gouda heeft een Vrouw Kind Centrum met 22 gezinssuites met eigen sanitair, waar moeder en kind van opname tot ontslag in dezelfde kamer blijven, in samenwerking met regionale verloskundigenpraktijken via In Zwang.",
-        tags: ["op-locatie"],
       },
     ],
   },

@@ -1,8 +1,8 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { BottomNav } from "@/components/bottom-nav";
 import { SeoFooter } from "@/components/seo-footer";
 import { motion } from "framer-motion";
-import { Search } from "lucide-react";
+import { ChevronDown, Search } from "lucide-react";
 import { ZORGKAART, TAG_LABELS, type ZorgTag, type Zorgverlener } from "@/data/zorgkaart";
 import { usePageMeta } from "@/lib/seo";
 
@@ -28,8 +28,14 @@ const ALLE_TAGS = Object.keys(TAG_LABELS) as ZorgTag[];
 
 export default function Geboortezorg() {
   const [zoek, setZoek] = useState("");
-  const [categorie, setCategorie] = useState<string | null>(null);
+  const [open, setOpen] = useState<string[]>([]);
   const [actieveTags, setActieveTags] = useState<ZorgTag[]>([]);
+
+  // Een categorie in de URL (bijv. #verloskundigen) klapt die meteen open
+  useEffect(() => {
+    const hash = window.location.hash.slice(1);
+    if (hash && ZORGKAART.some((c) => c.id === hash)) setOpen([hash]);
+  }, []);
 
   const aantalAanbieders = useMemo(() => ZORGKAART.reduce((n, c) => n + c.aanbieders.length, 0), []);
 
@@ -63,11 +69,13 @@ export default function Geboortezorg() {
   const toggleTag = (tag: ZorgTag) =>
     setActieveTags((prev) => (prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]));
 
+  const toggleOpen = (id: string) =>
+    setOpen((prev) => (prev.includes(id) ? prev.filter((c) => c !== id) : [...prev, id]));
+
   const zoekNorm = normalize(zoek.trim());
-  const filterActief = zoekNorm.length > 0 || actieveTags.length > 0 || categorie !== null;
+  const filterActief = zoekNorm.length > 0 || actieveTags.length > 0;
 
   const gefilterd = ZORGKAART
-    .filter((cat) => categorie === null || cat.id === categorie)
     .map((cat) => ({
       ...cat,
       aanbieders: cat.aanbieders.filter((a) => {
@@ -100,7 +108,12 @@ export default function Geboortezorg() {
             Zwanger of net bevallen in Nieuwerkerk aan den IJssel, Zevenhuizen, Moordrecht of
             Moerkapelle? Op deze pagina vind je alle zorg en ondersteuning uit de regio op één
             plek, van verloskundige en kraamzorg tot bekkenfysiotherapie, cursussen en sporten
-            met je baby. Studio Luna houdt deze kaart bij zodat jij niet hoeft te zoeken.
+            met je baby. Studio Luna houdt deze kaart bij zodat jij niet hoeft te zoeken. Ben je
+            zelf zorgverlener in de regio en sta je er nog niet op?{" "}
+            <a href="#voor-zorgverleners" className="text-primary font-semibold hover:text-primary/75">
+              Meld je gratis aan
+            </a>
+            .
           </p>
         </motion.div>
 
@@ -123,36 +136,10 @@ export default function Geboortezorg() {
               />
             </div>
 
-            {/* Filter: soort zorg */}
-            <div className="mt-8">
-              <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary/60 mb-3">Soort zorg</p>
-              <div className="flex flex-wrap gap-x-5 gap-y-2">
-                <button
-                  onClick={() => setCategorie(null)}
-                  className={categorie === null
-                    ? "text-sm font-semibold text-primary underline underline-offset-4 decoration-primary/40"
-                    : "text-sm text-foreground/50 hover:text-foreground transition-colors"}
-                >
-                  Alles
-                </button>
-                {ZORGKAART.map((cat) => (
-                  <button
-                    key={cat.id}
-                    onClick={() => setCategorie(categorie === cat.id ? null : cat.id)}
-                    className={categorie === cat.id
-                      ? "text-sm font-semibold text-primary underline underline-offset-4 decoration-primary/40"
-                      : "text-sm text-foreground/50 hover:text-foreground transition-colors"}
-                  >
-                    {cat.titel}
-                  </button>
-                ))}
-              </div>
-            </div>
-
             {/* Filter: kenmerken */}
-            <div className="mt-6 pb-2 border-b border-border/20">
+            <div className="mt-7">
               <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary/60 mb-3">Kenmerken</p>
-              <div className="flex flex-wrap gap-x-5 gap-y-2 pb-4">
+              <div className="flex flex-wrap gap-x-5 gap-y-2">
                 {ALLE_TAGS.map((tag) => (
                   <button
                     key={tag}
@@ -166,6 +153,11 @@ export default function Geboortezorg() {
                   </button>
                 ))}
               </div>
+              <p className="text-xs text-foreground/40 mt-3">
+                <a href="#kenmerken-uitleg" className="hover:text-foreground/70 underline underline-offset-2">
+                  Wat betekenen deze kenmerken?
+                </a>
+              </p>
             </div>
 
             {filterActief && (
@@ -184,52 +176,66 @@ export default function Geboortezorg() {
           </div>
         </motion.div>
 
-        {/* ── DE KAART, ALLES ONDER ELKAAR ── */}
-        <div className="px-7 md:px-14 lg:px-18 pb-8">
+        {/* ── DE KAART: kopjes, klik om de lijst te openen ── */}
+        <div className="px-7 md:px-14 lg:px-18 pt-6 pb-8">
           <div className="max-w-3xl">
-            {gefilterd.map((cat) => (
-              <section key={cat.id} id={cat.id} className="pt-12 md:pt-16 scroll-mt-24">
-                <motion.div
-                  variants={fadeUp} initial="hidden" whileInView="show"
-                  viewport={{ once: true, margin: "-40px" }} custom={0}
-                >
-                  <h2 className="font-display text-2xl md:text-3xl font-medium text-foreground leading-[1.15]">{cat.titel}</h2>
-                  <p className="text-sm text-foreground/50 leading-[1.85] mt-2">{cat.intro}</p>
-                </motion.div>
+            {gefilterd.map((cat) => {
+              const isOpen = filterActief || open.includes(cat.id);
+              return (
+                <section key={cat.id} id={cat.id} className="scroll-mt-24 border-b border-border/20">
+                  <button
+                    onClick={() => toggleOpen(cat.id)}
+                    className="w-full flex items-baseline justify-between gap-4 py-6 text-left group"
+                    aria-expanded={isOpen}
+                  >
+                    <span className="flex items-baseline gap-3 flex-wrap">
+                      <h2 className="font-display text-2xl md:text-[1.7rem] font-medium text-foreground leading-[1.2] group-hover:text-primary transition-colors">
+                        {cat.titel}
+                      </h2>
+                      <span className="text-sm text-foreground/40">{cat.aanbieders.length}</span>
+                    </span>
+                    <ChevronDown
+                      className={`w-4 h-4 shrink-0 text-foreground/35 transition-transform duration-300 self-center ${isOpen ? "rotate-180" : ""}`}
+                    />
+                  </button>
 
-                <div className="mt-2">
-                  {cat.aanbieders.map((a) => (
-                    <motion.div
-                      key={a.naam}
-                      variants={fadeUp} initial="hidden" whileInView="show"
-                      viewport={{ once: true, margin: "-30px" }} custom={0}
-                      className="py-6 border-b border-border/15"
-                    >
-                      <div className="flex flex-wrap items-baseline gap-x-3">
-                        <a
-                          href={a.website} target="_blank" rel="noopener noreferrer"
-                          className="text-[16px] font-semibold text-foreground hover:text-primary transition-colors"
-                        >
-                          {a.naam}
-                        </a>
-                        <span className="text-sm text-foreground/40">{a.plaats}</span>
-                      </div>
-                      <p className="text-[15px] text-foreground/60 leading-[1.9] mt-1.5">{a.beschrijving}</p>
-                      <p className="text-xs text-foreground/45 mt-2">
-                        {a.tags.map((tag) => TAG_LABELS[tag].label).join(" · ")}
-                        {a.tags.length > 0 && " · "}
-                        <a
-                          href={a.website} target="_blank" rel="noopener noreferrer"
-                          className="text-primary/80 hover:text-primary font-medium"
-                        >
-                          bekijk de website
-                        </a>
-                      </p>
-                    </motion.div>
-                  ))}
-                </div>
-              </section>
-            ))}
+                  {isOpen && (
+                    <div className="pb-6">
+                      <p className="text-sm text-foreground/50 leading-[1.85] max-w-2xl">{cat.intro}</p>
+                      {cat.aanbieders.map((a, i) => (
+                        <div key={a.naam} className={`py-6 ${i < cat.aanbieders.length - 1 ? "border-b border-border/10" : ""}`}>
+                          <div className="flex flex-wrap items-baseline gap-x-3">
+                            <a
+                              href={a.website} target="_blank" rel="noopener noreferrer"
+                              className="text-[16px] font-semibold text-foreground hover:text-primary transition-colors"
+                            >
+                              {a.naam}
+                            </a>
+                            <span className="text-sm text-foreground/40">{a.plaats}</span>
+                          </div>
+                          <p className="text-[15px] text-foreground/60 leading-[1.9] mt-1.5">{a.beschrijving}</p>
+                          {a.voordeel && (
+                            <p className="text-sm text-primary/90 leading-[1.85] mt-2">
+                              Voordeel: {a.voordeel}
+                            </p>
+                          )}
+                          <p className="text-xs text-foreground/45 mt-2">
+                            {a.tags.map((tag) => TAG_LABELS[tag].label).join(" · ")}
+                            {a.tags.length > 0 && " · "}
+                            <a
+                              href={a.website} target="_blank" rel="noopener noreferrer"
+                              className="text-primary/80 hover:text-primary font-medium"
+                            >
+                              bekijk de website
+                            </a>
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </section>
+              );
+            })}
 
             {gefilterd.length === 0 && filterActief && (
               <div className="py-20">
@@ -241,7 +247,7 @@ export default function Geboortezorg() {
         </div>
 
         {/* ── WAT DE KENMERKEN BETEKENEN ── */}
-        <section className="px-7 md:px-14 lg:px-18 py-12 md:py-16">
+        <section id="kenmerken-uitleg" className="px-7 md:px-14 lg:px-18 py-12 md:py-16 scroll-mt-24">
           <div className="max-w-3xl">
             <motion.div
               variants={fadeUp} initial="hidden" whileInView="show"
@@ -272,7 +278,7 @@ export default function Geboortezorg() {
         </section>
 
         {/* ── VOOR ZORGVERLENERS ── */}
-        <section className="px-7 md:px-14 lg:px-18 py-12 md:py-16">
+        <section id="voor-zorgverleners" className="px-7 md:px-14 lg:px-18 py-12 md:py-16 scroll-mt-24">
           <motion.div
             variants={fadeUp} initial="hidden" whileInView="show"
             viewport={{ once: true, margin: "-40px" }} custom={0}
@@ -285,10 +291,15 @@ export default function Geboortezorg() {
             <h2 className="font-display text-2xl md:text-3xl font-medium text-foreground leading-[1.15] mb-5">
               Sta jij nog niet op deze kaart?
             </h2>
-            <p className="text-[15px] text-foreground/60 leading-[1.9] mb-7">
+            <p className="text-[15px] text-foreground/60 leading-[1.9] mb-4">
               Ben jij zorgverlener in de regio Zuidplas en wil je op de lijst? Vermelding is
               gratis. Stuur een mail met je naam, website en wat je doet, dan komt je vermelding
               erbij.
+            </p>
+            <p className="text-[15px] text-foreground/60 leading-[1.9] mb-7">
+              Wil je de lezeressen van deze kaart daarnaast iets extra's geven, bijvoorbeeld een
+              kortingscode of een gratis kennismaking? Mail dan mee wat de actie inhoudt en hoe
+              lang die geldig is, dan komt die als voordeel bij je vermelding te staan.
             </p>
             <a
               href="mailto:zorgverleners@studiolunazuidplas.nl?subject=Vermelding%20op%20de%20zorgkaart%20Zuidplas"
