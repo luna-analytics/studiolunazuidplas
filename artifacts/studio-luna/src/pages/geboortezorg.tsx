@@ -72,6 +72,12 @@ export default function Geboortezorg() {
   const toggleOpen = (id: string) =>
     setOpen((prev) => (prev.includes(id) ? prev.filter((c) => c !== id) : [...prev, id]));
 
+  // Vanuit de startpunten: klap de categorie open en scroll ernaartoe
+  const openEnScroll = (id: string) => {
+    setOpen((prev) => (prev.includes(id) ? prev : [...prev, id]));
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   const zoekNorm = normalize(zoek.trim());
   const filterActief = zoekNorm.length > 0 || actieveTags.length > 0;
 
@@ -158,6 +164,49 @@ export default function Geboortezorg() {
                   Wat betekenen deze kenmerken?
                 </a>
               </p>
+            </div>
+
+            {/* Startpunten per moment */}
+            <div className="mt-9">
+              <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary/60 mb-3">Begin bij jouw moment</p>
+              <div className="space-y-2.5 text-[15px] leading-[1.9] text-foreground/60">
+                <p>
+                  <span className="font-semibold text-foreground/80">Net zwanger?</span>{" "}
+                  Kies een{" "}
+                  <button onClick={() => openEnScroll("verloskundigen")} className="text-primary font-semibold hover:text-primary/75">verloskundige</button>,
+                  plan je{" "}
+                  <button onClick={() => openEnScroll("echos")} className="text-primary font-semibold hover:text-primary/75">echo's</button>{" "}
+                  en regel op tijd{" "}
+                  <button onClick={() => openEnScroll("kraamzorg")} className="text-primary font-semibold hover:text-primary/75">kraamzorg</button>.
+                </p>
+                <p>
+                  <span className="font-semibold text-foreground/80">Halverwege?</span>{" "}
+                  Bereid je voor met{" "}
+                  <button onClick={() => openEnScroll("yoga-cursussen")} className="text-primary font-semibold hover:text-primary/75">zwangerschapsyoga of een cursus</button>,
+                  blijf{" "}
+                  <button onClick={() => openEnScroll("sporten")} className="text-primary font-semibold hover:text-primary/75">in beweging</button>{" "}
+                  en zoek bij bekkenklachten een{" "}
+                  <button onClick={() => openEnScroll("bekkenfysiotherapie")} className="text-primary font-semibold hover:text-primary/75">bekkenfysiotherapeut</button>.
+                </p>
+                <p>
+                  <span className="font-semibold text-foreground/80">Bijna bevallen?</span>{" "}
+                  Overweeg een{" "}
+                  <button onClick={() => openEnScroll("doulas")} className="text-primary font-semibold hover:text-primary/75">doula</button>{" "}
+                  voor extra begeleiding, of leg het vast met{" "}
+                  <button onClick={() => openEnScroll("geboortefotografie")} className="text-primary font-semibold hover:text-primary/75">geboortefotografie</button>.
+                </p>
+                <p>
+                  <span className="font-semibold text-foreground/80">Is je baby er?</span>{" "}
+                  Vind hulp bij{" "}
+                  <button onClick={() => openEnScroll("lactatiekundigen")} className="text-primary font-semibold hover:text-primary/75">borstvoeding</button>,
+                  het{" "}
+                  <button onClick={() => openEnScroll("consultatiebureau")} className="text-primary font-semibold hover:text-primary/75">consultatiebureau</button>,{" "}
+                  <button onClick={() => openEnScroll("babymassage-dragen")} className="text-primary font-semibold hover:text-primary/75">babymassage en dragen</button>{" "}
+                  en bouw{" "}
+                  <button onClick={() => openEnScroll("sporten")} className="text-primary font-semibold hover:text-primary/75">samen met andere moeders</button>{" "}
+                  weer op.
+                </p>
+              </div>
             </div>
 
             {filterActief && (
