@@ -15,8 +15,8 @@ type ReviewsConfig = { visible: boolean; items: Review[] };
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 const DEFAULT_TEKSTEN = {
-  cta_url: "/rooster",
-  cta_label: "Reserveer jouw plekje",
+  cta_url: "/geboortereeks",
+  cta_label: "Bekijk de Geboortereeks",
   home_hero: "It takes a village.\nStudio Luna is jouw mama tribe.",
   home_missie_heading: "Een plek om\nte landen.",
   home_missie_tekst: "Het moederschap hoef je niet alleen te doen. De missie van Studio Luna is het faciliteren van een community voor alle vrouwen in Nieuwerkerk aan den IJssel en omgeving, van zwangerschap tot ver daarna. Een veilige haven om fysiek op te laden, mentaal tot rust te komen en bovenal in verbinding te staan met andere moeders in dezelfde fase.",
@@ -45,11 +45,11 @@ const FAQ_ITEMS = [
   },
   {
     vraag: "Kan ik eerst een keer proberen?",
-    antwoord: "Ja, je boekt een proefles voor €10. Zo ervaar je vrijblijvend of het bij je past.",
+    antwoord: "Ja, een proefles kost €10. Stuur een berichtje via WhatsApp of mail en we plannen samen een moment. Zo ervaar je vrijblijvend of het bij je past.",
   },
   {
-    vraag: "Wat kost een les?",
-    antwoord: "Een losse les kost €22,50 en er zijn voordelige pakketten. Alle actuele prijzen vind je op de tarievenpagina.",
+    vraag: "Wat kost het?",
+    antwoord: "Een losse les kost €22,50. De Geboortereeks van negen lessen kost €195; de eerste groep, die op 29 september start, betaalt eenmalig de introductieprijs van €175.",
   },
   {
     vraag: "Waar zijn de lessen?",
@@ -149,15 +149,41 @@ export default function StudioLuna() {
                   <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
                 </button>
                 <button
-                  onClick={() => navigate("/tarieven")}
+                  onClick={() => navigate("/aanbod")}
                   className="inline-flex items-center gap-2 bg-white/12 backdrop-blur-sm border border-white/25 text-white px-7 py-3.5 rounded-2xl font-semibold text-sm hover:bg-white/22"
                 >
-                  Boek een proefles
+                  Bekijk het aanbod
                 </button>
               </motion.div>
             </div>
           </div>
         </motion.div>
+
+        {/* ── GEBOORTEREEKS AANKONDIGING ── */}
+        <section className="px-4 md:px-10 lg:px-14 pt-8 md:pt-10">
+          <motion.button
+            variants={fadeUp} initial="hidden" whileInView="show"
+            viewport={{ once: true, margin: "-40px" }} custom={0}
+            onClick={() => navigate("/geboortereeks")}
+            className="w-full text-left rounded-3xl bg-primary px-8 md:px-14 py-10 md:py-12 group cursor-pointer flex flex-col md:flex-row md:items-center md:justify-between gap-6"
+          >
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/55 mb-2">Nieuw · start dinsdag 29 september</p>
+              <p className="font-display text-2xl md:text-3xl font-medium text-white leading-snug">
+                De Geboortereeks
+              </p>
+              <p className="text-sm text-white/70 leading-[1.85] mt-3 max-w-xl">
+                Negen lessen zwangerschapsyoga en geboortevoorbereiding in een vaste groep van
+                maximaal acht zwangeren, met onder meer een bekkenfysiotherapeut, een partnerles
+                en een mama-en-babyles.
+              </p>
+            </div>
+            <span className="inline-flex items-center gap-2 bg-white text-primary px-8 py-3.5 rounded-2xl font-semibold text-sm group-hover:bg-white/92 shadow-md shrink-0">
+              Lees alles en meld je aan
+              <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+            </span>
+          </motion.button>
+        </section>
 
         {/* ── MISSIE — editorial: label + grote heading + asymmetrisch ── */}
         <section className="relative px-7 md:px-14 lg:px-18 py-24 md:py-32">
@@ -260,17 +286,11 @@ export default function StudioLuna() {
             className="flex flex-wrap gap-3"
           >
             <button
-              onClick={() => navigate("/rooster")}
+              onClick={() => navigate("/geboortereeks")}
               className="inline-flex items-center gap-2 border border-primary/25 text-primary/80 hover:bg-primary/5 px-5 py-2.5 rounded-2xl text-sm font-semibold transition-colors"
             >
               <Calendar className="w-3.5 h-3.5" />
-              Bekijk het rooster
-            </button>
-            <button
-              onClick={() => navigate("/tarieven")}
-              className="inline-flex items-center gap-2 border border-primary/25 text-primary/80 hover:bg-primary/5 px-5 py-2.5 rounded-2xl text-sm font-semibold transition-colors"
-            >
-              Bekijk tarieven
+              De Geboortereeks
             </button>
             <button
               onClick={() => navigate("/aanbod")}
@@ -278,6 +298,12 @@ export default function StudioLuna() {
             >
               <BookOpen className="w-3.5 h-3.5" />
               Bekijk aanbod
+            </button>
+            <button
+              onClick={() => navigate("/geboortezorg-zuidplas")}
+              className="inline-flex items-center gap-2 border border-primary/25 text-primary/80 hover:bg-primary/5 px-5 py-2.5 rounded-2xl text-sm font-semibold transition-colors"
+            >
+              Geboortezorg in Zuidplas
             </button>
           </motion.div>
         </section>
@@ -402,12 +428,45 @@ export default function StudioLuna() {
               ))}
             </Accordion>
             <button
-              onClick={() => navigate("/tarieven")}
+              onClick={() => navigate("/geboortereeks")}
               className="inline-flex items-center gap-2 mt-8 text-sm font-semibold text-primary group"
             >
-              Bekijk alle tarieven
+              Bekijk de Geboortereeks
               <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
             </button>
+          </motion.div>
+        </section>
+
+        {/* ── ZORGKAART TEASER ── */}
+        <section className="px-7 md:px-14 lg:px-18 py-12 md:py-16">
+          <motion.div
+            variants={fadeUp} initial="hidden" whileInView="show"
+            viewport={{ once: true, margin: "-60px" }} custom={0}
+            className="md:grid md:grid-cols-[1.2fr_1fr] md:gap-20 md:items-center"
+          >
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary/60 mb-5 flex items-center gap-3">
+                <span className="inline-block w-8 h-px bg-primary/40" />
+                Voor de hele regio
+              </p>
+              <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground leading-[1.15] mb-6">
+                Alles over geboortezorg<br className="hidden md:block" /> in de regio Zuidplas
+              </h2>
+              <p className="text-[15px] text-foreground/60 leading-[1.95]">
+                Van verloskundige en kraamzorg tot bekkenfysiotherapie, lactatiekundigen en sporten
+                met je baby: op onze zorgkaart vind je alle zorg en ondersteuning uit Nieuwerkerk
+                aan den IJssel, Zevenhuizen, Moordrecht, Moerkapelle en omgeving op één plek.
+              </p>
+            </div>
+            <div className="mt-8 md:mt-0">
+              <button
+                onClick={() => navigate("/geboortezorg-zuidplas")}
+                className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-7 py-3.5 rounded-2xl font-semibold text-sm hover:bg-primary/88 shadow-soft group"
+              >
+                Ontdek de zorgkaart
+                <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+              </button>
+            </div>
           </motion.div>
         </section>
 

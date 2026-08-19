@@ -12,8 +12,8 @@ type Props = {
 
 export function CtaBlock({ ctaUrl: propUrl, ctaLabel: propLabel }: Props = {}) {
   const [, navigate] = useLocation();
-  const [ctaUrl, setCtaUrl] = useState(propUrl ?? "/rooster");
-  const [ctaLabel, setCtaLabel] = useState(propLabel ?? "Reserveer jouw plekje");
+  const [ctaUrl, setCtaUrl] = useState(propUrl ?? "/geboortereeks");
+  const [ctaLabel, setCtaLabel] = useState(propLabel ?? "Bekijk de Geboortereeks");
 
   useEffect(() => {
     if (propUrl && propLabel) return; // already provided by parent

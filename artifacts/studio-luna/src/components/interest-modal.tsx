@@ -5,9 +5,11 @@ import { X } from "lucide-react";
 interface InterestModalProps {
   isOpen: boolean;
   onClose: () => void;
+  title?: string;
+  description?: string;
 }
 
-export function InterestModal({ isOpen, onClose }: InterestModalProps) {
+export function InterestModal({ isOpen, onClose, title, description }: InterestModalProps) {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
@@ -65,8 +67,8 @@ export function InterestModal({ isOpen, onClose }: InterestModalProps) {
             <div className="w-full max-w-md bg-background rounded-t-3xl px-6 pt-6 pb-12 shadow-2xl">
               <div className="flex items-start justify-between mb-5">
                 <div>
-                  <h3 className="font-display text-xl font-medium text-foreground">Houd mij op de hoogte</h3>
-                  <p className="text-sm text-foreground/60 mt-1">Laat je e-mailadres achter en we laten je weten zodra een Mama Circle start of de bevallings workshops starten.</p>
+                  <h3 className="font-display text-xl font-medium text-foreground">{title ?? "Houd mij op de hoogte"}</h3>
+                  <p className="text-sm text-foreground/60 mt-1">{description ?? "Laat je e-mailadres achter en we laten je weten zodra een Mama Circle start of de bevallings workshops starten."}</p>
                 </div>
                 <button onClick={handleClose} className="text-foreground/40 hover:text-foreground ml-4 shrink-0">
                   <X className="w-5 h-5" />

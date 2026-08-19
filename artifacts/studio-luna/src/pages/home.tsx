@@ -5,7 +5,7 @@ import { SeoFooter } from "@/components/seo-footer";
 import { CtaBlock } from "@/components/cta-block";
 import { InterestModal } from "@/components/interest-modal";
 import { motion } from "framer-motion";
-import { ArrowRight, Calendar, MapPin, Coffee, Mail, ClipboardList } from "lucide-react";
+import { ArrowRight, Calendar, MapPin, Coffee, Mail, ClipboardList, Users, Baby } from "lucide-react";
 import { IMAGES } from "@/lib/images";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -65,7 +65,7 @@ export default function Home() {
   const [extraTypes, setExtraTypes] = useState<LesType[]>([]);
 
   useEffect(() => {
-    document.title = "Aanbod – Zwangerschapsyoga, Zwanger Circle & Mama Circle | Studio Luna Zuidplas";
+    document.title = "Aanbod: Geboortereeks, Zwangerschapsyoga en Circles | Studio Luna Zuidplas";
   }, []);
 
   useEffect(() => {
@@ -111,8 +111,42 @@ export default function Home() {
             Studio Luna
           </p>
           <h1 className="font-display text-4xl md:text-5xl font-medium text-foreground leading-[1.1]">Aanbod</h1>
-          <p className="text-foreground/45 text-sm mt-3 tracking-wide">Zwangerschapsyoga · Circles · Workshops</p>
+          <p className="text-foreground/45 text-sm mt-3 tracking-wide">Geboortereeks · Zwangerschapsyoga · Circles · Workshops</p>
         </motion.div>
+
+        {/* ══════════════════════════════════════════════════════════
+            0 — DE GEBOORTEREEKS (uitgelicht, klik door naar /geboortereeks)
+        ══════════════════════════════════════════════════════════ */}
+        <section id="geboortereeks" className="px-4 md:px-10 lg:px-14 pt-8">
+          <motion.button
+            variants={fadeUp} initial="hidden" whileInView="show"
+            viewport={{ once: true, margin: "-40px" }} custom={0}
+            onClick={() => navigate("/geboortereeks")}
+            className="w-full text-left rounded-3xl bg-primary px-8 md:px-14 py-11 md:py-14 group cursor-pointer"
+          >
+            <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-white/55 mb-4 flex items-center gap-3">
+              <span className="inline-block w-8 h-px bg-white/35" />
+              Nieuw · start dinsdag 29 september
+            </p>
+            <p className="font-display text-3xl md:text-4xl font-medium text-white leading-[1.15] mb-5">
+              De Geboortereeks
+            </p>
+            <p className="text-[15px] text-white/75 leading-[1.9] max-w-2xl mb-8">
+              Negen lessen zwangerschapsyoga en geboortevoorbereiding in een vaste groep van
+              maximaal acht zwangeren, met een bekkenfysiotherapeut, een partnerles, een
+              mamaspa-avond en een mama-en-babyles als afsluiting.
+            </p>
+            <div className="flex flex-wrap gap-x-8 gap-y-3 text-sm text-white/70 mb-9">
+              <span className="flex items-center gap-2.5"><Calendar className="w-4 h-4" /> 8 dinsdagavonden plus terugkomles</span>
+              <span className="flex items-center gap-2.5"><Users className="w-4 h-4" /> Maximaal 8 zwangeren</span>
+              <span className="flex items-center gap-2.5"><Baby className="w-4 h-4" /> Instappen bij 22 tot 28 weken</span>
+            </div>
+            <span className="inline-flex items-center gap-2 bg-white text-primary px-7 py-3.5 rounded-2xl font-semibold text-sm group-hover:bg-white/92 shadow-md">
+              Ontdek de Geboortereeks
+              <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+            </span>
+          </motion.button>
+        </section>
 
         {/* ══════════════════════════════════════════════════════════
             1 — ZWANGERSCHAPSYOGA
@@ -196,10 +230,10 @@ export default function Home() {
 
                   <div className="flex flex-col gap-3">
                     <button
-                      onClick={() => navigate("/rooster")}
+                      onClick={() => navigate("/geboortereeks")}
                       className="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-7 py-3.5 rounded-2xl font-semibold text-sm hover:bg-primary/88 shadow-soft group w-full md:w-auto"
                     >
-                      Bekijk het rooster
+                      Bekijk de Geboortereeks
                       <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
                     </button>
                     <a
@@ -312,11 +346,11 @@ export default function Home() {
                 >
                   <p className="text-[15px] text-foreground/60 leading-[1.95] mb-8 whitespace-pre-line">{type.beschrijving}</p>
                   <button
-                    onClick={() => navigate("/rooster")}
+                    onClick={() => setIsInterestOpen(true)}
                     className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-7 py-3.5 rounded-2xl font-semibold text-sm hover:bg-primary/88 shadow-soft group"
                   >
-                    Bekijk het rooster
-                    <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+                    <Mail className="w-4 h-4" />
+                    Houd mij op de hoogte
                   </button>
                 </motion.div>
 

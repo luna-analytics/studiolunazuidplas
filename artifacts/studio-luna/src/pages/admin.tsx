@@ -2410,8 +2410,8 @@ const DEFAULT_PT: PaginaTeksten = {
   aanbod_specials_items: "Bevallings Yoga Workshop | Focus & Vertrouwen · 120 min | € 49,-\nPartner Workshop | Verbinding & Support · 120 min | € 79,-\nMama Spa | Ultiem ontspannen · 120 min | € 49,-",
   aanbod_specials_bundel: "De Geboorte-Bundel | Alle drie workshops · meest complete voorbereiding | bespaar € 22,- | € 155,-",
   aanbod_verzekering_tekst: "Veel verzekeraars vergoeden (een deel van) geboortevoorbereiding vanuit de aanvullende verzekering.",
-  cta_url: "/rooster",
-  cta_label: "Reserveer jouw plekje",
+  cta_url: "/geboortereeks",
+  cta_label: "Bekijk de Geboortereeks",
 };
 
 function InhoudTab() {
@@ -2490,12 +2490,12 @@ function InhoudTab() {
         {field("Knoptekst", "cta_label", false, "Bijv. 'Reserveer jouw plekje' of 'Plan een proefles'")}
         <div>
           <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Bestemming (URL)</label>
-          <p className="text-xs text-foreground/40 mb-1.5">Vul een interne pagina in (/rooster, /aanbod, /tarieven) of een externe URL (https://…)</p>
+          <p className="text-xs text-foreground/40 mb-1.5">Vul een interne pagina in (/geboortereeks, /aanbod, /geboortezorg-zuidplas) of een externe URL (https://…)</p>
           <input value={teksten.cta_url} onChange={(e) => setTeksten({ ...teksten, cta_url: e.target.value })}
-            placeholder="/rooster"
+            placeholder="/geboortereeks"
             className="w-full bg-secondary border border-border/40 rounded-2xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
           <div className="flex flex-wrap gap-2 mt-2">
-            {["/rooster", "/aanbod", "/tarieven"].map(url => (
+            {["/geboortereeks", "/aanbod", "/geboortezorg-zuidplas"].map(url => (
               <button key={url} type="button" onClick={() => setTeksten({ ...teksten, cta_url: url })}
                 className={`text-xs px-3 py-1 rounded-xl border transition-colors ${teksten.cta_url === url ? "bg-primary text-white border-primary" : "border-border/40 text-foreground/60 hover:border-primary/50"}`}>
                 {url}

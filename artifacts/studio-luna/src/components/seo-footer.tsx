@@ -1,9 +1,16 @@
+import { Link } from "wouter";
+
 export function SeoFooter() {
   return (
     <footer className="border-t border-border/20 mt-8 px-6 md:px-12 lg:px-16 py-8 pb-32 md:pb-20 text-center">
       <p className="text-xs text-foreground/35 leading-relaxed max-w-lg mx-auto">
-        Studio Luna – Zwangerschapsyoga, Zwanger Circle, Mama Circle &amp; Geboortevoorbereiding in Nieuwerkerk aan den IJssel, Zuidplas.
+        Studio Luna · Zwangerschapsyoga, de Geboortereeks &amp; Mama Community in Nieuwerkerk aan den IJssel, Zuidplas.
         {" "}Locatie: Huize Mooisteen, Pr. Beatrixstraat 2.
+      </p>
+      <p className="text-xs text-foreground/30 mt-2 max-w-lg mx-auto">
+        <Link href="/geboortezorg-zuidplas" className="hover:text-foreground/55 transition-colors underline underline-offset-2">
+          Alles over geboortezorg in de regio Zuidplas
+        </Link>
       </p>
       <p className="text-xs text-foreground/25 mt-1.5">
         <a href="mailto:info@studiolunazuidplas.nl" className="hover:text-foreground/50 transition-colors">
@@ -14,25 +21,25 @@ export function SeoFooter() {
       {/* Lokale SEO-tekst — zichtbaar voor zoekmachines */}
       <div className="sr-only">
         <h2>Zwangerschapsyoga Nieuwerkerk aan den IJssel</h2>
-        <p>Studio Luna biedt zwangerschapsyoga in Nieuwerkerk aan den IJssel, gemeente Zuidplas. Instromen mogelijk vanaf 14 weken zwangerschap. Kleine groepen, persoonlijke aandacht.</p>
+        <p>Studio Luna biedt zwangerschapsyoga in Nieuwerkerk aan den IJssel, gemeente Zuidplas. Kleine groepen, persoonlijke aandacht en na elke les tijd voor thee en verbinding.</p>
+
+        <h2>Zwangerschapscursus Zuidplas: de Geboortereeks</h2>
+        <p>De Geboortereeks van Studio Luna is een complete zwangerschapscursus in Nieuwerkerk aan den IJssel: negen lessen zwangerschapsyoga en geboortevoorbereiding met een bekkenfysiotherapeut, een partnerles, een mamaspa-avond en een mama-en-babyles. De eerste groep start dinsdag 29 september.</p>
 
         <h2>Zwangerschapsyoga Gouda</h2>
-        <p>Op zoek naar zwangerschapsyoga vanuit Gouda? Studio Luna in Nieuwerkerk aan den IJssel is gemakkelijk bereikbaar vanuit Gouda via de A12. Losse les €22,50 of reeks van 8 lessen €160.</p>
+        <p>Op zoek naar zwangerschapsyoga vanuit Gouda? Studio Luna in Nieuwerkerk aan den IJssel is gemakkelijk bereikbaar vanuit Gouda via de A20.</p>
 
         <h2>Prenatale yoga Zuidplas</h2>
-        <p>Prenatale yoga in de gemeente Zuidplas. Studio Luna, gevestigd in Huize Mooisteen, biedt wekelijkse lessen zwangerschapsyoga en geboortevoorbereiding voor vrouwen in Nieuwerkerk aan den IJssel, Moordrecht en Zevenhuizen.</p>
+        <p>Prenatale yoga in de gemeente Zuidplas. Studio Luna biedt lessen zwangerschapsyoga en geboortevoorbereiding voor vrouwen in Nieuwerkerk aan den IJssel, Moordrecht, Zevenhuizen en Moerkapelle.</p>
 
         <h2>Zwangerschapsyoga Capelle aan den IJssel</h2>
-        <p>Zwanger en woonachtig in Capelle aan den IJssel? Studio Luna in Nieuwerkerk aan den IJssel is op korte afstand. Schrijf je in voor een gratis proefles zwangerschapsyoga.</p>
+        <p>Zwanger en woonachtig in Capelle aan den IJssel? Studio Luna in Nieuwerkerk aan den IJssel is op korte afstand en biedt zwangerschapsyoga en een complete geboortevoorbereiding.</p>
 
-        <h2>Zwangerschapsyoga Waddinxveen</h2>
-        <p>Vanuit Waddinxveen goed bereikbaar: Studio Luna in Nieuwerkerk aan den IJssel biedt zwangerschapsyoga, een Zwanger Circle en Mama Circle. Yoga voor zwangere vrouwen in een veilige, kleine groep.</p>
-
-        <h2>Geboortevoorbereiding Zuidplas</h2>
-        <p>Geboortevoorbereiding in Zuidplas via Studio Luna. Ademhalingstechnieken, ontspanning en mentale voorbereiding op de bevalling — in een warme, vertrouwde omgeving in Huize Mooisteen.</p>
+        <h2>Geboortezorg regio Zuidplas</h2>
+        <p>Op de zorgkaart van Studio Luna vind je alle geboortezorg in de regio Zuidplas: verloskundigen, kraamzorg, echocentra, bekkenfysiotherapie, doula's, lactatiekundigen, zwangerschapscursussen en beweegaanbod voor zwangeren en moeders.</p>
 
         <h2>Zwangerschapsyoga verzekering vergoeding</h2>
-        <p>Sommige aanvullende zorgverzekeringen vergoeden zwangerschapsyoga bij een gecertificeerde docente. Informeer bij je eigen verzekeraar. Studio Luna werkt met gecertificeerde yogadocenten.</p>
+        <p>Veel zorgverzekeraars vergoeden een zwangerschapscursus geheel of gedeeltelijk vanuit de aanvullende verzekering. Check je polis of vraag het na bij je verzekeraar.</p>
       </div>
     </footer>
   );

@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback } from "react";
 import { Link, useLocation } from "wouter";
-import { CalendarDays, Bookmark, Tag, Home, Sparkles, LogOut, LogIn, Feather, User, Menu, X, ArrowRight } from "lucide-react";
+import { Baby, Compass, Home, Sparkles, LogOut, LogIn, Feather, User, Menu, X, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { AlgemeneVoorwaardenModal } from "./algemene-voorwaarden-modal";
@@ -8,18 +8,19 @@ import { PrivacyverklaringModal } from "./privacyverklaring-modal";
 import { LoginModal } from "./login-modal";
 import { useAuth } from "@/hooks/use-auth";
 
+// Rooster, Tarieven en Boekingen staan tijdelijk uit het menu; de pagina's
+// bestaan nog en kunnen hier zo weer worden toegevoegd.
 const ALL_NAV = [
   { href: "/", label: "Studio Luna", icon: Sparkles },
   { href: "/aanbod", label: "Aanbod", icon: Home },
-  { href: "/rooster", label: "Rooster", icon: CalendarDays },
-  { href: "/tarieven", label: "Tarieven", icon: Tag },
+  { href: "/geboortereeks", label: "Geboortereeks", icon: Baby },
+  { href: "/geboortezorg-zuidplas", label: "Geboortezorg", icon: Compass },
   { href: "/over-mij", label: "Over mij", icon: User },
   { href: "/blog", label: "Blog", icon: Feather },
-  { href: "/bookings", label: "Boekingen", icon: Bookmark },
 ];
 
 // Vier tabs die altijd zichtbaar zijn in de balk
-const PRIMARY_NAV = ["/", "/aanbod", "/rooster", "/blog"];
+const PRIMARY_NAV = ["/", "/aanbod", "/geboortereeks", "/geboortezorg-zuidplas"];
 
 export function BottomNav() {
   const [location, navigate] = useLocation();
