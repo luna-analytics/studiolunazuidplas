@@ -156,29 +156,31 @@ export default function StudioLuna() {
         </motion.div>
 
         {/* ── GEBOORTEREEKS AANKONDIGING ── */}
-        <section className="px-4 md:px-10 lg:px-14 pt-8 md:pt-10">
-          <motion.button
+        <section className="px-7 md:px-14 lg:px-18 pt-14 md:pt-20">
+          <motion.div
             variants={fadeUp} initial="hidden" whileInView="show"
             viewport={{ once: true, margin: "-40px" }} custom={0}
-            onClick={() => navigate("/geboortereeks")}
-            className="w-full text-left rounded-3xl bg-primary px-8 md:px-14 py-10 md:py-12 group cursor-pointer flex flex-col md:flex-row md:items-center md:justify-between gap-6"
           >
-            <div>
-              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/55 mb-2">Nieuw · start dinsdag 29 september</p>
-              <p className="font-display text-2xl md:text-3xl font-medium text-white leading-snug">
-                De Geboortereeks
-              </p>
-              <p className="text-sm text-white/70 leading-[1.85] mt-3 max-w-xl">
-                Negen lessen zwangerschapsyoga en geboortevoorbereiding in een vaste groep van
-                maximaal acht zwangeren, met onder meer een bekkenfysiotherapeut, een partnerles
-                en een mama-en-babyles.
-              </p>
-            </div>
-            <span className="inline-flex items-center gap-2 bg-white text-primary px-8 py-3.5 rounded-2xl font-semibold text-sm group-hover:bg-white/92 shadow-md shrink-0">
+            <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary/60 mb-5 flex items-center gap-3">
+              <span className="inline-block w-8 h-px bg-primary/40" />
+              Nieuw
+            </p>
+            <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground leading-[1.15] mb-6">
+              De Geboortereeks start <em className="not-italic text-primary">29 september</em>
+            </h2>
+            <p className="text-[15px] text-foreground/60 leading-[1.95] max-w-2xl mb-8">
+              Negen lessen zwangerschapsyoga en geboortevoorbereiding in een vaste groep van
+              maximaal acht zwangeren, met onder meer een bekkenfysiotherapeut, een partnerles
+              en een mama-en-babyles.
+            </p>
+            <button
+              onClick={() => navigate("/geboortereeks")}
+              className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-7 py-3.5 rounded-2xl font-semibold text-sm hover:bg-primary/88 shadow-soft group"
+            >
               Lees alles en meld je aan
               <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
-            </span>
-          </motion.button>
+            </button>
+          </motion.div>
         </section>
 
         {/* ── MISSIE — editorial: label + grote heading + asymmetrisch ── */}
