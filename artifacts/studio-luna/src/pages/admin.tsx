@@ -2375,7 +2375,7 @@ const DEFAULT_PT: PaginaTeksten = {
   home_missie_tekst: "Het moederschap hoef je niet alleen te doen. De missie van Studio Luna is het faciliteren van een community voor alle vrouwen in Nieuwerkerk aan den IJssel en omgeving, van zwangerschap tot ver daarna. Een veilige haven om fysiek op te laden, mentaal tot rust te komen en bovenal in verbinding te staan met andere moeders in dezelfde fase.",
   home_missie_bullets: "Een plek om te landen.\nEen plek om fysiek sterk, gezond en in balans te blijven.\nEen plek om vertrouwen te vinden in je veranderende lichaam.\nEen plek om te connecten met andere moeders.\nStudio Luna is jouw mama tribe.",
   aanbod_yoga_tekst1: "Sterk, ontspannen en vol vertrouwen richting je bevalling. Met zachte houdingen houden we je veranderende lichaam in balans. We oefenen met ademhaling en maken contact met je baby.",
-  aanbod_yoga_tekst2: "Elke les heeft een net andere focus, zoals het bekken, de kracht van je adem of ruimte in je rug. Instromen is op elk moment mogelijk vanaf 14 weken zwangerschap.",
+  aanbod_yoga_tekst2: "Elke les heeft een net andere focus, zoals het bekken, de kracht van je adem of ruimte in je rug. De lessen vormen samen de Geboortereeks, waarin je in een vaste groep naar je bevalling toewerkt.",
   aanbod_yoga_tijd: "Elke dinsdag 19:00",
   aanbod_yoga_locatie: "Huize Mooisteen, Pr. Beatrixstraat 2, Nieuwerkerk a/d IJssel",
   aanbod_yoga_extra: "Na afloop: verse thee en tijd voor verbinding",
@@ -2399,7 +2399,7 @@ const DEFAULT_PT: PaginaTeksten = {
   home_missie_heading: "Een plek om\nte landen.",
   home_village_tagline: "Welkom in jouw village.",
   home_aanbod_heading: "Alles wat je nodig hebt\nop weg naar de bevalling.",
-  home_aanbod_items: "Kleine groepen, veel aandacht en persoonlijk contact.\nZwangerschapsyoga: bevalling voorbereiden, kracht van de adem en fysieke balans.\nNa afloop altijd tijd voor een kopje thee en verbinding.\nInstromen mogelijk vanaf 14 weken zwangerschap.\nWhatsApp-community voor vragen en tips tussen lessen door.\nAandacht voor zowel het fysieke als het mentale aspect van moederschap.",
+  home_aanbod_items: "Kleine groepen, veel aandacht en persoonlijk contact.\nZwangerschapsyoga: bevalling voorbereiden, kracht van de adem en fysieke balans.\nNa afloop altijd tijd voor een kopje thee en verbinding.\nEen vaste groep die samen naar de bevalling toewerkt.\nWhatsApp-community voor vragen en tips tussen lessen door.\nAandacht voor zowel het fysieke als het mentale aspect van moederschap.",
   home_locatie_naam: "Huize Mooisteen",
   home_locatie_adres: "Pr. Beatrixstraat 2\nNieuwerkerk aan den IJssel",
   home_contact_email: "info@studiolunazuidplas.nl",
@@ -2487,7 +2487,7 @@ function InhoudTab() {
           <h3 className="font-display text-lg font-medium">Reserveerknop</h3>
           <p className="text-xs text-foreground/50 mt-1">De grote actieknop bovenaan de startpagina en onderaan elke pagina.</p>
         </div>
-        {field("Knoptekst", "cta_label", false, "Bijv. 'Reserveer jouw plekje' of 'Plan een proefles'")}
+        {field("Knoptekst", "cta_label", false, "Bijv. 'Bekijk de Geboortereeks' of 'Meld je aan'")}
         <div>
           <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Bestemming (URL)</label>
           <p className="text-xs text-foreground/40 mb-1.5">Vul een interne pagina in (/geboortereeks, /aanbod, /geboortezorg-zuidplas) of een externe URL (https://…)</p>

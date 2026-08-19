@@ -23,7 +23,7 @@ const DEFAULT_TEKSTEN = {
   home_missie_bullets: "Een plek om te landen.\nEen plek om fysiek sterk, gezond en in balans te blijven.\nEen plek om vertrouwen te vinden in je veranderende lichaam.\nEen plek om te connecten met andere moeders.\nStudio Luna is jouw mama tribe.",
   home_village_tagline: "Welkom in jouw village.",
   home_aanbod_heading: "Alles wat je nodig hebt\nop weg naar de bevalling.",
-  home_aanbod_items: "Kleine groepen, veel aandacht en persoonlijk contact.\nZwangerschapsyoga: bevalling voorbereiden, kracht van de adem en fysieke balans.\nNa afloop altijd tijd voor een kopje thee en verbinding.\nInstromen mogelijk vanaf 14 weken zwangerschap.\nWhatsApp-community voor vragen en tips tussen lessen door.\nAandacht voor zowel het fysieke als het mentale aspect van moederschap.",
+  home_aanbod_items: "Kleine groepen, veel aandacht en persoonlijk contact.\nZwangerschapsyoga: bevalling voorbereiden, kracht van de adem en fysieke balans.\nNa afloop altijd tijd voor een kopje thee en verbinding.\nEen vaste groep die samen naar de bevalling toewerkt.\nWhatsApp-community voor vragen en tips tussen lessen door.\nAandacht voor zowel het fysieke als het mentale aspect van moederschap.",
   home_locatie_naam: "Huize Mooisteen",
   home_locatie_adres: "Pr. Beatrixstraat 2\nNieuwerkerk aan den IJssel",
   home_contact_email: "info@studiolunazuidplas.nl",
@@ -37,19 +37,15 @@ const DEFAULT_TEKSTEN = {
 const FAQ_ITEMS = [
   {
     vraag: "Vanaf hoeveel weken kan ik meedoen?",
-    antwoord: "Instromen kan op elk moment vanaf 14 weken zwangerschap.",
+    antwoord: "De Geboortereeks past het beste als je bij de start tussen de 22 en 28 weken zwanger bent. De eerstvolgende reeks start op dinsdag 29 september.",
   },
   {
     vraag: "Heb ik yoga-ervaring nodig?",
     antwoord: "Nee, ervaring is niet nodig. De lessen worden rustig opgebouwd en stap voor stap uitgelegd, in een kleine groep met veel persoonlijke aandacht.",
   },
   {
-    vraag: "Kan ik eerst een keer proberen?",
-    antwoord: "Ja, een proefles kost €10. Stuur een berichtje via WhatsApp of mail en we plannen samen een moment. Zo ervaar je vrijblijvend of het bij je past.",
-  },
-  {
     vraag: "Wat kost het?",
-    antwoord: "Een losse les kost €22,50. De Geboortereeks van negen lessen kost €195; de eerste groep, die op 29 september start, betaalt eenmalig de introductieprijs van €175.",
+    antwoord: "De Geboortereeks van negen lessen kost €195. De eerste groep, die op 29 september start, betaalt eenmalig de introductieprijs van €175.",
   },
   {
     vraag: "Waar zijn de lessen?",

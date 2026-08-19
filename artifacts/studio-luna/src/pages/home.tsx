@@ -10,6 +10,10 @@ import { IMAGES } from "@/lib/images";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
+// Voor nu draait alleen de Geboortereeks; zet op true om de Bevallings Specials
+// (workshops met prijzen) weer op de aanbodpagina te tonen.
+const TOON_SPECIALS = false;
+
 type LesType = { id: string; naam: string; kleur: string; beschrijving?: string; locatie?: string; tijd?: string; actief: boolean };
 
 const toSlug = (naam: string) =>
@@ -18,8 +22,8 @@ const toSlug = (naam: string) =>
 const DEFAULT_TEKSTEN = {
   aanbod_yoga_heading: "Sterk en vol\nvertrouwen richting\nje bevalling.",
   aanbod_yoga_tekst1: "Sterk, ontspannen en vol vertrouwen richting je bevalling. Met zachte houdingen houden we je veranderende lichaam in balans. We oefenen met ademhaling en maken contact met je baby.",
-  aanbod_yoga_tekst2: "Elke les heeft een net andere focus, zoals het bekken, de kracht van je adem of ruimte in je rug. Instromen is op elk moment mogelijk vanaf 14 weken zwangerschap.",
-  aanbod_yoga_tijd: "Elke dinsdag 19:00",
+  aanbod_yoga_tekst2: "Elke les heeft een net andere focus, zoals het bekken, de kracht van je adem of ruimte in je rug. De lessen vormen samen de Geboortereeks, waarin je in een vaste groep naar je bevalling toewerkt.",
+  aanbod_yoga_tijd: "Dinsdagavond · eerstvolgende reeks start 29 september",
   aanbod_yoga_locatie: "Huize Mooisteen, Pr. Beatrixstraat 2, Nieuwerkerk a/d IJssel",
   aanbod_yoga_extra: "Na afloop: verse thee en tijd voor verbinding",
   aanbod_circle_titel: "Zwanger & Mama Circle",
@@ -111,7 +115,7 @@ export default function Home() {
             Studio Luna
           </p>
           <h1 className="font-display text-4xl md:text-5xl font-medium text-foreground leading-[1.1]">Aanbod</h1>
-          <p className="text-foreground/45 text-sm mt-3 tracking-wide">Geboortereeks · Zwangerschapsyoga · Circles · Workshops</p>
+          <p className="text-foreground/45 text-sm mt-3 tracking-wide">Geboortereeks · Zwangerschapsyoga · Circles</p>
         </motion.div>
 
         {/* ══════════════════════════════════════════════════════════
@@ -380,9 +384,9 @@ export default function Home() {
         ))}
 
         {/* ══════════════════════════════════════════════════════════
-            3 — BEVALLINGS SPECIALS
-            Clean prijslijst, geen kaarten
+            3 — BEVALLINGS SPECIALS (tijdelijk uit, zie TOON_SPECIALS)
         ══════════════════════════════════════════════════════════ */}
+        {TOON_SPECIALS && (
         <section className="px-7 md:px-14 lg:px-18 py-16 md:py-24">
           <motion.div
             variants={fadeUp} initial="hidden" whileInView="show"
@@ -455,6 +459,7 @@ export default function Home() {
             </button>
           </motion.div>
         </section>
+        )}
 
         <InterestModal isOpen={isInterestOpen} onClose={() => setIsInterestOpen(false)} />
         <CtaBlock />
