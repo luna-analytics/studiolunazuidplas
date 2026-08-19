@@ -238,10 +238,10 @@ export const ZORGKAART: ZorgCategorie[] = [
     id: "yoga-cursussen",
     titel: "Zwangerschapsyoga en geboortevoorbereiding",
     intro: "Cursussen en lessen die je voorbereiden op de bevalling en de eerste tijd met je baby.",
-    zoektermen: "zwangerschapsyoga yoga geboortevoorbereiding zwangerschapscursus hypnobirthing samen bevallen baby ehbo cursus ademhaling",
+    zoektermen: "zwangerschapsyoga yoga geboortevoorbereiding zwangerschapscursus hypnobirthing samen bevallen cursus ademhaling",
     aanbieders: [
       {
-        naam: "Studio Luna",
+        naam: "Studio Luna Zuidplas",
         plaats: "Nieuwerkerk aan den IJssel",
         website: "https://www.studiolunazuidplas.nl/geboortereeks",
         beschrijving: "Zwangerschapsyoga en geboortevoorbereiding in een vaste kleine groep; de Geboortereeks van negen lessen start op dinsdag 29 september.",
@@ -268,20 +268,6 @@ export const ZORGKAART: ZorgCategorie[] = [
         beschrijving: "Zwangerschapscursus Samen Bevallen in Gouda voor aanstaande ouders, met een complete cursus, een minicursus, privélessen en een herhaalcursus.",
         tags: ["op-locatie", "groepslessen", "1-op-1", "partner-welkom"],
       },
-      {
-        naam: "CJG Zuidplas, basiscursus Kinder EHBO",
-        plaats: "Moordrecht en Gouda (wisselende locaties, eerder ook Nieuwerkerk aan den IJssel)",
-        website: "https://www.cjgzuidplas.nl/cursussen",
-        beschrijving: "Basiscursus Kinder EHBO volgens Het Oranje Kruis voor ouders, grootouders en oppassers van kinderen van 0 tot 8 jaar, gegeven op avondlocaties in onder meer Moordrecht en Gouda in samenwerking met AmbuWerk Nederland.",
-        tags: ["op-locatie", "groepslessen", "avond-weekend", "vergoeding"],
-      },
-      {
-        naam: "EHBO Zuidplas (Eerste Hulp aan Kinderen)",
-        plaats: "Nieuwerkerk aan den IJssel",
-        website: "https://www.ehbo-zuidplas.nl/",
-        beschrijving: "EHBO-vereniging in Nieuwerkerk aan den IJssel, actief sinds 1954, die naast de reguliere EHBO-opleiding een cursus Eerste Hulp aan Kinderen aanbiedt voor iedereen die thuis of op het werk met baby's en kinderen te maken heeft.",
-        tags: ["op-locatie", "groepslessen"],
-      },
     ],
   },
   {
@@ -291,11 +277,11 @@ export const ZORGKAART: ZorgCategorie[] = [
     zoektermen: "bekkenfysio bekkenbodem bekkenpijn bekkeninstabiliteit fysiotherapie herstel zwangerfit",
     aanbieders: [
       {
-        naam: "Fysiotherapie De Ringvaart",
-        plaats: "Nieuwerkerk aan den IJssel",
-        website: "https://fysiotherapiederingvaart.nl/",
-        beschrijving: "Fysiotherapiepraktijk aan de Doortocht in Nieuwerkerk aan den IJssel met een geregistreerd bekkenfysiotherapeut voor bekkenpijn en lage rugklachten rond zwangerschap en bevalling.",
-        tags: ["op-locatie", "vergoeding", "avond-weekend"],
+        naam: "YILA Bekkenfysiotherapie en Manuele Therapie",
+        plaats: "Zevenhuizen",
+        website: "https://yilafysio.nl/",
+        beschrijving: "Praktijk voor bekkenfysiotherapie en manuele therapie in Zevenhuizen, van een MSc bekkenfysiotherapeut, gericht op onder meer bekkenpijn tijdens en na de zwangerschap.",
+        tags: ["op-locatie", "1-op-1"],
       },
       {
         naam: "Syntara Bekkenfysiotherapie",
