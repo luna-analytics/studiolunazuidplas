@@ -66,7 +66,7 @@ export function BottomNav() {
             {/* Naam */}
             <div className="flex flex-col leading-none">
               <span className="font-display text-[15px] font-medium text-foreground tracking-wide">Studio Luna</span>
-              <span className="text-[9px] uppercase tracking-[0.18em] text-foreground/40 font-sans mt-0.5">Zwangerschapsyoga</span>
+              <span className="text-[9px] uppercase tracking-[0.18em] text-foreground/40 font-sans mt-0.5">Zwangerschap en geboorte in Zuidplas</span>
             </div>
           </Link>
           <nav className="flex items-center gap-1">

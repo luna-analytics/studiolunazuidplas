@@ -4,8 +4,8 @@ export function SeoFooter() {
   return (
     <footer className="border-t border-border/20 mt-8 px-6 md:px-12 lg:px-16 py-8 pb-32 md:pb-20 text-center">
       <p className="text-xs text-foreground/35 leading-relaxed max-w-lg mx-auto">
-        Studio Luna · Zwangerschapsyoga, de Geboortereeks &amp; Mama Community in Nieuwerkerk aan den IJssel, Zuidplas.
-        {" "}Locatie: Huize Mooisteen, Pr. Beatrixstraat 2.
+        Studio Luna · Zwangerschap en geboorte in Zuidplas. Zwangerschapsyoga, de Geboortereeks
+        en de zorgkaart voor de regio, vanuit Nieuwerkerk aan den IJssel.
       </p>
       <p className="text-xs text-foreground/30 mt-2 max-w-lg mx-auto">
         <Link href="/geboortezorg-zuidplas" className="hover:text-foreground/55 transition-colors underline underline-offset-2">
