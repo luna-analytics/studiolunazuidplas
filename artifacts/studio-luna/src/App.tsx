@@ -7,9 +7,9 @@ import NotFound from "@/pages/not-found";
 import { useEffect } from "react";
 
 // Page imports
-// Rooster en Tarieven staan tijdelijk uit; de bestanden blijven bewaard in src/pages
-// en de oude routes verwijzen door, zodat ze later zo weer aan te zetten zijn.
-import Home from "./pages/home";
+// Aanbod, Rooster en Tarieven staan tijdelijk uit; de bestanden blijven bewaard
+// in src/pages en de oude routes verwijzen door, zodat ze later zo weer aan te
+// zetten zijn.
 import Bookings from "./pages/bookings";
 import Geboortereeks from "./pages/geboortereeks";
 import Geboortezorg from "./pages/geboortezorg";
@@ -66,7 +66,7 @@ function Router() {
       <CanonicalUpdater />
       <Switch>
         <Route path="/" component={StudioLuna} />
-        <Route path="/aanbod" component={Home} />
+        <Route path="/aanbod" component={() => { const [,nav] = useLocation(); useEffect(() => { nav("/geboortereeks", { replace: true }); }, [nav]); return null; }} />
         <Route path="/geboortereeks" component={Geboortereeks} />
         <Route path="/geboortezorg-zuidplas" component={Geboortezorg} />
         <Route path="/geboortezorg" component={() => { const [,nav] = useLocation(); useEffect(() => { nav("/geboortezorg-zuidplas", { replace: true }); }, [nav]); return null; }} />

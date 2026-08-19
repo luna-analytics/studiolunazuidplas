@@ -145,10 +145,10 @@ export default function StudioLuna() {
                   <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
                 </button>
                 <button
-                  onClick={() => navigate("/aanbod")}
+                  onClick={() => navigate("/geboortezorg-zuidplas")}
                   className="inline-flex items-center gap-2 bg-white/12 backdrop-blur-sm border border-white/25 text-white px-7 py-3.5 rounded-2xl font-semibold text-sm hover:bg-white/22"
                 >
-                  Bekijk het aanbod
+                  Ontdek de zorgkaart
                 </button>
               </motion.div>
             </div>
@@ -291,17 +291,11 @@ export default function StudioLuna() {
               De Geboortereeks
             </button>
             <button
-              onClick={() => navigate("/aanbod")}
-              className="inline-flex items-center gap-2 border border-primary/25 text-primary/80 hover:bg-primary/5 px-5 py-2.5 rounded-2xl text-sm font-semibold transition-colors"
-            >
-              <BookOpen className="w-3.5 h-3.5" />
-              Bekijk aanbod
-            </button>
-            <button
               onClick={() => navigate("/geboortezorg-zuidplas")}
               className="inline-flex items-center gap-2 border border-primary/25 text-primary/80 hover:bg-primary/5 px-5 py-2.5 rounded-2xl text-sm font-semibold transition-colors"
             >
-              Geboortezorg in Zuidplas
+              <BookOpen className="w-3.5 h-3.5" />
+              De zorgkaart
             </button>
           </motion.div>
         </section>

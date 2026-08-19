@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback } from "react";
 import { Link, useLocation } from "wouter";
-import { Baby, Compass, Home, Sparkles, LogOut, LogIn, Feather, User, Menu, X, ArrowRight } from "lucide-react";
+import { Baby, Compass, Sparkles, LogOut, LogIn, Feather, User, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { AlgemeneVoorwaardenModal } from "./algemene-voorwaarden-modal";
@@ -13,19 +13,19 @@ import { useAuth } from "@/hooks/use-auth";
 // Admin blijft bereikbaar via lang indrukken van het logo of /admin.
 const TOON_LOGIN = false;
 
-// Rooster, Tarieven en Boekingen staan tijdelijk uit het menu; de pagina's
-// bestaan nog en kunnen hier zo weer worden toegevoegd.
+// Aanbod, Rooster, Tarieven en Boekingen staan tijdelijk uit het menu; de
+// pagina's bestaan nog en kunnen hier zo weer worden toegevoegd.
+// "kort" is het label in de mobiele balk onderin.
 const ALL_NAV = [
-  { href: "/", label: "Studio Luna", icon: Sparkles },
-  { href: "/aanbod", label: "Aanbod", icon: Home },
-  { href: "/geboortereeks", label: "Geboortereeks", icon: Baby },
-  { href: "/geboortezorg-zuidplas", label: "Geboortezorg", icon: Compass },
-  { href: "/over-mij", label: "Over mij", icon: User },
-  { href: "/blog", label: "Blog", icon: Feather },
+  { href: "/", label: "Studio Luna", kort: "Studio Luna", icon: Sparkles },
+  { href: "/geboortereeks", label: "Zwangerschapsyoga", kort: "Yoga", icon: Baby },
+  { href: "/geboortezorg-zuidplas", label: "Zorgkaart", kort: "Zorgkaart", icon: Compass },
+  { href: "/over-mij", label: "Over mij", kort: "Over mij", icon: User },
+  { href: "/blog", label: "Blog", kort: "Blog", icon: Feather },
 ];
 
 // Vier tabs die altijd zichtbaar zijn in de balk
-const PRIMARY_NAV = ["/", "/aanbod", "/geboortereeks", "/geboortezorg-zuidplas"];
+const PRIMARY_NAV = ["/", "/geboortereeks", "/geboortezorg-zuidplas", "/blog"];
 
 export function BottomNav() {
   const [location, navigate] = useLocation();
@@ -146,7 +146,7 @@ export function BottomNav() {
                       isActive ? "text-foreground" : "text-muted-foreground")} />
                   <span className={cn("text-[9px] font-medium transition-colors duration-300 leading-none",
                     isActive ? "text-foreground" : "text-muted-foreground")}>
-                    {item.label}
+                    {item.kort ?? item.label}
                   </span>
                 </div>
                 {isActive && (
