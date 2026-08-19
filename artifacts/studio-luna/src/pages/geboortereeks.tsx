@@ -3,7 +3,7 @@ import { BottomNav } from "@/components/bottom-nav";
 import { SeoFooter } from "@/components/seo-footer";
 import { InterestModal } from "@/components/interest-modal";
 import { motion } from "framer-motion";
-import { ArrowRight, Calendar, MapPin, Users, Gift, Heart, Mail, MessageCircle, Sparkles } from "lucide-react";
+import { ArrowRight, Calendar, MapPin, Users, Gift, Heart, MessageCircle, Sparkles } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { usePageMeta } from "@/lib/seo";
 
@@ -46,8 +46,12 @@ const FAQ_ITEMS = [
     antwoord: "De Geboortereeks kost €195 voor negen lessen. De eerste groep, die op 29 september start, betaalt eenmalig de introductieprijs van €175.",
   },
   {
+    vraag: "Hoe meld ik me aan?",
+    antwoord: "Je reserveert je plekje door het intakeformulier in te vullen. Daarna ontvang je persoonlijk bericht met de bevestiging en de factuur. Je plek is definitief zodra de factuur is voldaan.",
+  },
+  {
     vraag: "Wordt de reeks vergoed door mijn zorgverzekering?",
-    antwoord: "Veel zorgverzekeraars vergoeden een zwangerschapscursus geheel of gedeeltelijk vanuit de aanvullende verzekering. Check je polis of vraag het na bij je verzekeraar. Je ontvangt een factuur die je makkelijk kunt indienen.",
+    antwoord: "Veel zorgverzekeraars vergoeden een zwangerschapscursus geheel of gedeeltelijk vanuit de aanvullende verzekering. Je ontvangt een factuur die je zelf bij je verzekeraar kunt indienen. Of en hoeveel er vergoed wordt verschilt per polis, dus check dat vooraf; Studio Luna kan daar geen garanties over geven.",
   },
   {
     vraag: "Is mijn partner er ook bij?",
@@ -63,8 +67,10 @@ const FAQ_ITEMS = [
   },
 ];
 
-const WHATSAPP_URL = "https://wa.me/31643735343?text=" + encodeURIComponent("Hoi! Ik wil me graag aanmelden voor de Geboortereeks die op 29 september start.");
-const MAIL_URL = "mailto:info@studiolunazuidplas.nl?subject=" + encodeURIComponent("Aanmelding Geboortereeks 29 september");
+// Reserveren loopt via het intakeformulier: invullen, en je ontvangt daarna
+// persoonlijk bericht met de bevestiging en de factuur. Geen online betaling.
+const INTAKE_URL = "https://tally.so/r/XxED7j";
+const WHATSAPP_URL = "https://wa.me/31643735343?text=" + encodeURIComponent("Hoi! Ik heb een vraag over de Geboortereeks die op 29 september start.");
 
 export default function Geboortereeks() {
   const [isInterestOpen, setIsInterestOpen] = useState(false);
@@ -184,8 +190,9 @@ export default function Geboortereeks() {
                 </p>
                 <p className="text-xs text-foreground/50 leading-[1.8] mt-3">
                   Veel zorgverzekeraars vergoeden een zwangerschapscursus geheel of gedeeltelijk
-                  vanuit de aanvullende verzekering. Check je polis of vraag het na bij je
-                  verzekeraar.
+                  vanuit de aanvullende verzekering. Je dient de factuur zelf in bij je
+                  verzekeraar; check vooraf je polis, want garanties kan Studio Luna daar niet
+                  op geven.
                 </p>
               </div>
             </motion.div>
@@ -200,24 +207,27 @@ export default function Geboortereeks() {
             className="rounded-3xl bg-primary px-8 md:px-14 py-11 md:py-14"
           >
             <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/55 mb-2">Er is plek voor 8 zwangeren</p>
-            <p className="font-display text-2xl md:text-3xl font-medium text-white leading-snug mb-7">
+            <p className="font-display text-2xl md:text-3xl font-medium text-white leading-snug mb-4">
               Wil je erbij zijn op 29 september?
+            </p>
+            <p className="text-sm text-white/70 leading-[1.85] mb-7 max-w-xl">
+              Je reserveert je plekje door het intakeformulier in te vullen. Daarna krijg je
+              persoonlijk bericht met de bevestiging en de factuur.
             </p>
             <div className="flex flex-col md:flex-row gap-3">
               <a
-                href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer"
+                href={INTAKE_URL} target="_blank" rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2 bg-white text-primary px-7 py-3.5 rounded-2xl font-semibold text-sm hover:bg-white/92 shadow-md group"
               >
-                <MessageCircle className="w-4 h-4" />
-                Meld je aan via WhatsApp
+                Reserveer je plekje
                 <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
               </a>
               <a
-                href={MAIL_URL}
+                href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2 bg-white/12 backdrop-blur-sm border border-white/25 text-white px-7 py-3.5 rounded-2xl font-semibold text-sm hover:bg-white/22"
               >
-                <Mail className="w-4 h-4" />
-                Of mail je aanmelding
+                <MessageCircle className="w-4 h-4" />
+                Eerst een vraag stellen
               </a>
             </div>
             <button
@@ -355,10 +365,10 @@ export default function Geboortereeks() {
               </p>
             </div>
             <a
-              href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer"
+              href={INTAKE_URL} target="_blank" rel="noopener noreferrer"
               className="inline-flex items-center gap-2 bg-white text-primary px-8 py-3.5 rounded-2xl font-semibold text-sm hover:bg-white/92 shadow-md group transition-colors shrink-0"
             >
-              Meld je aan
+              Reserveer je plekje
               <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
             </a>
           </motion.div>

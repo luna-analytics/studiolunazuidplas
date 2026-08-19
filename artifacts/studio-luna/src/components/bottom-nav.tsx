@@ -8,6 +8,11 @@ import { PrivacyverklaringModal } from "./privacyverklaring-modal";
 import { LoginModal } from "./login-modal";
 import { useAuth } from "@/hooks/use-auth";
 
+// Zolang het boekingssysteem uit staat, tonen we bezoekers geen Inloggen-knop;
+// wie al ingelogd is (de beheerder) ziet de eigen naam en kan uitloggen.
+// Admin blijft bereikbaar via lang indrukken van het logo of /admin.
+const TOON_LOGIN = false;
+
 // Rooster, Tarieven en Boekingen staan tijdelijk uit het menu; de pagina's
 // bestaan nog en kunnen hier zo weer worden toegevoegd.
 const ALL_NAV = [
@@ -108,12 +113,12 @@ export function BottomNav() {
                   )}
                 </AnimatePresence>
               </div>
-            ) : (
+            ) : TOON_LOGIN ? (
               <button onClick={() => setLoginOpen(true)}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border/50 hover:bg-secondary transition-colors text-sm font-medium text-foreground/60 hover:text-foreground">
                 <LogIn className="w-3.5 h-3.5" /> Inloggen
               </button>
-            )}
+            ) : null}
           </div>
         </div>
       </div>
@@ -258,13 +263,13 @@ export function BottomNav() {
                       Uitloggen
                     </button>
                   </div>
-                ) : (
+                ) : TOON_LOGIN ? (
                   <button onClick={() => { setMenuOpen(false); setLoginOpen(true); }}
                     className="flex items-center gap-3 px-4 py-3 rounded-2xl w-full text-foreground/60 hover:text-foreground hover:bg-secondary transition-colors text-sm">
                     <LogIn className="w-4 h-4 text-foreground/40" />
                     Inloggen
                   </button>
-                )}
+                ) : null}
               </div>
             </motion.div>
           </>
@@ -300,13 +305,13 @@ export function BottomNav() {
               )}
             </AnimatePresence>
           </div>
-        ) : (
+        ) : TOON_LOGIN ? (
           <button onClick={() => setLoginOpen(true)}
             className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-background/80 backdrop-blur-md border border-border/30 shadow-sm">
             <LogIn className="w-3 h-3 text-foreground/50" />
             <span className="text-xs font-medium text-foreground/60">Inloggen</span>
           </button>
-        )}
+        ) : null}
       </div>
 
       <AlgemeneVoorwaardenModal isOpen={avOpen} onClose={() => setAvOpen(false)} />
