@@ -564,21 +564,6 @@ export const ZORGKAART: ZorgCategorie[] = [
     ],
   },
   {
-    id: "consultatiebureau",
-    titel: "Consultatiebureau en publieke zorg",
-    intro: "Na de geboorte volgt het consultatiebureau de groei en ontwikkeling van je kindje; je kunt er ook terecht met vragen over opvoeden.",
-    zoektermen: "consultatiebureau cjg jeugdgezondheidszorg ggd mamacafe opvoeden vaccinatie",
-    aanbieders: [
-      {
-        naam: "Centrum voor Jeugd en Gezin Zuidplas",
-        plaats: "Nieuwerkerk aan den IJssel, Zevenhuizen en Moordrecht",
-        website: "https://www.cjgzuidplas.nl/",
-        beschrijving: "Het Centrum voor Jeugd en Gezin verzorgt de jeugdgezondheidszorg in gemeente Zuidplas met consultatiebureaulocaties in Nieuwerkerk aan den IJssel (Raadhuisplein 35), Zevenhuizen en Moordrecht, en organiseert daarnaast babybijeenkomsten en cursussen zoals babymassage.",
-        tags: ["op-locatie", "groepslessen"],
-      },
-    ],
-  },
-  {
     id: "steun-bij-verlies",
     titel: "Steun bij verlies",
     intro: "Voor wie een miskraam meemaakt of een kindje verliest is er in de regio begeleiding en steun.",

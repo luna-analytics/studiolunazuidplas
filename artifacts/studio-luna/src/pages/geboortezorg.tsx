@@ -198,10 +198,9 @@ export default function Geboortezorg() {
                 <p>
                   <span className="font-semibold text-foreground/80">Is je baby er?</span>{" "}
                   Vind hulp bij{" "}
-                  <button onClick={() => openEnScroll("lactatiekundigen")} className="text-primary font-semibold hover:text-primary/75">borstvoeding</button>,
-                  het{" "}
-                  <button onClick={() => openEnScroll("consultatiebureau")} className="text-primary font-semibold hover:text-primary/75">consultatiebureau</button>,{" "}
-                  <button onClick={() => openEnScroll("babymassage-dragen")} className="text-primary font-semibold hover:text-primary/75">babymassage en dragen</button>{" "}
+                  <button onClick={() => openEnScroll("lactatiekundigen")} className="text-primary font-semibold hover:text-primary/75">borstvoeding</button>{" "}
+                  en{" "}
+                  <button onClick={() => openEnScroll("babymassage-dragen")} className="text-primary font-semibold hover:text-primary/75">babymassage en dragen</button>,
                   en bouw{" "}
                   <button onClick={() => openEnScroll("sporten")} className="text-primary font-semibold hover:text-primary/75">samen met andere moeders</button>{" "}
                   weer op.
