@@ -17,15 +17,15 @@ const fadeUp = {
 };
 
 const KALENDER = [
-  { les: 1, datum: "di 29 september", thema: "Adem als anker", detail: "Kennismaking en de basis van alle ademtechnieken" },
-  { les: 2, datum: "di 6 oktober", thema: "Gronden en kracht", detail: "Kracht opbouwen en oefenen met het opvangen van een wee" },
-  { les: 3, datum: "di 13 oktober", thema: "Rust, houding en slaap", detail: "Met een gastblok van een fysiotherapeut" },
-  { les: 4, datum: "di 20 oktober", thema: "Mamaspa", detail: "Een avond vol ontspanning, warmte en zelfmassage" },
-  { les: 5, datum: "di 27 oktober", thema: "Bekken en bekkenbodem", detail: "Met een gastblok van een bekkenfysiotherapeut" },
-  { les: 6, datum: "di 3 november", thema: "De Bevallingsles", detail: "75 minuten pure geboortevoorbereiding" },
-  { les: 7, datum: "di 10 november", thema: "Partnerles", detail: "Je geboortepartner leert hoe die je echt kan helpen" },
-  { les: 8, datum: "di 17 november", thema: "Vertrouwen en loslaten", detail: "Alles komt samen, met een lange yoga nidra" },
-  { les: 9, datum: "voorjaar 2027", thema: "Terugkomles met de baby's", detail: "Zodra alle kindjes geboren zijn, inbegrepen in de prijs" },
+  { datum: "dinsdag 29 september" },
+  { datum: "dinsdag 6 oktober" },
+  { datum: "dinsdag 13 oktober" },
+  { datum: "dinsdag 20 oktober" },
+  { datum: "dinsdag 27 oktober" },
+  { datum: "dinsdag 3 november" },
+  { datum: "dinsdag 10 november", noot: "partnerles" },
+  { datum: "dinsdag 17 november" },
+  { datum: "voorjaar 2027", noot: "postpartumles, datum volgt" },
 ];
 
 const PRAKTISCH = [
@@ -280,20 +280,17 @@ export default function Geboortereeks() {
               </h2>
             </motion.div>
 
-            <div>
+            <div className="max-w-md">
               {KALENDER.map((les, i) => (
-                <motion.div
-                  key={les.les}
+                <motion.p
+                  key={les.datum}
                   variants={fadeUp} initial="hidden" whileInView="show"
-                  viewport={{ once: true, margin: "-40px" }} custom={Math.min(i * 0.04, 0.2)}
-                  className="md:grid md:grid-cols-[150px_1fr] flex flex-col gap-0.5 md:gap-6 py-4 border-b border-border/15 md:items-baseline"
+                  viewport={{ once: true, margin: "-40px" }} custom={Math.min(i * 0.03, 0.15)}
+                  className="text-[15px] text-foreground/80 leading-[1.9] py-3 border-b border-border/15"
                 >
-                  <p className="text-sm font-semibold text-foreground/65">{les.datum}</p>
-                  <div>
-                    <p className="text-[15px] font-semibold text-foreground">{les.thema}</p>
-                    <p className="text-sm text-foreground/60 mt-0.5">{les.detail}</p>
-                  </div>
-                </motion.div>
+                  {les.datum}
+                  {les.noot && <span className="text-foreground/55"> ({les.noot})</span>}
+                </motion.p>
               ))}
             </div>
             <p className="text-xs text-foreground/55 leading-[1.8] mt-5">
