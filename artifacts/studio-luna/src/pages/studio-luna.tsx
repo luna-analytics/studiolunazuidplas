@@ -171,9 +171,10 @@ export default function StudioLuna() {
               De Geboortereeks start <em className="not-italic text-primary">29 september</em>
             </h2>
             <p className="text-[15px] text-foreground/80 leading-[1.95] max-w-2xl mb-8">
-              Negen lessen zwangerschapsyoga en geboortevoorbereiding in een vaste groep van
-              maximaal acht zwangeren, met onder meer een bekkenfysiotherapeut, een partnerles
-              en een mama-en-babyles.
+              Acht weken zwangerschapsyoga en geboortevoorbereiding in een vaste groep,
+              inclusief een partnerles. Een aantal weken na de laatste bevalling is er de
+              ruimte om samen te komen voor het uitwisselen van verhalen en mama-en-babyyoga;
+              deze postpartumles is inbegrepen in de reeks.
             </p>
             <button
               onClick={() => navigate("/geboortereeks")}
