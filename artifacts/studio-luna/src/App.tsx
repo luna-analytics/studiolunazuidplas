@@ -13,6 +13,7 @@ import { lazy, Suspense, useEffect } from "react";
 // apart, zodat bezoekers ze niet meedownloaden.
 import Geboortereeks from "./pages/geboortereeks";
 import Geboortezorg from "./pages/geboortezorg";
+import GeboortezorgCategorie from "./pages/geboortezorg-categorie";
 import StudioLuna from "./pages/studio-luna";
 import Inspiratie from "./pages/inspiratie";
 import BlogArtikel from "./pages/blog-artikel";
@@ -67,6 +68,7 @@ function Router() {
         <Route path="/aanbod" component={() => { const [,nav] = useLocation(); useEffect(() => { nav("/geboortereeks", { replace: true }); }, [nav]); return null; }} />
         <Route path="/geboortereeks" component={Geboortereeks} />
         <Route path="/geboortezorg-zuidplas" component={Geboortezorg} />
+        <Route path="/geboortezorg-zuidplas/:categorie" component={GeboortezorgCategorie} />
         <Route path="/geboortezorg" component={() => { const [,nav] = useLocation(); useEffect(() => { nav("/geboortezorg-zuidplas", { replace: true }); }, [nav]); return null; }} />
         <Route path="/rooster" component={() => { const [,nav] = useLocation(); useEffect(() => { nav("/geboortereeks", { replace: true }); }, [nav]); return null; }} />
         <Route path="/tarieven" component={() => { const [,nav] = useLocation(); useEffect(() => { nav("/geboortereeks", { replace: true }); }, [nav]); return null; }} />

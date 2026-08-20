@@ -34,7 +34,7 @@ const PRAKTISCH = [
   { label: "Voor wie", waarde: "bij de start ben je tussen de 15 en 28 weken zwanger" },
   { label: "Locatie", waarde: "Huize Mooisteen, Pr. Beatrixstraat 2, Nieuwerkerk aan den IJssel" },
   { label: "Inclusief", waarde: "goodiebag, reader, twee gastexperts en de mama-en-babyles" },
-  { label: "Prijs", waarde: "€195; de eerste groep betaalt eenmalig de introductieprijs van €175" },
+  { label: "Prijs", waarde: "€195 voor de hele reeks" },
 ];
 
 const INBEGREPEN = [
@@ -53,7 +53,7 @@ const FAQ_ITEMS = [
   },
   {
     vraag: "Wat kost de reeks?",
-    antwoord: "De Geboortereeks van negen lessen (8 lessen tijdens de zwangerschap en 1 postpartum) kost €195. De eerste groep, die op 29 september start, betaalt eenmalig de introductieprijs van €175.",
+    antwoord: "De Geboortereeks van negen lessen (8 lessen tijdens de zwangerschap en 1 postpartum) kost €195.",
   },
   {
     vraag: "Hoe meld ik me aan?",
@@ -117,7 +117,7 @@ export default function Geboortereeks() {
 
   usePageMeta({
     title: "De Geboortereeks: zwangerschapscursus in Nieuwerkerk aan den IJssel, start 29 september | Studio Luna",
-    description: "Negen lessen zwangerschapsyoga en geboortevoorbereiding in Nieuwerkerk aan den IJssel (Zuidplas). Start dinsdag 29 september, maximaal 8 zwangeren, met bekkenfysiotherapeut, partnerles en mama-en-babyles. Introductieprijs €175.",
+    description: "Negen lessen zwangerschapsyoga en geboortevoorbereiding in Nieuwerkerk aan den IJssel (Zuidplas). Start dinsdag 29 september, maximaal 8 zwangeren, met bekkenfysiotherapeut, partnerles en postpartumles. De reeks kost €195.",
     jsonLd: [
       {
         "@context": "https://schema.org",
@@ -132,7 +132,6 @@ export default function Geboortereeks() {
           location: { "@type": "Place", name: "Nieuwerkerk aan den IJssel", address: { "@type": "PostalAddress", addressLocality: "Nieuwerkerk aan den IJssel", addressRegion: "Zuidplas", addressCountry: "NL" } },
         },
         offers: [
-          { "@type": "Offer", name: "Introductieprijs eerste groep", price: "175.00", priceCurrency: "EUR" },
           { "@type": "Offer", name: "Geboortereeks", price: "195.00", priceCurrency: "EUR" },
         ],
       },

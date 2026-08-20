@@ -18,7 +18,7 @@ const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 const DEFAULT_TEKSTEN = {
   cta_url: "/geboortereeks",
   cta_label: "Bekijk de Geboortereeks",
-  home_hero: "It takes a village.\nStudio Luna is jouw mama tribe.",
+  home_hero: "Zwangerschapsyoga en\ngeboortevoorbereiding in Zuidplas.",
   home_missie_heading: "Een plek om\nte landen.",
   home_missie_tekst: "Het moederschap hoef je niet alleen te doen. De missie van Studio Luna is het faciliteren van een community voor alle vrouwen in Nieuwerkerk aan den IJssel en omgeving, van zwangerschap tot ver daarna. Een veilige haven om fysiek op te laden, mentaal tot rust te komen en bovenal in verbinding te staan met andere moeders in dezelfde fase.",
   home_missie_bullets: "Een plek om te landen.\nEen plek om fysiek sterk, gezond en in balans te blijven.\nEen plek om vertrouwen te vinden in je veranderende lichaam.\nEen plek om te connecten met andere moeders.\nStudio Luna is jouw mama tribe.",
@@ -46,7 +46,7 @@ const FAQ_ITEMS = [
   },
   {
     vraag: "Wat kost het?",
-    antwoord: "De Geboortereeks van negen lessen (8 lessen tijdens de zwangerschap en 1 postpartum) kost €195. De eerste groep, die op 29 september start, betaalt eenmalig de introductieprijs van €175.",
+    antwoord: "De Geboortereeks van negen lessen (8 lessen tijdens de zwangerschap en 1 postpartum) kost €195.",
   },
   {
     vraag: "Waar zijn de lessen?",
@@ -123,7 +123,7 @@ export default function StudioLuna() {
                 transition={{ duration: 0.7, delay: 0.2 }}
                 className="text-[11px] font-medium uppercase tracking-[0.2em] text-white/55 mb-4"
               >
-                Nieuwerkerk aan den IJssel · Zuidplas
+                Zwangerschapsyoga · Nieuwerkerk aan den IJssel · Zuidplas
               </motion.p>
               <motion.h1
                 initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
@@ -387,6 +387,17 @@ export default function StudioLuna() {
                 </motion.div>
               ))}
             </div>
+            <p className="text-sm text-foreground/65 leading-[1.9] mt-8">
+              Zelf een ervaring met Studio Luna?{" "}
+              <a
+                href="https://maps.google.com/?cid=994021316573595651"
+                target="_blank" rel="noopener noreferrer"
+                className="text-primary font-semibold hover:text-primary/75"
+              >
+                Laat een review achter op Google
+              </a>
+              , daar maak je mij en andere mama's heel blij mee.
+            </p>
           </section>
         )}
 

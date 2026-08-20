@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
+import { Link, useLocation } from "wouter";
 import { BottomNav } from "@/components/bottom-nav";
 import { SeoFooter } from "@/components/seo-footer";
 import { motion } from "framer-motion";
-import { ChevronDown, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { ZORGKAART, TAG_LABELS, LAATST_BIJGEWERKT, type ZorgTag, type Zorgverlener } from "@/data/zorgkaart";
 import { usePageMeta } from "@/lib/seo";
 
@@ -45,8 +46,8 @@ const PLAATSEN = [
 ];
 
 export default function Geboortezorg() {
+  const [, navigate] = useLocation();
   const [zoek, setZoek] = useState("");
-  const [open, setOpen] = useState<string[]>([]);
   const [actieveTags, setActieveTags] = useState<ZorgTag[]>([]);
   const [plaats, setPlaats] = useState<string | null>(null);
   const [feedbackOpen, setFeedbackOpen] = useState(false);
@@ -77,12 +78,6 @@ export default function Geboortezorg() {
       setFbStatus("fout");
     }
   };
-
-  // Een categorie in de URL (bijv. #verloskundigen) klapt die meteen open
-  useEffect(() => {
-    const hash = window.location.hash.slice(1);
-    if (hash && ZORGKAART.some((c) => c.id === hash)) setOpen([hash]);
-  }, []);
 
   const aantalAanbieders = useMemo(() => ZORGKAART.reduce((n, c) => n + c.aanbieders.length, 0), []);
 
@@ -117,18 +112,8 @@ export default function Geboortezorg() {
   const toggleTag = (tag: ZorgTag) =>
     setActieveTags((prev) => (prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]));
 
-  const toggleOpen = (id: string) => {
-    const gaatOpen = !open.includes(id);
-    setOpen((prev) => (prev.includes(id) ? prev.filter((c) => c !== id) : [...prev, id]));
-    // Houd de link deelbaar: een open categorie staat in het adres
-    window.history.replaceState(null, "", gaatOpen ? `#${id}` : window.location.pathname);
-  };
-
-  // Vanuit de startpunten: klap de categorie open en scroll ernaartoe
-  const openEnScroll = (id: string) => {
-    setOpen((prev) => (prev.includes(id) ? prev : [...prev, id]));
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
+  // Vanuit de startpunten en de tegels: elke categorie heeft een eigen pagina
+  const naarCategorie = (id: string) => navigate(`/geboortezorg-zuidplas/${id}`);
 
   const zoekNorm = normalize(zoek.trim());
   const filterActief = zoekNorm.length > 0 || actieveTags.length > 0 || plaats !== null;
@@ -249,36 +234,36 @@ export default function Geboortezorg() {
                 <p>
                   <span className="font-semibold text-foreground/80">Net zwanger?</span>{" "}
                   Kies een{" "}
-                  <button onClick={() => openEnScroll("verloskundigen")} className="text-primary font-semibold hover:text-primary/75">verloskundige</button>,
+                  <button onClick={() => naarCategorie("verloskundigen")} className="text-primary font-semibold hover:text-primary/75">verloskundige</button>,
                   plan je{" "}
-                  <button onClick={() => openEnScroll("echos")} className="text-primary font-semibold hover:text-primary/75">echo's</button>{" "}
+                  <button onClick={() => naarCategorie("echos")} className="text-primary font-semibold hover:text-primary/75">echo's</button>{" "}
                   en regel op tijd{" "}
-                  <button onClick={() => openEnScroll("kraamzorg")} className="text-primary font-semibold hover:text-primary/75">kraamzorg</button>.
+                  <button onClick={() => naarCategorie("kraamzorg")} className="text-primary font-semibold hover:text-primary/75">kraamzorg</button>.
                 </p>
                 <p>
                   <span className="font-semibold text-foreground/80">Halverwege?</span>{" "}
                   Bereid je voor met{" "}
-                  <button onClick={() => openEnScroll("yoga-cursussen")} className="text-primary font-semibold hover:text-primary/75">zwangerschapsyoga of een cursus</button>,
+                  <button onClick={() => naarCategorie("yoga-cursussen")} className="text-primary font-semibold hover:text-primary/75">zwangerschapsyoga of een cursus</button>,
                   blijf{" "}
-                  <button onClick={() => openEnScroll("sporten")} className="text-primary font-semibold hover:text-primary/75">in beweging</button>{" "}
+                  <button onClick={() => naarCategorie("sporten")} className="text-primary font-semibold hover:text-primary/75">in beweging</button>{" "}
                   en zoek bij bekkenklachten een{" "}
-                  <button onClick={() => openEnScroll("bekkenfysiotherapie")} className="text-primary font-semibold hover:text-primary/75">bekkenfysiotherapeut</button>.
+                  <button onClick={() => naarCategorie("bekkenfysiotherapie")} className="text-primary font-semibold hover:text-primary/75">bekkenfysiotherapeut</button>.
                 </p>
                 <p>
                   <span className="font-semibold text-foreground/80">Bijna bevallen?</span>{" "}
                   Overweeg een{" "}
-                  <button onClick={() => openEnScroll("doulas")} className="text-primary font-semibold hover:text-primary/75">doula</button>{" "}
+                  <button onClick={() => naarCategorie("doulas")} className="text-primary font-semibold hover:text-primary/75">doula</button>{" "}
                   voor extra begeleiding, of leg het vast met{" "}
-                  <button onClick={() => openEnScroll("geboortefotografie")} className="text-primary font-semibold hover:text-primary/75">geboortefotografie</button>.
+                  <button onClick={() => naarCategorie("geboortefotografie")} className="text-primary font-semibold hover:text-primary/75">geboortefotografie</button>.
                 </p>
                 <p>
                   <span className="font-semibold text-foreground/80">Is je baby er?</span>{" "}
                   Vind hulp bij{" "}
-                  <button onClick={() => openEnScroll("lactatiekundigen")} className="text-primary font-semibold hover:text-primary/75">borstvoeding</button>{" "}
+                  <button onClick={() => naarCategorie("lactatiekundigen")} className="text-primary font-semibold hover:text-primary/75">borstvoeding</button>{" "}
                   en{" "}
-                  <button onClick={() => openEnScroll("babymassage-dragen")} className="text-primary font-semibold hover:text-primary/75">babymassage en dragen</button>,
+                  <button onClick={() => naarCategorie("babymassage-dragen")} className="text-primary font-semibold hover:text-primary/75">babymassage en dragen</button>,
                   en bouw{" "}
-                  <button onClick={() => openEnScroll("sporten")} className="text-primary font-semibold hover:text-primary/75">samen met andere moeders</button>{" "}
+                  <button onClick={() => naarCategorie("sporten")} className="text-primary font-semibold hover:text-primary/75">samen met andere moeders</button>{" "}
                   weer op.
                 </p>
               </div>
@@ -300,67 +285,77 @@ export default function Geboortezorg() {
           </div>
         </motion.div>
 
-        {/* ── DE KAART: kopjes, klik om de lijst te openen ── */}
+        {/* ── DE KAART: tegels naar de categoriepagina's; bij zoeken of
+               filteren verschijnen de resultaten direct als lijst ── */}
         <div className="px-7 md:px-14 lg:px-18 pt-6 pb-8">
-          <div className="max-w-3xl">
-            {gefilterd.map((cat) => {
-              const isOpen = filterActief || open.includes(cat.id);
-              return (
-                <section key={cat.id} id={cat.id} className="scroll-mt-24 border-b border-border/20">
-                  <button
-                    onClick={() => toggleOpen(cat.id)}
-                    className="w-full flex items-baseline justify-between gap-4 py-6 text-left group"
-                    aria-expanded={isOpen}
+          {!filterActief && (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 max-w-5xl">
+              {ZORGKAART.map((cat, i) => (
+                <motion.div
+                  key={cat.id}
+                  variants={fadeUp} initial="hidden" whileInView="show"
+                  viewport={{ once: true, margin: "-30px" }} custom={Math.min(i * 0.04, 0.2)}
+                >
+                  <Link
+                    href={`/geboortezorg-zuidplas/${cat.id}`}
+                    className="group flex flex-col justify-between rounded-2xl bg-secondary/45 hover:bg-secondary/75 transition-colors px-5 py-6 min-h-[7.5rem] h-full"
                   >
-                    <span className="flex items-baseline gap-3 flex-wrap">
-                      <h2 className="font-display text-2xl md:text-[1.7rem] font-medium text-foreground leading-[1.2] group-hover:text-primary transition-colors">
-                        {cat.titel}
-                      </h2>
-                      <span className="text-sm text-foreground/55">{cat.aanbieders.length}</span>
+                    <span className="font-display text-lg md:text-xl font-medium text-foreground leading-snug group-hover:text-primary transition-colors">
+                      {cat.titel}
                     </span>
-                    <ChevronDown
-                      className={`w-4 h-4 shrink-0 text-foreground/35 transition-transform duration-300 self-center ${isOpen ? "rotate-180" : ""}`}
-                    />
-                  </button>
+                    <span className="text-xs text-foreground/55 mt-3">
+                      {cat.aanbieders.length} {cat.aanbieders.length === 1 ? "aanbieder" : "aanbieders"}
+                    </span>
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+          )}
 
-                  {isOpen && (
-                    <div className="pb-6">
-                      <p className="text-sm text-foreground/65 leading-[1.85] max-w-2xl">{cat.intro}</p>
-                      {cat.aanbieders.map((a, i) => (
-                        <div key={a.naam} className={`py-6 ${i < cat.aanbieders.length - 1 ? "border-b border-border/10" : ""}`}>
-                          <div className="flex flex-wrap items-baseline gap-x-3">
-                            <a
-                              href={a.website} target="_blank" rel="noopener noreferrer"
-                              className="text-[16px] font-semibold text-foreground hover:text-primary transition-colors"
-                            >
-                              {a.naam}
-                            </a>
-                            <span className="text-sm text-foreground/55">{a.plaats}</span>
-                          </div>
-                          <p className="text-[15px] text-foreground/80 leading-[1.9] mt-1.5">{a.beschrijving}</p>
-                          {a.voordeel && (
-                            <p className="text-sm text-primary/90 leading-[1.85] mt-2">
-                              Voordeel: {a.voordeel}
-                            </p>
-                          )}
-                          <p className="text-xs text-foreground/60 mt-2">
-                            {TOON_KENMERKEN && a.tags.length > 0 && (
-                              <>{a.tags.map((tag) => TAG_LABELS[tag].label).join(" · ")}{" · "}</>
-                            )}
-                            <a
-                              href={a.website} target="_blank" rel="noopener noreferrer"
-                              className="text-primary/80 hover:text-primary font-medium"
-                            >
-                              bekijk de website
-                            </a>
-                          </p>
-                        </div>
-                      ))}
+          <div className="max-w-3xl">
+            {filterActief && gefilterd.map((cat) => (
+              <section key={cat.id} className="pt-8">
+                <div className="flex items-baseline gap-3 flex-wrap border-b border-border/20 pb-3">
+                  <h2 className="font-display text-2xl font-medium text-foreground leading-[1.2]">{cat.titel}</h2>
+                  <Link
+                    href={`/geboortezorg-zuidplas/${cat.id}`}
+                    className="text-xs font-semibold text-primary/80 hover:text-primary"
+                  >
+                    bekijk alles in deze categorie
+                  </Link>
+                </div>
+                {cat.aanbieders.map((a, i) => (
+                  <div key={a.naam} className={`py-6 ${i < cat.aanbieders.length - 1 ? "border-b border-border/10" : ""}`}>
+                    <div className="flex flex-wrap items-baseline gap-x-3">
+                      <a
+                        href={a.website} target="_blank" rel="noopener noreferrer"
+                        className="text-[16px] font-semibold text-foreground hover:text-primary transition-colors"
+                      >
+                        {a.naam}
+                      </a>
+                      <span className="text-sm text-foreground/55">{a.plaats}</span>
                     </div>
-                  )}
-                </section>
-              );
-            })}
+                    <p className="text-[15px] text-foreground/80 leading-[1.9] mt-1.5">{a.beschrijving}</p>
+                    {a.voordeel && (
+                      <p className="text-sm text-primary/90 leading-[1.85] mt-2">
+                        Voordeel: {a.voordeel}
+                      </p>
+                    )}
+                    <p className="text-xs text-foreground/60 mt-2">
+                      {TOON_KENMERKEN && a.tags.length > 0 && (
+                        <>{a.tags.map((tag) => TAG_LABELS[tag].label).join(" · ")}{" · "}</>
+                      )}
+                      <a
+                        href={a.website} target="_blank" rel="noopener noreferrer"
+                        className="text-primary/80 hover:text-primary font-medium"
+                      >
+                        bekijk de website
+                      </a>
+                    </p>
+                  </div>
+                ))}
+              </section>
+            ))}
 
             {gefilterd.length === 0 && filterActief && (
               <div className="py-20">

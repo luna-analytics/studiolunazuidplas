@@ -16,6 +16,61 @@
     <priority>0.9</priority>
   </url>
   <url>
+    <loc>https://www.studiolunazuidplas.nl/geboortezorg-zuidplas/verloskundigen</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.studiolunazuidplas.nl/geboortezorg-zuidplas/echos</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.studiolunazuidplas.nl/geboortezorg-zuidplas/kraamzorg</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.studiolunazuidplas.nl/geboortezorg-zuidplas/yoga-cursussen</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.studiolunazuidplas.nl/geboortezorg-zuidplas/bekkenfysiotherapie</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.studiolunazuidplas.nl/geboortezorg-zuidplas/doulas</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.studiolunazuidplas.nl/geboortezorg-zuidplas/lactatiekundigen</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.studiolunazuidplas.nl/geboortezorg-zuidplas/sporten</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.studiolunazuidplas.nl/geboortezorg-zuidplas/babymassage-dragen</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.studiolunazuidplas.nl/geboortezorg-zuidplas/geboortefotografie</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.studiolunazuidplas.nl/geboortezorg-zuidplas/steun-bij-verlies</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.studiolunazuidplas.nl/over-mij</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>

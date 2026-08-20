@@ -19,7 +19,7 @@ const ROUTES = [
   {
     pad: "geboortereeks",
     title: "De Geboortereeks: zwangerschapscursus in Nieuwerkerk aan den IJssel, start 29 september | Studio Luna",
-    beschrijving: "Negen lessen zwangerschapsyoga en geboortevoorbereiding in Nieuwerkerk aan den IJssel (Zuidplas). Start dinsdag 29 september, maximaal 8 zwangeren, met bekkenfysiotherapeut, partnerles en postpartumles. Introductieprijs €175.",
+    beschrijving: "Negen lessen zwangerschapsyoga en geboortevoorbereiding in Nieuwerkerk aan den IJssel (Zuidplas). Start dinsdag 29 september, maximaal 8 zwangeren, met bekkenfysiotherapeut, partnerles en postpartumles. De reeks kost €195.",
   },
   {
     pad: "geboortezorg-zuidplas",
@@ -39,6 +39,21 @@ const ROUTES = [
 ];
 
 const ontsmet = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
+
+// Categoriepagina's van de zorgkaart: ids en titels uit de databron lezen,
+// zodat nieuwe categorieën automatisch een eigen schil krijgen.
+const zorgkaartBron = readFileSync(
+  join(dirname(fileURLToPath(import.meta.url)), "..", "src", "data", "zorgkaart.ts"),
+  "utf8"
+);
+for (const m of zorgkaartBron.matchAll(/id: "([a-z0-9-]+)",\s*\n\s*titel: "([^"]+)"/g)) {
+  const [, id, titel] = m;
+  ROUTES.push({
+    pad: `geboortezorg-zuidplas/${id}`,
+    title: `${titel} in Zuidplas | Geboortezorgkaart Studio Luna`,
+    beschrijving: `${titel} in de regio Zuidplas, met werkgebied en website per aanbieder. Onderdeel van de Geboortezorgkaart Zuidplas van Studio Luna in Nieuwerkerk aan den IJssel.`,
+  });
+}
 
 const basisHtml = readFileSync(join(root, "index.html"), "utf8");
 
