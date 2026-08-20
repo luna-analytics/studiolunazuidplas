@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Link, useLocation, useParams } from "wouter";
 import { BottomNav } from "@/components/bottom-nav";
 import { SeoFooter } from "@/components/seo-footer";
@@ -15,24 +15,9 @@ const fadeUp = {
   }),
 };
 
-const normalize = (s: string) =>
-  s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
-
-const PLAATSEN = [
-  "Nieuwerkerk aan den IJssel",
-  "Zevenhuizen",
-  "Moordrecht",
-  "Moerkapelle",
-  "Capelle aan den IJssel",
-  "Gouda",
-  "Waddinxveen",
-  "Rotterdam",
-];
-
 export default function GeboortezorgCategorie() {
   const params = useParams<{ categorie: string }>();
   const [, navigate] = useLocation();
-  const [plaats, setPlaats] = useState<string | null>(null);
 
   const cat = ZORGKAART.find((c) => c.id === params.categorie);
 
@@ -66,9 +51,7 @@ export default function GeboortezorgCategorie() {
 
   if (!cat) return null;
 
-  const aanbieders = cat.aanbieders.filter(
-    (a) => plaats === null || normalize(`${a.plaats} ${a.beschrijving}`).includes(normalize(plaats))
-  );
+  const aanbieders = cat.aanbieders;
 
   return (
     <div className="min-h-screen bg-background pb-28 md:pb-16 md:pt-16 flex justify-center">
@@ -94,30 +77,6 @@ export default function GeboortezorgCategorie() {
             Bekijk alle geboortezorg in Zuidplas
             <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
           </Link>
-        </motion.div>
-
-        {/* Plaatsfilter */}
-        <motion.div
-          variants={fadeUp} initial="hidden" animate="show" custom={0.1}
-          className="px-7 md:px-14 lg:px-18 pb-2"
-        >
-          <div className="max-w-3xl">
-            <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary/60 mb-3">Plaats</p>
-            <div className="flex flex-wrap gap-x-5 gap-y-2">
-              {PLAATSEN.map((p) => (
-                <button
-                  key={p}
-                  onClick={() => setPlaats(plaats === p ? null : p)}
-                  aria-pressed={plaats === p}
-                  className={plaats === p
-                    ? "text-sm font-semibold text-primary underline underline-offset-4 decoration-primary/40 py-1.5 -my-1.5"
-                    : "text-sm text-foreground/65 hover:text-foreground transition-colors py-1.5 -my-1.5"}
-                >
-                  {p}
-                </button>
-              ))}
-            </div>
-          </div>
         </motion.div>
 
         {/* De lijst */}
@@ -148,13 +107,6 @@ export default function GeboortezorgCategorie() {
                 </p>
               </div>
             ))}
-
-            {aanbieders.length === 0 && (
-              <p className="py-10 text-[15px] text-foreground/75 leading-[1.9]">
-                Voor deze plaats staat hier nog niemand. Haal het plaatsfilter weg om alle
-                aanbieders in de regio te zien, of geef een tip door via de zorgkaart.
-              </p>
-            )}
 
             <p className="text-sm text-foreground/60 leading-[1.85] mt-8">
               Klopt er iets niet of mis je iemand? Geef het door via{" "}

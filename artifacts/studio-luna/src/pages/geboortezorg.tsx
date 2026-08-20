@@ -31,25 +31,10 @@ const ALLE_TAGS = Object.keys(TAG_LABELS) as ZorgTag[];
 // uit; de data blijft in zorgkaart.ts staan. Zet op true om ze weer te tonen.
 const TOON_KENMERKEN = false;
 
-// Plaatsfilter: de vier kernen van de gemeente eerst, daarna de directe omgeving.
-// Er wordt gezocht in de plaats en de beschrijving, zodat ook aanbieders met een
-// werkgebied over meerdere kernen gevonden worden.
-const PLAATSEN = [
-  "Nieuwerkerk aan den IJssel",
-  "Zevenhuizen",
-  "Moordrecht",
-  "Moerkapelle",
-  "Capelle aan den IJssel",
-  "Gouda",
-  "Waddinxveen",
-  "Rotterdam",
-];
-
 export default function Geboortezorg() {
   const [, navigate] = useLocation();
   const [zoek, setZoek] = useState("");
   const [actieveTags, setActieveTags] = useState<ZorgTag[]>([]);
-  const [plaats, setPlaats] = useState<string | null>(null);
   const [feedbackOpen, setFeedbackOpen] = useState(false);
   const [fbBericht, setFbBericht] = useState("");
   const [fbEmail, setFbEmail] = useState("");
@@ -116,16 +101,15 @@ export default function Geboortezorg() {
   const naarCategorie = (id: string) => navigate(`/geboortezorg-zuidplas/${id}`);
 
   const zoekNorm = normalize(zoek.trim());
-  const filterActief = zoekNorm.length > 0 || actieveTags.length > 0 || plaats !== null;
+  const filterActief = zoekNorm.length > 0 || actieveTags.length > 0;
 
   const gefilterd = ZORGKAART
     .map((cat) => ({
       ...cat,
       aanbieders: cat.aanbieders.filter((a) => {
         const tagsOk = actieveTags.every((t) => a.tags.includes(t));
-        const plaatsOk = plaats === null || normalize(`${a.plaats} ${a.beschrijving}`).includes(normalize(plaats));
         const zoekOk = zoekNorm.length === 0 || matcht(a, `${cat.titel} ${cat.zoektermen}`, zoekNorm);
-        return tagsOk && plaatsOk && zoekOk;
+        return tagsOk && zoekOk;
       }),
     }))
     .filter((cat) => cat.aanbieders.length > 0);
@@ -179,25 +163,6 @@ export default function Geboortezorg() {
                 style={{ paddingLeft: "3rem" }}
                 aria-label="Zoek in de zorgkaart"
               />
-            </div>
-
-            {/* Filter: plaats */}
-            <div className="mt-7">
-              <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary/60 mb-3">Plaats</p>
-              <div className="flex flex-wrap gap-x-5 gap-y-2">
-                {PLAATSEN.map((p) => (
-                  <button
-                    key={p}
-                    onClick={() => setPlaats(plaats === p ? null : p)}
-                    aria-pressed={plaats === p}
-                    className={plaats === p
-                      ? "text-sm font-semibold text-primary underline underline-offset-4 decoration-primary/40 py-1.5 -my-1.5"
-                      : "text-sm text-foreground/65 hover:text-foreground transition-colors py-1.5 -my-1.5"}
-                  >
-                    {p}
-                  </button>
-                ))}
-              </div>
             </div>
 
             {/* Filter: kenmerken */}
@@ -275,7 +240,7 @@ export default function Geboortezorg() {
                   ? "Niets gevonden. Probeer een ander woord of haal een filter weg."
                   : `${aantalGevonden} van ${aantalAanbieders} aanbieders`}
                 <button
-                  onClick={() => { setZoek(""); setActieveTags([]); setPlaats(null); }}
+                  onClick={() => { setZoek(""); setActieveTags([]); }}
                   className="ml-3 text-primary font-semibold hover:text-primary/75"
                 >
                   Wis filters
