@@ -26,6 +26,10 @@ function matcht(aanbieder: Zorgverlener, categorieTekst: string, zoek: string): 
 
 const ALLE_TAGS = Object.keys(TAG_LABELS) as ZorgTag[];
 
+// De kenmerken (filters, labels per aanbieder en de uitlegsectie) staan voor nu
+// uit; de data blijft in zorgkaart.ts staan. Zet op true om ze weer te tonen.
+const TOON_KENMERKEN = false;
+
 export default function Geboortezorg() {
   const [zoek, setZoek] = useState("");
   const [open, setOpen] = useState<string[]>([]);
@@ -143,6 +147,7 @@ export default function Geboortezorg() {
             </div>
 
             {/* Filter: kenmerken */}
+            {TOON_KENMERKEN && (
             <div className="mt-7">
               <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary/60 mb-3">Kenmerken</p>
               <div className="flex flex-wrap gap-x-5 gap-y-2">
@@ -166,6 +171,7 @@ export default function Geboortezorg() {
                 </a>
               </p>
             </div>
+            )}
 
             {/* Startpunten per moment */}
             <div className="mt-9">
@@ -269,8 +275,9 @@ export default function Geboortezorg() {
                             </p>
                           )}
                           <p className="text-xs text-foreground/60 mt-2">
-                            {a.tags.map((tag) => TAG_LABELS[tag].label).join(" · ")}
-                            {a.tags.length > 0 && " · "}
+                            {TOON_KENMERKEN && a.tags.length > 0 && (
+                              <>{a.tags.map((tag) => TAG_LABELS[tag].label).join(" · ")}{" · "}</>
+                            )}
                             <a
                               href={a.website} target="_blank" rel="noopener noreferrer"
                               className="text-primary/80 hover:text-primary font-medium"
@@ -292,10 +299,16 @@ export default function Geboortezorg() {
                 <p className="text-sm text-foreground/60">Probeer een ander zoekwoord of haal een filter weg.</p>
               </div>
             )}
+
+            <p className="text-sm text-foreground/60 leading-[1.85] mt-10">
+              Deze kaart wordt met zorg bijgehouden, maar aanbod verandert. Klopt er iets niet
+              of mis je iemand? Laat het weten via het adres hieronder.
+            </p>
           </div>
         </div>
 
         {/* ── WAT DE KENMERKEN BETEKENEN ── */}
+        {TOON_KENMERKEN && (
         <section id="kenmerken-uitleg" className="px-7 md:px-14 lg:px-18 py-12 md:py-16 scroll-mt-24">
           <div className="max-w-3xl">
             <motion.div
@@ -318,13 +331,12 @@ export default function Geboortezorg() {
                 ))}
               </div>
               <p className="text-sm text-foreground/60 leading-[1.85] mt-8">
-                De kenmerken zijn gebaseerd op wat aanbieders zelf op hun website vermelden. Deze
-                kaart wordt met zorg bijgehouden, maar aanbod verandert. Klopt er iets niet of
-                mis je iemand? Laat het weten via het adres hieronder.
+                De kenmerken zijn gebaseerd op wat aanbieders zelf op hun website vermelden.
               </p>
             </motion.div>
           </div>
         </section>
+        )}
 
         {/* ── VOOR ZORGVERLENERS ── */}
         <section id="voor-zorgverleners" className="px-7 md:px-14 lg:px-18 py-12 md:py-16 scroll-mt-24">
