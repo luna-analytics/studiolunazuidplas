@@ -46,7 +46,7 @@ const FAQ_ITEMS = [
   },
   {
     vraag: "Wat kost het?",
-    antwoord: "De Geboortereeks van negen lessen kost €195. De eerste groep, die op 29 september start, betaalt eenmalig de introductieprijs van €175.",
+    antwoord: "De Geboortereeks van negen lessen (8 lessen tijdens de zwangerschap en 1 postpartum) kost €195. De eerste groep, die op 29 september start, betaalt eenmalig de introductieprijs van €175.",
   },
   {
     vraag: "Waar zijn de lessen?",
