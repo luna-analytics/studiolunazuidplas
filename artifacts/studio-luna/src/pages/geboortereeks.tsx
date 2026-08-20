@@ -43,7 +43,7 @@ const INBEGREPEN = [
   "Twee gastexperts: een fysiotherapeut over rust, houding en slaap en een bekkenfysiotherapeut over je bekken en bekkenbodem",
   "Een complete bevallingsles en een partnerles waarin je geboortepartner tools krijgt om jou te ondersteunen",
   "Een mamaspa-avond met zelfmassage en restorative yoga die helemaal om ontspanning en herstel draait",
-  "Een goodiebag met de reader Voor in de kraamtas, en na elke les thee en tijd voor verbinding",
+  "Elke week een oefening in de WhatsApp-groep, een goodiebag en tijd voor verbinding met andere mama's",
 ];
 
 const FAQ_ITEMS = [
