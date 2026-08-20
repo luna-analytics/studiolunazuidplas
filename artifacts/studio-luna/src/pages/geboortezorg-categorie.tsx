@@ -113,10 +113,10 @@ export default function GeboortezorgCategorie() {
               <Link href="/geboortezorg-zuidplas" className="text-primary font-semibold hover:text-primary/75">
                 de zorgkaart
               </Link>
-              . Ben je zelf zorgverlener in de regio? Vermelding is gratis; mail naar{" "}
-              <a href="mailto:zorgverleners@studiolunazuidplas.nl" className="text-primary font-semibold hover:text-primary/75">
-                zorgverleners@studiolunazuidplas.nl
-              </a>
+              . Ben je zelf zorgverlener in de regio? Vermelding is gratis;{" "}
+              <Link href="/geboortezorg-zuidplas#voor-zorgverleners" className="text-primary font-semibold hover:text-primary/75">
+                meld je aan via het formulier op de zorgkaart
+              </Link>
               .
             </p>
           </div>

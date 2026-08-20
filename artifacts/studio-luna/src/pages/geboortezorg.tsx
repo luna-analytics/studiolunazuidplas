@@ -39,6 +39,35 @@ export default function Geboortezorg() {
   const [fbEmail, setFbEmail] = useState("");
   const [fbStatus, setFbStatus] = useState<"idle" | "bezig" | "klaar" | "fout">("idle");
   const [fbFout, setFbFout] = useState("");
+  const [zvPraktijk, setZvPraktijk] = useState("");
+  const [zvWebsite, setZvWebsite] = useState("");
+  const [zvBericht, setZvBericht] = useState("");
+  const [zvEmail, setZvEmail] = useState("");
+  const [zvStatus, setZvStatus] = useState<"idle" | "bezig" | "klaar" | "fout">("idle");
+  const [zvFout, setZvFout] = useState("");
+
+  const meldZorgverlenerAan = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setZvStatus("bezig");
+    setZvFout("");
+    try {
+      const res = await fetch(`${import.meta.env.BASE_URL}api/zorgverlener-aanmelding`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ praktijk: zvPraktijk, website: zvWebsite, bericht: zvBericht, email: zvEmail }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setZvFout(data.error ?? "Er ging iets mis, probeer het nog eens");
+        setZvStatus("fout");
+      } else {
+        setZvStatus("klaar");
+      }
+    } catch {
+      setZvFout("Kan geen verbinding maken, probeer het nog eens");
+      setZvStatus("fout");
+    }
+  };
 
   const stuurFeedback = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -387,20 +416,70 @@ export default function Geboortezorg() {
             </h2>
             <p className="text-[15px] text-foreground/80 leading-[1.9] mb-4">
               Ben jij zorgverlener in de regio Zuidplas en wil je op de lijst? Vermelding is
-              gratis. Stuur een mail met je naam, website en wat je doet, dan komt je vermelding
-              erbij.
+              gratis. Laat hieronder je gegevens achter, dan komt je vermelding erbij.
             </p>
             <p className="text-[15px] text-foreground/80 leading-[1.9] mb-7">
               Wil je de lezeressen van deze kaart daarnaast iets extra's geven, bijvoorbeeld een
-              kortingscode of een gratis kennismaking? Mail dan mee wat de actie inhoudt en hoe
-              lang die geldig is, dan komt die als voordeel bij je vermelding te staan.
+              kortingscode of een gratis kennismaking? Schrijf dan in je bericht wat de actie
+              inhoudt en hoe lang die geldig is, dan komt die als voordeel bij je vermelding te
+              staan.
             </p>
-            <a
-              href="mailto:zorgverleners@studiolunazuidplas.nl?subject=Vermelding%20op%20de%20zorgkaart%20Zuidplas"
-              className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-7 py-3.5 rounded-2xl font-semibold text-sm hover:bg-primary/88 shadow-soft"
-            >
-              Mail naar zorgverleners@studiolunazuidplas.nl
-            </a>
+
+            {zvStatus === "klaar" ? (
+              <p className="text-[15px] text-foreground/80 leading-[1.9] rounded-2xl bg-primary/8 border border-primary/15 px-5 py-4 max-w-xl">
+                Dankjewel voor je aanmelding! Ik bekijk je gegevens en je hoort van mij zodra
+                je vermelding op de kaart staat.
+              </p>
+            ) : (
+              <form onSubmit={meldZorgverlenerAan} className="space-y-3 max-w-xl">
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <input
+                    type="text"
+                    value={zvPraktijk}
+                    onChange={(e) => setZvPraktijk(e.target.value)}
+                    placeholder="Naam van je praktijk"
+                    required
+                    maxLength={160}
+                    className="flex-1 px-4 py-3 rounded-2xl border border-border/40 bg-card text-[15px] text-foreground placeholder:text-foreground/35 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  />
+                  <input
+                    type="text"
+                    value={zvWebsite}
+                    onChange={(e) => setZvWebsite(e.target.value)}
+                    placeholder="Je website (mag leeg)"
+                    maxLength={300}
+                    className="flex-1 px-4 py-3 rounded-2xl border border-border/40 bg-card text-[15px] text-foreground placeholder:text-foreground/35 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  />
+                </div>
+                <textarea
+                  value={zvBericht}
+                  onChange={(e) => setZvBericht(e.target.value)}
+                  placeholder="Wat doe je, en in welke plaatsen werk je?"
+                  required
+                  rows={3}
+                  maxLength={2000}
+                  className="w-full px-4 py-3 rounded-2xl border border-border/40 bg-card text-[15px] text-foreground placeholder:text-foreground/35 focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none leading-relaxed"
+                />
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <input
+                    type="email"
+                    value={zvEmail}
+                    onChange={(e) => setZvEmail(e.target.value)}
+                    placeholder="jouw@email.nl"
+                    required
+                    className="flex-1 px-4 py-3 rounded-2xl border border-border/40 bg-card text-sm text-foreground placeholder:text-foreground/35 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  />
+                  <button
+                    type="submit"
+                    disabled={zvStatus === "bezig"}
+                    className="bg-primary text-primary-foreground px-7 py-3 rounded-2xl font-semibold text-sm hover:bg-primary/88 disabled:opacity-60 shrink-0"
+                  >
+                    {zvStatus === "bezig" ? "Versturen…" : "Meld je gratis aan"}
+                  </button>
+                </div>
+                {zvStatus === "fout" && <p className="text-xs text-red-600">{zvFout}</p>}
+              </form>
+            )}
           </motion.div>
         </section>
 

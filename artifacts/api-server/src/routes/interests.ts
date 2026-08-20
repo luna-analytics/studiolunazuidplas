@@ -15,6 +15,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 type Interest = { email: string; timestamp: string };
 type Feedback = { bericht: string; email: string; timestamp: string };
 type Aanmelding = { naam: string; email: string; timestamp: string };
+type ZorgverlenerAanmelding = { praktijk: string; website: string; bericht: string; email: string; timestamp: string };
 
 async function readList<T>(key: string): Promise<T[]> {
   const result = await db.select().from(studioSettings).where(eq(studioSettings.key, key)).limit(1);
@@ -98,6 +99,41 @@ router.post("/geboortereeks-aanmelding", async (req, res) => {
     details: "Aanmelding Geboortereeks (start 29 september). Stuur het intakeformulier en de factuur per mail.",
   }).catch(() => {});
   return res.json({ message: "Aangemeld" });
+});
+
+router.get("/admin/zorgverlener-aanmeldingen", requireAdmin, async (_req: any, res: any) => {
+  res.json(await readList<ZorgverlenerAanmelding>("zorgverlener_aanmeldingen"));
+});
+
+router.post("/zorgverlener-aanmelding", async (req, res) => {
+  const { praktijk, website, bericht, email } = req.body as {
+    praktijk?: string; website?: string; bericht?: string; email?: string;
+  };
+  if (!praktijk || !praktijk.trim() || praktijk.length > 160) {
+    return res.status(400).json({ error: "Vul de naam van je praktijk in" });
+  }
+  if (!bericht || !bericht.trim() || bericht.length > 2000) {
+    return res.status(400).json({ error: "Vertel kort wat je doet (maximaal 2000 tekens)" });
+  }
+  if (!email || !EMAIL_RE.test(email)) {
+    return res.status(400).json({ error: "Ongeldig e-mailadres" });
+  }
+  const list = await readList<ZorgverlenerAanmelding>("zorgverlener_aanmeldingen");
+  list.push({
+    praktijk: praktijk.trim(),
+    website: (website ?? "").trim().slice(0, 300),
+    bericht: bericht.trim(),
+    email,
+    timestamp: new Date().toISOString(),
+  });
+  await saveList("zorgverlener_aanmeldingen", list);
+  sendAdminNotification({
+    type: "aanvraag",
+    name: `Zorgkaart-vermelding: ${praktijk.trim()}`,
+    email,
+    details: `Website: ${(website ?? "").trim() || "niet opgegeven"}\n\n${bericht.trim()}`,
+  }).catch(() => {});
+  return res.json({ message: "Ontvangen" });
 });
 
 export default router;
