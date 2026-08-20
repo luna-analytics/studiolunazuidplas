@@ -4,25 +4,22 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/hooks/use-auth";
 import NotFound from "@/pages/not-found";
-import { useEffect } from "react";
+import { lazy, Suspense, useEffect } from "react";
 
 // Page imports
-// Aanbod, Rooster en Tarieven staan tijdelijk uit; de bestanden blijven bewaard
-// in src/pages en de oude routes verwijzen door, zodat ze later zo weer aan te
-// zetten zijn.
-import Bookings from "./pages/bookings";
+// Aanbod, Rooster, Tarieven en het boekingssysteem staan tijdelijk uit; de
+// bestanden blijven bewaard in src/pages en de oude routes verwijzen door,
+// zodat ze later zo weer aan te zetten zijn. Admin en wachtwoord-reset laden
+// apart, zodat bezoekers ze niet meedownloaden.
 import Geboortereeks from "./pages/geboortereeks";
 import Geboortezorg from "./pages/geboortezorg";
-import Profile from "./pages/profile";
 import StudioLuna from "./pages/studio-luna";
-import Admin from "./pages/admin";
 import Inspiratie from "./pages/inspiratie";
 import BlogArtikel from "./pages/blog-artikel";
 import OverMij from "./pages/over-mij";
-import { BetalingSucces } from "./pages/betaling-succes";
-import { PakketSucces } from "./pages/pakket-succes";
-import { LidSucces } from "./pages/lid-succes";
-import { WachtwoordReset } from "./pages/wachtwoord-reset";
+
+const Admin = lazy(() => import("./pages/admin"));
+const WachtwoordReset = lazy(() => import("./pages/wachtwoord-reset").then((m) => ({ default: m.WachtwoordReset })));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -64,6 +61,7 @@ function Router() {
     <>
       <ScrollToTop />
       <CanonicalUpdater />
+      <Suspense fallback={null}>
       <Switch>
         <Route path="/" component={StudioLuna} />
         <Route path="/aanbod" component={() => { const [,nav] = useLocation(); useEffect(() => { nav("/geboortereeks", { replace: true }); }, [nav]); return null; }} />
@@ -72,19 +70,17 @@ function Router() {
         <Route path="/geboortezorg" component={() => { const [,nav] = useLocation(); useEffect(() => { nav("/geboortezorg-zuidplas", { replace: true }); }, [nav]); return null; }} />
         <Route path="/rooster" component={() => { const [,nav] = useLocation(); useEffect(() => { nav("/geboortereeks", { replace: true }); }, [nav]); return null; }} />
         <Route path="/tarieven" component={() => { const [,nav] = useLocation(); useEffect(() => { nav("/geboortereeks", { replace: true }); }, [nav]); return null; }} />
-        <Route path="/bookings" component={Bookings} />
+        <Route path="/bookings" component={() => { const [,nav] = useLocation(); useEffect(() => { nav("/geboortereeks", { replace: true }); }, [nav]); return null; }} />
+        <Route path="/profile" component={() => { const [,nav] = useLocation(); useEffect(() => { nav("/geboortereeks", { replace: true }); }, [nav]); return null; }} />
+        <Route path="/betaling/:rest*" component={() => { const [,nav] = useLocation(); useEffect(() => { nav("/geboortereeks", { replace: true }); }, [nav]); return null; }} />
         <Route path="/admin" component={Admin} />
         <Route path="/blog/:id" component={BlogArtikel} />
         <Route path="/blog" component={Inspiratie} />
         <Route path="/over-mij" component={OverMij} />
-        <Route path="/profile" component={Profile} />
-        <Route path="/betaling/succes" component={BetalingSucces} />
-        <Route path="/betaling/pakket-succes" component={PakketSucces} />
-        <Route path="/betaling/lid-succes" component={LidSucces} />
-        <Route path="/betaling/geannuleerd" component={() => { const [,nav] = useLocation(); nav("/geboortereeks"); return null; }} />
         <Route path="/wachtwoord-reset" component={WachtwoordReset} />
         <Route component={NotFound} />
       </Switch>
+      </Suspense>
     </>
   );
 }

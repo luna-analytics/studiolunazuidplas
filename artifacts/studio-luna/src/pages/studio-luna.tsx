@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { MapPin, ArrowRight, Mail, Phone, Instagram, Star, Calendar, BookOpen } from "lucide-react";
 import { IMAGES } from "@/lib/images";
 import { useAuth } from "@/hooks/use-auth";
+import { usePageMeta } from "@/lib/seo";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 type Review = { id: string; name: string; role: string; text: string; stars: number };
@@ -71,9 +72,10 @@ export default function StudioLuna() {
   const [teksten, setTeksten] = useState(DEFAULT_TEKSTEN);
   const [reviewsConfig, setReviewsConfig] = useState<ReviewsConfig | null>(null);
 
-  useEffect(() => {
-    document.title = "Studio Luna – Zwangerschapsyoga Nieuwerkerk aan den IJssel | Mama Community Zuidplas";
-  }, []);
+  usePageMeta({
+    title: "Studio Luna | Zwangerschapsyoga Nieuwerkerk aan den IJssel | Mama Community Zuidplas",
+    description: "Studio Luna biedt de Geboortereeks, negen lessen zwangerschapsyoga en geboortevoorbereiding in Nieuwerkerk aan den IJssel (Zuidplas), en de zorgkaart met alle geboortezorg in de regio.",
+  });
 
   useEffect(() => {
     fetch(`${BASE}/api/pagina-teksten`)
@@ -168,7 +170,7 @@ export default function StudioLuna() {
             <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground leading-[1.15] mb-6">
               De Geboortereeks start <em className="not-italic text-primary">29 september</em>
             </h2>
-            <p className="text-[15px] text-foreground/60 leading-[1.95] max-w-2xl mb-8">
+            <p className="text-[15px] text-foreground/80 leading-[1.95] max-w-2xl mb-8">
               Negen lessen zwangerschapsyoga en geboortevoorbereiding in een vaste groep van
               maximaal acht zwangeren, met onder meer een bekkenfysiotherapeut, een partnerles
               en een mama-en-babyles.
@@ -216,7 +218,7 @@ export default function StudioLuna() {
                 </h2>
                 <ul className="space-y-5">
                   {teksten.home_missie_bullets.split("\n").filter(Boolean).map((item, i) => (
-                    <li key={i} className="flex items-start gap-4 text-[15px] text-foreground/65 leading-[1.9]">
+                    <li key={i} className="flex items-start gap-4 text-[15px] text-foreground/80 leading-[1.9]">
                       <span className="mt-[11px] w-1 h-1 rounded-full bg-primary/70 shrink-0" />
                       {item}
                     </li>
@@ -230,10 +232,10 @@ export default function StudioLuna() {
                 viewport={{ once: true, margin: "-80px" }} custom={0.2}
                 className="md:pt-20"
               >
-                <p className="text-[15px] text-foreground/55 leading-[1.95]">
+                <p className="text-[15px] text-foreground/75 leading-[1.95]">
                   {teksten.home_missie_tekst}
                 </p>
-                <p className="mt-8 text-sm font-semibold text-foreground/60 tracking-widest uppercase">
+                <p className="mt-8 text-sm font-semibold text-foreground/80 tracking-widest uppercase">
                   {teksten.home_village_tagline}
                 </p>
               </motion.div>
@@ -270,7 +272,7 @@ export default function StudioLuna() {
                 className="flex items-start gap-5 pb-8 border-b border-border/15 last:border-0"
               >
                 <span className="font-display text-2xl text-primary/25 font-medium leading-none mt-0.5 shrink-0">{item.n}</span>
-                <p className="text-[15px] text-foreground/60 leading-[1.9]">{item.tekst}</p>
+                <p className="text-[15px] text-foreground/80 leading-[1.9]">{item.tekst}</p>
               </motion.div>
             ))}
           </div>
@@ -327,7 +329,7 @@ export default function StudioLuna() {
               <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground mb-5 leading-[1.15]">
                 Hoi, ik ben Marjolein.
               </h2>
-              <p className="text-[15px] text-foreground/60 leading-[1.9] md:max-w-xl">
+              <p className="text-[15px] text-foreground/80 leading-[1.9] md:max-w-xl">
                 Moeder, gepromoveerd onderzoeker en yogadocente. Bij Studio Luna combineer ik gevoel en wetenschap:
                 je bereidt je sterk en met vertrouwen voor op je bevalling, en je leert andere moeders uit Zuidplas kennen.
               </p>
@@ -379,7 +381,7 @@ export default function StudioLuna() {
                   <p className="text-[15px] text-foreground/70 leading-[1.85] flex-1">"{review.text}"</p>
                   <div>
                     <p className="text-sm font-semibold text-foreground">{review.name}</p>
-                    {review.role && <p className="text-xs text-foreground/45 mt-0.5">{review.role}</p>}
+                    {review.role && <p className="text-xs text-foreground/60 mt-0.5">{review.role}</p>}
                   </div>
                 </motion.div>
               ))}
@@ -413,7 +415,7 @@ export default function StudioLuna() {
                   <AccordionTrigger className="text-left text-[15px] font-semibold text-foreground/80 hover:no-underline">
                     {item.vraag}
                   </AccordionTrigger>
-                  <AccordionContent className="text-[15px] text-foreground/60 leading-[1.85]">
+                  <AccordionContent className="text-[15px] text-foreground/80 leading-[1.85]">
                     {item.antwoord}
                   </AccordionContent>
                 </AccordionItem>
@@ -444,7 +446,7 @@ export default function StudioLuna() {
               <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground leading-[1.15] mb-6">
                 Alles over geboortezorg<br className="hidden md:block" /> in de regio Zuidplas
               </h2>
-              <p className="text-[15px] text-foreground/60 leading-[1.95]">
+              <p className="text-[15px] text-foreground/80 leading-[1.95]">
                 Van verloskundige en kraamzorg tot bekkenfysiotherapie, lactatiekundigen en sporten
                 met je baby: op onze zorgkaart vind je alle zorg en ondersteuning uit Nieuwerkerk
                 aan den IJssel, Zevenhuizen, Moordrecht, Moerkapelle en omgeving op één plek.
@@ -478,7 +480,7 @@ export default function StudioLuna() {
               </p>
               <h2 className="font-display text-2xl font-medium text-foreground mb-5">{teksten.home_locatie_naam}</h2>
               {teksten.home_locatie_adres.split("\n").map((regel, i) => (
-                <p key={i} className="text-[15px] text-foreground/55 leading-[1.9] mb-2">{regel}</p>
+                <p key={i} className="text-[15px] text-foreground/75 leading-[1.9] mb-2">{regel}</p>
               ))}
               <a
                 href={`https://maps.google.com/?q=${encodeURIComponent(teksten.home_locatie_adres.replace("\n", ", "))}`}
@@ -502,19 +504,19 @@ export default function StudioLuna() {
               </p>
               <div className="space-y-5">
                 <a href={`mailto:${teksten.home_contact_email}`}
-                  className="flex items-center gap-4 text-[15px] text-foreground/55 hover:text-foreground group">
+                  className="flex items-center gap-4 text-[15px] text-foreground/75 hover:text-foreground group">
                   <Mail className="w-4 h-4 text-primary shrink-0" />
                   {teksten.home_contact_email}
                 </a>
                 <a href={`https://wa.me/${teksten.home_contact_telefoon.replace(/\D/g, "").replace(/^0/, "31")}`}
                   target="_blank" rel="noopener noreferrer"
-                  className="flex items-center gap-4 text-[15px] text-foreground/55 hover:text-foreground group">
+                  className="flex items-center gap-4 text-[15px] text-foreground/75 hover:text-foreground group">
                   <Phone className="w-4 h-4 text-primary shrink-0" />
                   {teksten.home_contact_telefoon}
                 </a>
                 <a href={`https://www.instagram.com/${teksten.home_contact_instagram.replace("@", "")}`}
                   target="_blank" rel="noopener noreferrer"
-                  className="flex items-center gap-4 text-[15px] text-foreground/55 hover:text-foreground group">
+                  className="flex items-center gap-4 text-[15px] text-foreground/75 hover:text-foreground group">
                   <Instagram className="w-4 h-4 text-primary shrink-0" />
                   {teksten.home_contact_instagram}
                 </a>

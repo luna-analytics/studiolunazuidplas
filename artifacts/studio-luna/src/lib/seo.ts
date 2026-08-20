@@ -1,23 +1,48 @@
 import { useEffect } from "react";
 
+const CANONICAL_BASE = "https://www.studiolunazuidplas.nl";
+
+function zetMeta(selector: string, maak: () => HTMLMetaElement, content: string) {
+  let tag = document.querySelector<HTMLMetaElement>(selector);
+  if (!tag) {
+    tag = maak();
+    document.head.appendChild(tag);
+  }
+  tag.setAttribute("content", content);
+}
+
+function zetNamedMeta(name: string, content: string) {
+  zetMeta(`meta[name='${name}']`, () => {
+    const t = document.createElement("meta");
+    t.setAttribute("name", name);
+    return t;
+  }, content);
+}
+
+function zetOgMeta(property: string, content: string) {
+  zetMeta(`meta[property='${property}']`, () => {
+    const t = document.createElement("meta");
+    t.setAttribute("property", property);
+    return t;
+  }, content);
+}
+
 /**
- * Zet per pagina de titel, meta description en (optioneel) JSON-LD structured data.
- * De JSON-LD wordt bij het verlaten van de pagina weer opgeruimd.
+ * Zet per pagina de titel, meta description, de og-tags voor deelvoorvertoningen
+ * en (optioneel) JSON-LD structured data. De JSON-LD wordt bij het verlaten van
+ * de pagina weer opgeruimd; de canonical wordt al per route gezet in App.tsx.
  */
 export function usePageMeta(opts: { title: string; description?: string; jsonLd?: object[] }) {
   const { title, description, jsonLd } = opts;
 
   useEffect(() => {
     document.title = title;
-
+    zetOgMeta("og:title", title);
+    const pad = window.location.pathname.replace(/\/$/, "");
+    zetOgMeta("og:url", `${CANONICAL_BASE}${pad || "/"}`);
     if (description) {
-      let tag = document.querySelector<HTMLMetaElement>("meta[name='description']");
-      if (!tag) {
-        tag = document.createElement("meta");
-        tag.setAttribute("name", "description");
-        document.head.appendChild(tag);
-      }
-      tag.setAttribute("content", description);
+      zetNamedMeta("description", description);
+      zetOgMeta("og:description", description);
     }
   }, [title, description]);
 

@@ -16,13 +16,13 @@ const img = (path: string) => `${BASE}/images/${path}`;
 
 export const IMAGES = {
   /** Grote achtergrondafbeelding op de Studio Luna-pagina (liggend, min. 1400×900px) */
-  hero: img("hero-yoga.png"),
+  hero: img("hero-yoga.webp"),
 
   /** Foto bij de Zwangerschapsyoga sectie op de Aanbod-pagina (portret of liggend) */
-  yoga: img("hero-yoga.png"),
+  yoga: img("hero-yoga.webp"),
 
   /** Foto bij de Mama Circle sectie (bijv. groepsfoto of sfeerbeeld) */
-  circle: img("hero-yoga.png"),
+  circle: img("hero-yoga.webp"),
 
   /** Logo bovenin de Aanbod-header */
   logo: img("studio-luna-logo.png"),

@@ -5,6 +5,7 @@ import { SeoFooter } from "@/components/seo-footer";
 import { CtaBlock } from "@/components/cta-block";
 import { motion } from "framer-motion";
 import { useAuth } from "@/hooks/use-auth";
+import { usePageMeta } from "@/lib/seo";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -28,7 +29,7 @@ const CATEGORY_COLORS: Record<string, string> = {
 };
 
 function categoryColor(cat: string) {
-  return CATEGORY_COLORS[cat] ?? "bg-secondary text-foreground/60";
+  return CATEGORY_COLORS[cat] ?? "bg-secondary text-foreground/80";
 }
 
 function formatDate(iso: string) {
@@ -46,6 +47,11 @@ export default function Inspiratie() {
   const { user, loading } = useAuth();
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [postsLoaded, setPostsLoaded] = useState(false);
+
+  usePageMeta({
+    title: "Blog over zwangerschap en moederschap in Zuidplas | Studio Luna",
+    description: "Artikelen van Studio Luna over zwangerschap, geboortevoorbereiding en moederschap, voor zwangeren en moeders in Nieuwerkerk aan den IJssel en de rest van Zuidplas.",
+  });
 
   useEffect(() => {
     const endpoint = user?.isAdmin
@@ -80,7 +86,7 @@ export default function Inspiratie() {
         <div className="w-full max-w-7xl flex flex-col items-center justify-center px-8 text-center" style={{ minHeight: "70vh" }}>
           <span className="text-5xl mb-6">🌙</span>
           <h1 className="font-display text-3xl font-medium text-foreground mb-3">Binnenkort</h1>
-          <p className="text-foreground/55 text-sm leading-relaxed max-w-xs">
+          <p className="text-foreground/75 text-sm leading-relaxed max-w-xs">
             Ik neem je mee in mijn zoektocht over alles rondom zwangerschap, postpartum en het moederschap, waar ik gevoel en wetenschap allebei een plek geef.
           </p>
         </div>
@@ -98,9 +104,9 @@ export default function Inspiratie() {
         {/* HEADER */}
         <div className="px-6 md:px-12 lg:px-16 pt-14 md:pt-12 pb-10 bg-secondary md:rounded-3xl md:mx-6 md:mt-6">
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-            <p className="text-xs font-bold uppercase tracking-widest text-foreground/40 mb-2">Studio Luna</p>
+            <p className="text-xs font-bold uppercase tracking-widest text-foreground/55 mb-2">Studio Luna</p>
             <h1 className="font-display text-3xl md:text-4xl font-medium text-foreground leading-tight">Blog</h1>
-            <p className="text-foreground/55 mt-2 text-sm leading-relaxed max-w-md">
+            <p className="text-foreground/75 mt-2 text-sm leading-relaxed max-w-md">
               Ik neem je mee in mijn zoektocht over alles rondom zwangerschap, postpartum en het moederschap, waar ik gevoel en wetenschap allebei een plek geef.
             </p>
           </motion.div>
@@ -148,11 +154,11 @@ export default function Inspiratie() {
                       {featured.category}
                     </span>
                     <h2 className="font-display text-2xl md:text-3xl font-medium text-foreground leading-snug mb-1">{featured.title}</h2>
-                    <p className="text-foreground/40 text-xs mb-3">{formatDate(featured.publishedAt)}</p>
+                    <p className="text-foreground/55 text-xs mb-3">{formatDate(featured.publishedAt)}</p>
                   </div>
                 )}
               </div>
-              <p className="text-sm text-foreground/65 leading-relaxed mt-4 px-1">{excerpt(featured.body)}</p>
+              <p className="text-sm text-foreground/80 leading-relaxed mt-4 px-1">{excerpt(featured.body)}</p>
               </Link>
             </motion.div>
           )}
@@ -194,11 +200,11 @@ export default function Inspiratie() {
                     )}
                   </div>
                   <div className="flex-1 flex flex-col">
-                    <p className="text-[10px] text-foreground/40 mb-1">{formatDate(post.publishedAt)}</p>
+                    <p className="text-[10px] text-foreground/55 mb-1">{formatDate(post.publishedAt)}</p>
                     <h3 className="font-display text-sm md:text-base font-medium text-foreground leading-snug line-clamp-3 group-hover:text-primary transition-colors duration-200">
                       {post.title}
                     </h3>
-                    <p className="text-xs text-foreground/55 leading-relaxed mt-1.5 line-clamp-2 hidden md:block">
+                    <p className="text-xs text-foreground/75 leading-relaxed mt-1.5 line-clamp-2 hidden md:block">
                       {excerpt(post.body, 120)}
                     </p>
                   </div>

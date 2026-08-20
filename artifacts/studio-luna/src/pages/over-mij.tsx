@@ -4,6 +4,7 @@ import { SeoFooter } from "@/components/seo-footer";
 import { CtaBlock } from "@/components/cta-block";
 import { motion } from "framer-motion";
 import { Instagram, Mail, ArrowRight } from "lucide-react";
+import { usePageMeta } from "@/lib/seo";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -26,9 +27,10 @@ const fadeUp = {
 export default function OverMij() {
   const [data, setData] = useState(DEFAULTS);
 
-  useEffect(() => {
-    document.title = "Over mij – Zwangerschapsyoga docente Nieuwerkerk aan den IJssel | Studio Luna";
-  }, []);
+  usePageMeta({
+    title: "Over Marjolein, zwangerschapsyoga docente in Nieuwerkerk aan den IJssel | Studio Luna",
+    description: "Maak kennis met Marjolein: moeder, gepromoveerd onderzoeker en yogadocente. Zij geeft de Geboortereeks van Studio Luna in Nieuwerkerk aan den IJssel, gemeente Zuidplas.",
+  });
 
   useEffect(() => {
     fetch(`${BASE}/api/pagina-teksten`)
@@ -62,7 +64,7 @@ export default function OverMij() {
           <h1 className="font-display text-4xl md:text-5xl font-medium text-foreground leading-[1.1]">
             Over mij
           </h1>
-          <p className="text-foreground/45 text-sm mt-3 tracking-wide">{data.over_mij_functie}</p>
+          <p className="text-foreground/60 text-sm mt-3 tracking-wide">{data.over_mij_functie}</p>
         </motion.div>
 
         {/* ── FOTO + QUOTE (asymmetrisch) ── */}
@@ -101,7 +103,7 @@ export default function OverMij() {
                   <span className="text-primary/40 text-5xl leading-none font-serif ml-1">"</span>
                 </blockquote>
 
-                <p className="text-sm font-semibold text-foreground/55 tracking-widest uppercase">
+                <p className="text-sm font-semibold text-foreground/75 tracking-widest uppercase">
                   {data.over_mij_naam}
                 </p>
               </motion.div>
@@ -135,7 +137,7 @@ export default function OverMij() {
                 className="space-y-6"
               >
                 {alineas.map((alinea, i) => (
-                  <p key={i} className="text-[15px] text-foreground/60 leading-[1.95]">
+                  <p key={i} className="text-[15px] text-foreground/80 leading-[1.95]">
                     {alinea}
                   </p>
                 ))}
@@ -164,13 +166,13 @@ export default function OverMij() {
             </div>
             <div className="flex flex-col gap-4">
               <a href="mailto:info@studiolunazuidplas.nl"
-                className="inline-flex items-center gap-2 text-[15px] text-foreground/55 hover:text-foreground group">
+                className="inline-flex items-center gap-2 text-[15px] text-foreground/75 hover:text-foreground group">
                 <Mail className="w-4 h-4 text-primary shrink-0" />
                 info@studiolunazuidplas.nl
                 <ArrowRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:translate-x-1" />
               </a>
               <a href="https://www.instagram.com/studiolunazuidplas" target="_blank" rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-[15px] text-foreground/55 hover:text-foreground group">
+                className="inline-flex items-center gap-2 text-[15px] text-foreground/75 hover:text-foreground group">
                 <Instagram className="w-4 h-4 text-primary shrink-0" />
                 @studiolunazuidplas
                 <ArrowRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:translate-x-1" />

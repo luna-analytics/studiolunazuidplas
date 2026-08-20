@@ -110,7 +110,7 @@ export default function Geboortezorg() {
           <h1 className="font-display text-4xl md:text-5xl font-medium text-foreground leading-[1.1]">
             Alles over <em className="not-italic text-primary">geboortezorg</em><br className="hidden md:block" /> in de regio Zuidplas
           </h1>
-          <p className="text-[15px] text-foreground/55 leading-[1.9] mt-5 max-w-2xl">
+          <p className="text-[15px] text-foreground/75 leading-[1.9] mt-5 max-w-2xl">
             Zwanger of net bevallen in Nieuwerkerk aan den IJssel, Zevenhuizen, Moordrecht of
             Moerkapelle? Op deze pagina vind je alle zorg en ondersteuning uit de regio op één
             plek, van verloskundige en kraamzorg tot bekkenfysiotherapie, cursussen en sporten
@@ -151,15 +151,16 @@ export default function Geboortezorg() {
                     key={tag}
                     onClick={() => toggleTag(tag)}
                     title={TAG_LABELS[tag].uitleg}
+                    aria-pressed={actieveTags.includes(tag)}
                     className={actieveTags.includes(tag)
-                      ? "text-sm font-semibold text-primary underline underline-offset-4 decoration-primary/40"
-                      : "text-sm text-foreground/50 hover:text-foreground transition-colors"}
+                      ? "text-sm font-semibold text-primary underline underline-offset-4 decoration-primary/40 py-1.5 -my-1.5"
+                      : "text-sm text-foreground/65 hover:text-foreground transition-colors py-1.5 -my-1.5"}
                   >
                     {TAG_LABELS[tag].label}
                   </button>
                 ))}
               </div>
-              <p className="text-xs text-foreground/40 mt-3">
+              <p className="text-xs text-foreground/55 mt-3">
                 <a href="#kenmerken-uitleg" className="hover:text-foreground/70 underline underline-offset-2">
                   Wat betekenen deze kenmerken?
                 </a>
@@ -169,7 +170,7 @@ export default function Geboortezorg() {
             {/* Startpunten per moment */}
             <div className="mt-9">
               <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary/60 mb-3">Begin bij jouw moment</p>
-              <div className="space-y-2.5 text-[15px] leading-[1.9] text-foreground/60">
+              <div className="space-y-2.5 text-[15px] leading-[1.9] text-foreground/80">
                 <p>
                   <span className="font-semibold text-foreground/80">Net zwanger?</span>{" "}
                   Kies een{" "}
@@ -209,7 +210,7 @@ export default function Geboortezorg() {
             </div>
 
             {filterActief && (
-              <p className="text-sm text-foreground/45 mt-4">
+              <p className="text-sm text-foreground/60 mt-4">
                 {aantalGevonden === 0
                   ? "Niets gevonden. Probeer een ander woord of haal een filter weg."
                   : `${aantalGevonden} van ${aantalAanbieders} aanbieders`}
@@ -240,7 +241,7 @@ export default function Geboortezorg() {
                       <h2 className="font-display text-2xl md:text-[1.7rem] font-medium text-foreground leading-[1.2] group-hover:text-primary transition-colors">
                         {cat.titel}
                       </h2>
-                      <span className="text-sm text-foreground/40">{cat.aanbieders.length}</span>
+                      <span className="text-sm text-foreground/55">{cat.aanbieders.length}</span>
                     </span>
                     <ChevronDown
                       className={`w-4 h-4 shrink-0 text-foreground/35 transition-transform duration-300 self-center ${isOpen ? "rotate-180" : ""}`}
@@ -249,7 +250,7 @@ export default function Geboortezorg() {
 
                   {isOpen && (
                     <div className="pb-6">
-                      <p className="text-sm text-foreground/50 leading-[1.85] max-w-2xl">{cat.intro}</p>
+                      <p className="text-sm text-foreground/65 leading-[1.85] max-w-2xl">{cat.intro}</p>
                       {cat.aanbieders.map((a, i) => (
                         <div key={a.naam} className={`py-6 ${i < cat.aanbieders.length - 1 ? "border-b border-border/10" : ""}`}>
                           <div className="flex flex-wrap items-baseline gap-x-3">
@@ -259,15 +260,15 @@ export default function Geboortezorg() {
                             >
                               {a.naam}
                             </a>
-                            <span className="text-sm text-foreground/40">{a.plaats}</span>
+                            <span className="text-sm text-foreground/55">{a.plaats}</span>
                           </div>
-                          <p className="text-[15px] text-foreground/60 leading-[1.9] mt-1.5">{a.beschrijving}</p>
+                          <p className="text-[15px] text-foreground/80 leading-[1.9] mt-1.5">{a.beschrijving}</p>
                           {a.voordeel && (
                             <p className="text-sm text-primary/90 leading-[1.85] mt-2">
                               Voordeel: {a.voordeel}
                             </p>
                           )}
-                          <p className="text-xs text-foreground/45 mt-2">
+                          <p className="text-xs text-foreground/60 mt-2">
                             {a.tags.map((tag) => TAG_LABELS[tag].label).join(" · ")}
                             {a.tags.length > 0 && " · "}
                             <a
@@ -287,8 +288,8 @@ export default function Geboortezorg() {
 
             {gefilterd.length === 0 && filterActief && (
               <div className="py-20">
-                <p className="font-display text-2xl text-foreground/60 mb-2">Niets gevonden</p>
-                <p className="text-sm text-foreground/45">Probeer een ander zoekwoord of haal een filter weg.</p>
+                <p className="font-display text-2xl text-foreground/80 mb-2">Niets gevonden</p>
+                <p className="text-sm text-foreground/60">Probeer een ander zoekwoord of haal een filter weg.</p>
               </div>
             )}
           </div>
@@ -310,13 +311,13 @@ export default function Geboortezorg() {
               </h2>
               <div className="space-y-2.5">
                 {ALLE_TAGS.map((tag) => (
-                  <p key={tag} className="text-[15px] leading-[1.9] text-foreground/60">
+                  <p key={tag} className="text-[15px] leading-[1.9] text-foreground/80">
                     <span className="font-semibold text-foreground/80">{TAG_LABELS[tag].label}:</span>{" "}
                     {TAG_LABELS[tag].uitleg}.
                   </p>
                 ))}
               </div>
-              <p className="text-sm text-foreground/45 leading-[1.85] mt-8">
+              <p className="text-sm text-foreground/60 leading-[1.85] mt-8">
                 De kenmerken zijn gebaseerd op wat aanbieders zelf op hun website vermelden. Deze
                 kaart wordt met zorg bijgehouden, maar aanbod verandert. Klopt er iets niet of
                 mis je iemand? Laat het weten via het adres hieronder.
@@ -339,12 +340,12 @@ export default function Geboortezorg() {
             <h2 className="font-display text-2xl md:text-3xl font-medium text-foreground leading-[1.15] mb-5">
               Sta jij nog niet op deze kaart?
             </h2>
-            <p className="text-[15px] text-foreground/60 leading-[1.9] mb-4">
+            <p className="text-[15px] text-foreground/80 leading-[1.9] mb-4">
               Ben jij zorgverlener in de regio Zuidplas en wil je op de lijst? Vermelding is
               gratis. Stuur een mail met je naam, website en wat je doet, dan komt je vermelding
               erbij.
             </p>
-            <p className="text-[15px] text-foreground/60 leading-[1.9] mb-7">
+            <p className="text-[15px] text-foreground/80 leading-[1.9] mb-7">
               Wil je de lezeressen van deze kaart daarnaast iets extra's geven, bijvoorbeeld een
               kortingscode of een gratis kennismaking? Mail dan mee wat de actie inhoudt en hoe
               lang die geldig is, dan komt die als voordeel bij je vermelding te staan.

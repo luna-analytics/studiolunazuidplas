@@ -8,12 +8,12 @@ export function SeoFooter() {
         en de zorgkaart voor de regio, vanuit Nieuwerkerk aan den IJssel.
       </p>
       <p className="text-xs text-foreground/30 mt-2 max-w-lg mx-auto">
-        <Link href="/geboortezorg-zuidplas" className="hover:text-foreground/55 transition-colors underline underline-offset-2">
+        <Link href="/geboortezorg-zuidplas" className="hover:text-foreground/75 transition-colors underline underline-offset-2">
           Alles over geboortezorg in de regio Zuidplas
         </Link>
       </p>
       <p className="text-xs text-foreground/25 mt-1.5">
-        <a href="mailto:info@studiolunazuidplas.nl" className="hover:text-foreground/50 transition-colors">
+        <a href="mailto:info@studiolunazuidplas.nl" className="hover:text-foreground/65 transition-colors">
           info@studiolunazuidplas.nl
         </a>
       </p>
