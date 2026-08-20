@@ -30,10 +30,25 @@ const ALLE_TAGS = Object.keys(TAG_LABELS) as ZorgTag[];
 // uit; de data blijft in zorgkaart.ts staan. Zet op true om ze weer te tonen.
 const TOON_KENMERKEN = false;
 
+// Plaatsfilter: de vier kernen van de gemeente eerst, daarna de directe omgeving.
+// Er wordt gezocht in de plaats en de beschrijving, zodat ook aanbieders met een
+// werkgebied over meerdere kernen gevonden worden.
+const PLAATSEN = [
+  "Nieuwerkerk aan den IJssel",
+  "Zevenhuizen",
+  "Moordrecht",
+  "Moerkapelle",
+  "Capelle aan den IJssel",
+  "Gouda",
+  "Waddinxveen",
+  "Rotterdam",
+];
+
 export default function Geboortezorg() {
   const [zoek, setZoek] = useState("");
   const [open, setOpen] = useState<string[]>([]);
   const [actieveTags, setActieveTags] = useState<ZorgTag[]>([]);
+  const [plaats, setPlaats] = useState<string | null>(null);
   const [feedbackOpen, setFeedbackOpen] = useState(false);
   const [fbBericht, setFbBericht] = useState("");
   const [fbEmail, setFbEmail] = useState("");
@@ -116,15 +131,16 @@ export default function Geboortezorg() {
   };
 
   const zoekNorm = normalize(zoek.trim());
-  const filterActief = zoekNorm.length > 0 || actieveTags.length > 0;
+  const filterActief = zoekNorm.length > 0 || actieveTags.length > 0 || plaats !== null;
 
   const gefilterd = ZORGKAART
     .map((cat) => ({
       ...cat,
       aanbieders: cat.aanbieders.filter((a) => {
         const tagsOk = actieveTags.every((t) => a.tags.includes(t));
+        const plaatsOk = plaats === null || normalize(`${a.plaats} ${a.beschrijving}`).includes(normalize(plaats));
         const zoekOk = zoekNorm.length === 0 || matcht(a, `${cat.titel} ${cat.zoektermen}`, zoekNorm);
-        return tagsOk && zoekOk;
+        return tagsOk && plaatsOk && zoekOk;
       }),
     }))
     .filter((cat) => cat.aanbieders.length > 0);
@@ -178,6 +194,25 @@ export default function Geboortezorg() {
                 style={{ paddingLeft: "3rem" }}
                 aria-label="Zoek in de zorgkaart"
               />
+            </div>
+
+            {/* Filter: plaats */}
+            <div className="mt-7">
+              <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary/60 mb-3">Plaats</p>
+              <div className="flex flex-wrap gap-x-5 gap-y-2">
+                {PLAATSEN.map((p) => (
+                  <button
+                    key={p}
+                    onClick={() => setPlaats(plaats === p ? null : p)}
+                    aria-pressed={plaats === p}
+                    className={plaats === p
+                      ? "text-sm font-semibold text-primary underline underline-offset-4 decoration-primary/40 py-1.5 -my-1.5"
+                      : "text-sm text-foreground/65 hover:text-foreground transition-colors py-1.5 -my-1.5"}
+                  >
+                    {p}
+                  </button>
+                ))}
+              </div>
             </div>
 
             {/* Filter: kenmerken */}
@@ -255,7 +290,7 @@ export default function Geboortezorg() {
                   ? "Niets gevonden. Probeer een ander woord of haal een filter weg."
                   : `${aantalGevonden} van ${aantalAanbieders} aanbieders`}
                 <button
-                  onClick={() => { setZoek(""); setActieveTags([]); }}
+                  onClick={() => { setZoek(""); setActieveTags([]); setPlaats(null); }}
                   className="ml-3 text-primary font-semibold hover:text-primary/75"
                 >
                   Wis filters
@@ -451,54 +486,6 @@ export default function Geboortezorg() {
               Mail naar zorgverleners@studiolunazuidplas.nl
             </a>
           </motion.div>
-        </section>
-
-        {/* ── PER DORPSKERN ── */}
-        <section className="relative px-7 md:px-14 lg:px-18 py-12 md:py-16">
-          <div className="absolute inset-0 bg-gradient-to-b from-background via-secondary/20 to-background pointer-events-none" />
-          <div className="relative max-w-3xl">
-            <motion.div
-              variants={fadeUp} initial="hidden" whileInView="show"
-              viewport={{ once: true, margin: "-40px" }} custom={0}
-            >
-              <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary/60 mb-4 flex items-center gap-3">
-                <span className="inline-block w-8 h-px bg-primary/40" />
-                Dichtbij huis
-              </p>
-              <h2 className="font-display text-2xl md:text-3xl font-medium text-foreground leading-[1.15] mb-6">
-                De kaart per dorpskern
-              </h2>
-              <div className="space-y-4 text-[15px] text-foreground/80 leading-[1.95]">
-                <p>
-                  In <span className="font-semibold">Nieuwerkerk aan den IJssel</span> vind je
-                  onder meer een verloskundigenpraktijk, een pretechobureau, een echobureau voor
-                  de 13 en 20 wekenecho, een doula, een lactatiekundige praktijk,
-                  zwangerschapscursussen en natuurlijk de zwangerschapsyoga van Studio Luna.
-                </p>
-                <p>
-                  In <span className="font-semibold">Zevenhuizen</span> houden twee
-                  verloskundigenpraktijken spreekuur (waarvan één in de avond), en vind je een
-                  pretechobureau, een bekkenfysiotherapeut en buitentrainingen voor zwangeren en
-                  moeders bij de Zevenhuizerplas.
-                </p>
-                <p>
-                  In <span className="font-semibold">Moordrecht</span> houdt een
-                  verloskundigenpraktijk uit Gouda wekelijks spreekuur in het gezondheidscentrum
-                  en is er een gespecialiseerde bekkenfysiotherapiepraktijk.
-                </p>
-                <p>
-                  In <span className="font-semibold">Moerkapelle</span> kun je terecht op het
-                  spreekuur van de verloskundigenpraktijk en bij een fysiotherapiepraktijk met
-                  een bekkenfysiotherapeut.
-                </p>
-                <p>
-                  Kraamzorg, lactatiekundigen, doula's en veel andere begeleiding komen gewoon
-                  bij je thuis, in alle kernen van de gemeente. Gebruik de zoekbalk of de
-                  kopjes hierboven om te vinden wat bij jou past.
-                </p>
-              </div>
-            </motion.div>
-          </div>
         </section>
 
         <SeoFooter />
