@@ -351,9 +351,9 @@ export default function Geboortereeks() {
                 </motion.p>
               ))}
             </div>
-            <p className="text-xs text-foreground/55 leading-[1.8] mt-5">
-              Les 4 valt in de herfstvakantie. In overleg met de groep kan die week worden
-              overgeslagen, de reeks eindigt dan een week later.
+            <p className="text-sm text-foreground/65 leading-[1.85] mt-5">
+              Kan je een keer een les niet? Je kan je les inhalen bij een volgend blok of we
+              kijken samen naar een gepaste oplossing.
             </p>
           </div>
         </section>
