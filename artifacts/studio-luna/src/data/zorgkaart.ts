@@ -55,6 +55,10 @@ export type ZorgCategorie = {
   aanbieders: Zorgverlener[];
 };
 
+/** Werk deze bij wanneer de kaart inhoudelijk verandert; hij staat zichtbaar
+ *  op de pagina en in de structured data. */
+export const LAATST_BIJGEWERKT = { tekst: "augustus 2026", iso: "2026-08-20" };
+
 export const ZORGKAART: ZorgCategorie[] = [
   {
     id: "verloskundigen",

@@ -3,7 +3,7 @@ import { BottomNav } from "@/components/bottom-nav";
 import { SeoFooter } from "@/components/seo-footer";
 import { motion } from "framer-motion";
 import { ChevronDown, Search } from "lucide-react";
-import { ZORGKAART, TAG_LABELS, type ZorgTag, type Zorgverlener } from "@/data/zorgkaart";
+import { ZORGKAART, TAG_LABELS, LAATST_BIJGEWERKT, type ZorgTag, type Zorgverlener } from "@/data/zorgkaart";
 import { usePageMeta } from "@/lib/seo";
 
 const fadeUp = {
@@ -34,6 +34,34 @@ export default function Geboortezorg() {
   const [zoek, setZoek] = useState("");
   const [open, setOpen] = useState<string[]>([]);
   const [actieveTags, setActieveTags] = useState<ZorgTag[]>([]);
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
+  const [fbBericht, setFbBericht] = useState("");
+  const [fbEmail, setFbEmail] = useState("");
+  const [fbStatus, setFbStatus] = useState<"idle" | "bezig" | "klaar" | "fout">("idle");
+  const [fbFout, setFbFout] = useState("");
+
+  const stuurFeedback = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setFbStatus("bezig");
+    setFbFout("");
+    try {
+      const res = await fetch(`${import.meta.env.BASE_URL}api/zorgkaart-feedback`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ bericht: fbBericht, email: fbEmail }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setFbFout(data.error ?? "Er ging iets mis, probeer het nog eens");
+        setFbStatus("fout");
+      } else {
+        setFbStatus("klaar");
+      }
+    } catch {
+      setFbFout("Kan geen verbinding maken, probeer het nog eens");
+      setFbStatus("fout");
+    }
+  };
 
   // Een categorie in de URL (bijv. #verloskundigen) klapt die meteen open
   useEffect(() => {
@@ -53,6 +81,7 @@ export default function Geboortezorg() {
         name: "Geboortezorg in regio Zuidplas",
         description: "Overzicht van verloskundigen, kraamzorg, echocentra, bekkenfysiotherapie, doula's, lactatiekundigen, cursussen en beweegaanbod voor zwangeren en moeders in gemeente Zuidplas.",
         url: "https://www.studiolunazuidplas.nl/geboortezorg-zuidplas",
+        dateModified: LAATST_BIJGEWERKT.iso,
         isPartOf: { "@type": "WebSite", name: "Studio Luna", url: "https://www.studiolunazuidplas.nl/" },
         about: ZORGKAART.map((c) => ({ "@type": "Thing", name: `${c.titel} in regio Zuidplas` })),
       },
@@ -73,8 +102,12 @@ export default function Geboortezorg() {
   const toggleTag = (tag: ZorgTag) =>
     setActieveTags((prev) => (prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]));
 
-  const toggleOpen = (id: string) =>
+  const toggleOpen = (id: string) => {
+    const gaatOpen = !open.includes(id);
     setOpen((prev) => (prev.includes(id) ? prev.filter((c) => c !== id) : [...prev, id]));
+    // Houd de link deelbaar: een open categorie staat in het adres
+    window.history.replaceState(null, "", gaatOpen ? `#${id}` : window.location.pathname);
+  };
 
   // Vanuit de startpunten: klap de categorie open en scroll ernaartoe
   const openEnScroll = (id: string) => {
@@ -125,6 +158,7 @@ export default function Geboortezorg() {
             </a>
             .
           </p>
+          <p className="text-xs text-foreground/55 mt-3">Bijgewerkt in {LAATST_BIJGEWERKT.tekst}</p>
         </motion.div>
 
         {/* ── ZOEKEN EN FILTERS ── */}
@@ -300,10 +334,58 @@ export default function Geboortezorg() {
               </div>
             )}
 
-            <p className="text-sm text-foreground/60 leading-[1.85] mt-10">
-              Deze kaart wordt met zorg bijgehouden, maar aanbod verandert. Klopt er iets niet
-              of mis je iemand? Laat het weten via het adres hieronder.
-            </p>
+            {/* Feedback: direct doorgeven, zonder te hoeven mailen */}
+            <div className="mt-10">
+              <p className="text-sm text-foreground/60 leading-[1.85]">
+                Deze kaart wordt met zorg bijgehouden, maar aanbod verandert.{" "}
+                <button
+                  onClick={() => setFeedbackOpen((v) => !v)}
+                  className="text-primary font-semibold hover:text-primary/75"
+                >
+                  Klopt er iets niet of mis je iemand? Geef het hier door
+                </button>
+                .
+              </p>
+
+              {feedbackOpen && (
+                fbStatus === "klaar" ? (
+                  <p className="text-[15px] text-foreground/80 leading-[1.9] mt-5">
+                    Dankjewel voor je bericht. Het wordt meegenomen bij de volgende update van
+                    de kaart.
+                  </p>
+                ) : (
+                  <form onSubmit={stuurFeedback} className="mt-5 space-y-3 max-w-xl">
+                    <textarea
+                      value={fbBericht}
+                      onChange={(e) => setFbBericht(e.target.value)}
+                      placeholder="Wat klopt er niet, of wie mis je op de kaart?"
+                      required
+                      rows={3}
+                      maxLength={2000}
+                      className="w-full px-4 py-3 rounded-2xl border border-border/40 bg-card text-[15px] text-foreground placeholder:text-foreground/35 focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none leading-relaxed"
+                    />
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <input
+                        type="email"
+                        value={fbEmail}
+                        onChange={(e) => setFbEmail(e.target.value)}
+                        placeholder="jouw@email.nl"
+                        required
+                        className="flex-1 px-4 py-3 rounded-2xl border border-border/40 bg-card text-sm text-foreground placeholder:text-foreground/35 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                      />
+                      <button
+                        type="submit"
+                        disabled={fbStatus === "bezig"}
+                        className="bg-primary text-primary-foreground px-7 py-3 rounded-2xl font-semibold text-sm hover:bg-primary/88 disabled:opacity-60 shrink-0"
+                      >
+                        {fbStatus === "bezig" ? "Versturen…" : "Verstuur"}
+                      </button>
+                    </div>
+                    {fbStatus === "fout" && <p className="text-xs text-red-600">{fbFout}</p>}
+                  </form>
+                )
+              )}
+            </div>
           </div>
         </div>
 
@@ -371,17 +453,53 @@ export default function Geboortezorg() {
           </motion.div>
         </section>
 
-        {/* Lokale SEO-tekst, zichtbaar voor zoekmachines */}
-        <div className="sr-only">
-          <h2>Verloskundige in Nieuwerkerk aan den IJssel, Zevenhuizen, Moordrecht en Moerkapelle</h2>
-          <p>Op zoek naar een verloskundige in gemeente Zuidplas? Op deze pagina vind je alle verloskundigenpraktijken die zwangeren uit Nieuwerkerk aan den IJssel, Zevenhuizen, Moordrecht en Moerkapelle begeleiden, inclusief caseload-verloskundigen en praktijken die thuisbevallingen begeleiden.</p>
-          <h2>Kraamzorg in regio Zuidplas</h2>
-          <p>Kraamzorg regelen doe je het liefst voor week 20 van je zwangerschap. Deze kaart toont kraamzorgorganisaties die leveren in gemeente Zuidplas en omgeving, waaronder Nieuwerkerk aan den IJssel, Capelle aan den IJssel en Gouda.</p>
-          <h2>Zwangerschapsyoga en geboortevoorbereiding in Zuidplas</h2>
-          <p>Studio Luna biedt zwangerschapsyoga en de Geboortereeks in Nieuwerkerk aan den IJssel. Daarnaast vind je op deze kaart hypnobirthing, zwangerschapscursussen en babyEHBO in de regio.</p>
-          <h2>Bekkenfysiotherapie, lactatiekundigen en doula's in de regio Zuidplas</h2>
-          <p>Ook bekkenfysiotherapeuten, lactatiekundigen, doula's, echocentra, babymassage, draagconsulenten en postpartum-ondersteuning in en rond gemeente Zuidplas staan op deze pagina, elk met kenmerken voor caseload, holistisch werken, aan huis, op locatie of online.</p>
-        </div>
+        {/* ── PER DORPSKERN ── */}
+        <section className="relative px-7 md:px-14 lg:px-18 py-12 md:py-16">
+          <div className="absolute inset-0 bg-gradient-to-b from-background via-secondary/20 to-background pointer-events-none" />
+          <div className="relative max-w-3xl">
+            <motion.div
+              variants={fadeUp} initial="hidden" whileInView="show"
+              viewport={{ once: true, margin: "-40px" }} custom={0}
+            >
+              <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary/60 mb-4 flex items-center gap-3">
+                <span className="inline-block w-8 h-px bg-primary/40" />
+                Dichtbij huis
+              </p>
+              <h2 className="font-display text-2xl md:text-3xl font-medium text-foreground leading-[1.15] mb-6">
+                De kaart per dorpskern
+              </h2>
+              <div className="space-y-4 text-[15px] text-foreground/80 leading-[1.95]">
+                <p>
+                  In <span className="font-semibold">Nieuwerkerk aan den IJssel</span> vind je
+                  onder meer een verloskundigenpraktijk, een pretechobureau, een echobureau voor
+                  de 13 en 20 wekenecho, een doula, een lactatiekundige praktijk,
+                  zwangerschapscursussen en natuurlijk de zwangerschapsyoga van Studio Luna.
+                </p>
+                <p>
+                  In <span className="font-semibold">Zevenhuizen</span> houden twee
+                  verloskundigenpraktijken spreekuur (waarvan één in de avond), en vind je een
+                  pretechobureau, een bekkenfysiotherapeut en buitentrainingen voor zwangeren en
+                  moeders bij de Zevenhuizerplas.
+                </p>
+                <p>
+                  In <span className="font-semibold">Moordrecht</span> houdt een
+                  verloskundigenpraktijk uit Gouda wekelijks spreekuur in het gezondheidscentrum
+                  en is er een gespecialiseerde bekkenfysiotherapiepraktijk.
+                </p>
+                <p>
+                  In <span className="font-semibold">Moerkapelle</span> kun je terecht op het
+                  spreekuur van de verloskundigenpraktijk en bij een fysiotherapiepraktijk met
+                  een bekkenfysiotherapeut.
+                </p>
+                <p>
+                  Kraamzorg, lactatiekundigen, doula's en veel andere begeleiding komen gewoon
+                  bij je thuis, in alle kernen van de gemeente. Gebruik de zoekbalk of de
+                  kopjes hierboven om te vinden wat bij jou past.
+                </p>
+              </div>
+            </motion.div>
+          </div>
+        </section>
 
         <SeoFooter />
         <BottomNav />

@@ -54,7 +54,7 @@ const FAQ_ITEMS = [
   },
   {
     vraag: "Hoe meld ik me aan?",
-    antwoord: "Je reserveert je plekje door het intakeformulier in te vullen. Daarna ontvang je persoonlijk bericht met de bevestiging en de factuur.",
+    antwoord: "Je meldt je aan met je naam en e-mailadres op de Geboortereeks-pagina. Daarna ontvang je persoonlijk het intakeformulier en de factuur per mail, en is je plekje gereserveerd.",
   },
 ];
 

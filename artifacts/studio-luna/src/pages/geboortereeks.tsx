@@ -57,7 +57,7 @@ const FAQ_ITEMS = [
   },
   {
     vraag: "Hoe meld ik me aan?",
-    antwoord: "Je reserveert je plekje door het intakeformulier in te vullen. Daarna ontvang je persoonlijk bericht met de bevestiging en de factuur.",
+    antwoord: "Je meldt je aan met je naam en e-mailadres via de aanmeldknop op deze pagina. Daarna ontvang je persoonlijk het intakeformulier en de factuur per mail, en is je plekje gereserveerd.",
   },
   {
     vraag: "Wordt de reeks vergoed door mijn zorgverzekering?",
@@ -81,13 +81,39 @@ const FAQ_ITEMS = [
   },
 ];
 
-// Reserveren loopt via het intakeformulier: invullen, en je ontvangt daarna
-// persoonlijk bericht met de bevestiging en de factuur. Geen online betaling.
-const INTAKE_URL = "https://tally.so/r/XxED7j";
+// Aanmelden = naam en e-mailadres achterlaten; daarna stuurt Marjolein zelf het
+// intakeformulier (Tally) en de factuur per mail. Geen online betaling.
 const WHATSAPP_URL = "https://wa.me/31643735343?text=" + encodeURIComponent("Hoi! Ik heb een vraag over de Geboortereeks die op 29 september start.");
 
 export default function Geboortereeks() {
   const [isInterestOpen, setIsInterestOpen] = useState(false);
+  const [naam, setNaam] = useState("");
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<"idle" | "bezig" | "klaar" | "fout">("idle");
+  const [foutmelding, setFoutmelding] = useState("");
+
+  const meldAan = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus("bezig");
+    setFoutmelding("");
+    try {
+      const res = await fetch(`${import.meta.env.BASE_URL}api/geboortereeks-aanmelding`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ naam, email }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setFoutmelding(data.error ?? "Er ging iets mis, probeer het nog eens");
+        setStatus("fout");
+      } else {
+        setStatus("klaar");
+      }
+    } catch {
+      setFoutmelding("Kan geen verbinding maken, probeer het nog eens");
+      setStatus("fout");
+    }
+  };
 
   usePageMeta({
     title: "De Geboortereeks: zwangerschapscursus in Nieuwerkerk aan den IJssel, start 29 september | Studio Luna",
@@ -194,7 +220,7 @@ export default function Geboortereeks() {
         </section>
 
         {/* ── AANMELDEN ── */}
-        <section className="px-7 md:px-14 lg:px-18 py-10 md:py-14">
+        <section id="aanmelden" className="px-7 md:px-14 lg:px-18 py-10 md:py-14 scroll-mt-24">
           <motion.div
             variants={fadeUp} initial="hidden" whileInView="show"
             viewport={{ once: true, margin: "-40px" }} custom={0}
@@ -208,16 +234,49 @@ export default function Geboortereeks() {
               Wil je erbij zijn op 29 september?
             </h2>
             <p className="text-[15px] text-foreground/80 leading-[1.9] mb-7">
-              Er is plek voor acht zwangeren. Je reserveert je plekje door het intakeformulier
-              in te vullen; daarna krijg je persoonlijk bericht met de bevestiging en de factuur.
+              Er is plek voor acht zwangeren. Meld je aan met je naam en e-mailadres; daarna
+              stuur ik je persoonlijk het intakeformulier en de factuur per mail, en is je
+              plekje gereserveerd.
             </p>
-            <a
-              href={INTAKE_URL} target="_blank" rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-7 py-3.5 rounded-2xl font-semibold text-sm hover:bg-primary/88 shadow-soft group"
-            >
-              Reserveer je plekje
-              <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
-            </a>
+
+            {status === "klaar" ? (
+              <p className="text-[15px] text-foreground/80 leading-[1.9] rounded-2xl bg-primary/8 border border-primary/15 px-5 py-4">
+                Dankjewel voor je aanmelding! Je ontvangt van mij persoonlijk een mailtje met
+                het intakeformulier en de factuur.
+              </p>
+            ) : (
+              <form onSubmit={meldAan} className="space-y-3">
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <input
+                    type="text"
+                    value={naam}
+                    onChange={(e) => setNaam(e.target.value)}
+                    placeholder="Je naam"
+                    required
+                    maxLength={120}
+                    className="flex-1 px-4 py-3 rounded-2xl border border-border/40 bg-card text-[15px] text-foreground placeholder:text-foreground/35 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  />
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="jouw@email.nl"
+                    required
+                    className="flex-1 px-4 py-3 rounded-2xl border border-border/40 bg-card text-[15px] text-foreground placeholder:text-foreground/35 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={status === "bezig"}
+                  className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-7 py-3.5 rounded-2xl font-semibold text-sm hover:bg-primary/88 disabled:opacity-60 shadow-soft group"
+                >
+                  {status === "bezig" ? "Versturen…" : "Meld je aan"}
+                  <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+                </button>
+                {status === "fout" && <p className="text-xs text-red-600">{foutmelding}</p>}
+              </form>
+            )}
+
             <p className="text-sm text-foreground/65 leading-[1.9] mt-5">
               Eerst iets vragen? Stuur gerust een{" "}
               <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="text-primary font-semibold hover:text-primary/75">
@@ -375,10 +434,10 @@ export default function Geboortereeks() {
               ))}
             </Accordion>
             <a
-              href={INTAKE_URL} target="_blank" rel="noopener noreferrer"
+              href="#aanmelden"
               className="inline-flex items-center gap-2 mt-8 text-sm font-semibold text-primary group"
             >
-              Reserveer je plekje
+              Meld je aan voor 29 september
               <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
             </a>
           </motion.div>
