@@ -41,7 +41,7 @@ const INBEGREPEN = [
   "Acht wekelijkse lessen van 75 minuten op de dinsdagavond, plus de mama-en-babyles als negende les",
   "Een vaste groep van maximaal acht zwangeren, zodat je elkaar echt leert kennen",
   "Twee gastexperts: een fysiotherapeut over rust, houding en slaap en een bekkenfysiotherapeut over je bekken en bekkenbodem",
-  "Een complete bevallingsles en een partnerles waarin je geboortepartner concrete technieken leert",
+  "Een complete bevallingsles en een partnerles waarin je geboortepartner tools krijgt om jou te ondersteunen",
   "Een mamaspa-avond die helemaal om ontspanning en herstel draait",
   "Een goodiebag met de reader Voor in de kraamtas, en na elke les thee en tijd voor verbinding",
 ];
