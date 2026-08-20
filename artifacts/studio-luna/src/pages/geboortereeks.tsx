@@ -139,7 +139,7 @@ export default function Geboortereeks() {
             De <em className="not-italic text-primary">Geboortereeks</em>
           </h1>
           <p className="text-foreground/60 text-sm mt-3 tracking-wide">
-            Negen lessen zwangerschapsyoga en geboortevoorbereiding
+            8-weekse zwangerschapsyoga en geboortevoorbereidingsreeks
           </p>
         </motion.div>
 
