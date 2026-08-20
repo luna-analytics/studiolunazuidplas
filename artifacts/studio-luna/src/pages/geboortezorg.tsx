@@ -161,6 +161,22 @@ export default function Geboortezorg() {
               />
             </div>
 
+            {/* Populaire zoektermen: een tik vult de zoekbalk */}
+            <p className="text-sm text-foreground/60 mt-3">
+              Populair:{" "}
+              {["kraamzorg", "echo", "borstvoeding", "bekkenpijn", "doula"].map((term, i) => (
+                <span key={term}>
+                  {i > 0 && " · "}
+                  <button
+                    onClick={() => setZoek(term)}
+                    className="text-primary/85 hover:text-primary font-medium"
+                  >
+                    {term}
+                  </button>
+                </span>
+              ))}
+            </p>
+
             {/* Filter: kenmerken */}
             {TOON_KENMERKEN && (
             <div className="mt-7">
