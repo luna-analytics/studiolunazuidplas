@@ -72,10 +72,6 @@ const FAQ_ITEMS = [
     antwoord: "De lessen zijn bij Huize Mooisteen, Pr. Beatrixstraat 2 in Nieuwerkerk aan den IJssel, elke dinsdag van 19:00 tot 20:15 uur.",
   },
   {
-    vraag: "Wat als ik een les mis?",
-    antwoord: "Kun je een les niet volgen, dan haal je die in bij een volgende reeks, of we kijken samen naar een passende oplossing.",
-  },
-  {
     vraag: "Wat is de mama-en-babyles?",
     antwoord: "Zodra alle kindjes geboren zijn komt de groep nog één keer samen, met de baby's erbij. Deze terugkomles is de negende les van de reeks en is inbegrepen in de prijs.",
   },
