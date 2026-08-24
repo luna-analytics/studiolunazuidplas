@@ -25,8 +25,8 @@ const DEFAULT_TEKSTEN = {
   home_village_tagline: "Welkom in jouw village.",
   home_aanbod_heading: "Alles wat je nodig hebt\nop weg naar de bevalling.",
   home_aanbod_items: "Kleine groepen, veel aandacht en persoonlijk contact.\nZwangerschapsyoga: bevalling voorbereiden, kracht van de adem en fysieke balans.\nNa afloop altijd tijd voor een kopje thee en verbinding.\nEen vaste groep die samen naar de bevalling toewerkt.\nWhatsApp-community voor vragen en tips tussen lessen door.\nAandacht voor zowel het fysieke als het mentale aspect van moederschap.",
-  home_locatie_naam: "Huize Mooisteen",
-  home_locatie_adres: "Pr. Beatrixstraat 2\nNieuwerkerk aan den IJssel",
+  home_locatie_naam: "De Perenboom",
+  home_locatie_adres: "Raadhuisplein 28\nNieuwerkerk aan den IJssel",
   home_contact_email: "info@studiolunazuidplas.nl",
   home_contact_telefoon: "+31 6 43 73 53 43",
   home_contact_instagram: "@studiolunazuidplas",
@@ -50,7 +50,7 @@ const FAQ_ITEMS = [
   },
   {
     vraag: "Waar zijn de lessen?",
-    antwoord: "Bij Huize Mooisteen, Pr. Beatrixstraat 2 in Nieuwerkerk aan den IJssel.",
+    antwoord: "Bij De Perenboom, Raadhuisplein 28 in Nieuwerkerk aan den IJssel.",
   },
   {
     vraag: "Hoe meld ik me aan?",

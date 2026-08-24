@@ -32,7 +32,7 @@ const PRAKTISCH = [
   { label: "Start", waarde: "dinsdag 29 september, daarna elke week op dinsdag van 19:00 tot 20:15 uur" },
   { label: "Groep", waarde: "maximaal 8 zwangeren, een vaste groep" },
   { label: "Voor wie", waarde: "bij de start ben je tussen de 15 en 28 weken zwanger" },
-  { label: "Locatie", waarde: "Huize Mooisteen, Pr. Beatrixstraat 2, Nieuwerkerk aan den IJssel" },
+  { label: "Locatie", waarde: "De Perenboom, Raadhuisplein 28, Nieuwerkerk aan den IJssel" },
   { label: "Inclusief", waarde: "goodiebag, reader, twee gastexperts en de mama-en-babyles" },
   { label: "Prijs", waarde: "€195 voor de hele reeks" },
 ];
@@ -69,7 +69,7 @@ const FAQ_ITEMS = [
   },
   {
     vraag: "Waar en hoe laat zijn de lessen?",
-    antwoord: "De lessen zijn bij Huize Mooisteen, Pr. Beatrixstraat 2 in Nieuwerkerk aan den IJssel, elke dinsdag van 19:00 tot 20:15 uur.",
+    antwoord: "De lessen zijn bij De Perenboom, Raadhuisplein 28 in Nieuwerkerk aan den IJssel, elke dinsdag van 19:00 tot 20:15 uur.",
   },
   {
     vraag: "Wat is de mama-en-babyles?",
