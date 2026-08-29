@@ -33,7 +33,7 @@ const PRAKTISCH = [
   { label: "Groep", waarde: "maximaal 8 zwangeren, een vaste groep" },
   { label: "Voor wie", waarde: "bij de start ben je tussen de 15 en 28 weken zwanger" },
   { label: "Locatie", waarde: "in Nieuwerkerk aan den IJssel, de leslocatie volgt binnenkort" },
-  { label: "Inclusief", waarde: "goodiebag, reader, twee gastexperts en mama-en-babyyoga na afloop" },
+  { label: "Inclusief", waarde: "goodiebag, reader en mama-en-babyyoga na afloop" },
   {
     label: "Prijs",
     waarde: (
@@ -49,7 +49,7 @@ const PRAKTISCH = [
 const INBEGREPEN = [
   "Acht wekelijkse lessen van 75 minuten op de dinsdagavond, plus mama-en-babyyoga cadeau zodra alle kindjes geboren zijn",
   "Een vaste groep van maximaal acht zwangeren, zodat je elkaar echt leert kennen",
-  "Twee gastexperts: een fysiotherapeut over rust, houding en slaap en een bekkenfysiotherapeut over je bekken en bekkenbodem",
+  "Kennis van een fysiotherapeut over rust, houding en slaap en van een bekkenfysiotherapeut over je bekken en bekkenbodem",
   "Een complete bevallingsles en een partnerles waarin je geboortepartner tools krijgt om jou te ondersteunen",
   "Een mamaspa-avond met zelfmassage en restorative yoga die helemaal om ontspanning en herstel draait",
   "Elke week een oefening in de WhatsApp-groep, een goodiebag en tijd voor verbinding met andere mama's",
@@ -128,7 +128,7 @@ export default function Geboortereeks() {
         "@context": "https://schema.org",
         "@type": "Course",
         name: "Studio Luna Geboortereeks",
-        description: "Acht wekelijkse lessen zwangerschapsyoga en geboortevoorbereiding plus mama-en-babyyoga na afloop, met gastblokken van een fysiotherapeut en een bekkenfysiotherapeut, een partnerles en een mamaspa-avond.",
+        description: "Acht wekelijkse lessen zwangerschapsyoga en geboortevoorbereiding plus mama-en-babyyoga na afloop, gevuld met kennis van een fysiotherapeut en een bekkenfysiotherapeut, met een partnerles en een mamaspa-avond.",
         provider: { "@type": "LocalBusiness", name: "Studio Luna", url: "https://www.studiolunazuidplas.nl/" },
         hasCourseInstance: {
           "@type": "CourseInstance",
@@ -189,9 +189,9 @@ export default function Geboortereeks() {
                 die helemaal om ontspanning draait.
               </p>
               <p className="text-[15px] text-foreground/80 leading-[1.95] mb-4">
-                Wat deze reeks bijzonder maakt: een bekkenfysiotherapeut vult een les mee in over
-                je bekken en bekkenbodem, en een fysiotherapeut verzorgt een blok over houding,
-                slaap en ontspanning. Dat vind je bij vrijwel geen enkele andere cursus in de
+                Wat deze reeks bijzonder maakt: de lessen worden ook gevuld met kennis van een
+                bekkenfysiotherapeut over je bekken en bekkenbodem en van een fysiotherapeut
+                over rust en houding. Dat vind je bij vrijwel geen enkele andere cursus in de
                 regio.
               </p>
               <p className="text-[15px] text-foreground/80 leading-[1.95]">
@@ -380,8 +380,8 @@ export default function Geboortereeks() {
             </h2>
             <p className="text-[15px] text-foreground/80 leading-[1.95]">
               Moeder, gepromoveerd onderzoeker en yogadocente. Ik geef alle lessen van de
-              Geboortereeks zelf en haal er voor twee lessen een fysiotherapeut en een
-              bekkenfysiotherapeut bij. Bij Studio Luna combineer ik gevoel en wetenschap: je
+              Geboortereeks zelf en vul ze aan met kennis van een fysiotherapeut en een
+              bekkenfysiotherapeut. Bij Studio Luna combineer ik gevoel en wetenschap: je
               bereidt je sterk en met vertrouwen voor op je bevalling, en je leert andere
               moeders uit Zuidplas kennen.
             </p>

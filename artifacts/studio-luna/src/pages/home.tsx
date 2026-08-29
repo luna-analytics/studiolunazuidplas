@@ -135,9 +135,9 @@ export default function Home() {
             </h2>
             <p className="text-[15px] text-foreground/60 leading-[1.95] max-w-2xl mb-8">
               Acht wekelijkse lessen zwangerschapsyoga en geboortevoorbereiding in een vaste
-              groep van maximaal acht zwangeren, met een bekkenfysiotherapeut, een partnerles,
-              een mamaspa-avond en mama-en-babyyoga cadeau als afsluiting. Je stapt in wanneer
-              je bij de start tussen de 15 en 28 weken zwanger bent.
+              groep van maximaal acht zwangeren, met kennis van een bekkenfysiotherapeut, een
+              partnerles, een mamaspa-avond en mama-en-babyyoga cadeau als afsluiting. Je stapt
+              in wanneer je bij de start tussen de 15 en 28 weken zwanger bent.
             </p>
             <button
               onClick={() => navigate("/geboortereeks")}
