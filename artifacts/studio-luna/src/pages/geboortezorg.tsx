@@ -250,7 +250,14 @@ export default function Geboortezorg() {
                     href={`/geboortezorg-zuidplas/${cat.id}`}
                     className="group flex flex-col justify-between rounded-2xl bg-secondary/45 hover:bg-secondary/75 transition-colors px-5 py-6 min-h-[7.5rem] h-full"
                   >
-                    <span className="font-display text-lg md:text-xl font-medium text-foreground leading-snug group-hover:text-primary transition-colors">
+                    {/* Lange namen als Bekkenfysiotherapie passen niet in een
+                        tegel op een smal scherm, dus breken ze met een
+                        afbreekstreepje af in plaats van eruit te lopen. */}
+                    <span
+                      lang="nl"
+                      style={{ hyphens: "auto" }}
+                      className="font-display text-base md:text-xl font-medium text-foreground leading-snug break-words group-hover:text-primary transition-colors"
+                    >
                       {cat.titel}
                     </span>
                     <span className="text-xs text-foreground/55 mt-3">
