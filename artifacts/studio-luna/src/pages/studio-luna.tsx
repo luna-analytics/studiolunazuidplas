@@ -128,7 +128,9 @@ export default function StudioLuna() {
               <motion.h1
                 initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.35 }}
-                className="font-display text-[2.6rem] md:text-5xl font-medium text-white leading-[1.1] mb-7"
+                // Kleiner op smalle schermen: "geboortevoorbereiding" is te breed
+                // voor 390 pixels en viel anders buiten beeld.
+                className="font-display text-[2rem] min-[400px]:text-[2.3rem] sm:text-[2.6rem] md:text-5xl font-medium text-white leading-[1.12] mb-7 break-words"
               >
                 {teksten.home_hero.split("\n").map((line, i, arr) => (
                   <span key={i}>{line}{i < arr.length - 1 && <br />}</span>
