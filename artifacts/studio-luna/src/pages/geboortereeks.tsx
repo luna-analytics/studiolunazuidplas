@@ -25,20 +25,29 @@ const KALENDER = [
   { datum: "dinsdag 3 november" },
   { datum: "dinsdag 10 november", noot: "partnerles" },
   { datum: "dinsdag 17 november" },
-  { datum: "voorjaar 2027", noot: "postpartumles, datum volgt" },
+  { datum: "voorjaar 2027", noot: "mama-en-babyyoga cadeau, datum volgt" },
 ];
 
 const PRAKTISCH = [
   { label: "Start", waarde: "dinsdag 29 september, daarna elke week op dinsdag van 19:00 tot 20:15 uur" },
   { label: "Groep", waarde: "maximaal 8 zwangeren, een vaste groep" },
   { label: "Voor wie", waarde: "bij de start ben je tussen de 15 en 28 weken zwanger" },
-  { label: "Locatie", waarde: "De Perenboom, Raadhuisplein 28, Nieuwerkerk aan den IJssel" },
-  { label: "Inclusief", waarde: "goodiebag, reader, twee gastexperts en de mama-en-babyles" },
-  { label: "Prijs", waarde: "€195 voor de hele reeks" },
+  { label: "Locatie", waarde: "in Nieuwerkerk aan den IJssel, de leslocatie volgt binnenkort" },
+  { label: "Inclusief", waarde: "goodiebag, reader, twee gastexperts en mama-en-babyyoga na afloop" },
+  {
+    label: "Prijs",
+    waarde: (
+      <>
+        <s className="text-foreground/45">€195</s>{" "}
+        <span className="font-semibold text-foreground">€175</span> introductieprijs voor deze
+        eerste groep
+      </>
+    ),
+  },
 ];
 
 const INBEGREPEN = [
-  "Acht wekelijkse lessen van 75 minuten op de dinsdagavond, plus de mama-en-babyles als negende les",
+  "Acht wekelijkse lessen van 75 minuten op de dinsdagavond, plus mama-en-babyyoga cadeau zodra alle kindjes geboren zijn",
   "Een vaste groep van maximaal acht zwangeren, zodat je elkaar echt leert kennen",
   "Twee gastexperts: een fysiotherapeut over rust, houding en slaap en een bekkenfysiotherapeut over je bekken en bekkenbodem",
   "Een complete bevallingsles en een partnerles waarin je geboortepartner tools krijgt om jou te ondersteunen",
@@ -53,7 +62,7 @@ const FAQ_ITEMS = [
   },
   {
     vraag: "Wat kost de reeks?",
-    antwoord: "De Geboortereeks van negen lessen (8 lessen tijdens de zwangerschap en 1 postpartum) kost €195.",
+    antwoord: "De Geboortereeks van acht wekelijkse lessen kost €195; deze eerste groep betaalt eenmalig de introductieprijs van €175. De mama-en-babyles na afloop krijg je cadeau.",
   },
   {
     vraag: "Hoe meld ik me aan?",
@@ -69,11 +78,11 @@ const FAQ_ITEMS = [
   },
   {
     vraag: "Waar en hoe laat zijn de lessen?",
-    antwoord: "De lessen zijn bij De Perenboom, Raadhuisplein 28 in Nieuwerkerk aan den IJssel, elke dinsdag van 19:00 tot 20:15 uur.",
+    antwoord: "De lessen zijn in Nieuwerkerk aan den IJssel, elke dinsdag van 19:00 tot 20:15 uur. De leslocatie volgt binnenkort.",
   },
   {
     vraag: "Wat is de mama-en-babyles?",
-    antwoord: "Zodra alle kindjes geboren zijn komt de groep nog één keer samen, met de baby's erbij. Deze terugkomles is de negende les van de reeks en is inbegrepen in de prijs.",
+    antwoord: "Zodra alle kindjes geboren zijn komt de groep nog één keer samen voor mama-en-babyyoga, met de baby's erbij. Deze postpartumles is mijn cadeautje aan jullie.",
   },
 ];
 
@@ -113,13 +122,13 @@ export default function Geboortereeks() {
 
   usePageMeta({
     title: "De Geboortereeks: zwangerschapscursus in Nieuwerkerk aan den IJssel, start 29 september | Studio Luna",
-    description: "Negen lessen zwangerschapsyoga en geboortevoorbereiding in Nieuwerkerk aan den IJssel (Zuidplas). Start dinsdag 29 september, maximaal 8 zwangeren, met bekkenfysiotherapeut, partnerles en postpartumles. De reeks kost €195.",
+    description: "Acht wekelijkse lessen zwangerschapsyoga en geboortevoorbereiding in Nieuwerkerk aan den IJssel (Zuidplas), plus mama-en-babyyoga na afloop. Start dinsdag 29 september, maximaal 8 zwangeren, introductieprijs €175.",
     jsonLd: [
       {
         "@context": "https://schema.org",
         "@type": "Course",
         name: "Studio Luna Geboortereeks",
-        description: "Negen lessen zwangerschapsyoga en geboortevoorbereiding: acht wekelijkse lessen plus een mama-en-babyles, met gastblokken van een fysiotherapeut en een bekkenfysiotherapeut, een partnerles en een mamaspa-avond.",
+        description: "Acht wekelijkse lessen zwangerschapsyoga en geboortevoorbereiding plus mama-en-babyyoga na afloop, met gastblokken van een fysiotherapeut en een bekkenfysiotherapeut, een partnerles en een mamaspa-avond.",
         provider: { "@type": "LocalBusiness", name: "Studio Luna", url: "https://www.studiolunazuidplas.nl/" },
         hasCourseInstance: {
           "@type": "CourseInstance",
@@ -128,7 +137,7 @@ export default function Geboortereeks() {
           location: { "@type": "Place", name: "Nieuwerkerk aan den IJssel", address: { "@type": "PostalAddress", addressLocality: "Nieuwerkerk aan den IJssel", addressRegion: "Zuidplas", addressCountry: "NL" } },
         },
         offers: [
-          { "@type": "Offer", name: "Geboortereeks", price: "195.00", priceCurrency: "EUR" },
+          { "@type": "Offer", name: "Geboortereeks, introductieprijs eerste groep", price: "175.00", priceCurrency: "EUR" },
         ],
       },
       {
@@ -186,9 +195,9 @@ export default function Geboortereeks() {
                 regio.
               </p>
               <p className="text-[15px] text-foreground/80 leading-[1.95]">
-                En als alle kindjes geboren zijn, komt de groep nog één keer samen voor de
-                mama-en-babyles. Zo begint je moederschap met een groep vrouwen die je echt hebt
-                leren kennen.
+                En als alle kindjes geboren zijn, komt de groep nog één keer samen voor
+                mama-en-babyyoga; deze postpartumles is mijn cadeautje aan jullie. Zo begint je
+                moederschap met een groep vrouwen die je echt hebt leren kennen.
               </p>
             </motion.div>
 
@@ -330,7 +339,7 @@ export default function Geboortereeks() {
                 Week voor week
               </p>
               <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground mb-8 leading-[1.15]">
-                Negen lessen, één reis
+                Acht lessen, één reis
               </h2>
             </motion.div>
 

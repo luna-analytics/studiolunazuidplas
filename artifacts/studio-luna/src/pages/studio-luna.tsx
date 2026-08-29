@@ -25,8 +25,8 @@ const DEFAULT_TEKSTEN = {
   home_village_tagline: "Welkom in jouw village.",
   home_aanbod_heading: "Alles wat je nodig hebt\nop weg naar de bevalling.",
   home_aanbod_items: "Kleine groepen, veel aandacht en persoonlijk contact.\nZwangerschapsyoga: bevalling voorbereiden, kracht van de adem en fysieke balans.\nNa afloop altijd tijd voor een kopje thee en verbinding.\nEen vaste groep die samen naar de bevalling toewerkt.\nWhatsApp-community voor vragen en tips tussen lessen door.\nAandacht voor zowel het fysieke als het mentale aspect van moederschap.",
-  home_locatie_naam: "De Perenboom",
-  home_locatie_adres: "Raadhuisplein 28\nNieuwerkerk aan den IJssel",
+  home_locatie_naam: "Nieuwerkerk aan den IJssel",
+  home_locatie_adres: "De leslocatie volgt binnenkort.",
   home_contact_email: "info@studiolunazuidplas.nl",
   home_contact_telefoon: "+31 6 43 73 53 43",
   home_contact_instagram: "@studiolunazuidplas",
@@ -46,11 +46,11 @@ const FAQ_ITEMS = [
   },
   {
     vraag: "Wat kost het?",
-    antwoord: "De Geboortereeks van negen lessen (8 lessen tijdens de zwangerschap en 1 postpartum) kost €195.",
+    antwoord: "De Geboortereeks van acht wekelijkse lessen kost €195; deze eerste groep betaalt eenmalig de introductieprijs van €175. De mama-en-babyles na afloop krijg je cadeau.",
   },
   {
     vraag: "Waar zijn de lessen?",
-    antwoord: "Bij De Perenboom, Raadhuisplein 28 in Nieuwerkerk aan den IJssel.",
+    antwoord: "In Nieuwerkerk aan den IJssel. De leslocatie volgt binnenkort.",
   },
   {
     vraag: "Hoe meld ik me aan?",
@@ -74,7 +74,7 @@ export default function StudioLuna() {
 
   usePageMeta({
     title: "Studio Luna | Zwangerschapsyoga Nieuwerkerk aan den IJssel | Mama Community Zuidplas",
-    description: "Studio Luna biedt de Geboortereeks, negen lessen zwangerschapsyoga en geboortevoorbereiding in Nieuwerkerk aan den IJssel (Zuidplas), en de zorgkaart met alle geboortezorg in de regio.",
+    description: "Studio Luna biedt de Geboortereeks, acht wekelijkse lessen zwangerschapsyoga en geboortevoorbereiding in Nieuwerkerk aan den IJssel (Zuidplas), en de zorgkaart met alle geboortezorg in de regio.",
   });
 
   useEffect(() => {
@@ -494,15 +494,18 @@ export default function StudioLuna() {
               {teksten.home_locatie_adres.split("\n").map((regel, i) => (
                 <p key={i} className="text-[15px] text-foreground/75 leading-[1.9] mb-2">{regel}</p>
               ))}
-              <a
-                href={`https://maps.google.com/?q=${encodeURIComponent(teksten.home_locatie_adres.replace("\n", ", "))}`}
-                target="_blank" rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 mt-7 text-sm font-semibold text-primary group"
-              >
-                <MapPin className="w-3.5 h-3.5" />
-                Bekijk op kaart
-                <ArrowRight className="w-3 h-3 transition-transform duration-300 group-hover:translate-x-1" />
-              </a>
+              {/* Alleen tonen zodra er een echt adres met huisnummer staat */}
+              {/\d/.test(teksten.home_locatie_adres) && (
+                <a
+                  href={`https://maps.google.com/?q=${encodeURIComponent(teksten.home_locatie_adres.replace("\n", ", "))}`}
+                  target="_blank" rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 mt-7 text-sm font-semibold text-primary group"
+                >
+                  <MapPin className="w-3.5 h-3.5" />
+                  Bekijk op kaart
+                  <ArrowRight className="w-3 h-3 transition-transform duration-300 group-hover:translate-x-1" />
+                </a>
+              )}
             </motion.div>
 
             <motion.div

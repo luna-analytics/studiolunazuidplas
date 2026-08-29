@@ -1404,7 +1404,7 @@ function EmailInstellingenTab() {
                 onChange={(e) => setTemplate(activeLesType.id, "emailBody", e.target.value)}
                 rows={8}
                 className="w-full bg-background border border-border/40 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none leading-relaxed font-sans"
-                placeholder={`Bedankt voor je aanmelding! Jouw plek is bevestigd voor:\n\n{les}\n{datum} · {tijd} uur\nDe Perenboom, Raadhuisplein 28, Nieuwerkerk a/d IJssel\n\n\nMet warme groet,\nStudio Luna`}
+                placeholder={`Bedankt voor je aanmelding! Jouw plek is bevestigd voor:\n\n{les}\n{datum} · {tijd} uur\nNieuwerkerk aan den IJssel\n\n\nMet warme groet,\nStudio Luna`}
               />
             </div>
           </div>
@@ -2003,7 +2003,7 @@ function ReserveeringenTab() {
       .replace(/\{tijd\}/gi, r.time);
     const tpl = emailTemplates[r.type];
     const fallbackSubject = `Bevestiging jouw plek — ${r.classTitle}`;
-    const fallbackBody = `Bedankt voor je aanmelding! Jouw plek is bevestigd voor:\n\n${r.classTitle}\n${dateLabel} · ${r.time} uur\nDe Perenboom, Raadhuisplein 28, Nieuwerkerk a/d IJssel\n\n\n\nMet warme groet,\nStudio Luna`;
+    const fallbackBody = `Bedankt voor je aanmelding! Jouw plek is bevestigd voor:\n\n${r.classTitle}\n${dateLabel} · ${r.time} uur\nNieuwerkerk aan den IJssel\n\n\n\nMet warme groet,\nStudio Luna`;
     setComposeFor({
       id: r.id,
       name: r.name,
@@ -2377,7 +2377,7 @@ const DEFAULT_PT: PaginaTeksten = {
   aanbod_yoga_tekst1: "Sterk, ontspannen en vol vertrouwen richting je bevalling. Met zachte houdingen houden we je veranderende lichaam in balans. We oefenen met ademhaling en maken contact met je baby.",
   aanbod_yoga_tekst2: "Elke les heeft een net andere focus, zoals het bekken, de kracht van je adem of ruimte in je rug. De lessen vormen samen de Geboortereeks, waarin je in een vaste groep naar je bevalling toewerkt.",
   aanbod_yoga_tijd: "Elke dinsdag 19:00",
-  aanbod_yoga_locatie: "De Perenboom, Raadhuisplein 28, Nieuwerkerk a/d IJssel",
+  aanbod_yoga_locatie: "Nieuwerkerk aan den IJssel · leslocatie volgt binnenkort",
   aanbod_yoga_extra: "Na afloop: verse thee en tijd voor verbinding",
   aanbod_circle_titel: "Zwanger & Mama Circle",
   aanbod_circle_tekst: "Bij Studio Luna geloven we in de kracht van de 'village'. Naast de fysieke lessen creëren we een veilige cirkel waarin je ervaringen deelt, vragen stelt en naar elkaar omkijkt. We gebruiken zachte yoga- en ademhalingsoefeningen om samen te vertragen, zodat er ruimte ontstaat om echt te luisteren naar jezelf en elkaar. Echte verbinding met andere zwangeren en mama's in Zuidplas!",
@@ -2400,8 +2400,8 @@ const DEFAULT_PT: PaginaTeksten = {
   home_village_tagline: "Welkom in jouw village.",
   home_aanbod_heading: "Alles wat je nodig hebt\nop weg naar de bevalling.",
   home_aanbod_items: "Kleine groepen, veel aandacht en persoonlijk contact.\nZwangerschapsyoga: bevalling voorbereiden, kracht van de adem en fysieke balans.\nNa afloop altijd tijd voor een kopje thee en verbinding.\nEen vaste groep die samen naar de bevalling toewerkt.\nWhatsApp-community voor vragen en tips tussen lessen door.\nAandacht voor zowel het fysieke als het mentale aspect van moederschap.",
-  home_locatie_naam: "De Perenboom",
-  home_locatie_adres: "Raadhuisplein 28\nNieuwerkerk aan den IJssel",
+  home_locatie_naam: "Nieuwerkerk aan den IJssel",
+  home_locatie_adres: "De leslocatie volgt binnenkort.",
   home_contact_email: "info@studiolunazuidplas.nl",
   home_contact_telefoon: "+31 6 43 73 53 43",
   home_contact_instagram: "@studiolunazuidplas",

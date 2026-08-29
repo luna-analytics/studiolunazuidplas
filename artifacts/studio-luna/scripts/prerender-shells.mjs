@@ -14,12 +14,12 @@ const ROUTES = [
   {
     pad: "",
     title: "Studio Luna | Zwangerschapsyoga Nieuwerkerk aan den IJssel | Mama Community Zuidplas",
-    beschrijving: "Studio Luna biedt de Geboortereeks, negen lessen zwangerschapsyoga en geboortevoorbereiding in Nieuwerkerk aan den IJssel (Zuidplas), en de zorgkaart met alle geboortezorg in de regio.",
+    beschrijving: "Studio Luna biedt de Geboortereeks, acht wekelijkse lessen zwangerschapsyoga en geboortevoorbereiding in Nieuwerkerk aan den IJssel (Zuidplas), en de zorgkaart met alle geboortezorg in de regio.",
   },
   {
     pad: "geboortereeks",
     title: "De Geboortereeks: zwangerschapscursus in Nieuwerkerk aan den IJssel, start 29 september | Studio Luna",
-    beschrijving: "Negen lessen zwangerschapsyoga en geboortevoorbereiding in Nieuwerkerk aan den IJssel (Zuidplas). Start dinsdag 29 september, maximaal 8 zwangeren, met bekkenfysiotherapeut, partnerles en postpartumles. De reeks kost €195.",
+    beschrijving: "Acht wekelijkse lessen zwangerschapsyoga en geboortevoorbereiding in Nieuwerkerk aan den IJssel (Zuidplas), plus mama-en-babyyoga na afloop. Start dinsdag 29 september, maximaal 8 zwangeren, introductieprijs €175.",
   },
   {
     pad: "geboortezorg-zuidplas",
