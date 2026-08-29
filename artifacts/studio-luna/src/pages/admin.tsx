@@ -2538,9 +2538,14 @@ function InhoudTab() {
 
       {/* STUDIO LUNA PAGINA — LOCATIE & CONTACT */}
       <div className="bg-card border border-border/30 rounded-3xl p-5 space-y-4">
-        <h3 className="font-display text-lg font-medium">Studio Luna pagina — Locatie & Contact</h3>
-        {field("Locatienaam", "home_locatie_naam")}
-        {field("Adres", "home_locatie_adres", true, "Twee regels: straat op regel 1, plaatsnaam op regel 2.")}
+        <h3 className="font-display text-lg font-medium">Studio Luna pagina — Locatie en contact</h3>
+        <p className="text-xs text-foreground/50 leading-[1.7]">
+          Laat de locatievelden leeg zolang de leslocatie nog niet rond is; de site zegt dan
+          vanzelf "in Nieuwerkerk aan den IJssel, de leslocatie volgt binnenkort". Zodra je een
+          adres met huisnummer invult verschijnt ook de knop Bekijk op kaart weer.
+        </p>
+        {field("Locatienaam", "home_locatie_naam", false, "Leeg laten tot de locatie definitief is.")}
+        {field("Adres", "home_locatie_adres", true, "Leeg laten tot de locatie definitief is. Straat op regel 1, plaatsnaam op regel 2.")}
         {field("E-mailadres", "home_contact_email")}
         {field("Telefoonnummer", "home_contact_telefoon")}
         {field("Instagram handle (zonder @)", "home_contact_instagram", false, "Bijv. @studiolunazuidplas")}
@@ -2560,8 +2565,8 @@ function InhoudTab() {
         {field("Beschrijving (alinea 1)", "aanbod_yoga_tekst1", true)}
         {field("Beschrijving (alinea 2)", "aanbod_yoga_tekst2", true)}
         <div className="grid grid-cols-1 gap-3">
-          {field("Tijdstip", "aanbod_yoga_tijd")}
-          {field("Locatie", "aanbod_yoga_locatie")}
+          {field("Tijdstip", "aanbod_yoga_tijd", false, "Leeg laten voor de standaardtekst met de startdatum erbij.")}
+          {field("Locatie", "aanbod_yoga_locatie", false, "Leeg laten tot de leslocatie definitief is.")}
           {field("Extra detail (thee, etc.)", "aanbod_yoga_extra")}
         </div>
         {saveBtn("yoga", {
@@ -2574,16 +2579,16 @@ function InhoudTab() {
         })}
       </div>
 
-      {/* AANBOD — CIRCLE */}
-      <div className="bg-card border border-border/30 rounded-3xl p-5 space-y-4">
+      {/* AANBOD — CIRCLE (pagina staat uit) */}
+      <div className={`bg-card border border-border/30 rounded-3xl p-5 space-y-4 ${TOON_OUD ? "" : "hidden"}`}>
         <h3 className="font-display text-lg font-medium">Aanbod — Mama Circle</h3>
         {field("Titel", "aanbod_circle_titel")}
         {field("Beschrijving", "aanbod_circle_tekst", true)}
         {saveBtn("circle", { aanbod_circle_titel: teksten.aanbod_circle_titel, aanbod_circle_tekst: teksten.aanbod_circle_tekst })}
       </div>
 
-      {/* AANBOD — BEVALLINGS SPECIALS */}
-      <div className="bg-card border border-border/30 rounded-3xl p-5 space-y-4">
+      {/* AANBOD — BEVALLINGS SPECIALS (staat uit via TOON_SPECIALS) */}
+      <div className={`bg-card border border-border/30 rounded-3xl p-5 space-y-4 ${TOON_OUD ? "" : "hidden"}`}>
         <h3 className="font-display text-lg font-medium">Aanbod — Bevallings Specials</h3>
         {field("Koptekst", "aanbod_specials_heading")}
         {field("Workshops (één per regel)", "aanbod_specials_items", true, "Formaat per regel: Naam | Ondertitel | Prijs — bijv. 'Mama Spa | Ultiem ontspannen · 120 min | € 49,-'")}
@@ -2597,8 +2602,8 @@ function InhoudTab() {
         })}
       </div>
 
-      {/* TARIEVEN */}
-      <div className="bg-card border border-border/30 rounded-3xl p-5 space-y-4">
+      {/* TARIEVEN (pagina staat uit) */}
+      <div className={`bg-card border border-border/30 rounded-3xl p-5 space-y-4 ${TOON_OUD ? "" : "hidden"}`}>
         <h3 className="font-display text-lg font-medium">Tarieven pagina</h3>
         <p className="text-xs text-foreground/50">Teksten op de tarieven-pagina.</p>
         {field("Ondertitel (onder 'Tarieven')", "tarieven_ondertitel", false, "bijv. Gun jezelf dit wekelijkse rustmoment…")}
@@ -3414,13 +3419,175 @@ function ReviewsBeheerTab() {
   );
 }
 
+// ─── AANMELDINGEN TAB ────────────────────────────────────────────────────────
+// Alles wat via de site binnenkomt op één plek: aanmeldingen voor de reeks,
+// de interesselijst, feedback op de zorgkaart en zorgverleners die erop willen.
+type ReeksAanmelding = { naam: string; email: string; timestamp: string };
+type Interesse = { email: string; timestamp: string };
+type ZorgkaartFeedback = { bericht: string; email: string; timestamp: string };
+type ZorgverlenerAanmelding = { praktijk: string; website: string; bericht: string; email: string; timestamp: string };
+
+const datumKort = (iso: string) =>
+  new Date(iso).toLocaleDateString("nl-NL", { day: "numeric", month: "short", year: "numeric" });
+
+function LegeLijst({ tekst }: { tekst: string }) {
+  return (
+    <div className="bg-card/50 border border-dashed border-border rounded-3xl px-5 py-6 text-center">
+      <p className="text-sm text-muted-foreground">{tekst}</p>
+    </div>
+  );
+}
+
+function Lijstblok({ titel, aantal, children }: { titel: string; aantal: number; children: React.ReactNode }) {
+  return (
+    <div>
+      <p className="text-xs font-bold text-foreground/50 uppercase tracking-widest mb-2">
+        {titel} {aantal > 0 && `(${aantal})`}
+      </p>
+      {children}
+    </div>
+  );
+}
+
+function AanmeldingenTab() {
+  const [laden, setLaden] = useState(true);
+  const [aanmeldingen, setAanmeldingen] = useState<ReeksAanmelding[]>([]);
+  const [interesse, setInteresse] = useState<Interesse[]>([]);
+  const [feedback, setFeedback] = useState<ZorgkaartFeedback[]>([]);
+  const [zorgverleners, setZorgverleners] = useState<ZorgverlenerAanmelding[]>([]);
+
+  const laad = async () => {
+    setLaden(true);
+    const haal = async <T,>(pad: string): Promise<T[]> => {
+      const res = await apiFetch(pad);
+      return res.ok ? await res.json() : [];
+    };
+    const [a, i, f, z] = await Promise.all([
+      haal<ReeksAanmelding>("/admin/geboortereeks-aanmeldingen"),
+      haal<Interesse>("/admin/interests"),
+      haal<ZorgkaartFeedback>("/admin/zorgkaart-feedback"),
+      haal<ZorgverlenerAanmelding>("/admin/zorgverlener-aanmeldingen"),
+    ]);
+    setAanmeldingen(a); setInteresse(i); setFeedback(f); setZorgverleners(z);
+    setLaden(false);
+  };
+
+  useEffect(() => { laad(); }, []);
+
+  if (laden) {
+    return (
+      <div className="flex justify-center py-10">
+        <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-8">
+      <div className="flex items-center justify-between">
+        <p className="text-sm text-foreground/60">
+          {aanmeldingen.length} aangemeld voor de Geboortereeks · {interesse.length} op de interesselijst
+        </p>
+        <button onClick={laad} className="flex items-center gap-1.5 text-xs font-semibold text-foreground/50 hover:text-foreground transition-colors">
+          <RefreshCw className="w-3.5 h-3.5" /> Vernieuwen
+        </button>
+      </div>
+
+      <Lijstblok titel="Aanmeldingen Geboortereeks" aantal={aanmeldingen.length}>
+        {aanmeldingen.length === 0 ? (
+          <LegeLijst tekst="Nog geen aanmeldingen. Ze komen hier binnen en je krijgt er ook een mail van." />
+        ) : (
+          <div className="bg-card border border-border/30 rounded-3xl overflow-hidden">
+            {aanmeldingen.map((a, i) => (
+              <div key={i} className={`px-5 py-4 flex items-start justify-between gap-3 ${i > 0 ? "border-t border-border/20" : ""}`}>
+                <div>
+                  <p className="font-semibold text-foreground text-sm">{a.naam}</p>
+                  <a href={`mailto:${a.email}`} className="text-xs text-primary hover:underline">{a.email}</a>
+                </div>
+                <p className="text-xs text-foreground/35 shrink-0">{datumKort(a.timestamp)}</p>
+              </div>
+            ))}
+          </div>
+        )}
+        {aanmeldingen.length > 0 && (
+          <p className="text-xs text-foreground/45 leading-[1.7] mt-2">
+            Stuur elke aanmelding zelf het intakeformulier en de factuur per mail.
+          </p>
+        )}
+      </Lijstblok>
+
+      <Lijstblok titel="Interesselijst" aantal={interesse.length}>
+        {interesse.length === 0 ? (
+          <LegeLijst tekst="Nog niemand op de interesselijst." />
+        ) : (
+          <div className="bg-card border border-border/30 rounded-3xl overflow-hidden">
+            {interesse.map((item, i) => (
+              <div key={i} className={`px-5 py-3 flex items-center justify-between gap-3 ${i > 0 ? "border-t border-border/20" : ""}`}>
+                <a href={`mailto:${item.email}`} className="text-sm text-foreground/75 hover:text-primary">{item.email}</a>
+                <p className="text-xs text-foreground/35 shrink-0">{datumKort(item.timestamp)}</p>
+              </div>
+            ))}
+          </div>
+        )}
+      </Lijstblok>
+
+      <Lijstblok titel="Feedback op de zorgkaart" aantal={feedback.length}>
+        {feedback.length === 0 ? (
+          <LegeLijst tekst="Nog geen feedback op de zorgkaart." />
+        ) : (
+          <div className="space-y-3">
+            {feedback.map((f, i) => (
+              <div key={i} className="bg-card border border-border/30 rounded-3xl px-5 py-4">
+                <p className="text-sm text-foreground/80 leading-[1.8] whitespace-pre-wrap">{f.bericht}</p>
+                <div className="flex items-center justify-between gap-3 mt-3">
+                  <a href={`mailto:${f.email}`} className="text-xs text-primary hover:underline">{f.email}</a>
+                  <p className="text-xs text-foreground/35 shrink-0">{datumKort(f.timestamp)}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </Lijstblok>
+
+      <Lijstblok titel="Zorgverleners die op de kaart willen" aantal={zorgverleners.length}>
+        {zorgverleners.length === 0 ? (
+          <LegeLijst tekst="Nog geen aanmeldingen van zorgverleners." />
+        ) : (
+          <div className="space-y-3">
+            {zorgverleners.map((z, i) => (
+              <div key={i} className="bg-card border border-border/30 rounded-3xl px-5 py-4">
+                <p className="font-semibold text-foreground text-sm">{z.praktijk}</p>
+                {z.website && (
+                  <a href={z.website.startsWith("http") ? z.website : `https://${z.website}`} target="_blank" rel="noopener noreferrer"
+                    className="text-xs text-primary hover:underline">{z.website}</a>
+                )}
+                {z.bericht && <p className="text-sm text-foreground/75 leading-[1.8] mt-2 whitespace-pre-wrap">{z.bericht}</p>}
+                <div className="flex items-center justify-between gap-3 mt-3">
+                  <a href={`mailto:${z.email}`} className="text-xs text-primary hover:underline">{z.email}</a>
+                  <p className="text-xs text-foreground/35 shrink-0">{datumKort(z.timestamp)}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </Lijstblok>
+    </div>
+  );
+}
+
 // ─── MAIN ADMIN PAGE ─────────────────────────────────────────────────────────
-type AdminTab = "leden" | "lessen" | "lestypes" | "tarieven" | "aanvragen" | "reserveringen" | "mededelingen" | "email" | "inhoud" | "blog" | "reviews";
+// Zichtbaar in het menu staat alleen wat bij de Geboortereeks hoort. De schermen
+// van het oude boekingssysteem (leden, lessen, lestypes, tarieven, aanvragen,
+// reserveringen) blijven in de code staan en komen terug door TOON_OUD op true
+// te zetten; ze horen bij de losse lessen en het rittenkaartmodel dat uit staat.
+const TOON_OUD = false;
+
+type AdminTab = "aanmeldingen" | "inhoud" | "blog" | "reviews" | "mededelingen" | "email" | "leden" | "lessen" | "lestypes" | "tarieven" | "aanvragen" | "reserveringen";
 
 export default function Admin() {
   const { user, loading, login } = useAuth();
   const [, navigate] = useLocation();
-  const [tab, setTab] = useState<AdminTab>("leden");
+  const [tab, setTab] = useState<AdminTab>("aanmeldingen");
   const [adminEmail, setAdminEmail] = useState("");
   const [adminPassword, setAdminPassword] = useState("");
   const [adminError, setAdminError] = useState("");
@@ -3487,17 +3654,20 @@ export default function Admin() {
   }
 
   const tabs: { key: AdminTab; label: string; icon: React.ReactNode }[] = [
-    { key: "leden", label: "Leden", icon: <Users className="w-4 h-4" /> },
-    { key: "lessen", label: "Lessen", icon: <BookOpen className="w-4 h-4" /> },
-    { key: "lestypes", label: "Lestypes", icon: <Palette className="w-4 h-4" /> },
-    { key: "tarieven", label: "Tarieven", icon: <Tag className="w-4 h-4" /> },
-    { key: "aanvragen", label: "Aanvragen", icon: <ClipboardList className="w-4 h-4" /> },
-    { key: "reserveringen", label: "Reserveringen", icon: <CalendarDays className="w-4 h-4" /> },
-    { key: "mededelingen", label: "Mededelingen", icon: <Baby className="w-4 h-4" /> },
-    { key: "email", label: "E-mail", icon: <Mail className="w-4 h-4" /> },
-    { key: "inhoud", label: "Inhoud", icon: <FileText className="w-4 h-4" /> },
+    { key: "aanmeldingen", label: "Aanmeldingen", icon: <ClipboardList className="w-4 h-4" /> },
+    { key: "inhoud", label: "Teksten en foto's", icon: <FileText className="w-4 h-4" /> },
     { key: "blog", label: "Blog", icon: <Feather className="w-4 h-4" /> },
     { key: "reviews", label: "Reviews", icon: <Star className="w-4 h-4" /> },
+    { key: "mededelingen", label: "Mededelingen", icon: <Baby className="w-4 h-4" /> },
+    { key: "email", label: "E-mail", icon: <Mail className="w-4 h-4" /> },
+    ...(TOON_OUD ? [
+      { key: "leden" as AdminTab, label: "Leden", icon: <Users className="w-4 h-4" /> },
+      { key: "lessen" as AdminTab, label: "Lessen", icon: <BookOpen className="w-4 h-4" /> },
+      { key: "lestypes" as AdminTab, label: "Lestypes", icon: <Palette className="w-4 h-4" /> },
+      { key: "tarieven" as AdminTab, label: "Tarieven", icon: <Tag className="w-4 h-4" /> },
+      { key: "aanvragen" as AdminTab, label: "Aanvragen", icon: <ClipboardList className="w-4 h-4" /> },
+      { key: "reserveringen" as AdminTab, label: "Reserveringen", icon: <CalendarDays className="w-4 h-4" /> },
+    ] : []),
   ];
 
   return (
@@ -3508,6 +3678,10 @@ export default function Admin() {
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
             <p className="text-xs font-bold uppercase tracking-widest text-primary mb-2">Beheer</p>
             <h1 className="font-display text-3xl md:text-4xl font-medium text-foreground">Studio Luna Admin</h1>
+            <p className="text-sm text-foreground/55 leading-[1.8] mt-3 max-w-xl">
+              Aanmeldingen is je dagelijkse scherm. Bij Teksten en foto's pas je de site aan;
+              een veld dat je leeg laat gebruikt automatisch de standaardtekst van de site.
+            </p>
           </motion.div>
 
           <div className="mt-5 flex gap-2 overflow-x-auto md:overflow-x-visible pb-2 md:flex-wrap" style={{ scrollbarWidth: "none" }}>
@@ -3524,6 +3698,7 @@ export default function Admin() {
           <AnimatePresence mode="wait">
             <motion.div key={tab} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }}
               transition={{ duration: 0.15 }}>
+              {tab === "aanmeldingen" && <AanmeldingenTab />}
               {tab === "leden" && <LedenTab />}
               {tab === "lessen" && <LessenTab />}
               {tab === "lestypes" && <LestypesTab />}
