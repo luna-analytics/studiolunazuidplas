@@ -18,7 +18,7 @@ const TOON_LOGIN = false;
 // "kort" is het label in de mobiele balk onderin.
 const ALL_NAV = [
   { href: "/", label: "Studio Luna", kort: "Studio Luna", icon: Sparkles },
-  { href: "/geboortereeks", label: "Geboortereeks", kort: "Geboortereeks", icon: Baby },
+  { href: "/geboortereeks", label: "Zwangerschapsyoga", kort: "Yoga", icon: Baby },
   { href: "/geboortezorg-zuidplas", label: "Zorgkaart", kort: "Zorgkaart", icon: Compass },
   { href: "/over-mij", label: "Over mij", kort: "Over mij", icon: User },
   { href: "/blog", label: "Blog", kort: "Blog", icon: Feather },
