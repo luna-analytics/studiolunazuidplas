@@ -131,13 +131,6 @@ export const ZORGKAART: ZorgCategorie[] = [
     zoektermen: "echo pretecho 13 wekenecho 20 wekenecho geslachtsbepaling 3d 4d screening echocentrum",
     aanbieders: [
       {
-        naam: "Villa Dorrestein Pretecho",
-        plaats: "Nieuwerkerk aan den IJssel",
-        website: "https://www.villadorrestein-pretecho.nl/",
-        beschrijving: "Pretechobureau aan de Dorpsstraat in Nieuwerkerk aan den IJssel voor 2D, 3D en 4D echo's en geslachtsbepaling, met openingstijden tot en met zaterdag, avonden op afspraak en de mogelijkheid van een echo aan huis.",
-        tags: ["op-locatie", "aan-huis", "avond-weekend"],
-      },
-      {
         naam: "Baby Glow",
         plaats: "Zevenhuizen",
         website: "https://baby-glow.nl/",
