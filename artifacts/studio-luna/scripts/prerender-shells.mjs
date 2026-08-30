@@ -37,7 +37,9 @@ const categorieen = [];
     categorieen.push({ id: m[1], titel: m[2], intro: m[3], aanbieders });
   });
 }
-const totaalAanbieders = categorieen.reduce((n, c) => n + c.aanbieders.length, 0);
+// Uniek geteld: een aanbieder die in twee categorieën staat (zoals Spirit for
+// Two bij sporten én massage) telt maar één keer mee in het totaal.
+const totaalAanbieders = new Set(categorieen.flatMap((c) => c.aanbieders.map((a) => a.naam))).size;
 
 const leesFaq = (bron) =>
   [...bron.matchAll(/vraag: "([^"]+)",\s*\n\s*antwoord: "([^"]+)"/g)].map(([, vraag, antwoord]) => ({ vraag, antwoord }));

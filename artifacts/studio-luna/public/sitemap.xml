@@ -71,6 +71,31 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://www.studiolunazuidplas.nl/geboortezorg-zuidplas/mentale-steun</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.studiolunazuidplas.nl/geboortezorg-zuidplas/zwangerschapsmassage-babyspa</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.studiolunazuidplas.nl/geboortezorg-zuidplas/osteopathie</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.studiolunazuidplas.nl/geboortezorg-zuidplas/matrescentie</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.studiolunazuidplas.nl/geboortezorg-zuidplas/online</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.studiolunazuidplas.nl/over-mij</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
