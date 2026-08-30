@@ -12,6 +12,14 @@ const router = Router();
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+// De onderwerpregel van de mailnotificatie bevat deze naam. Twee tips met
+// dezelfde onderwerpregel vouwt een mailprogramma samen tot één gesprek,
+// waardoor de tweede tip ongelezen blijft. Vandaar een eigen aanhef per tip.
+function eersteWoorden(tekst: string, max = 60): string {
+  const schoon = tekst.trim().replace(/\s+/g, " ");
+  return schoon.length <= max ? schoon : schoon.slice(0, max).trimEnd() + "...";
+}
+
 type Interest = { email: string; timestamp: string };
 type Feedback = { bericht: string; email: string; timestamp: string };
 type Aanmelding = { naam: string; email: string; timestamp: string };
@@ -67,7 +75,7 @@ router.post("/zorgkaart-feedback", async (req, res) => {
   // Mailnotificatie naar de beheerder; als die faalt is de feedback zelf al bewaard
   sendAdminNotification({
     type: "aanvraag",
-    name: "Zorgkaart-feedback",
+    name: `Zorgkaart-tip: ${eersteWoorden(bericht)}`,
     email,
     details: bericht.trim(),
   }).catch(() => {});
