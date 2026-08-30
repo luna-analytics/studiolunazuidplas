@@ -3524,7 +3524,24 @@ function AanmeldingenTab() {
             {interesse.map((item, i) => (
               <div key={i} className={`px-5 py-3 flex items-center justify-between gap-3 ${i > 0 ? "border-t border-border/20" : ""}`}>
                 <a href={`mailto:${item.email}`} className="text-sm text-foreground/75 hover:text-primary">{item.email}</a>
-                <p className="text-xs text-foreground/35 shrink-0">{datumKort(item.timestamp)}</p>
+                <div className="flex items-center gap-3 shrink-0">
+                  <p className="text-xs text-foreground/35">{datumKort(item.timestamp)}</p>
+                  <button
+                    aria-label={`Verwijder ${item.email} van de lijst`}
+                    onClick={async () => {
+                      if (!confirm(`${item.email} van de interesselijst halen?`)) return;
+                      const res = await apiFetch("/admin/interests", {
+                        method: "DELETE",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ email: item.email }),
+                      });
+                      if (res.ok) setInteresse((prev) => prev.filter((x) => x.email !== item.email));
+                    }}
+                    className="text-foreground/30 hover:text-red-500 transition-colors"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
               </div>
             ))}
           </div>

@@ -39,7 +39,9 @@
 :root {
   --background: 40 20% 97%;
   --foreground: 140 15% 27%;
-  --primary: 158 15% 42%;
+  /* Een slag dieper dan de oorspronkelijke 42%: wit op deze kleur haalt nu
+     de leesbaarheidsnorm van 4,5 op knoppen en gewone tekstgrootte. */
+  --primary: 158 16% 37%;
   --primary-foreground: 40 20% 97%;
   --secondary: 33 27% 86%;
   --secondary-foreground: 140 15% 27%;
@@ -89,10 +91,18 @@
   }
 
   /* ── Remove harsh focus outlines, replace with elegant ring ── */
+  /* Volle dekking: op halve dekking was de ring vrijwel onzichtbaar en
+     zag een toetsenbordgebruiker niet in welk veld ze zat. */
   :focus-visible {
-    outline: 2px solid hsl(var(--primary) / 0.5);
+    outline: 2px solid hsl(var(--primary));
     outline-offset: 3px;
     border-radius: 6px;
+  }
+
+  /* Veilige onderrand voor de vaste mobiele balk (iPhone-thuisbalk).
+     De class pb-safe werd al gebruikt maar bestond nog nergens. */
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
   }
 
   img {

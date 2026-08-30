@@ -18,7 +18,7 @@ const TOON_LOGIN = false;
 // "kort" is het label in de mobiele balk onderin.
 const ALL_NAV = [
   { href: "/", label: "Studio Luna", kort: "Studio Luna", icon: Sparkles },
-  { href: "/geboortereeks", label: "Zwangerschapsyoga", kort: "Yoga", icon: Baby },
+  { href: "/geboortereeks", label: "Geboortereeks", kort: "Geboortereeks", icon: Baby },
   { href: "/geboortezorg-zuidplas", label: "Zorgkaart", kort: "Zorgkaart", icon: Compass },
   { href: "/over-mij", label: "Over mij", kort: "Over mij", icon: User },
   { href: "/blog", label: "Blog", kort: "Blog", icon: Feather },
@@ -62,7 +62,10 @@ export function BottomNav() {
             onMouseLeave={cancelLongPress} onTouchStart={startLongPress}
             onTouchEnd={cancelLongPress} onTouchCancel={cancelLongPress}>
             {/* Logo */}
-            <img src={`/images/studio-luna-logo.png?v=5`} alt="Studio Luna" className="h-10 w-auto shrink-0" />
+            {/* Kleine webp van 4 KB; het originele logo van een halve megabyte
+                werd op elke pagina gedownload, ook op mobiel waar het niet
+                eens zichtbaar is. */}
+            <img src={`/images/studio-luna-logo-klein.webp`} alt="Studio Luna" className="h-10 w-auto shrink-0" />
             {/* Naam */}
             <div className="flex flex-col leading-none">
               <span className="font-display text-[15px] font-medium text-foreground tracking-wide">Studio Luna</span>
@@ -82,10 +85,12 @@ export function BottomNav() {
             })}
           </nav>
           <div className="flex items-center gap-3">
-            <button onClick={() => setAvOpen(true)} className="text-[11px] text-foreground/30 hover:text-foreground/55 transition-colors">AV</button>
-            <span className="text-foreground/20 text-[11px]">·</span>
-            <button onClick={() => setPrivacyOpen(true)} className="text-[11px] text-foreground/30 hover:text-foreground/55 transition-colors">Privacy</button>
-            <span className="text-foreground/15 text-[11px]">|</span>
+            <button onClick={() => setAvOpen(true)} className="text-xs text-foreground/75 hover:text-foreground px-2 py-2 transition-colors">Voorwaarden</button>
+            <span className="text-foreground/30 text-xs">·</span>
+            <button onClick={() => setPrivacyOpen(true)} className="text-xs text-foreground/75 hover:text-foreground px-2 py-2 transition-colors">Privacy</button>
+            {user ? (
+              <span className="text-foreground/15 text-[11px]">|</span>
+            ) : null}
             {user ? (
               <div className="relative">
                 <button onClick={() => setUserMenuOpen((v) => !v)}
@@ -144,8 +149,8 @@ export function BottomNav() {
                   <Icon strokeWidth={isActive ? 2.5 : 2}
                     className={cn("w-5 h-5 transition-colors duration-300",
                       isActive ? "text-foreground" : "text-muted-foreground")} />
-                  <span className={cn("text-[9px] font-medium transition-colors duration-300 leading-none",
-                    isActive ? "text-foreground" : "text-muted-foreground")}>
+                  <span className={cn("text-[10px] font-medium transition-colors duration-300 leading-none",
+                    isActive ? "text-foreground" : "text-foreground/75")}>
                     {item.kort ?? item.label}
                   </span>
                 </div>
@@ -167,8 +172,8 @@ export function BottomNav() {
               <Menu strokeWidth={isMenuActive ? 2.5 : 2}
                 className={cn("w-5 h-5 transition-colors duration-300",
                   isMenuActive ? "text-foreground" : "text-muted-foreground")} />
-              <span className={cn("text-[9px] font-medium transition-colors duration-300 leading-none",
-                isMenuActive ? "text-foreground" : "text-muted-foreground")}>
+              <span className={cn("text-[10px] font-medium transition-colors duration-300 leading-none",
+                isMenuActive ? "text-foreground" : "text-foreground/75")}>
                 Menu
               </span>
             </div>
@@ -179,11 +184,6 @@ export function BottomNav() {
             )}
           </button>
         </nav>
-        <div className="pb-1.5 flex items-center justify-center gap-3">
-          <button onClick={() => setAvOpen(true)} className="text-[10px] text-foreground/35 hover:text-foreground/60 transition-colors">Algemene Voorwaarden</button>
-          <span className="text-[10px] text-foreground/20">·</span>
-          <button onClick={() => setPrivacyOpen(true)} className="text-[10px] text-foreground/35 hover:text-foreground/60 transition-colors">Privacyverklaring</button>
-        </div>
       </div>
 
       {/* ── MOBILE MENU DRAWER ── */}
@@ -252,8 +252,15 @@ export function BottomNav() {
                 </div>
               </nav>
 
-              {/* Footer: login/logout */}
+              {/* Footer: juridische links plus login/logout */}
               <div className="px-4 pb-8 pt-3 border-t border-border/20">
+                <div className="flex items-center gap-2 px-2 pb-3">
+                  <button onClick={() => { setMenuOpen(false); setAvOpen(true); }}
+                    className="text-xs text-foreground/75 hover:text-foreground px-2 py-2.5 transition-colors">Algemene Voorwaarden</button>
+                  <span className="text-xs text-foreground/30">·</span>
+                  <button onClick={() => { setMenuOpen(false); setPrivacyOpen(true); }}
+                    className="text-xs text-foreground/75 hover:text-foreground px-2 py-2.5 transition-colors">Privacyverklaring</button>
+                </div>
                 {user ? (
                   <div>
                     <p className="text-xs text-foreground/40 px-4 mb-2">Ingelogd als <span className="font-semibold text-foreground/60">{user.name}</span></p>

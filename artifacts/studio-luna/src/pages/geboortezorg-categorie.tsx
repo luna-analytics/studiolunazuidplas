@@ -85,13 +85,15 @@ export default function GeboortezorgCategorie() {
             {aanbieders.map((a, i) => (
               <div key={a.naam} className={`py-6 ${i < aanbieders.length - 1 ? "border-b border-border/15" : ""}`}>
                 <div className="flex flex-wrap items-baseline gap-x-3">
-                  <a
-                    href={a.website} target="_blank" rel="noopener noreferrer"
-                    className="text-[16px] font-semibold text-foreground hover:text-primary transition-colors"
-                  >
-                    {a.naam}
-                  </a>
-                  <span className="text-sm text-foreground/55 ">{a.plaats}</span>
+                  <h2 className="text-[16px] font-semibold leading-snug m-0" style={{ fontFamily: "inherit" }}>
+                    <a
+                      href={a.website} target="_blank" rel="noopener noreferrer"
+                      className="text-foreground hover:text-primary transition-colors"
+                    >
+                      {a.naam}
+                    </a>
+                  </h2>
+                  <span className="text-sm text-foreground/70">{a.plaats}</span>
                   {isNieuw(a.toegevoegd) && (
                     <span className="text-[11px] uppercase tracking-[0.18em] text-primary/70">
                       nieuw
@@ -102,10 +104,10 @@ export default function GeboortezorgCategorie() {
                 {a.voordeel && (
                   <p className="text-sm text-primary/90 leading-[1.85] mt-2">Voordeel: {a.voordeel}</p>
                 )}
-                <p className="text-xs text-foreground/60 mt-2">
+                <p className="mt-1">
                   <a
                     href={a.website} target="_blank" rel="noopener noreferrer"
-                    className="text-primary/80 hover:text-primary font-medium"
+                    className="inline-flex py-2 text-sm text-primary hover:text-foreground font-medium transition-colors"
                   >
                     bekijk de website
                   </a>

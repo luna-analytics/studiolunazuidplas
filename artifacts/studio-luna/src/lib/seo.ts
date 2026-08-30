@@ -44,6 +44,10 @@ export function usePageMeta(opts: { title: string; description?: string; jsonLd?
       zetNamedMeta("description", description);
       zetOgMeta("og:description", description);
     }
+    // De voorgerenderde schil draagt eigen structured data voor crawlers
+    // zonder JavaScript; zodra de pagina echt draait neemt deze hook het
+    // over, dus de schil-versie moet weg om dubbele blokken te voorkomen.
+    document.querySelectorAll("script[data-shell-jsonld]").forEach((s) => s.remove());
   }, [title, description]);
 
   useEffect(() => {
@@ -59,7 +63,8 @@ export function usePageMeta(opts: { title: string; description?: string; jsonLd?
     return () => {
       scripts.forEach((s) => s.remove());
     };
-    // De structured data verandert alleen bij paginawissel
+    // Ook bijwerken wanneer de data pas na het laden binnenkomt,
+    // zoals bij een blogartikel dat eerst opgehaald moet worden.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [JSON.stringify(jsonLd ?? null)]);
 }

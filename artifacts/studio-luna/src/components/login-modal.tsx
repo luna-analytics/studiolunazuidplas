@@ -132,7 +132,7 @@ export function LoginModal({ isOpen, onClose, defaultMode = "login" }: Props) {
                     <input
                       type="text" value={name} onChange={(e) => setName(e.target.value)} required
                       placeholder="Jouw naam"
-                      className="w-full bg-secondary border border-border/40 rounded-2xl px-4 py-3 text-sm text-foreground placeholder:text-foreground/35 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                      className="w-full bg-secondary border border-border/40 rounded-2xl px-4 py-3 text-sm text-foreground placeholder:text-foreground/55"
                     />
                   </div>
                 )}
@@ -142,7 +142,7 @@ export function LoginModal({ isOpen, onClose, defaultMode = "login" }: Props) {
                   <input
                     type="email" value={email} onChange={(e) => setEmail(e.target.value)} required
                     placeholder="jouw@email.nl"
-                    className="w-full bg-secondary border border-border/40 rounded-2xl px-4 py-3 text-sm text-foreground placeholder:text-foreground/35 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    className="w-full bg-secondary border border-border/40 rounded-2xl px-4 py-3 text-sm text-foreground placeholder:text-foreground/55"
                   />
                 </div>
 
@@ -153,7 +153,7 @@ export function LoginModal({ isOpen, onClose, defaultMode = "login" }: Props) {
                       <input
                         type={showPw ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)} required
                         placeholder={mode === "register" ? "Minimaal 6 tekens" : "••••••••"}
-                        className="w-full bg-secondary border border-border/40 rounded-2xl px-4 py-3 pr-12 text-sm text-foreground placeholder:text-foreground/35 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                        className="w-full bg-secondary border border-border/40 rounded-2xl px-4 py-3 pr-12 text-sm text-foreground placeholder:text-foreground/55"
                       />
                       <button type="button" onClick={() => setShowPw(!showPw)} className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-foreground/40 hover:text-foreground/70">
                         {showPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}

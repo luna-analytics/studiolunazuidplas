@@ -80,4 +80,24 @@
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
+  <url>
+    <loc>https://www.studiolunazuidplas.nl/blog/in-gesprek-met-tamara-tunderman</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.studiolunazuidplas.nl/blog/alles-over-dysforisch-toeschietreflex-d-tsr-je-bent-niet-alleen</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.studiolunazuidplas.nl/blog/adem-als-kompas-deel-1</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.studiolunazuidplas.nl/blog/gevoel-en-wetenschap-waarom-ik-deze-blog-begin</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.6</priority>
+  </url>
 </urlset>

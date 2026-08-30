@@ -73,7 +73,7 @@ export default function StudioLuna() {
   const [reviewsConfig, setReviewsConfig] = useState<ReviewsConfig | null>(null);
 
   usePageMeta({
-    title: "Studio Luna | Zwangerschapsyoga Nieuwerkerk aan den IJssel | Mama Community Zuidplas",
+    title: "Studio Luna | Zwangerschapsyoga Nieuwerkerk aan den IJssel",
     description: "Studio Luna biedt de Geboortereeks, acht wekelijkse lessen zwangerschapsyoga en geboortevoorbereiding in Nieuwerkerk aan den IJssel (Zuidplas), en de zorgkaart met alle geboortezorg in de regio.",
   });
 
@@ -177,6 +177,11 @@ export default function StudioLuna() {
               inclusief een partnerles. Een aantal weken na de laatste bevalling is er de
               ruimte om samen te komen voor het uitwisselen van verhalen en mama-en-babyyoga;
               deze postpartumles is inbegrepen in de reeks.
+            </p>
+            <p className="text-[15px] text-foreground/80 leading-[1.9] mb-8">
+              De reeks kost €175 als introductieprijs voor deze eerste groep, daarna €195.
+              Veel zorgverzekeraars vergoeden een zwangerschapscursus geheel of gedeeltelijk
+              vanuit de aanvullende verzekering.
             </p>
             <button
               onClick={() => navigate("/geboortereeks")}

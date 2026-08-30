@@ -213,7 +213,7 @@ export function BlogEditor({ value, onChange }: Props) {
             value={linkUrl}
             onChange={(e) => setLinkUrl(e.target.value)}
             onKeyDown={(e) => { if (e.key === "Enter") applyLink(); if (e.key === "Escape") setLinkOpen(false); }}
-            className="flex-1 text-sm bg-transparent outline-none text-foreground placeholder:text-foreground/35"
+            className="flex-1 text-sm bg-transparent outline-none text-foreground placeholder:text-foreground/55"
           />
           <button type="button" onClick={applyLink} className="text-xs font-semibold text-primary hover:text-primary/70 transition-colors px-2">
             Toepassen

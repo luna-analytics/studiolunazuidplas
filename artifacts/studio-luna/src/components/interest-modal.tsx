@@ -69,18 +69,18 @@ export function InterestModal({ isOpen, onClose, title, description, successDesc
               <div className="flex items-start justify-between mb-5">
                 <div>
                   <h3 className="font-display text-xl font-medium text-foreground">{title ?? "Houd mij op de hoogte"}</h3>
-                  <p className="text-sm text-foreground/60 mt-1">{description ?? "Laat je e-mailadres achter en we laten je weten zodra een Mama Circle start of de bevallings workshops starten."}</p>
+                  <p className="text-sm text-foreground/60 mt-1">{description ?? "Laat je e-mailadres achter en ik laat je weten zodra een Mama Circle start of de bevallings workshops starten."}</p>
                 </div>
-                <button onClick={handleClose} className="text-foreground/40 hover:text-foreground ml-4 shrink-0">
+                <button onClick={handleClose} aria-label="Sluiten"
+                  className="w-11 h-11 -mr-2 -mt-2 flex items-center justify-center rounded-2xl text-foreground/60 hover:text-foreground ml-2 shrink-0">
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
               {status === "success" ? (
                 <div className="rounded-2xl bg-primary/10 border border-primary/20 p-5 text-center">
-                  <p className="text-2xl mb-2">🌙</p>
                   <p className="font-semibold text-foreground mb-1">Fijn, je staat op de lijst!</p>
-                  <p className="text-sm text-foreground/60">{successDescription ?? "We laten je weten zodra er genoeg animo is."}</p>
+                  <p className="text-sm text-foreground/60">{successDescription ?? "Ik laat je weten zodra er genoeg animo is."}</p>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-3">
@@ -89,8 +89,9 @@ export function InterestModal({ isOpen, onClose, title, description, successDesc
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="jouw@email.nl"
+                    aria-label="Je e-mailadres"
                     required
-                    className="w-full px-4 py-3 rounded-2xl border border-border/60 bg-card/60 text-foreground placeholder:text-foreground/35 focus:outline-none focus:ring-2 focus:ring-primary/40 text-sm"
+                    className="w-full px-4 py-3 rounded-2xl border border-border/60 bg-card/60 text-foreground placeholder:text-foreground/55 text-sm"
                   />
                   {status === "error" && (
                     <p className="text-xs text-red-500">{errorMsg}</p>
@@ -100,7 +101,7 @@ export function InterestModal({ isOpen, onClose, title, description, successDesc
                     disabled={status === "loading"}
                     className="w-full py-3 rounded-2xl bg-accent text-accent-foreground font-semibold text-sm hover:bg-accent/90 transition-opacity disabled:opacity-60"
                   >
-                    {status === "loading" ? "Bezig…" : "Meld mij aan ✨"}
+                    {status === "loading" ? "Bezig…" : "Zet mij op de lijst"}
                   </button>
                 </form>
               )}

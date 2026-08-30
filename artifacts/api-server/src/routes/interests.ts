@@ -2,7 +2,7 @@ import { Router } from "express";
 import { db, studioSettings } from "@workspace/db";
 import { eq } from "drizzle-orm";
 import { requireAdmin } from "../middlewares/auth.js";
-import { sendAdminNotification } from "../lib/email.js";
+import { sendAdminNotification, sendReeksAanmeldingBevestiging } from "../lib/email.js";
 
 // Interesselijst en zorgkaart-feedback, allebei opgeslagen in studio_settings
 // (het lokale JSON-bestand van vroeger werkt niet op Vercel: die schijf is
@@ -86,6 +86,13 @@ router.get("/admin/geboortereeks-aanmeldingen", requireAdmin, async (_req: any, 
   res.json(await readList<Aanmelding>("geboortereeks_aanmeldingen"));
 });
 
+// Openbare teller voor de reekspagina: hoeveel aanmeldingen er zijn op de
+// acht plekken. Alleen het aantal, nooit namen of adressen.
+router.get("/geboortereeks-plekken", async (_req, res) => {
+  const list = await readList<Aanmelding>("geboortereeks_aanmeldingen");
+  res.json({ aanmeldingen: list.length, plekken: 8 });
+});
+
 router.post("/geboortereeks-aanmelding", async (req, res) => {
   const { naam, email } = req.body as { naam?: string; email?: string };
   if (!naam || !naam.trim() || naam.length > 120) {
@@ -106,7 +113,21 @@ router.post("/geboortereeks-aanmelding", async (req, res) => {
     email,
     details: "Aanmelding Geboortereeks (start 29 september). Stuur het intakeformulier en de factuur per mail.",
   }).catch(() => {});
+  // De aanmelder krijgt direct een bevestiging, zodat ze weet dat het gelukt
+  // is en wat er nu gebeurt; de aanmelding zelf is dan al veilig opgeslagen.
+  sendReeksAanmeldingBevestiging({ toEmail: email, toName: naam.trim() }).catch(() => {});
   return res.json({ message: "Aangemeld" });
+});
+
+// Verwijderen van een e-mailadres van de interesselijst, bijvoorbeeld een
+// testaanmelding of iemand die zich afmeldt.
+router.delete("/admin/interests", requireAdmin, async (req: any, res: any) => {
+  const { email } = req.body as { email?: string };
+  if (!email) return res.status(400).json({ error: "Geen e-mailadres opgegeven" });
+  const list = await readList<Interest>("interests");
+  const nieuw = list.filter((i) => i.email !== email);
+  await saveList("interests", nieuw);
+  res.json({ verwijderd: list.length - nieuw.length });
 });
 
 router.get("/admin/zorgverlener-aanmeldingen", requireAdmin, async (_req: any, res: any) => {

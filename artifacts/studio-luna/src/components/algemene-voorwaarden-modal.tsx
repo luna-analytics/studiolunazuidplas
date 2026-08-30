@@ -73,7 +73,7 @@ export function AlgemeneVoorwaardenModal({ isOpen, onClose }: Props) {
                   <h2 className="font-display text-lg font-medium text-foreground">Algemene Voorwaarden</h2>
                   <p className="text-xs text-foreground/45 mt-0.5">Studio Luna · Laatste aanpassing: maart 2026</p>
                 </div>
-                <button onClick={onClose} className="text-foreground/40 hover:text-foreground transition-colors">
+                <button onClick={onClose} aria-label="Sluiten" className="w-11 h-11 -mr-2 flex items-center justify-center rounded-2xl text-foreground/60 hover:text-foreground transition-colors">
                   <X className="w-5 h-5" />
                 </button>
               </div>

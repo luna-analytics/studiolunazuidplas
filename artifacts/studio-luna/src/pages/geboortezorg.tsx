@@ -170,7 +170,7 @@ export default function Geboortezorg() {
             </a>
             .
           </p>
-          <p className="text-xs text-foreground/55 mt-3">Bijgewerkt in {LAATST_BIJGEWERKT.tekst}</p>
+          <p className="text-xs text-foreground/70 mt-3">Bijgewerkt in {LAATST_BIJGEWERKT.tekst}</p>
         </motion.div>
 
         {/* ── ZOEKEN EN FILTERS ── */}
@@ -186,7 +186,7 @@ export default function Geboortezorg() {
                 value={zoek}
                 onChange={(e) => setZoek(e.target.value)}
                 placeholder="Waar ben je naar op zoek?"
-                className="w-full pr-5 py-3.5 rounded-2xl border border-border/40 bg-card text-[15px] text-foreground placeholder:text-foreground/35 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                className="w-full pr-5 py-3.5 rounded-2xl border border-border/40 bg-card text-[15px] text-foreground placeholder:text-foreground/55"
                 style={{ paddingLeft: "3rem" }}
                 aria-label="Zoek in de zorgkaart"
               />
@@ -211,7 +211,7 @@ export default function Geboortezorg() {
                   </button>
                 ))}
               </div>
-              <p className="text-xs text-foreground/55 mt-3">
+              <p className="text-xs text-foreground/70 mt-3">
                 <a href="#kenmerken-uitleg" className="hover:text-foreground/70 underline underline-offset-2">
                   Wat betekenen deze kenmerken?
                 </a>
@@ -260,7 +260,7 @@ export default function Geboortezorg() {
                     >
                       {cat.titel}
                     </span>
-                    <span className="text-xs text-foreground/55 mt-3">
+                    <span className="text-xs text-foreground/70 mt-3">
                       {cat.aanbieders.length} {cat.aanbieders.length === 1 ? "aanbieder" : "aanbieders"}
                     </span>
                   </Link>
@@ -290,7 +290,7 @@ export default function Geboortezorg() {
                       >
                         {a.naam}
                       </a>
-                      <span className="text-sm text-foreground/55">{a.plaats}</span>
+                      <span className="text-sm text-foreground/70">{a.plaats}</span>
                       {isNieuw(a.toegevoegd) && (
                         <span className="text-[11px] uppercase tracking-[0.18em] text-primary/70">
                           nieuw
@@ -354,7 +354,7 @@ export default function Geboortezorg() {
                       required
                       rows={3}
                       maxLength={2000}
-                      className="w-full px-4 py-3 rounded-2xl border border-border/40 bg-card text-[15px] text-foreground placeholder:text-foreground/35 focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none leading-relaxed"
+                      className="w-full px-4 py-3 rounded-2xl border border-border/40 bg-card text-[15px] text-foreground placeholder:text-foreground/55 resize-none leading-relaxed"
                     />
                     <div className="flex flex-col sm:flex-row gap-3">
                       <input
@@ -363,7 +363,7 @@ export default function Geboortezorg() {
                         onChange={(e) => setFbEmail(e.target.value)}
                         placeholder="jouw@email.nl"
                         required
-                        className="flex-1 px-4 py-3 rounded-2xl border border-border/40 bg-card text-sm text-foreground placeholder:text-foreground/35 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                        className="flex-1 px-4 py-3 rounded-2xl border border-border/40 bg-card text-sm text-foreground placeholder:text-foreground/55"
                       />
                       <button
                         type="submit"
@@ -452,7 +452,7 @@ export default function Geboortezorg() {
                     placeholder="Naam van je praktijk"
                     required
                     maxLength={160}
-                    className="flex-1 px-4 py-3 rounded-2xl border border-border/40 bg-card text-[15px] text-foreground placeholder:text-foreground/35 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    className="flex-1 px-4 py-3 rounded-2xl border border-border/40 bg-card text-[15px] text-foreground placeholder:text-foreground/55"
                   />
                   <input
                     type="text"
@@ -460,7 +460,7 @@ export default function Geboortezorg() {
                     onChange={(e) => setZvWebsite(e.target.value)}
                     placeholder="Je website (mag leeg)"
                     maxLength={300}
-                    className="flex-1 px-4 py-3 rounded-2xl border border-border/40 bg-card text-[15px] text-foreground placeholder:text-foreground/35 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    className="flex-1 px-4 py-3 rounded-2xl border border-border/40 bg-card text-[15px] text-foreground placeholder:text-foreground/55"
                   />
                 </div>
                 <textarea
@@ -470,7 +470,7 @@ export default function Geboortezorg() {
                   required
                   rows={3}
                   maxLength={2000}
-                  className="w-full px-4 py-3 rounded-2xl border border-border/40 bg-card text-[15px] text-foreground placeholder:text-foreground/35 focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none leading-relaxed"
+                  className="w-full px-4 py-3 rounded-2xl border border-border/40 bg-card text-[15px] text-foreground placeholder:text-foreground/55 resize-none leading-relaxed"
                 />
                 <div className="flex flex-col sm:flex-row gap-3">
                   <input
@@ -479,7 +479,7 @@ export default function Geboortezorg() {
                     onChange={(e) => setZvEmail(e.target.value)}
                     placeholder="jouw@email.nl"
                     required
-                    className="flex-1 px-4 py-3 rounded-2xl border border-border/40 bg-card text-sm text-foreground placeholder:text-foreground/35 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    className="flex-1 px-4 py-3 rounded-2xl border border-border/40 bg-card text-sm text-foreground placeholder:text-foreground/55"
                   />
                   <button
                     type="submit"

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { BottomNav } from "@/components/bottom-nav";
 import { SeoFooter } from "@/components/seo-footer";
@@ -38,12 +38,12 @@ const PRAKTISCH = [
     label: "Prijs",
     waarde: (
       <>
-        <s className="text-foreground/45">€195</s>{" "}
         <span className="font-semibold text-foreground">€175</span> introductieprijs voor deze
-        eerste groep
+        eerste groep, daarna €195
       </>
     ),
   },
+  { label: "Aanmelden", waarde: "de groep wordt half september definitief, meld je voor die tijd aan" },
 ];
 
 const INBEGREPEN = [
@@ -96,6 +96,16 @@ export default function Geboortereeks() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "bezig" | "klaar" | "fout">("idle");
   const [foutmelding, setFoutmelding] = useState("");
+  // Eerlijke plekkenteller: het aantal aanmeldingen komt van de server,
+  // zodat er nooit een verzonnen schaarste op de pagina staat.
+  const [aanmeldingen, setAanmeldingen] = useState<number | null>(null);
+
+  useEffect(() => {
+    fetch(`${import.meta.env.BASE_URL}api/geboortereeks-plekken`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => { if (d && typeof d.aanmeldingen === "number") setAanmeldingen(d.aanmeldingen); })
+      .catch(() => {});
+  }, []);
 
   const meldAan = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -121,7 +131,7 @@ export default function Geboortereeks() {
   };
 
   usePageMeta({
-    title: "De Geboortereeks: zwangerschapscursus in Nieuwerkerk aan den IJssel, start 29 september | Studio Luna",
+    title: "De Geboortereeks: zwangerschapscursus Nieuwerkerk aan den IJssel",
     description: "Acht wekelijkse lessen zwangerschapsyoga en geboortevoorbereiding in Nieuwerkerk aan den IJssel (Zuidplas), plus mama-en-babyyoga na afloop. Start dinsdag 29 september, maximaal 8 zwangeren, introductieprijs €175.",
     jsonLd: [
       {
@@ -169,7 +179,10 @@ export default function Geboortereeks() {
             De <em className="not-italic text-primary">Geboortereeks</em>
           </h1>
           <p className="text-foreground/60 text-sm mt-3 tracking-wide">
-            8-weekse zwangerschapsyoga en geboortevoorbereidingsreeks
+            8-weekse zwangerschapsyoga- en geboortevoorbereidingsreeks
+          </p>
+          <p className="text-[15px] text-foreground/80 mt-4">
+            Start dinsdag 29 september · €175 introductieprijs voor deze eerste groep, daarna €195
           </p>
         </motion.div>
 
@@ -191,8 +204,7 @@ export default function Geboortereeks() {
               <p className="text-[15px] text-foreground/80 leading-[1.95] mb-4">
                 Wat deze reeks bijzonder maakt: de lessen worden ook gevuld met kennis van een
                 bekkenfysiotherapeut over je bekken en bekkenbodem en van een fysiotherapeut
-                over rust en houding. Dat vind je bij vrijwel geen enkele andere cursus in de
-                regio.
+                over rust en houding.
               </p>
               <p className="text-[15px] text-foreground/80 leading-[1.95]">
                 En als alle kindjes geboren zijn, komt de groep nog één keer samen voor
@@ -237,16 +249,25 @@ export default function Geboortereeks() {
             <h2 className="font-display text-2xl md:text-3xl font-medium text-foreground leading-[1.15] mb-5">
               Wil je erbij zijn op 29 september?
             </h2>
+            {aanmeldingen !== null && aanmeldingen > 0 && (
+              <p className="text-sm font-semibold text-primary mb-3">
+                {aanmeldingen >= 8
+                  ? "Alle acht plekken hebben een aanmelding."
+                  : `Nog ${8 - aanmeldingen} van de acht plekken vrij.`}
+              </p>
+            )}
             <p className="text-[15px] text-foreground/80 leading-[1.9] mb-7">
-              Er is plek voor acht zwangeren. Meld je aan met je naam en e-mailadres; daarna
-              stuur ik je persoonlijk het intakeformulier en de factuur per mail, en is je
-              plekje gereserveerd.
+              Er is plek voor acht zwangeren en de groep wordt half september definitief. Je
+              kunt meedoen als je bij de start tussen de 15 en 28 weken zwanger bent. Meld je
+              aan met je naam en e-mailadres; daarna stuur ik je persoonlijk het
+              intakeformulier en de factuur per mail, en is je plekje gereserveerd.
             </p>
 
             {status === "klaar" ? (
               <p className="text-[15px] text-foreground/80 leading-[1.9] rounded-2xl bg-primary/8 border border-primary/15 px-5 py-4">
-                Dankjewel voor je aanmelding! Je ontvangt van mij persoonlijk een mailtje met
-                het intakeformulier en de factuur.
+                Dankjewel voor je aanmelding! Er staat een bevestiging in je mail, en daarna
+                ontvang je van mij persoonlijk het intakeformulier en de factuur; dan is je
+                plek definitief.
               </p>
             ) : (
               <form onSubmit={meldAan} className="space-y-3">
@@ -256,17 +277,19 @@ export default function Geboortereeks() {
                     value={naam}
                     onChange={(e) => setNaam(e.target.value)}
                     placeholder="Je naam"
+                    aria-label="Je naam"
                     required
                     maxLength={120}
-                    className="flex-1 px-4 py-3 rounded-2xl border border-border/40 bg-card text-[15px] text-foreground placeholder:text-foreground/35 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    className="flex-1 px-4 py-3 rounded-2xl border border-border/40 bg-card text-[15px] text-foreground placeholder:text-foreground/55"
                   />
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="jouw@email.nl"
+                    aria-label="Je e-mailadres"
                     required
-                    className="flex-1 px-4 py-3 rounded-2xl border border-border/40 bg-card text-[15px] text-foreground placeholder:text-foreground/35 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    className="flex-1 px-4 py-3 rounded-2xl border border-border/40 bg-card text-[15px] text-foreground placeholder:text-foreground/55"
                   />
                 </div>
                 <button
@@ -308,7 +331,7 @@ export default function Geboortereeks() {
                 Wat zit erin
               </p>
               <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground mb-8 leading-[1.15]">
-                De meest complete geboortevoorbereiding in Zuidplas
+                Een complete geboortevoorbereiding
               </h2>
             </motion.div>
 
@@ -357,8 +380,8 @@ export default function Geboortereeks() {
               ))}
             </div>
             <p className="text-sm text-foreground/65 leading-[1.85] mt-5">
-              Kan je een keer een les niet? Je kan je les inhalen bij een volgend blok of we
-              kijken samen naar een gepaste oplossing.
+              Kun je een keer een les niet? Dan haal je de les in bij een volgend blok, of we
+              kijken samen naar een passende oplossing.
             </p>
           </div>
         </section>
@@ -451,8 +474,8 @@ export default function Geboortereeks() {
           isOpen={isInterestOpen}
           onClose={() => setIsInterestOpen(false)}
           title="Interesselijst Geboortereeks"
-          description="Laat je e-mailadres achter en we houden je op de hoogte van de Geboortereeks en volgende startdata. Vrijblijvend, je zit nergens aan vast."
-          successDescription="We houden je op de hoogte van de Geboortereeks en de volgende startdata."
+          description="Laat je e-mailadres achter en ik houd je op de hoogte van de Geboortereeks en volgende startdata. Vrijblijvend, je zit nergens aan vast."
+          successDescription="Ik houd je op de hoogte van de Geboortereeks en de volgende startdata."
         />
         <SeoFooter />
         <BottomNav />

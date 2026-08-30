@@ -207,6 +207,43 @@ export async function sendReminderEmail(params: {
   }
 }
 
+// ─── BEVESTIGING AANMELDING GEBOORTEREEKS (direct naar de aanmelder) ─────────
+// Zonder deze mail hoorde een aanmelder pas iets wanneer Marjolein zelf
+// mailde; wie een dag niets hoort gaat twijfelen. De tekst spiegelt de
+// succesmelding op de reekspagina en belooft niets nieuws.
+export async function sendReeksAanmeldingBevestiging(params: { toEmail: string; toName: string }) {
+  const { toEmail, toName } = params;
+
+  const inner = `
+    ${HEADER("Aanmelding ontvangen")}
+    <tr>
+      <td style="padding:40px 45px;">
+        <h2 style="margin:0 0 15px; font-family:'Playfair Display', serif; font-size:22px; color:#3A4F41; font-weight:normal;">Lieve ${toName},</h2>
+        <p style="margin:0 0 16px; font-size:15px; line-height:1.8; color:#3A4F41; font-weight:300;">
+          Je aanmelding voor de Geboortereeks is binnen, dankjewel! De reeks start op
+          dinsdag 29 september in Nieuwerkerk aan den IJssel, elke dinsdag van 19:00 tot 20:15 uur.
+        </p>
+        <p style="margin:0 0 16px; font-size:15px; line-height:1.8; color:#3A4F41; font-weight:300;">
+          Marjolein stuurt je persoonlijk het intakeformulier en de factuur per mail;
+          daarna is je plek definitief. Je hoeft nu verder niets te doen.
+        </p>
+      </td>
+    </tr>
+    ${FOOTER}
+  `;
+
+  try {
+    await resend.emails.send({
+      from: FROM,
+      to: toEmail,
+      subject: "Je aanmelding voor de Geboortereeks is binnen",
+      html: WRAPPER(inner),
+    });
+  } catch (err) {
+    console.error("[email] Fout bij verzenden aanmeldbevestiging:", err);
+  }
+}
+
 // ─── ADMIN NOTIFICATIE (bij nieuwe reservering / boeking / aanvraag) ─────────
 export async function sendAdminNotification(params: {
   type: "reservering" | "boeking" | "aanvraag";

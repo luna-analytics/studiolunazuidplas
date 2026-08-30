@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useRoute } from "wouter";
 import { BottomNav } from "@/components/bottom-nav";
+import { CtaBlock } from "@/components/cta-block";
 import { motion } from "framer-motion";
 import { ArrowLeft, Send } from "lucide-react";
+import { usePageMeta } from "@/lib/seo";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -50,6 +52,22 @@ export default function BlogArtikel() {
   const [post, setPost] = useState<BlogPost | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+
+  // Zonder eigen titel hield elk artikel de titel en omschrijving van de
+  // homepage; daarmee was het voor zoekmachines onvindbaar.
+  usePageMeta({
+    title: post ? `${post.title} | Blog Studio Luna` : "Blog | Studio Luna",
+    description: post ? `${post.title}. Een artikel uit het blog van Studio Luna over zwangerschap en moederschap in Zuidplas.` : undefined,
+    jsonLd: post ? [{
+      "@context": "https://schema.org",
+      "@type": "Article",
+      headline: post.title,
+      datePublished: post.publishedAt || undefined,
+      author: { "@type": "Person", name: "Marjolein" },
+      publisher: { "@type": "Organization", name: "Studio Luna", url: "https://www.studiolunazuidplas.nl/" },
+      mainEntityOfPage: `https://www.studiolunazuidplas.nl/blog/${post.slug || post.id}`,
+    }] : undefined,
+  });
 
   const [comments, setComments] = useState<BlogComment[]>([]);
   const [formName, setFormName] = useState("");
@@ -192,6 +210,12 @@ export default function BlogArtikel() {
             </Link>
           </div>
 
+          {/* Blogs zijn binnenkomers via Google en Instagram; zonder dit blok
+              eindigde een artikel als dood spoor zonder weg naar de reeks. */}
+          <div className="mt-8">
+            <CtaBlock />
+          </div>
+
           {/* ── REACTIES SECTIE ── */}
           <div className="mt-14">
             <h2 className="font-display text-xl font-medium text-foreground mb-6">
@@ -240,7 +264,7 @@ export default function BlogArtikel() {
                     value={formName}
                     onChange={(e) => setFormName(e.target.value)}
                     required
-                    className="w-full bg-secondary border-0 rounded-xl px-4 py-3 text-sm placeholder:text-foreground/35 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    className="w-full bg-secondary border-0 rounded-xl px-4 py-3 text-sm placeholder:text-foreground/55"
                   />
                   <textarea
                     placeholder="Schrijf je reactie..."
@@ -248,7 +272,7 @@ export default function BlogArtikel() {
                     onChange={(e) => setFormBody(e.target.value)}
                     required
                     rows={4}
-                    className="w-full bg-secondary border-0 rounded-xl px-4 py-3 text-sm placeholder:text-foreground/35 focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none leading-relaxed"
+                    className="w-full bg-secondary border-0 rounded-xl px-4 py-3 text-sm placeholder:text-foreground/55 resize-none leading-relaxed"
                   />
                   {formError && <p className="text-xs text-red-500">{formError}</p>}
                   <button
