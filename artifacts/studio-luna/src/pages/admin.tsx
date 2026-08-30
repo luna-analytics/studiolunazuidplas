@@ -2414,6 +2414,29 @@ const DEFAULT_PT: PaginaTeksten = {
   cta_label: "Bekijk de Geboortereeks",
 };
 
+// Verkleint een gekozen foto in de browser voordat hij naar de database gaat.
+// Zonder dit kwamen foto's op volle grootte (megabytes) in de opslag terecht
+// en werd elke pagina traag; de blog-uploads deden dit al, deze velden nog niet.
+function verkleinFoto(file: File, maxBreedte: number): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const schaal = Math.min(1, maxBreedte / img.width);
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.round(img.width * schaal);
+      canvas.height = Math.round(img.height * schaal);
+      const ctx = canvas.getContext("2d");
+      if (!ctx) { reject(new Error("Canvas niet beschikbaar")); return; }
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      resolve(canvas.toDataURL("image/jpeg", 0.85));
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error("Foto kon niet gelezen worden")); };
+    img.src = url;
+  });
+}
+
 function InhoudTab() {
   const [teksten, setTeksten] = useState<PaginaTeksten>(DEFAULT_PT);
   const [saving, setSaving] = useState<string | null>(null);
@@ -2644,13 +2667,10 @@ function InhoudTab() {
                   onChange={(e) => {
                     const file = e.target.files?.[0];
                     if (!file) return;
-                    if (file.size > 4 * 1024 * 1024) { alert("Foto is te groot (max 4 MB)."); return; }
-                    const reader = new FileReader();
-                    reader.onload = (ev) => {
-                      const dataUrl = ev.target?.result as string;
-                      setTeksten((prev) => ({ ...prev, over_mij_foto: dataUrl }));
-                    };
-                    reader.readAsDataURL(file);
+                    if (file.size > 15 * 1024 * 1024) { alert("Foto is te groot (max 15 MB)."); return; }
+                    verkleinFoto(file, 800)
+                      .then((dataUrl) => setTeksten((prev) => ({ ...prev, over_mij_foto: dataUrl })))
+                      .catch(() => alert("Foto kon niet gelezen worden."));
                   }}
                 />
               </label>
@@ -2706,10 +2726,10 @@ function InhoudTab() {
                     {teksten[fotoKey] ? "Andere foto" : "Kies foto"}
                     <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={(e) => {
                       const file = e.target.files?.[0]; if (!file) return;
-                      if (file.size > 4 * 1024 * 1024) { alert("Foto is te groot (max 4 MB)."); return; }
-                      const reader = new FileReader();
-                      reader.onload = (ev) => setTeksten((prev) => ({ ...prev, [fotoKey]: ev.target?.result as string }));
-                      reader.readAsDataURL(file);
+                      if (file.size > 15 * 1024 * 1024) { alert("Foto is te groot (max 15 MB)."); return; }
+                      verkleinFoto(file, 1600)
+                        .then((dataUrl) => setTeksten((prev) => ({ ...prev, [fotoKey]: dataUrl })))
+                        .catch(() => alert("Foto kon niet gelezen worden."));
                     }} />
                   </label>
                   {teksten[fotoKey] && <button onClick={() => setTeksten((prev) => ({ ...prev, [fotoKey]: "" }))} className="text-xs text-foreground/40 hover:text-red-500 transition-colors text-left">Verwijder foto</button>}
@@ -2756,10 +2776,10 @@ function InhoudTab() {
                     {teksten[fotoKey] ? "Andere foto" : "Kies foto"}
                     <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={(e) => {
                       const file = e.target.files?.[0]; if (!file) return;
-                      if (file.size > 4 * 1024 * 1024) { alert("Foto is te groot (max 4 MB)."); return; }
-                      const reader = new FileReader();
-                      reader.onload = (ev) => setTeksten((prev) => ({ ...prev, [fotoKey]: ev.target?.result as string }));
-                      reader.readAsDataURL(file);
+                      if (file.size > 15 * 1024 * 1024) { alert("Foto is te groot (max 15 MB)."); return; }
+                      verkleinFoto(file, 1600)
+                        .then((dataUrl) => setTeksten((prev) => ({ ...prev, [fotoKey]: dataUrl })))
+                        .catch(() => alert("Foto kon niet gelezen worden."));
                     }} />
                   </label>
                   {teksten[fotoKey] && <button onClick={() => setTeksten((prev) => ({ ...prev, [fotoKey]: "" }))} className="text-xs text-foreground/40 hover:text-red-500 transition-colors text-left">Verwijder foto</button>}
@@ -2819,10 +2839,10 @@ function InhoudTab() {
                     {teksten[fotoKey] ? "Andere foto" : "Kies foto"}
                     <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={(e) => {
                       const file = e.target.files?.[0]; if (!file) return;
-                      if (file.size > 4 * 1024 * 1024) { alert("Foto is te groot (max 4 MB)."); return; }
-                      const reader = new FileReader();
-                      reader.onload = (ev) => setTeksten((prev) => ({ ...prev, [fotoKey]: ev.target?.result as string }));
-                      reader.readAsDataURL(file);
+                      if (file.size > 15 * 1024 * 1024) { alert("Foto is te groot (max 15 MB)."); return; }
+                      verkleinFoto(file, 1600)
+                        .then((dataUrl) => setTeksten((prev) => ({ ...prev, [fotoKey]: dataUrl })))
+                        .catch(() => alert("Foto kon niet gelezen worden."));
                     }} />
                   </label>
                   {teksten[fotoKey] && <button onClick={() => setTeksten((prev) => ({ ...prev, [fotoKey]: "" }))} className="text-xs text-foreground/40 hover:text-red-500 transition-colors text-left">Verwijder foto</button>}
