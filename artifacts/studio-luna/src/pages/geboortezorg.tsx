@@ -4,7 +4,7 @@ import { BottomNav } from "@/components/bottom-nav";
 import { SeoFooter } from "@/components/seo-footer";
 import { motion } from "framer-motion";
 import { Search } from "lucide-react";
-import { ZORGKAART, TAG_LABELS, LAATST_BIJGEWERKT, type ZorgTag, type Zorgverlener } from "@/data/zorgkaart";
+import { ZORGKAART, TAG_LABELS, LAATST_BIJGEWERKT, isNieuw, type ZorgTag, type Zorgverlener } from "@/data/zorgkaart";
 import { usePageMeta } from "@/lib/seo";
 
 const fadeUp = {
@@ -291,6 +291,11 @@ export default function Geboortezorg() {
                         {a.naam}
                       </a>
                       <span className="text-sm text-foreground/55">{a.plaats}</span>
+                      {isNieuw(a.toegevoegd) && (
+                        <span className="text-[11px] uppercase tracking-[0.18em] text-primary/70">
+                          nieuw
+                        </span>
+                      )}
                     </div>
                     <p className="text-[15px] text-foreground/80 leading-[1.9] mt-1.5">{a.beschrijving}</p>
                     {a.voordeel && (

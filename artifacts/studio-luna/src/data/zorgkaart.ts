@@ -45,7 +45,23 @@ export type Zorgverlener = {
   /** Optioneel voordeel dat deze zorgverlener via Studio Luna aanbiedt,
    *  bijvoorbeeld een kortingscode of gratis kennismaking. Eén lopende zin. */
   voordeel?: string;
+  /** Datum waarop deze vermelding op de kaart kwam, als 2026-08-30. Zolang die
+   *  minder dan een week geleden is toont de kaart het woord nieuw naast de
+   *  naam. Dat verdwijnt vanzelf, zonder dat de site opnieuw uitgerold hoeft
+   *  te worden, want de vergelijking gebeurt in de browser van de bezoeker. */
+  toegevoegd?: string;
 };
+
+const NIEUW_DAGEN = 7;
+
+/** Staat deze vermelding er korter dan een week op? */
+export function isNieuw(toegevoegd?: string): boolean {
+  if (!toegevoegd) return false;
+  const opgevoerd = new Date(`${toegevoegd}T00:00:00`).getTime();
+  if (Number.isNaN(opgevoerd)) return false;
+  const dagenGeleden = (Date.now() - opgevoerd) / 86_400_000;
+  return dagenGeleden >= 0 && dagenGeleden < NIEUW_DAGEN;
+}
 
 export type ZorgCategorie = {
   id: string;
@@ -57,7 +73,7 @@ export type ZorgCategorie = {
 
 /** Werk deze bij wanneer de kaart inhoudelijk verandert; hij staat zichtbaar
  *  op de pagina en in de structured data. */
-export const LAATST_BIJGEWERKT = { tekst: "augustus 2026", iso: "2026-08-20" };
+export const LAATST_BIJGEWERKT = { tekst: "augustus 2026", iso: "2026-08-30" };
 
 export const ZORGKAART: ZorgCategorie[] = [
   {
@@ -544,6 +560,14 @@ export const ZORGKAART: ZorgCategorie[] = [
         beschrijving: "Geboortefotograaf die onder meer in Gouda en Rotterdam bevallingen fotografeert, inclusief keizersneden, en is aangesloten bij Stichting Keurmerk Geboortefotografie.",
         tags: [],
       },
+      {
+        naam: "Noa Fotografie",
+        plaats: "Rotterdam (werkgebied heel Zuid-Holland)",
+        website: "https://noafotografie.nl/",
+        beschrijving: "Geboortefotograaf uit Rotterdam met ruim tien jaar ervaring en meer dan tweehonderd gefotografeerde bevallingen, die in heel Zuid-Holland fotografeert, in meerdere ziekenhuizen mee de operatiekamer op mag bij een keizersnede en is aangesloten bij de internationale beroepsvereniging voor geboortefotografen.",
+        tags: ["aan-huis", "avond-weekend"],
+        toegevoegd: "2026-08-30",
+      },
     ],
   },
   {
@@ -572,6 +596,14 @@ export const ZORGKAART: ZorgCategorie[] = [
         website: "https://www.makeamemory.nl/",
         beschrijving: "Landelijke stichting waarvan professionele fotografen kosteloos foto's maken voor ouders die hun kind verliezen of hebben verloren, vanaf 18 weken zwangerschap, aan te vragen via zorgprofessionals en 24 uur per dag bereikbaar.",
         tags: [],
+      },
+      {
+        naam: "Groei naar de Toekomst (Marloes Lagendijk)",
+        plaats: "Afspraken op een plek naar keuze in de regio",
+        website: "https://www.groeinaardetoekomst.nl/",
+        beschrijving: "Coachingspraktijk van een verloskundige met ruim zeventien jaar ervaring, opgeleid als specialist bevalverwerking, voor begeleiding bij babyverlies, bevallingstrauma en een volgende zwangerschap na verlies, met afspraken bij je thuis of op een andere plek waar jij je prettig voelt.",
+        tags: ["1-op-1", "aan-huis"],
+        toegevoegd: "2026-08-30",
       },
     ],
   },
