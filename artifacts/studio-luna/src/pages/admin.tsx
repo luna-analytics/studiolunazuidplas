@@ -3446,7 +3446,7 @@ type ReeksAanmelding = { naam: string; email: string; timestamp: string };
 type Interesse = { email: string; timestamp: string };
 type ZorgkaartFeedback = { bericht: string; email: string; timestamp: string };
 type ZorgverlenerAanmelding = { praktijk: string; website: string; bericht: string; email: string; timestamp: string };
-type Kennismaking = { email: string; telefoon: string; bericht: string; timestamp: string };
+type Kennismaking = { naam: string; email: string; telefoon: string; bericht: string; timestamp: string };
 
 const datumKort = (iso: string) =>
   new Date(iso).toLocaleDateString("nl-NL", { day: "numeric", month: "short", year: "numeric" });
@@ -3596,6 +3596,7 @@ function AanmeldingenTab() {
           <div className="space-y-3">
             {kennismakingen.map((k, i) => (
               <div key={i} className="bg-card border border-border/30 rounded-3xl px-5 py-4">
+                <p className="font-semibold text-foreground text-sm mb-1.5">{k.naam}</p>
                 <p className="text-sm text-foreground/80 leading-[1.8] whitespace-pre-wrap">{k.bericht}</p>
                 <div className="flex items-center justify-between gap-3 mt-3">
                   <div className="flex items-center gap-3 flex-wrap">

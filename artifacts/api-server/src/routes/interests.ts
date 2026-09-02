@@ -24,7 +24,7 @@ type Interest = { email: string; timestamp: string };
 type Feedback = { bericht: string; email: string; timestamp: string };
 type Aanmelding = { naam: string; email: string; timestamp: string };
 type ZorgverlenerAanmelding = { praktijk: string; website: string; bericht: string; email: string; timestamp: string };
-type Kennismaking = { email: string; telefoon: string; bericht: string; timestamp: string };
+type Kennismaking = { naam: string; email: string; telefoon: string; bericht: string; timestamp: string };
 
 async function readList<T>(key: string): Promise<T[]> {
   const result = await db.select().from(studioSettings).where(eq(studioSettings.key, key)).limit(1);
@@ -174,9 +174,12 @@ router.get("/admin/kennismakingen", requireAdmin, async (_req: any, res: any) =>
 });
 
 router.post("/kennismaking", async (req, res) => {
-  const { email, telefoon, bericht } = req.body as {
-    email?: string; telefoon?: string; bericht?: string;
+  const { naam, email, telefoon, bericht } = req.body as {
+    naam?: string; email?: string; telefoon?: string; bericht?: string;
   };
+  if (!naam || !naam.trim() || naam.length > 120) {
+    return res.status(400).json({ error: "Vul je naam in" });
+  }
   if (!email || !EMAIL_RE.test(email)) {
     return res.status(400).json({ error: "Ongeldig e-mailadres" });
   }
@@ -185,11 +188,11 @@ router.post("/kennismaking", async (req, res) => {
   }
   const tel = (telefoon ?? "").trim().slice(0, 40);
   const list = await readList<Kennismaking>("kennismakingen");
-  list.push({ email, telefoon: tel, bericht: bericht.trim(), timestamp: new Date().toISOString() });
+  list.push({ naam: naam.trim(), email, telefoon: tel, bericht: bericht.trim(), timestamp: new Date().toISOString() });
   await saveList("kennismakingen", list);
   sendAdminNotification({
     type: "aanvraag",
-    name: `Kennismaking: ${eersteWoorden(bericht)}`,
+    name: `Kennismaking: ${naam.trim()}`,
     email,
     details: `Telefoon: ${tel || "niet opgegeven"}
 

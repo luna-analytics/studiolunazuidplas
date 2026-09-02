@@ -12,6 +12,7 @@ interface KennismakingModalProps {
 }
 
 export function KennismakingModal({ isOpen, onClose }: KennismakingModalProps) {
+  const [naam, setNaam] = useState("");
   const [email, setEmail] = useState("");
   const [telefoon, setTelefoon] = useState("");
   const [bericht, setBericht] = useState("");
@@ -26,7 +27,7 @@ export function KennismakingModal({ isOpen, onClose }: KennismakingModalProps) {
       const res = await fetch(`${import.meta.env.BASE_URL}api/kennismaking`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, telefoon, bericht }),
+        body: JSON.stringify({ naam, email, telefoon, bericht }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -45,6 +46,7 @@ export function KennismakingModal({ isOpen, onClose }: KennismakingModalProps) {
     onClose();
     setTimeout(() => {
       setStatus("idle");
+      setNaam("");
       setEmail("");
       setTelefoon("");
       setBericht("");
@@ -98,6 +100,21 @@ export function KennismakingModal({ isOpen, onClose }: KennismakingModalProps) {
                 </div>
               ) : (
                 <form onSubmit={verstuur} className="space-y-3">
+                  <div>
+                    <label htmlFor="kennismaking-naam" className="block text-xs font-semibold text-foreground/70 mb-1.5">
+                      Je naam
+                    </label>
+                    <input
+                      id="kennismaking-naam"
+                      type="text"
+                      value={naam}
+                      onChange={(e) => setNaam(e.target.value)}
+                      placeholder="Je naam"
+                      required
+                      maxLength={120}
+                      className="w-full px-4 py-3 rounded-2xl border border-border/60 bg-card/60 text-foreground placeholder:text-foreground/55 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    />
+                  </div>
                   <div>
                     <label htmlFor="kennismaking-email" className="block text-xs font-semibold text-foreground/70 mb-1.5">
                       E-mailadres
