@@ -3,6 +3,7 @@ import { Link } from "wouter";
 import { BottomNav } from "@/components/bottom-nav";
 import { SeoFooter } from "@/components/seo-footer";
 import { InterestModal } from "@/components/interest-modal";
+import { KennismakingModal } from "@/components/kennismaking-modal";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -31,7 +32,7 @@ const KALENDER = [
 const PRAKTISCH = [
   { label: "Start", waarde: "dinsdag 29 september, daarna elke week op dinsdag van 19:00 tot 20:15 uur" },
   { label: "Groep", waarde: "maximaal 8 zwangeren, een vaste groep" },
-  { label: "Voor wie", waarde: "bij de start ben je tussen de 15 en 28 weken zwanger" },
+  { label: "Voor wie", waarde: "bij de start ben je ongeveer tussen de 20 en 28 weken zwanger" },
   { label: "Locatie", waarde: "in Nieuwerkerk aan den IJssel, de leslocatie volgt binnenkort" },
   { label: "Inclusief", waarde: "goodiebag, reader en mama-en-babyyoga na afloop" },
   {
@@ -46,6 +47,14 @@ const PRAKTISCH = [
   { label: "Aanmelden", waarde: "de groep wordt half september definitief, meld je voor die tijd aan" },
 ];
 
+const AVOND = [
+  "Landen",
+  "Yoga en ademwerk",
+  "Focus op een thema",
+  "Eindontspanning",
+  "Ruimte voor napraten en thee",
+];
+
 const INBEGREPEN = [
   "Acht wekelijkse lessen van 75 minuten op de dinsdagavond, plus mama-en-babyyoga cadeau zodra alle kindjes geboren zijn",
   "Een vaste groep van maximaal acht zwangeren, zodat je elkaar echt leert kennen",
@@ -58,7 +67,7 @@ const INBEGREPEN = [
 const FAQ_ITEMS = [
   {
     vraag: "Voor wie is de Geboortereeks?",
-    antwoord: "Je kunt meedoen als je bij de start op 29 september tussen de 15 en 28 weken zwanger bent. Yoga-ervaring is niet nodig, alles wordt rustig opgebouwd en uitgelegd.",
+    antwoord: "Bij de start op 29 september ben je ongeveer tussen de 20 en 28 weken zwanger. Val je daarbuiten maar wil je toch graag meedoen, stuur me dan even een berichtje. Yoga-ervaring is niet nodig, alles wordt rustig opgebouwd en uitgelegd.",
   },
   {
     vraag: "Wat kost de reeks?",
@@ -92,6 +101,7 @@ const WHATSAPP_URL = "https://wa.me/31643735343?text=" + encodeURIComponent("Hoi
 
 export default function Geboortereeks() {
   const [isInterestOpen, setIsInterestOpen] = useState(false);
+  const [isKennismakingOpen, setIsKennismakingOpen] = useState(false);
   const [naam, setNaam] = useState("");
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "bezig" | "klaar" | "fout">("idle");
@@ -235,6 +245,47 @@ export default function Geboortereeks() {
           </div>
         </section>
 
+        {/* ── EEN DINSDAGAVOND ── */}
+        <section className="px-7 md:px-14 lg:px-18 py-10 md:py-14">
+          <motion.div
+            variants={fadeUp} initial="hidden" whileInView="show"
+            viewport={{ once: true, margin: "-60px" }} custom={0}
+            className="md:grid md:grid-cols-[1fr_1fr] md:gap-16 md:items-start"
+          >
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary/60 mb-4 flex items-center gap-3">
+                <span className="inline-block w-8 h-px bg-primary/40" />
+                De les
+              </p>
+              <h2 className="font-display text-2xl md:text-3xl font-medium text-foreground leading-[1.15] mb-5">
+                Hoe een dinsdagavond eruitziet
+              </h2>
+              <div className="max-w-sm">
+                {AVOND.map((stap) => (
+                  <p key={stap} className="py-3 border-b border-border/15 text-[15px] text-foreground/80">
+                    {stap}
+                  </p>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-10 md:mt-0">
+              <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary/60 mb-4 flex items-center gap-3">
+                <span className="inline-block w-8 h-px bg-primary/40" />
+                Instappen
+              </p>
+              <h2 className="font-display text-2xl md:text-3xl font-medium text-foreground leading-[1.15] mb-5">
+                Wanneer begin je?
+              </h2>
+              <p className="text-[15px] text-foreground/80 leading-[1.95]">
+                Bij de start ben je ongeveer tussen de 20 en 28 weken zwanger. Zo eindig je de
+                reeks rond de 28 tot 36 weken, met de bevalling in zicht. Val je daarbuiten maar
+                wil je toch graag meedoen, stuur me dan even een berichtje.
+              </p>
+            </div>
+          </motion.div>
+        </section>
+
         {/* ── AANMELDEN ── */}
         <section id="aanmelden" className="px-7 md:px-14 lg:px-18 py-10 md:py-14 scroll-mt-24">
           <motion.div
@@ -258,7 +309,7 @@ export default function Geboortereeks() {
             )}
             <p className="text-[15px] text-foreground/80 leading-[1.9] mb-7">
               Er is plek voor acht zwangeren en de groep wordt half september definitief. Je
-              kunt meedoen als je bij de start tussen de 15 en 28 weken zwanger bent. Meld je
+              kunt meedoen als je bij de start ongeveer tussen de 20 en 28 weken zwanger bent. Meld je
               aan met je naam en e-mailadres; daarna stuur ik je persoonlijk het
               intakeformulier en de factuur per mail, en is je plekje gereserveerd.
             </p>
@@ -304,17 +355,29 @@ export default function Geboortereeks() {
               </form>
             )}
 
-            <p className="text-sm text-foreground/65 leading-[1.9] mt-5">
-              Eerst iets vragen? Stuur gerust een{" "}
-              <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="text-primary font-semibold hover:text-primary/75">
-                appje
-              </a>
-              . Nog niet zeker? Zet je{" "}
-              <button onClick={() => setIsInterestOpen(true)} className="text-primary font-semibold hover:text-primary/75">
-                vrijblijvend op de interesselijst
+            <div className="mt-8 pt-7 border-t border-border/20">
+              <p className="text-[15px] text-foreground/80 leading-[1.9] mb-4">
+                Heb je vragen of wil je even telefonisch kennismaken? Stuur dan even een
+                berichtje, dan neem ik contact met je op.
+              </p>
+              <button
+                onClick={() => setIsKennismakingOpen(true)}
+                className="inline-flex items-center gap-2 border border-primary/40 text-primary px-6 py-3 rounded-2xl font-semibold text-sm hover:bg-primary/8"
+              >
+                Stuur een berichtje
               </button>
-              .
-            </p>
+              <p className="text-sm text-foreground/65 leading-[1.9] mt-5">
+                Liever direct appen? Dat kan ook via{" "}
+                <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="text-primary font-semibold hover:text-primary/75">
+                  WhatsApp
+                </a>
+                . Nog niet zeker? Zet je{" "}
+                <button onClick={() => setIsInterestOpen(true)} className="text-primary font-semibold hover:text-primary/75">
+                  vrijblijvend op de interesselijst
+                </button>
+                .
+              </p>
+            </div>
           </motion.div>
         </section>
 
@@ -476,6 +539,10 @@ export default function Geboortereeks() {
           title="Interesselijst Geboortereeks"
           description="Laat je e-mailadres achter en ik houd je op de hoogte van de Geboortereeks en volgende startdata. Vrijblijvend, je zit nergens aan vast."
           successDescription="Ik houd je op de hoogte van de Geboortereeks en de volgende startdata."
+        />
+        <KennismakingModal
+          isOpen={isKennismakingOpen}
+          onClose={() => setIsKennismakingOpen(false)}
         />
         <SeoFooter />
         <BottomNav />

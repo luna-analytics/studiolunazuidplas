@@ -24,6 +24,7 @@ type Interest = { email: string; timestamp: string };
 type Feedback = { bericht: string; email: string; timestamp: string };
 type Aanmelding = { naam: string; email: string; timestamp: string };
 type ZorgverlenerAanmelding = { praktijk: string; website: string; bericht: string; email: string; timestamp: string };
+type Kennismaking = { email: string; telefoon: string; bericht: string; timestamp: string };
 
 async function readList<T>(key: string): Promise<T[]> {
   const result = await db.select().from(studioSettings).where(eq(studioSettings.key, key)).limit(1);
@@ -161,6 +162,38 @@ router.post("/zorgverlener-aanmelding", async (req, res) => {
     name: `Zorgkaart-vermelding: ${praktijk.trim()}`,
     email,
     details: `Website: ${(website ?? "").trim() || "niet opgegeven"}\n\n${bericht.trim()}`,
+  }).catch(() => {});
+  return res.json({ message: "Ontvangen" });
+});
+
+// Vragen en telefonische kennismaking vanaf de reekspagina. Bewust een eigen
+// lijst en niet de interesselijst: hier verwacht iemand dat Marjolein zelf
+// contact opneemt, dus de mailnotificatie is het belangrijkste onderdeel.
+router.get("/admin/kennismakingen", requireAdmin, async (_req: any, res: any) => {
+  res.json(await readList<Kennismaking>("kennismakingen"));
+});
+
+router.post("/kennismaking", async (req, res) => {
+  const { email, telefoon, bericht } = req.body as {
+    email?: string; telefoon?: string; bericht?: string;
+  };
+  if (!email || !EMAIL_RE.test(email)) {
+    return res.status(400).json({ error: "Ongeldig e-mailadres" });
+  }
+  if (!bericht || !bericht.trim() || bericht.length > 1000) {
+    return res.status(400).json({ error: "Schrijf een bericht van maximaal 1000 tekens" });
+  }
+  const tel = (telefoon ?? "").trim().slice(0, 40);
+  const list = await readList<Kennismaking>("kennismakingen");
+  list.push({ email, telefoon: tel, bericht: bericht.trim(), timestamp: new Date().toISOString() });
+  await saveList("kennismakingen", list);
+  sendAdminNotification({
+    type: "aanvraag",
+    name: `Kennismaking: ${eersteWoorden(bericht)}`,
+    email,
+    details: `Telefoon: ${tel || "niet opgegeven"}
+
+${bericht.trim()}`,
   }).catch(() => {});
   return res.json({ message: "Ontvangen" });
 });

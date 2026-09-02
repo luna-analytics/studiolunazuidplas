@@ -3446,6 +3446,7 @@ type ReeksAanmelding = { naam: string; email: string; timestamp: string };
 type Interesse = { email: string; timestamp: string };
 type ZorgkaartFeedback = { bericht: string; email: string; timestamp: string };
 type ZorgverlenerAanmelding = { praktijk: string; website: string; bericht: string; email: string; timestamp: string };
+type Kennismaking = { email: string; telefoon: string; bericht: string; timestamp: string };
 
 const datumKort = (iso: string) =>
   new Date(iso).toLocaleDateString("nl-NL", { day: "numeric", month: "short", year: "numeric" });
@@ -3475,6 +3476,7 @@ function AanmeldingenTab() {
   const [interesse, setInteresse] = useState<Interesse[]>([]);
   const [feedback, setFeedback] = useState<ZorgkaartFeedback[]>([]);
   const [zorgverleners, setZorgverleners] = useState<ZorgverlenerAanmelding[]>([]);
+  const [kennismakingen, setKennismakingen] = useState<Kennismaking[]>([]);
 
   const laad = async () => {
     setLaden(true);
@@ -3482,13 +3484,14 @@ function AanmeldingenTab() {
       const res = await apiFetch(pad);
       return res.ok ? await res.json() : [];
     };
-    const [a, i, f, z] = await Promise.all([
+    const [a, i, f, z, k] = await Promise.all([
       haal<ReeksAanmelding>("/admin/geboortereeks-aanmeldingen"),
       haal<Interesse>("/admin/interests"),
       haal<ZorgkaartFeedback>("/admin/zorgkaart-feedback"),
       haal<ZorgverlenerAanmelding>("/admin/zorgverlener-aanmeldingen"),
+      haal<Kennismaking>("/admin/kennismakingen"),
     ]);
-    setAanmeldingen(a); setInteresse(i); setFeedback(f); setZorgverleners(z);
+    setAanmeldingen(a); setInteresse(i); setFeedback(f); setZorgverleners(z); setKennismakingen(k);
     setLaden(false);
   };
 
@@ -3579,6 +3582,29 @@ function AanmeldingenTab() {
                 <div className="flex items-center justify-between gap-3 mt-3">
                   <a href={`mailto:${f.email}`} className="text-xs text-primary hover:underline">{f.email}</a>
                   <p className="text-xs text-foreground/35 shrink-0">{datumKort(f.timestamp)}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </Lijstblok>
+
+      <Lijstblok titel="Vragen en kennismakingen" aantal={kennismakingen.length}>
+        {kennismakingen.length === 0 ? (
+          <LegeLijst tekst="Nog geen berichtjes via de reekspagina. Je krijgt er ook een mail van." />
+        ) : (
+          <div className="space-y-3">
+            {kennismakingen.map((k, i) => (
+              <div key={i} className="bg-card border border-border/30 rounded-3xl px-5 py-4">
+                <p className="text-sm text-foreground/80 leading-[1.8] whitespace-pre-wrap">{k.bericht}</p>
+                <div className="flex items-center justify-between gap-3 mt-3">
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <a href={`mailto:${k.email}`} className="text-xs text-primary hover:underline">{k.email}</a>
+                    {k.telefoon && (
+                      <a href={`tel:${k.telefoon.replace(/\s/g, "")}`} className="text-xs text-primary hover:underline">{k.telefoon}</a>
+                    )}
+                  </div>
+                  <p className="text-xs text-foreground/35 shrink-0">{datumKort(k.timestamp)}</p>
                 </div>
               </div>
             ))}

@@ -38,7 +38,7 @@ const DEFAULT_TEKSTEN = {
 const FAQ_ITEMS = [
   {
     vraag: "Vanaf hoeveel weken kan ik meedoen?",
-    antwoord: "Je kunt meedoen als je bij de start tussen de 15 en 28 weken zwanger bent. De eerstvolgende reeks start op dinsdag 29 september.",
+    antwoord: "Bij de start ben je ongeveer tussen de 20 en 28 weken zwanger. Val je daarbuiten maar wil je toch graag meedoen, stuur me dan even een berichtje. De eerstvolgende reeks start op dinsdag 29 september.",
   },
   {
     vraag: "Heb ik yoga-ervaring nodig?",
