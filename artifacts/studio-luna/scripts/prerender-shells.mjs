@@ -88,7 +88,7 @@ const ROUTES = [
         "@context": "https://schema.org",
         "@type": "Course",
         name: "Studio Luna Geboortereeks",
-        description: "Acht wekelijkse lessen zwangerschapsyoga en geboortevoorbereiding plus mama-en-babyyoga na afloop, gevuld met kennis van een fysiotherapeut en een bekkenfysiotherapeut, met een partnerles en een mamaspa-avond.",
+        description: "Acht wekelijkse lessen zwangerschapsyoga en geboortevoorbereiding plus mama-en-babyyoga na afloop, met een les samen met een bekkenfysiotherapeut, een partnerles en een mamaspa-avond.",
         provider: { "@type": "LocalBusiness", name: "Studio Luna", url: `${BASIS}/` },
         hasCourseInstance: {
           "@type": "CourseInstance",

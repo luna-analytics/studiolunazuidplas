@@ -58,7 +58,7 @@ const AVOND = [
 const INBEGREPEN = [
   "Acht wekelijkse lessen van 75 minuten op de dinsdagavond, plus mama-en-babyyoga cadeau zodra alle kindjes geboren zijn",
   "Een vaste groep van maximaal acht zwangeren, zodat je elkaar echt leert kennen",
-  "Kennis van een fysiotherapeut over rust, houding en slaap en van een bekkenfysiotherapeut over je bekken en bekkenbodem",
+  "Een les over je bekken en bekkenbodem die een bekkenfysiotherapeut samen met mij geeft",
   "Een complete bevallingsles en een partnerles waarin je geboortepartner tools krijgt om jou te ondersteunen",
   "Een mamaspa-avond met zelfmassage en restorative yoga die helemaal om ontspanning en herstel draait",
   "Elke week een oefening in de WhatsApp-groep, een goodiebag en tijd voor verbinding met andere mama's",
@@ -148,7 +148,7 @@ export default function Geboortereeks() {
         "@context": "https://schema.org",
         "@type": "Course",
         name: "Studio Luna Geboortereeks",
-        description: "Acht wekelijkse lessen zwangerschapsyoga en geboortevoorbereiding plus mama-en-babyyoga na afloop, gevuld met kennis van een fysiotherapeut en een bekkenfysiotherapeut, met een partnerles en een mamaspa-avond.",
+        description: "Acht wekelijkse lessen zwangerschapsyoga en geboortevoorbereiding plus mama-en-babyyoga na afloop, met een les samen met een bekkenfysiotherapeut, een partnerles en een mamaspa-avond.",
         provider: { "@type": "LocalBusiness", name: "Studio Luna", url: "https://www.studiolunazuidplas.nl/" },
         hasCourseInstance: {
           "@type": "CourseInstance",
@@ -212,9 +212,8 @@ export default function Geboortereeks() {
                 die helemaal om ontspanning draait.
               </p>
               <p className="text-[15px] text-foreground/80 leading-[1.95] mb-4">
-                Wat deze reeks bijzonder maakt: de lessen worden ook gevuld met kennis van een
-                bekkenfysiotherapeut over je bekken en bekkenbodem en van een fysiotherapeut
-                over rust en houding.
+                Wat deze reeks bijzonder maakt: een bekkenfysiotherapeut geeft één van de
+                lessen samen met mij en neemt je mee in alles over je bekken en bekkenbodem.
               </p>
               <p className="text-[15px] text-foreground/80 leading-[1.95]">
                 En als alle kindjes geboren zijn, komt de groep nog één keer samen voor
@@ -466,8 +465,8 @@ export default function Geboortereeks() {
             </h2>
             <p className="text-[15px] text-foreground/80 leading-[1.95]">
               Moeder, gepromoveerd onderzoeker en yogadocente. Ik geef alle lessen van de
-              Geboortereeks zelf en vul ze aan met kennis van een fysiotherapeut en een
-              bekkenfysiotherapeut. Bij Studio Luna combineer ik gevoel en wetenschap: je
+              Geboortereeks zelf; de les over je bekken en bekkenbodem geef ik samen met
+              een bekkenfysiotherapeut. Bij Studio Luna combineer ik gevoel en wetenschap: je
               bereidt je sterk en met vertrouwen voor op je bevalling, en je leert andere
               moeders uit Zuidplas kennen.
             </p>
