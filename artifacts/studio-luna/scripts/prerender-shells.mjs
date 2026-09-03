@@ -73,6 +73,8 @@ const ROUTES = [
     title: "Studio Luna | Zwangerschapsyoga Nieuwerkerk aan den IJssel",
     beschrijving: "Studio Luna biedt de Geboortereeks, acht wekelijkse lessen zwangerschapsyoga en geboortevoorbereiding in Nieuwerkerk aan den IJssel (Zuidplas), en de zorgkaart met alle geboortezorg in de regio.",
     jsonLd: [faqJsonLd(homeFaq)],
+    // De herofoto vast laten voorladen zodat hij er staat zodra de app rendert.
+    preload: "/images/foto-hero.webp",
     inhoud:
       `<h1>Zwangerschapsyoga en geboortevoorbereiding in Zuidplas</h1>` +
       `<p>Studio Luna biedt de Geboortereeks, acht wekelijkse lessen zwangerschapsyoga en geboortevoorbereiding in Nieuwerkerk aan den IJssel, en houdt de Geboortezorgkaart Zuidplas bij met alle geboortezorg in de regio.</p>` +
@@ -190,7 +192,10 @@ for (const route of ROUTES) {
   const extraJsonLd = (route.jsonLd ?? [])
     .map((data) => `  <script type="application/ld+json" data-shell-jsonld>${JSON.stringify(data)}</script>\n`)
     .join("");
-  html = html.replace("</head>", `  <link rel="canonical" href="${url}" />\n${extraJsonLd}  </head>`);
+  const preload = route.preload
+    ? `  <link rel="preload" as="image" href="${route.preload}" fetchpriority="high" />\n`
+    : "";
+  html = html.replace("</head>", `  <link rel="canonical" href="${url}" />\n${preload}${extraJsonLd}  </head>`);
   if (route.inhoud) {
     html = html.replace('<div id="root"></div>', `<div id="root">${route.inhoud}</div>`);
   }

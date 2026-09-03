@@ -15,8 +15,12 @@ const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 const img = (path: string) => `${BASE}/images/${path}`;
 
 export const IMAGES = {
-  /** Grote achtergrondafbeelding op de Studio Luna-pagina (liggend, min. 1400×900px) */
-  hero: img("hero-yoga.webp"),
+  /** Grote achtergrondafbeelding op de Studio Luna-pagina. Dit is een lokale
+   *  kopie van de via /admin geüploade herofoto, zodat bezoekers meteen de
+   *  echte foto zien in plaats van eerst de stockfoto. Na het uploaden van een
+   *  nieuwe herofoto in /admin moet deze kopie ook ververst worden
+   *  (public/images/foto-hero.webp), anders flitst kort de oude foto. */
+  hero: img("foto-hero.webp"),
 
   /** Foto bij de Zwangerschapsyoga sectie op de Aanbod-pagina (portret of liggend) */
   yoga: img("hero-yoga.webp"),
