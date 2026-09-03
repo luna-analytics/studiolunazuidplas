@@ -2377,7 +2377,7 @@ const DEFAULT_PT: PaginaTeksten = {
   aanbod_yoga_tekst1: "Sterk, ontspannen en vol vertrouwen richting je bevalling. Met zachte houdingen houden we je veranderende lichaam in balans. We oefenen met ademhaling en maken contact met je baby.",
   aanbod_yoga_tekst2: "Elke les heeft een net andere focus, zoals het bekken, de kracht van je adem of ruimte in je rug. De lessen vormen samen de Geboortereeks, waarin je in een vaste groep naar je bevalling toewerkt.",
   aanbod_yoga_tijd: "Elke dinsdag 19:00",
-  aanbod_yoga_locatie: "Nieuwerkerk aan den IJssel · leslocatie volgt binnenkort",
+  aanbod_yoga_locatie: "Waldorfhaus de Perenboom · Raadhuisplein 28, Nieuwerkerk aan den IJssel",
   aanbod_yoga_extra: "Na afloop: verse thee en tijd voor verbinding",
   aanbod_circle_titel: "Zwanger & Mama Circle",
   aanbod_circle_tekst: "Bij Studio Luna geloven we in de kracht van de 'village'. Naast de fysieke lessen creëren we een veilige cirkel waarin je ervaringen deelt, vragen stelt en naar elkaar omkijkt. We gebruiken zachte yoga- en ademhalingsoefeningen om samen te vertragen, zodat er ruimte ontstaat om echt te luisteren naar jezelf en elkaar. Echte verbinding met andere zwangeren en mama's in Zuidplas!",
@@ -2400,8 +2400,8 @@ const DEFAULT_PT: PaginaTeksten = {
   home_village_tagline: "Welkom in jouw village.",
   home_aanbod_heading: "Alles wat je nodig hebt\nop weg naar de bevalling.",
   home_aanbod_items: "Kleine groepen, veel aandacht en persoonlijk contact.\nZwangerschapsyoga: bevalling voorbereiden, kracht van de adem en fysieke balans.\nNa afloop altijd tijd voor een kopje thee en verbinding.\nEen vaste groep die samen naar de bevalling toewerkt.\nWhatsApp-community voor vragen en tips tussen lessen door.\nAandacht voor zowel het fysieke als het mentale aspect van moederschap.",
-  home_locatie_naam: "Nieuwerkerk aan den IJssel",
-  home_locatie_adres: "De leslocatie volgt binnenkort.",
+  home_locatie_naam: "Waldorfhaus de Perenboom",
+  home_locatie_adres: "Raadhuisplein 28\n2914 KM Nieuwerkerk aan den IJssel",
   home_contact_email: "info@studiolunazuidplas.nl",
   home_contact_telefoon: "+31 6 43 73 53 43",
   home_contact_instagram: "@studiolunazuidplas",
@@ -2563,12 +2563,12 @@ function InhoudTab() {
       <div className="bg-card border border-border/30 rounded-3xl p-5 space-y-4">
         <h3 className="font-display text-lg font-medium">Studio Luna pagina — Locatie en contact</h3>
         <p className="text-xs text-foreground/50 leading-[1.7]">
-          Laat de locatievelden leeg zolang de leslocatie nog niet rond is; de site zegt dan
-          vanzelf "in Nieuwerkerk aan den IJssel, de leslocatie volgt binnenkort". Zodra je een
-          adres met huisnummer invult verschijnt ook de knop Bekijk op kaart weer.
+          De leslocatie is Waldorfhaus de Perenboom, Raadhuisplein 28 in Nieuwerkerk aan den IJssel. Laat deze velden
+          leeg om die standaardtekst te gebruiken; vul je ze wel in, dan wint jouw tekst.
+          Zolang het adres een huisnummer bevat verschijnt ook de knop Bekijk op kaart.
         </p>
-        {field("Locatienaam", "home_locatie_naam", false, "Leeg laten tot de locatie definitief is.")}
-        {field("Adres", "home_locatie_adres", true, "Leeg laten tot de locatie definitief is. Straat op regel 1, plaatsnaam op regel 2.")}
+        {field("Locatienaam", "home_locatie_naam", false, "Leeg laten voor de standaardnaam van de leslocatie.")}
+        {field("Adres", "home_locatie_adres", true, "Leeg laten voor het standaardadres. Straat op regel 1, postcode en plaats op regel 2.")}
         {field("E-mailadres", "home_contact_email")}
         {field("Telefoonnummer", "home_contact_telefoon")}
         {field("Instagram handle (zonder @)", "home_contact_instagram", false, "Bijv. @studiolunazuidplas")}
@@ -2589,7 +2589,7 @@ function InhoudTab() {
         {field("Beschrijving (alinea 2)", "aanbod_yoga_tekst2", true)}
         <div className="grid grid-cols-1 gap-3">
           {field("Tijdstip", "aanbod_yoga_tijd", false, "Leeg laten voor de standaardtekst met de startdatum erbij.")}
-          {field("Locatie", "aanbod_yoga_locatie", false, "Leeg laten tot de leslocatie definitief is.")}
+          {field("Locatie", "aanbod_yoga_locatie", false, "Leeg laten voor de standaardregel met de leslocatie.")}
           {field("Extra detail (thee, etc.)", "aanbod_yoga_extra")}
         </div>
         {saveBtn("yoga", {

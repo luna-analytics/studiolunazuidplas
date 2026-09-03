@@ -95,7 +95,7 @@ export default function Rooster() {
     !!(lesTypes.find((t) => t.id === typeId)?.beschrijving?.trim());
 
   const getLocatie = (typeId: string) =>
-    lesTypes.find((t) => t.id === typeId)?.locatie?.trim() || "De Perenboom";
+    lesTypes.find((t) => t.id === typeId)?.locatie?.trim() || "Waldorfhaus de Perenboom";
 
   const upcomingInstances = useMemo((): ClassInstance[] => {
     const instances: ClassInstance[] = [];

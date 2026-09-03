@@ -33,7 +33,7 @@ const PRAKTISCH = [
   { label: "Start", waarde: "dinsdag 29 september, daarna elke week op dinsdag van 19:00 tot 20:15 uur" },
   { label: "Groep", waarde: "maximaal 8 zwangeren, een vaste groep" },
   { label: "Voor wie", waarde: "bij de start ben je ongeveer tussen de 20 en 28 weken zwanger" },
-  { label: "Locatie", waarde: "in Nieuwerkerk aan den IJssel, de leslocatie volgt binnenkort" },
+  { label: "Locatie", waarde: "Waldorfhaus de Perenboom, Raadhuisplein 28 in Nieuwerkerk aan den IJssel" },
   { label: "Inclusief", waarde: "goodiebag, reader en mama-en-babyyoga na afloop" },
   {
     label: "Prijs",
@@ -87,7 +87,7 @@ const FAQ_ITEMS = [
   },
   {
     vraag: "Waar en hoe laat zijn de lessen?",
-    antwoord: "De lessen zijn in Nieuwerkerk aan den IJssel, elke dinsdag van 19:00 tot 20:15 uur. De leslocatie volgt binnenkort.",
+    antwoord: "De lessen zijn in Waldorfhaus de Perenboom aan het Raadhuisplein 28 in Nieuwerkerk aan den IJssel, elke dinsdag van 19:00 tot 20:15 uur.",
   },
   {
     vraag: "Wat is de mama-en-babyles?",
@@ -154,7 +154,7 @@ export default function Geboortereeks() {
           "@type": "CourseInstance",
           courseMode: "onsite",
           startDate: "2026-09-29",
-          location: { "@type": "Place", name: "Nieuwerkerk aan den IJssel", address: { "@type": "PostalAddress", addressLocality: "Nieuwerkerk aan den IJssel", addressRegion: "Zuidplas", addressCountry: "NL" } },
+          location: { "@type": "Place", name: "Waldorfhaus de Perenboom", address: { "@type": "PostalAddress", streetAddress: "Raadhuisplein 28", postalCode: "2914 KM", addressLocality: "Nieuwerkerk aan den IJssel", addressRegion: "Zuidplas", addressCountry: "NL" } },
         },
         offers: [
           { "@type": "Offer", name: "Geboortereeks, introductieprijs eerste groep", price: "175.00", priceCurrency: "EUR" },

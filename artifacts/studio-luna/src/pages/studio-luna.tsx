@@ -25,8 +25,8 @@ const DEFAULT_TEKSTEN = {
   home_village_tagline: "Welkom in jouw village.",
   home_aanbod_heading: "Alles wat je nodig hebt\nop weg naar de bevalling.",
   home_aanbod_items: "Kleine groepen, veel aandacht en persoonlijk contact.\nZwangerschapsyoga: bevalling voorbereiden, kracht van de adem en fysieke balans.\nNa afloop altijd tijd voor een kopje thee en verbinding.\nEen vaste groep die samen naar de bevalling toewerkt.\nWhatsApp-community voor vragen en tips tussen lessen door.\nAandacht voor zowel het fysieke als het mentale aspect van moederschap.",
-  home_locatie_naam: "Nieuwerkerk aan den IJssel",
-  home_locatie_adres: "De leslocatie volgt binnenkort.",
+  home_locatie_naam: "Waldorfhaus de Perenboom",
+  home_locatie_adres: "Raadhuisplein 28\n2914 KM Nieuwerkerk aan den IJssel",
   home_contact_email: "info@studiolunazuidplas.nl",
   home_contact_telefoon: "+31 6 43 73 53 43",
   home_contact_instagram: "@studiolunazuidplas",
@@ -50,7 +50,7 @@ const FAQ_ITEMS = [
   },
   {
     vraag: "Waar zijn de lessen?",
-    antwoord: "In Nieuwerkerk aan den IJssel. De leslocatie volgt binnenkort.",
+    antwoord: "In Waldorfhaus de Perenboom aan het Raadhuisplein 28 in Nieuwerkerk aan den IJssel.",
   },
   {
     vraag: "Hoe meld ik me aan?",
