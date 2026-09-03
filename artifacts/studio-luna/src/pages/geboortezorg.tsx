@@ -165,7 +165,8 @@ export default function Geboortezorg() {
             hier terug. Studio Luna houdt deze kaart bij zodat jij niet hoeft te zoeken.
           </p>
           <p className="text-[15px] text-foreground/75 leading-[1.9] mt-4 max-w-2xl">
-            Ben je zelf zorgverlener in de regio en sta je er nog niet op?{" "}
+            Ben je zelf zorgverlener in de regio en sta je er nog niet op? Of bied je online
+            zorg aan?{" "}
             <a href="#voor-zorgverleners" className="text-primary font-semibold hover:text-primary/75">
               Meld je gratis aan
             </a>
