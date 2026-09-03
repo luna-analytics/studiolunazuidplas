@@ -161,7 +161,8 @@ export default function Geboortezorg() {
             Zwanger of net bevallen in Nieuwerkerk aan den IJssel, Zevenhuizen, Moordrecht of
             Moerkapelle? Op deze pagina vind je alle zorg en ondersteuning uit de regio op één
             plek, van verloskundige en kraamzorg tot bekkenfysiotherapie, cursussen en sporten
-            met je baby. Studio Luna houdt deze kaart bij zodat jij niet hoeft te zoeken.
+            met je baby. Maar ook postpartum zorg, mentale steun en lactatiekundigen vind je
+            hier terug. Studio Luna houdt deze kaart bij zodat jij niet hoeft te zoeken.
           </p>
           <p className="text-[15px] text-foreground/75 leading-[1.9] mt-4 max-w-2xl">
             Ben je zelf zorgverlener in de regio en sta je er nog niet op?{" "}
