@@ -22,7 +22,7 @@ const KALENDER = [
   { datum: "dinsdag 6 oktober" },
   { datum: "dinsdag 13 oktober" },
   { datum: "dinsdag 20 oktober" },
-  { datum: "dinsdag 27 oktober" },
+  { datum: "dinsdag 27 oktober", toelichting: "Mélanie van Yila Bekkenfysiotherapie sluit aan als gastexpert en deelt haar kennis over het bekken en de bekkenbodem." },
   { datum: "dinsdag 3 november" },
   { datum: "dinsdag 10 november", noot: "partnerles" },
   { datum: "dinsdag 17 november" },
@@ -424,15 +424,22 @@ export default function Geboortereeks() {
 
             <div className="max-w-md">
               {KALENDER.map((les, i) => (
-                <motion.p
+                <motion.div
                   key={les.datum}
                   variants={fadeUp} initial="hidden" whileInView="show"
                   viewport={{ once: true, margin: "-40px" }} custom={Math.min(i * 0.03, 0.15)}
-                  className="text-[15px] text-foreground/80 leading-[1.9] py-3 border-b border-border/15"
+                  className="py-3 border-b border-border/15"
                 >
-                  {les.datum}
-                  {les.noot && <span className="text-foreground/55"> ({les.noot})</span>}
-                </motion.p>
+                  <p className="text-[15px] text-foreground/80 leading-[1.9]">
+                    {les.datum}
+                    {les.noot && <span className="text-foreground/55"> ({les.noot})</span>}
+                  </p>
+                  {les.toelichting && (
+                    <p className="text-[13.5px] text-foreground/60 leading-[1.7] mt-1">
+                      {les.toelichting}
+                    </p>
+                  )}
+                </motion.div>
               ))}
             </div>
             <p className="text-sm text-foreground/65 leading-[1.85] mt-5">
