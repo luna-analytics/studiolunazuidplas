@@ -32,12 +32,12 @@ const FASEN: { titel: string; ids: string[] }[] = [
   },
   {
     titel: "Na de geboorte",
-    ids: ["babymassage-dragen", "matrescentie"],
+    ids: ["babymassage-dragen"],
   },
   {
     // Aanbod dat niet aan één fase hangt maar de hele periode doorloopt.
     titel: "Voor elke fase",
-    ids: ["sporten", "zwangerschapsmassage-babyspa", "osteopathie", "zwangerschaps-newborn-gezinsfotografie", "mentale-steun"],
+    ids: ["sporten", "zwangerschapsmassage-babyspa", "osteopathie", "zwangerschaps-newborn-gezinsfotografie", "mentale-steun", "matrescentie"],
   },
   {
     titel: "Extra ondersteuning",
