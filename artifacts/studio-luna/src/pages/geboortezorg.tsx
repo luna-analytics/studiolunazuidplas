@@ -177,34 +177,38 @@ export default function Geboortezorg() {
     <div className="min-h-screen bg-background pb-28 md:pb-16 md:pt-16 flex justify-center">
       <div className="w-full max-w-7xl bg-background min-h-screen relative overflow-x-hidden">
 
-        {/* ── DE COVER — groen vlak met titel naast een echte foto, als de
-               omslag van een gids. De foto is de herofoto van de site
-               (public/images/foto-hero.webp); vervang dat bestand of het pad
-               in lib/images.ts om hier een andere foto te tonen. ── */}
-        <div className="px-7 md:px-14 lg:px-18 pt-10 md:pt-12 pb-6">
-          <div className="max-w-4xl rounded-md overflow-hidden md:grid md:grid-cols-2">
-            <div className="bg-primary px-7 py-9 md:px-10 md:py-12 flex flex-col justify-center">
-              <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary-foreground/60 mb-4">
-                Geboortezorgkaart · Regio Zuidplas
+        {/* ── TITEL EN INTRO — typografisch, met de herofoto in een zachte
+               organische uitsnede ernaast in plaats van een gekleurd vlak.
+               Andere foto? Vervang public/images/foto-hero.webp of pas het
+               pad aan in lib/images.ts. ── */}
+        <div className="px-7 md:px-14 lg:px-18 pt-14 md:pt-12 pb-6">
+          <div className="max-w-4xl md:grid md:grid-cols-[1fr_auto] md:gap-14 md:items-center">
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary/60 mb-3 flex items-center gap-3">
+                <span className="inline-block w-8 h-px bg-primary/40" />
+                Regio Zuidplas
               </p>
-              <h1 className="font-display text-3xl md:text-4xl font-medium text-primary-foreground leading-[1.12]">
+              <h1 className="font-display text-4xl md:text-5xl font-medium text-foreground leading-[1.1]">
                 Geboortezorg in Zuidplas
               </h1>
-              <p className="text-[15px] text-primary-foreground/85 leading-[1.85] mt-4">
+              <p className="text-[15px] text-foreground/75 leading-[1.9] mt-4 max-w-xl">
                 Vind zorg en ondersteuning tijdens je zwangerschap, bevalling en kraamtijd,
                 van verloskundige en kraamzorg tot bekkenfysiotherapie en sporten met je baby.
               </p>
-              <p className="text-sm text-primary-foreground/70 mt-4">
+              <p className="text-sm text-foreground/60 mt-3">
                 Nieuwerkerk aan den IJssel · Zevenhuizen · Moordrecht · Moerkapelle
               </p>
+              <p className="text-xs text-foreground/60 mt-2">
+                Met zorg bijgehouden door Studio Luna · bijgewerkt in {LAATST_BIJGEWERKT.tekst}
+              </p>
             </div>
-            <div className="relative h-52 md:h-auto">
-              <img src={IMAGES.hero} alt="" className="absolute inset-0 w-full h-full object-cover" />
-            </div>
+            <img
+              src={IMAGES.hero}
+              alt=""
+              className="hidden md:block w-56 lg:w-64 aspect-[4/5] object-cover"
+              style={{ borderRadius: "56% 44% 50% 50% / 46% 54% 46% 54%" }}
+            />
           </div>
-          <p className="text-xs text-foreground/60 mt-3">
-            Met zorg bijgehouden door Studio Luna · bijgewerkt in {LAATST_BIJGEWERKT.tekst}
-          </p>
         </div>
 
         {/* ── ZOEKEN ── */}
