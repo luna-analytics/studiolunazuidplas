@@ -22,11 +22,11 @@ const KALENDER = [
   { datum: "dinsdag 6 oktober" },
   { datum: "dinsdag 13 oktober" },
   { datum: "dinsdag 20 oktober" },
-  { datum: "dinsdag 27 oktober", toelichting: "Mélanie van Yila Bekkenfysiotherapie sluit aan als gastexpert en deelt haar kennis over het bekken en de bekkenbodem." },
+  { datum: "dinsdag 27 oktober", noot: "Een bekkenfysiotherapeut uit de regio sluit aan als gastexpert over het bekken en de bekkenbodem." },
   { datum: "dinsdag 3 november" },
-  { datum: "dinsdag 10 november", noot: "partnerles" },
+  { datum: "dinsdag 10 november", noot: "Partnerles" },
   { datum: "dinsdag 17 november" },
-  { datum: "voorjaar 2027", noot: "mama-en-babyyoga cadeau, datum volgt" },
+  { datum: "voorjaar 2027", noot: "Mama-en-babyyoga cadeau, datum volgt" },
 ];
 
 const PRAKTISCH = [
@@ -430,14 +430,9 @@ export default function Geboortereeks() {
                   viewport={{ once: true, margin: "-40px" }} custom={Math.min(i * 0.03, 0.15)}
                   className="py-3 border-b border-border/15"
                 >
-                  <p className="text-[15px] text-foreground/80 leading-[1.9]">
-                    {les.datum}
-                    {les.noot && <span className="text-foreground/55"> ({les.noot})</span>}
-                  </p>
-                  {les.toelichting && (
-                    <p className="text-[13.5px] text-foreground/60 leading-[1.7] mt-1">
-                      {les.toelichting}
-                    </p>
+                  <p className="text-[15px] text-foreground/80 leading-[1.9]">{les.datum}</p>
+                  {les.noot && (
+                    <p className="text-[13.5px] text-foreground/60 leading-[1.7] mt-1">{les.noot}</p>
                   )}
                 </motion.div>
               ))}
