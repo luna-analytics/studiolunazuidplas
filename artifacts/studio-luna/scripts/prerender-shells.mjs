@@ -113,7 +113,7 @@ const ROUTES = [
     title: "Geboortezorg in Zuidplas: verloskundigen, kraamzorg en meer | Studio Luna",
     beschrijving: "De Geboortezorgkaart Zuidplas: verloskundigen, kraamzorg, echo's, bekkenfysiotherapie, doula's, lactatiekundigen, cursussen en zwanger sporten in Nieuwerkerk aan den IJssel, Zevenhuizen, Moordrecht en Moerkapelle.",
     inhoud:
-      `<h1>Alles over geboortezorg in de regio Zuidplas</h1>` +
+      `<h1>Geboortezorg in Zuidplas</h1>` +
       `<p>Zwanger of net bevallen in Nieuwerkerk aan den IJssel, Zevenhuizen, Moordrecht of Moerkapelle? Op deze pagina staat alle zorg en ondersteuning uit de regio op één plek: ${totaalAanbieders} aanbieders in ${categorieen.length} categorieën. Studio Luna houdt deze kaart bij.</p>` +
       `<ul>` + categorieen.map((c) => `<li><a href="/geboortezorg-zuidplas/${c.id}">${tekstVeilig(c.titel)}</a> (${c.aanbieders.length} ${c.aanbieders.length === 1 ? "aanbieder" : "aanbieders"})</li>`).join("") + `</ul>`,
   },
@@ -197,7 +197,10 @@ for (const route of ROUTES) {
     : "";
   html = html.replace("</head>", `  <link rel="canonical" href="${url}" />\n${preload}${extraJsonLd}  </head>`);
   if (route.inhoud) {
-    html = html.replace('<div id="root"></div>', `<div id="root">${route.inhoud}</div>`);
+    // display:none zodat bezoekers bij het laden geen flits van kale tekst
+    // zien; crawlers lezen de HTML-bron en zien de inhoud gewoon. Zodra React
+    // start vervangt die de hele inhoud van #root door de echte pagina.
+    html = html.replace('<div id="root"></div>', `<div id="root"><div style="display:none">${route.inhoud}</div></div>`);
   }
 
   const doel = route.pad ? join(root, route.pad, "index.html") : join(root, "index.html");
