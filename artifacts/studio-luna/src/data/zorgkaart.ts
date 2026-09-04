@@ -536,10 +536,18 @@ export const ZORGKAART: ZorgCategorie[] = [
   },
   {
     id: "babymassage-dragen",
-    titel: "Babymassage en dragen",
-    intro: "Voor hulp bij het dragen van je baby of een cursus babymassage kun je in de regio bij deze aanbieders terecht.",
-    zoektermen: "babymassage draagconsulent draagdoek draagzak shantala babyconsulent",
+    titel: "Babymassage, dragen en babyspa",
+    intro: "Voor hulp bij het dragen van je baby, een cursus babymassage of een ontspannen floatsessie in een babyspa kun je in de regio bij deze aanbieders terecht.",
+    zoektermen: "babymassage draagconsulent draagdoek draagzak shantala babyconsulent babyspa baby spa floaten babyfloat",
     aanbieders: [
+      {
+        naam: "Baby Spa Gouda",
+        plaats: "Gouda",
+        website: "https://www.babyspa-gouda.nl/",
+        beschrijving: "Babyspa in Gouda met floatsessies en optionele babymassage voor baby's van zes weken tot ongeveer twaalf maanden, alleen op afspraak; er zijn ook combisessies waarbij een broertje of zusje van twee tot vier jaar meebubbelt.",
+        tags: ["op-locatie"],
+        toegevoegd: "2026-08-30",
+      },
       {
         naam: "Draag me mee",
         plaats: "Capelle aan den IJssel",
@@ -704,10 +712,10 @@ export const ZORGKAART: ZorgCategorie[] = [
     ],
   },
   {
-    id: "zwangerschapsmassage-babyspa",
-    titel: "Zwangerschapsmassage en babyspa",
-    intro: "Een massage die is afgestemd op je zwangerschap kan verlichting geven bij spanning en drukte, en in een babyspa ontspant je kleintje in warm water. Zeg er altijd even bij hoe ver je bent, dan stemt de behandelaar de massage daarop af.",
-    zoektermen: "zwangerschapsmassage massage babyspa baby spa floaten babyfloat wellness ontspanning",
+    id: "zwangerschapsmassage",
+    titel: "Zwangerschapsmassage",
+    intro: "Een massage die is afgestemd op je zwangerschap kan verlichting geven bij spanning en drukte. Zeg er altijd even bij hoe ver je bent, dan stemt de behandelaar de massage daarop af.",
+    zoektermen: "zwangerschapsmassage massage wellness ontspanning",
     aanbieders: [
       {
         naam: "Wellnessmassage Nieuwerkerk",
@@ -723,14 +731,6 @@ export const ZORGKAART: ZorgCategorie[] = [
         website: "https://www.spiritfortwo.nl/",
         beschrijving: "Zwangerschaps- en babymassage in Nieuwerkerk aan den IJssel en Rotterdam-Nesselande, door dezelfde fysiotherapeut en ZwangerFit-trainer die ook de Zwanger/Mamafit-lessen geeft.",
         tags: ["op-locatie", "1-op-1"],
-        toegevoegd: "2026-08-30",
-      },
-      {
-        naam: "Baby Spa Gouda",
-        plaats: "Gouda",
-        website: "https://www.babyspa-gouda.nl/",
-        beschrijving: "Babyspa in Gouda met floatsessies en optionele babymassage voor baby's van zes weken tot ongeveer twaalf maanden, alleen op afspraak; er zijn ook combisessies waarbij een broertje of zusje van twee tot vier jaar meebubbelt.",
-        tags: ["op-locatie"],
         toegevoegd: "2026-08-30",
       },
       {
