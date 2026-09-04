@@ -246,9 +246,11 @@ export default function Geboortezorg() {
                Bij zoeken verschijnen de aanbieders direct als lijst. ── */}
         <div className="px-7 md:px-14 lg:px-18 pt-6 pb-8">
           {!filterActief && (
-            <div className="max-w-xl space-y-10">
+            /* Op brede schermen vullen de fasegroepen twee kolommen, zodat de
+               gids de pagina vult in plaats van in één smalle strook te hangen. */
+            <div className="max-w-4xl md:columns-2 md:gap-x-16">
               {fasen.map((fase) => (
-                <section key={fase.titel}>
+                <section key={fase.titel} className="break-inside-avoid mb-10">
                   <h2 className="font-display text-xl md:text-2xl font-medium text-foreground leading-[1.2] pb-3 border-b border-border/25">
                     {fase.titel}
                   </h2>
