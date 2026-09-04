@@ -535,10 +535,10 @@ export const ZORGKAART: ZorgCategorie[] = [
     ],
   },
   {
-    id: "babymassage-dragen",
-    titel: "Babymassage, dragen en babyspa",
-    intro: "Voor hulp bij het dragen van je baby, een cursus babymassage of een ontspannen floatsessie in een babyspa kun je in de regio bij deze aanbieders terecht.",
-    zoektermen: "babymassage draagconsulent draagdoek draagzak shantala babyconsulent babyspa baby spa floaten babyfloat",
+    id: "babymassage-babyspa",
+    titel: "Babymassage en babyspa",
+    intro: "Voor een cursus babymassage of een ontspannen floatsessie in een babyspa kun je in de regio bij deze aanbieders terecht.",
+    zoektermen: "babymassage shantala babyconsulent babyspa baby spa floaten babyfloat",
     aanbieders: [
       {
         naam: "Baby Spa Gouda",
@@ -548,6 +548,29 @@ export const ZORGKAART: ZorgCategorie[] = [
         tags: ["op-locatie"],
         toegevoegd: "2026-08-30",
       },
+      {
+        naam: "Spirit for Two",
+        plaats: "Nieuwerkerk aan den IJssel (ook Rotterdam-Nesselande)",
+        website: "https://www.spiritfortwo.nl/",
+        beschrijving: "Zwangerschaps- en babymassage in Nieuwerkerk aan den IJssel en Rotterdam-Nesselande, door dezelfde fysiotherapeut en ZwangerFit-trainer die ook de Zwanger/Mamafit-lessen geeft.",
+        tags: ["op-locatie", "1-op-1"],
+        toegevoegd: "2026-08-30",
+      },
+      {
+        naam: "Bureau Babyzorg",
+        plaats: "Waddinxveen (werkt o.a. in Zevenhuizen en Moerkapelle)",
+        website: "https://bureaubabyzorg.nl/",
+        beschrijving: "Verpleegkundig babyconsulent in Waddinxveen voor babyconsulten, Shantala babymassage en draagconsulten, met een werkgebied dat onder meer Zevenhuizen, Moerkapelle en Gouda omvat.",
+        tags: ["1-op-1"],
+      },
+    ],
+  },
+  {
+    id: "baby-dragen",
+    titel: "Baby dragen",
+    intro: "Voor hulp bij het dragen van je baby, van het kiezen van een draagdoek of draagzak tot een persoonlijk draagconsult, kun je in de regio bij deze aanbieders terecht.",
+    zoektermen: "draagconsulent draagdoek draagzak dragen draagconsult",
+    aanbieders: [
       {
         naam: "Draag me mee",
         plaats: "Capelle aan den IJssel",

@@ -32,7 +32,7 @@ const FASEN: { titel: string; ids: string[] }[] = [
   },
   {
     titel: "Na de geboorte",
-    ids: ["babymassage-dragen"],
+    ids: ["babymassage-babyspa", "baby-dragen"],
   },
   {
     // Aanbod dat niet aan één fase hangt maar de hele periode doorloopt.
@@ -203,7 +203,7 @@ export default function Geboortezorg() {
               </p>
             </div>
             <img
-              src={IMAGES.hero}
+              src={IMAGES.zorgkaart}
               alt=""
               className="hidden md:block w-56 lg:w-64 aspect-[4/5] object-cover"
               style={{ borderRadius: "56% 44% 50% 50% / 46% 54% 46% 54%" }}

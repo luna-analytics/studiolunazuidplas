@@ -28,6 +28,10 @@ export const IMAGES = {
   /** Foto bij de Mama Circle sectie (bijv. groepsfoto of sfeerbeeld) */
   circle: img("hero-yoga.webp"),
 
+  /** Foto naast de kop van de Zorgkaart (staande uitsnede). Gratis stockfoto
+   *  van Unsplash, fotograaf Anna Mysłowska-Kiczek. */
+  zorgkaart: img("zorgkaart-hero.webp"),
+
   /** Logo bovenin de Aanbod-header */
   logo: img("studio-luna-logo.png"),
 };
