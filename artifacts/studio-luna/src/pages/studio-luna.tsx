@@ -98,14 +98,14 @@ export default function StudioLuna() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background pb-28 md:pb-16 md:pt-16 flex justify-center">
+    <div className="min-h-screen bg-background pb-28 md:pb-16 flex justify-center">
       <div className="w-full max-w-7xl bg-background min-h-screen relative overflow-x-hidden">
 
         {/* ── HERO — full-bleed, tekst zweeft over foto ── */}
         <motion.div
           initial={{ opacity: 0 }} animate={{ opacity: 1 }}
           transition={{ duration: 1.1, ease: [0.4, 0, 0.2, 1] }}
-          className="relative overflow-hidden md:mx-6 md:mt-6 md:rounded-3xl"
+          className="relative overflow-hidden"
           style={{ minHeight: "clamp(420px, 65vw, 720px)" }}
         >
           <img
@@ -118,13 +118,6 @@ export default function StudioLuna() {
 
           <div className="relative z-10 flex flex-col justify-end md:justify-center px-7 md:px-14 lg:px-18 pt-24 pb-12 md:py-20" style={{ minHeight: "clamp(420px, 65vw, 720px)" }}>
             <div className="md:max-w-lg">
-              <motion.p
-                initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 0.2 }}
-                className="text-[11px] font-medium uppercase tracking-[0.2em] text-white/55 mb-4"
-              >
-                Zwangerschapsyoga · Nieuwerkerk aan den IJssel · Zuidplas
-              </motion.p>
               <motion.h1
                 initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.35 }}
@@ -143,18 +136,21 @@ export default function StudioLuna() {
               >
                 <button
                   onClick={() => navigate(teksten.cta_url)}
-                  className="inline-flex items-center gap-2 bg-white text-foreground px-7 py-3.5 rounded-2xl font-semibold text-sm hover:bg-white/92 shadow-md group"
+                  className="inline-flex items-center gap-2 bg-white text-foreground px-7 py-3.5 rounded-xl font-semibold text-sm hover:bg-white/92 group"
                 >
                   {teksten.cta_label}
                   <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
                 </button>
                 <button
                   onClick={() => navigate("/geboortezorg-zuidplas")}
-                  className="inline-flex items-center gap-2 bg-white/12 backdrop-blur-sm border border-white/25 text-white px-7 py-3.5 rounded-2xl font-semibold text-sm hover:bg-white/22"
+                  className="inline-flex items-center self-center text-white/85 text-sm font-medium border-b border-white/45 pb-0.5 hover:text-white hover:border-white"
                 >
                   Ontdek de zorgkaart
                 </button>
               </motion.div>
+              <p className="mt-7 text-[13px] text-white/60">
+                Nieuwerkerk aan den IJssel, gemeente Zuidplas
+              </p>
             </div>
           </div>
         </motion.div>
@@ -165,8 +161,7 @@ export default function StudioLuna() {
             variants={fadeUp} initial="hidden" whileInView="show"
             viewport={{ once: true, margin: "-40px" }} custom={0}
           >
-            <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary/60 mb-5 flex items-center gap-3">
-              <span className="inline-block w-8 h-px bg-primary/40" />
+            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-primary/55 mb-4">
               Nieuw
             </p>
             <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground leading-[1.15] mb-6">
@@ -185,7 +180,7 @@ export default function StudioLuna() {
             </p>
             <button
               onClick={() => navigate("/geboortereeks")}
-              className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-7 py-3.5 rounded-2xl font-semibold text-sm hover:bg-primary/88 shadow-soft group"
+              className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-7 py-3.5 rounded-xl font-semibold text-sm hover:bg-primary/88 group"
             >
               Lees alles en meld je aan
               <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
@@ -203,8 +198,7 @@ export default function StudioLuna() {
               variants={fadeUp} initial="hidden" whileInView="show"
               viewport={{ once: true, margin: "-80px" }} custom={0}
             >
-              <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary/60 mb-5 flex items-center gap-3">
-                <span className="inline-block w-8 h-px bg-primary/40" />
+              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-primary/55 mb-4">
                 De missie
               </p>
             </motion.div>
@@ -218,10 +212,7 @@ export default function StudioLuna() {
               >
                 <h2 className="font-display text-4xl md:text-5xl font-medium text-foreground leading-[1.1] mb-10">
                   {teksten.home_missie_heading.split("\n").map((line, i, arr) => (
-                    <span key={i}>{i === arr.length - 1
-                      ? <em className="not-italic text-primary">{line}</em>
-                      : <>{line}<br /></>}
-                    </span>
+                    <span key={i}>{line}{i < arr.length - 1 && <br />}</span>
                   ))}
                 </h2>
                 <ul className="space-y-5">
@@ -258,8 +249,7 @@ export default function StudioLuna() {
             variants={fadeUp} initial="hidden" whileInView="show"
             viewport={{ once: true, margin: "-80px" }} custom={0}
           >
-            <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary/60 mb-5 flex items-center gap-3">
-              <span className="inline-block w-8 h-px bg-primary/40" />
+            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-primary/55 mb-4">
               Wat we bieden
             </p>
             <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground mb-14 leading-[1.15]">
@@ -270,17 +260,14 @@ export default function StudioLuna() {
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-8">
-            {teksten.home_aanbod_items.split("\n").filter(Boolean).map((tekst, i) => ({
-              n: String(i + 1).padStart(2, "0"), tekst,
-            })).map((item, i) => (
+            {teksten.home_aanbod_items.split("\n").filter(Boolean).map((tekst, i) => (
               <motion.div
-                key={item.n}
+                key={i}
                 variants={fadeUp} initial="hidden" whileInView="show"
                 viewport={{ once: true, margin: "-60px" }} custom={i * 0.07}
-                className="flex items-start gap-5 pb-8 border-b border-border/15 last:border-0"
+                className="pb-8 border-b border-border/15 last:border-0"
               >
-                <span className="font-display text-2xl text-primary/25 font-medium leading-none mt-0.5 shrink-0">{item.n}</span>
-                <p className="text-[15px] text-foreground/80 leading-[1.9]">{item.tekst}</p>
+                <p className="text-[15px] text-foreground/80 leading-[1.9]">{tekst}</p>
               </motion.div>
             ))}
           </div>
@@ -295,14 +282,14 @@ export default function StudioLuna() {
           >
             <button
               onClick={() => navigate("/geboortereeks")}
-              className="inline-flex items-center gap-2 border border-primary/25 text-primary/80 hover:bg-primary/5 px-5 py-2.5 rounded-2xl text-sm font-semibold transition-colors"
+              className="inline-flex items-center gap-2 text-primary/80 hover:text-primary text-sm font-semibold border-b border-primary/30 pb-0.5 transition-colors"
             >
               <Calendar className="w-3.5 h-3.5" />
               De Geboortereeks
             </button>
             <button
               onClick={() => navigate("/geboortezorg-zuidplas")}
-              className="inline-flex items-center gap-2 border border-primary/25 text-primary/80 hover:bg-primary/5 px-5 py-2.5 rounded-2xl text-sm font-semibold transition-colors"
+              className="inline-flex items-center gap-2 text-primary/80 hover:text-primary text-sm font-semibold border-b border-primary/30 pb-0.5 transition-colors"
             >
               <BookOpen className="w-3.5 h-3.5" />
               De zorgkaart
@@ -312,28 +299,22 @@ export default function StudioLuna() {
 
         {/* ── OVER MIJ — kort blok met gezicht en link naar het volledige verhaal ── */}
         <section className="px-7 md:px-14 lg:px-18 py-16 md:py-24">
-          <div className="md:grid md:grid-cols-[auto_1fr] md:gap-14 md:items-center">
-            {teksten.over_mij_foto && (
-              <motion.div
-                variants={fadeUp} initial="hidden" whileInView="show"
-                viewport={{ once: true, margin: "-60px" }} custom={0}
-              >
-                <img
-                  src={teksten.over_mij_foto}
-                  alt="Marjolein, oprichter van Studio Luna"
-                  className="w-40 h-40 md:w-52 md:h-52 rounded-3xl object-cover shadow-md mb-8 md:mb-0"
-                  loading="lazy"
-                />
-              </motion.div>
-            )}
+          <div className="md:grid md:grid-cols-[20rem_1fr] md:gap-14 md:items-center">
+            <motion.div
+              variants={fadeUp} initial="hidden" whileInView="show"
+              viewport={{ once: true, margin: "-60px" }} custom={0}
+            >
+              <img
+                src={teksten.over_mij_foto || IMAGES.overMij}
+                alt="Marjolein, oprichter van Studio Luna"
+                className="w-full max-w-[20rem] aspect-[4/5] object-cover mb-8 md:mb-0"
+                loading="lazy"
+              />
+            </motion.div>
             <motion.div
               variants={fadeUp} initial="hidden" whileInView="show"
               viewport={{ once: true, margin: "-60px" }} custom={0.1}
             >
-              <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary/60 mb-5 flex items-center gap-3">
-                <span className="inline-block w-8 h-px bg-primary/40" />
-                Over mij
-              </p>
               <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground mb-5 leading-[1.15]">
                 Hoi, ik ben Marjolein.
               </h2>
@@ -365,8 +346,7 @@ export default function StudioLuna() {
               viewport={{ once: true, margin: "-60px" }} custom={0}
               className="mb-12"
             >
-              <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary/60 mb-5 flex items-center gap-3">
-                <span className="inline-block w-8 h-px bg-primary/40" />
+              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-primary/55 mb-4">
                 Ervaringen
               </p>
               <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground leading-[1.15]">
@@ -415,8 +395,7 @@ export default function StudioLuna() {
             viewport={{ once: true, margin: "-60px" }} custom={0}
             className="mb-10"
           >
-            <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary/60 mb-5 flex items-center gap-3">
-              <span className="inline-block w-8 h-px bg-primary/40" />
+            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-primary/55 mb-4">
               Veelgestelde vragen
             </p>
             <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground leading-[1.15]">
@@ -458,8 +437,7 @@ export default function StudioLuna() {
             className="md:grid md:grid-cols-[1.2fr_1fr] md:gap-20 md:items-center"
           >
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary/60 mb-5 flex items-center gap-3">
-                <span className="inline-block w-8 h-px bg-primary/40" />
+              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-primary/55 mb-4">
                 Voor de hele regio
               </p>
               <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground leading-[1.15] mb-6">
@@ -474,7 +452,7 @@ export default function StudioLuna() {
             <div className="mt-8 md:mt-0">
               <button
                 onClick={() => navigate("/geboortezorg-zuidplas")}
-                className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-7 py-3.5 rounded-2xl font-semibold text-sm hover:bg-primary/88 shadow-soft group"
+                className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-7 py-3.5 rounded-xl font-semibold text-sm hover:bg-primary/88 group"
               >
                 Ontdek de zorgkaart
                 <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
@@ -493,8 +471,7 @@ export default function StudioLuna() {
               variants={fadeUp} initial="hidden" whileInView="show"
               viewport={{ once: true, margin: "-80px" }} custom={0}
             >
-              <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary/60 mb-6 flex items-center gap-3">
-                <span className="inline-block w-8 h-px bg-primary/40" />
+              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-primary/55 mb-5">
                 Locatie
               </p>
               <h2 className="font-display text-2xl font-medium text-foreground mb-5">{teksten.home_locatie_naam}</h2>
@@ -520,8 +497,7 @@ export default function StudioLuna() {
               viewport={{ once: true, margin: "-80px" }} custom={0.15}
               className="mt-14 md:mt-0"
             >
-              <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary/60 mb-6 flex items-center gap-3">
-                <span className="inline-block w-8 h-px bg-primary/40" />
+              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-primary/55 mb-5">
                 Contact
               </p>
               <div className="space-y-5">
