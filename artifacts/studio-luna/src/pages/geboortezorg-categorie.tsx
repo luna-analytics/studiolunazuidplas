@@ -2,18 +2,8 @@ import { useEffect } from "react";
 import { Link, useLocation, useParams } from "wouter";
 import { BottomNav } from "@/components/bottom-nav";
 import { SeoFooter } from "@/components/seo-footer";
-import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
 import { ZORGKAART, LAATST_BIJGEWERKT, isNieuw } from "@/data/zorgkaart";
 import { usePageMeta } from "@/lib/seo";
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 24 },
-  show: (delay = 0) => ({
-    opacity: 1, y: 0,
-    transition: { duration: 0.9, ease: [0.4, 0, 0.2, 1] as [number, number, number, number], delay },
-  }),
-};
 
 export default function GeboortezorgCategorie() {
   const params = useParams<{ categorie: string }>();
@@ -57,27 +47,23 @@ export default function GeboortezorgCategorie() {
     <div className="min-h-screen bg-background pb-28 md:pb-16 md:pt-16 flex justify-center">
       <div className="w-full max-w-7xl bg-background min-h-screen relative overflow-x-hidden">
 
-        <motion.div
-          variants={fadeUp} initial="hidden" animate="show" custom={0}
-          className="px-7 md:px-14 lg:px-18 pt-14 md:pt-12 pb-6"
-        >
+        <div className="px-7 md:px-14 lg:px-18 pt-14 md:pt-12 pb-6">
           <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary/60 mb-3 flex items-center gap-3">
             <span className="inline-block w-8 h-px bg-primary/40" />
             Geboortezorgkaart Zuidplas
           </p>
           <h1 className="font-display text-4xl md:text-5xl font-medium text-foreground leading-[1.1]">
-            {cat.titel} <em className="not-italic text-primary">in Zuidplas</em>
+            {cat.titel} in Zuidplas
           </h1>
           <p className="text-[15px] text-foreground/75 leading-[1.9] mt-5 max-w-2xl">{cat.intro}</p>
           <p className="text-xs text-foreground/55 mt-3">Bijgewerkt in {LAATST_BIJGEWERKT.tekst}</p>
           <Link
             href="/geboortezorg-zuidplas"
-            className="inline-flex items-center gap-2 mt-5 text-sm font-semibold text-primary group"
+            className="inline-block mt-5 text-sm font-semibold text-primary hover:text-primary/75"
           >
             Bekijk alle geboortezorg in Zuidplas
-            <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
           </Link>
-        </motion.div>
+        </div>
 
         {/* De lijst */}
         <div className="px-7 md:px-14 lg:px-18 pb-10">

@@ -2,18 +2,8 @@ import { useMemo, useState } from "react";
 import { Link } from "wouter";
 import { BottomNav } from "@/components/bottom-nav";
 import { SeoFooter } from "@/components/seo-footer";
-import { motion } from "framer-motion";
-import { Search } from "lucide-react";
 import { ZORGKAART, TAG_LABELS, LAATST_BIJGEWERKT, isNieuw, type ZorgTag, type Zorgverlener } from "@/data/zorgkaart";
 import { usePageMeta } from "@/lib/seo";
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 24 },
-  show: (delay = 0) => ({
-    opacity: 1, y: 0,
-    transition: { duration: 0.9, ease: [0.4, 0, 0.2, 1] as [number, number, number, number], delay },
-  }),
-};
 
 const normalize = (s: string) =>
   s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
@@ -25,20 +15,44 @@ function matcht(aanbieder: Zorgverlener, categorieTekst: string, zoek: string): 
   return zoek.split(/\s+/).filter(Boolean).every((term) => doel.includes(term));
 }
 
-const ALLE_TAGS = Object.keys(TAG_LABELS) as ZorgTag[];
+// De kaart leest als een gids in fasen in plaats van een muur van tegels.
+// Categorieën die hier niet genoemd worden schuiven vanzelf in de laatste groep,
+// zodat een nieuwe categorie in zorgkaart.ts nooit onzichtbaar blijft.
+const FASEN: { titel: string; ids: string[] }[] = [
+  {
+    titel: "Tijdens je zwangerschap",
+    ids: ["verloskundigen", "echos", "bekkenfysiotherapie", "yoga-cursussen", "doulas", "zwangerschapsmassage-babyspa", "sporten"],
+  },
+  {
+    titel: "Rond de geboorte",
+    ids: ["kraamzorg", "geboortefotografie", "mentale-steun", "lactatiekundigen"],
+  },
+  {
+    titel: "Na de geboorte",
+    ids: ["babymassage-dragen", "osteopathie", "matrescentie", "zwangerschaps-newborn-gezinsfotografie"],
+  },
+  {
+    titel: "Extra ondersteuning",
+    ids: ["steun-bij-verlies", "online"],
+  },
+];
 
-// De kenmerken (filters, labels per aanbieder en de uitlegsectie) staan voor nu
-// uit; de data blijft in zorgkaart.ts staan. Zet op true om ze weer te tonen.
-const TOON_KENMERKEN = false;
+// Snelzoekwoorden onder het zoekveld; klikken vult gewoon het zoekveld,
+// zodat zichtbaar blijft waarop gefilterd wordt.
+const PLAATS_SNELZOEK = ["Nieuwerkerk", "Zevenhuizen", "Moordrecht", "Moerkapelle", "online"];
+
+const veldKlasse =
+  "w-full px-4 py-3 rounded-md border border-border/40 bg-card text-[15px] text-foreground placeholder:text-foreground/50";
+const labelKlasse = "block text-sm font-semibold text-foreground/80 mb-1.5";
 
 export default function Geboortezorg() {
   const [zoek, setZoek] = useState("");
-  const [actieveTags, setActieveTags] = useState<ZorgTag[]>([]);
   const [feedbackOpen, setFeedbackOpen] = useState(false);
   const [fbBericht, setFbBericht] = useState("");
   const [fbEmail, setFbEmail] = useState("");
   const [fbStatus, setFbStatus] = useState<"idle" | "bezig" | "klaar" | "fout">("idle");
   const [fbFout, setFbFout] = useState("");
+  const [zvOpen, setZvOpen] = useState(false);
   const [zvPraktijk, setZvPraktijk] = useState("");
   const [zvWebsite, setZvWebsite] = useState("");
   const [zvBericht, setZvBericht] = useState("");
@@ -94,6 +108,21 @@ export default function Geboortezorg() {
 
   const aantalAanbieders = useMemo(() => ZORGKAART.reduce((n, c) => n + c.aanbieders.length, 0), []);
 
+  // Categorieën gegroepeerd per fase; wat nergens is ingedeeld komt achteraan.
+  const fasen = useMemo(() => {
+    const ingedeeld = new Set(FASEN.flatMap((f) => f.ids));
+    const rest = ZORGKAART.filter((c) => !ingedeeld.has(c.id));
+    return FASEN.map((fase, i) => ({
+      titel: fase.titel,
+      categorieen: [
+        ...fase.ids
+          .map((id) => ZORGKAART.find((c) => c.id === id))
+          .filter((c): c is (typeof ZORGKAART)[number] => Boolean(c)),
+        ...(i === FASEN.length - 1 ? rest : []),
+      ],
+    })).filter((fase) => fase.categorieen.length > 0);
+  }, []);
+
   usePageMeta({
     title: "Geboortezorg in Zuidplas: verloskundigen, kraamzorg en meer | Studio Luna",
     description: "Alle geboortezorg in de regio Zuidplas op één plek: verloskundigen, kraamzorg, echo's, bekkenfysiotherapie, doula's, lactatiekundigen, zwangerschapscursussen en zwanger sporten in Nieuwerkerk aan den IJssel, Zevenhuizen, Moordrecht en Moerkapelle.",
@@ -122,20 +151,15 @@ export default function Geboortezorg() {
     ],
   });
 
-  const toggleTag = (tag: ZorgTag) =>
-    setActieveTags((prev) => (prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]));
-
   const zoekNorm = normalize(zoek.trim());
-  const filterActief = zoekNorm.length > 0 || actieveTags.length > 0;
+  const filterActief = zoekNorm.length > 0;
 
   const gefilterd = ZORGKAART
     .map((cat) => ({
       ...cat,
-      aanbieders: cat.aanbieders.filter((a) => {
-        const tagsOk = actieveTags.every((t) => a.tags.includes(t));
-        const zoekOk = zoekNorm.length === 0 || matcht(a, `${cat.titel} ${cat.zoektermen}`, zoekNorm);
-        return tagsOk && zoekOk;
-      }),
+      aanbieders: cat.aanbieders.filter(
+        (a) => zoekNorm.length === 0 || matcht(a, `${cat.titel} ${cat.zoektermen}`, zoekNorm)
+      ),
     }))
     .filter((cat) => cat.aanbieders.length > 0);
 
@@ -145,128 +169,100 @@ export default function Geboortezorg() {
     <div className="min-h-screen bg-background pb-28 md:pb-16 md:pt-16 flex justify-center">
       <div className="w-full max-w-7xl bg-background min-h-screen relative overflow-x-hidden">
 
-        {/* ── TITEL EN INTRO ── */}
-        <motion.div
-          variants={fadeUp} initial="hidden" animate="show" custom={0}
-          className="px-7 md:px-14 lg:px-18 pt-14 md:pt-12 pb-6"
-        >
+        {/* ── TITEL EN INTRO — kort, daarna meteen de gids ── */}
+        <div className="px-7 md:px-14 lg:px-18 pt-14 md:pt-12 pb-6">
           <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary/60 mb-3 flex items-center gap-3">
             <span className="inline-block w-8 h-px bg-primary/40" />
             Regio Zuidplas
           </p>
           <h1 className="font-display text-4xl md:text-5xl font-medium text-foreground leading-[1.1]">
-            Alles over <em className="not-italic text-primary">geboortezorg</em><br className="hidden md:block" /> in de regio Zuidplas
+            Geboortezorg in Zuidplas
           </h1>
-          <p className="text-[15px] text-foreground/75 leading-[1.9] mt-5 max-w-2xl">
-            Zwanger of net bevallen in Nieuwerkerk aan den IJssel, Zevenhuizen, Moordrecht of
-            Moerkapelle? Op deze pagina vind je alle zorg en ondersteuning uit de regio op één
-            plek, van verloskundige en kraamzorg tot bekkenfysiotherapie, cursussen en sporten
-            met je baby. Maar ook postpartum zorg, mentale steun en lactatiekundigen vind je
-            hier terug. Studio Luna houdt deze kaart bij zodat jij niet hoeft te zoeken.
+          <p className="text-[15px] text-foreground/75 leading-[1.9] mt-4 max-w-xl">
+            Vind zorg en ondersteuning tijdens je zwangerschap, bevalling en kraamtijd, van
+            verloskundige en kraamzorg tot bekkenfysiotherapie en sporten met je baby.
           </p>
-          <p className="text-[15px] text-foreground/75 leading-[1.9] mt-4 max-w-2xl">
-            Ben je zelf zorgverlener in de regio en sta je er nog niet op? Of bied je online
-            zorg aan?{" "}
-            <a href="#voor-zorgverleners" className="text-primary font-semibold hover:text-primary/75">
-              Meld je gratis aan
-            </a>
-            .
+          <p className="text-sm text-foreground/60 mt-3">
+            Nieuwerkerk aan den IJssel · Zevenhuizen · Moordrecht · Moerkapelle
           </p>
-          <p className="text-xs text-foreground/70 mt-3">Bijgewerkt in {LAATST_BIJGEWERKT.tekst}</p>
-        </motion.div>
+          <p className="text-xs text-foreground/60 mt-2">
+            Met zorg bijgehouden door Studio Luna · bijgewerkt in {LAATST_BIJGEWERKT.tekst}
+          </p>
+        </div>
 
-        {/* ── ZOEKEN EN FILTERS ── */}
-        <motion.div
-          variants={fadeUp} initial="hidden" animate="show" custom={0.1}
-          className="px-7 md:px-14 lg:px-18 pb-4"
-        >
-          <div className="max-w-3xl">
-            <div className="relative">
-              <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/30" />
-              <input
-                type="search"
-                value={zoek}
-                onChange={(e) => setZoek(e.target.value)}
-                placeholder="Waar ben je naar op zoek?"
-                className="w-full pr-5 py-3.5 rounded-2xl border border-border/40 bg-card text-[15px] text-foreground placeholder:text-foreground/55"
-                style={{ paddingLeft: "3rem" }}
-                aria-label="Zoek in de zorgkaart"
-              />
-            </div>
-
-            {/* Filter: kenmerken */}
-            {TOON_KENMERKEN && (
-            <div className="mt-7">
-              <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary/60 mb-3">Kenmerken</p>
-              <div className="flex flex-wrap gap-x-5 gap-y-2">
-                {ALLE_TAGS.map((tag) => (
+        {/* ── ZOEKEN ── */}
+        <div className="px-7 md:px-14 lg:px-18 pb-2">
+          <div className="max-w-xl">
+            <label htmlFor="zorg-zoek" className={labelKlasse}>Zoek op zorg, naam of plaats</label>
+            <input
+              id="zorg-zoek"
+              type="search"
+              value={zoek}
+              onChange={(e) => setZoek(e.target.value)}
+              placeholder="bijv. bekkenfysiotherapie, kraamzorg of Nieuwerkerk"
+              className={veldKlasse}
+            />
+            <p className="text-sm text-foreground/60 mt-2.5">
+              Of kies een plaats:{" "}
+              {PLAATS_SNELZOEK.map((p, i) => (
+                <span key={p}>
+                  {i > 0 && " · "}
                   <button
-                    key={tag}
-                    onClick={() => toggleTag(tag)}
-                    title={TAG_LABELS[tag].uitleg}
-                    aria-pressed={actieveTags.includes(tag)}
-                    className={actieveTags.includes(tag)
-                      ? "text-sm font-semibold text-primary underline underline-offset-4 decoration-primary/40 py-1.5 -my-1.5"
-                      : "text-sm text-foreground/65 hover:text-foreground transition-colors py-1.5 -my-1.5"}
+                    onClick={() => setZoek(zoek.trim() === p ? "" : p)}
+                    className={zoek.trim() === p
+                      ? "text-primary font-semibold underline underline-offset-4 decoration-primary/40"
+                      : "text-foreground/70 hover:text-primary"}
                   >
-                    {TAG_LABELS[tag].label}
+                    {p}
                   </button>
-                ))}
-              </div>
-              <p className="text-xs text-foreground/70 mt-3">
-                <a href="#kenmerken-uitleg" className="hover:text-foreground/70 underline underline-offset-2">
-                  Wat betekenen deze kenmerken?
-                </a>
-              </p>
-            </div>
-            )}
+                </span>
+              ))}
+            </p>
 
             {filterActief && (
-              <p className="text-sm text-foreground/60 mt-4">
+              <p className="text-sm text-foreground/60 mt-3">
                 {aantalGevonden === 0
-                  ? "Niets gevonden. Probeer een ander woord of haal een filter weg."
+                  ? "Niets gevonden. Probeer een ander woord."
                   : `${aantalGevonden} van ${aantalAanbieders} aanbieders`}
                 <button
-                  onClick={() => { setZoek(""); setActieveTags([]); }}
+                  onClick={() => setZoek("")}
                   className="ml-3 text-primary font-semibold hover:text-primary/75"
                 >
-                  Wis filters
+                  Wis zoekopdracht
                 </button>
               </p>
             )}
           </div>
-        </motion.div>
+        </div>
 
-        {/* ── DE KAART: tegels naar de categoriepagina's; bij zoeken of
-               filteren verschijnen de resultaten direct als lijst ── */}
+        {/* ── DE GIDS: categorieën per fase, als lijst met haarlijnen.
+               Bij zoeken verschijnen de aanbieders direct als lijst. ── */}
         <div className="px-7 md:px-14 lg:px-18 pt-6 pb-8">
           {!filterActief && (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 max-w-5xl">
-              {ZORGKAART.map((cat, i) => (
-                <motion.div
-                  key={cat.id}
-                  variants={fadeUp} initial="hidden" whileInView="show"
-                  viewport={{ once: true, margin: "-30px" }} custom={Math.min(i * 0.04, 0.2)}
-                >
-                  <Link
-                    href={`/geboortezorg-zuidplas/${cat.id}`}
-                    className="group flex flex-col justify-between rounded-2xl bg-secondary/45 hover:bg-secondary/75 transition-colors px-5 py-6 min-h-[7.5rem] h-full"
-                  >
-                    {/* Lange namen als Bekkenfysiotherapie passen niet in een
-                        tegel op een smal scherm, dus breken ze met een
-                        afbreekstreepje af in plaats van eruit te lopen. */}
-                    <span
-                      lang="nl"
-                      style={{ hyphens: "auto" }}
-                      className="font-display text-base md:text-xl font-medium text-foreground leading-snug break-words group-hover:text-primary transition-colors"
-                    >
-                      {cat.titel}
-                    </span>
-                    <span className="text-xs text-foreground/70 mt-3">
-                      {cat.aanbieders.length} {cat.aanbieders.length === 1 ? "aanbieder" : "aanbieders"}
-                    </span>
-                  </Link>
-                </motion.div>
+            <div className="max-w-xl space-y-10">
+              {fasen.map((fase) => (
+                <section key={fase.titel}>
+                  <h2 className="font-display text-xl md:text-2xl font-medium text-foreground leading-[1.2] pb-3 border-b border-border/25">
+                    {fase.titel}
+                  </h2>
+                  <ul className="m-0 p-0 list-none">
+                    {fase.categorieen.map((cat) => (
+                      <li key={cat.id} className="border-b border-border/10">
+                        <Link
+                          href={`/geboortezorg-zuidplas/${cat.id}`}
+                          className="group flex items-baseline justify-between gap-4 py-3.5"
+                        >
+                          <span className="text-[15px] font-medium text-foreground group-hover:text-primary transition-colors leading-snug">
+                            {cat.titel}
+                          </span>
+                          <span className="text-sm text-foreground/55 tabular-nums shrink-0">
+                            {cat.aanbieders.length}
+                          </span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
               ))}
             </div>
           )}
@@ -284,7 +280,7 @@ export default function Geboortezorg() {
                   </Link>
                 </div>
                 {cat.aanbieders.map((a, i) => (
-                  <div key={a.naam} className={`py-6 ${i < cat.aanbieders.length - 1 ? "border-b border-border/10" : ""}`}>
+                  <div key={a.naam} className={`py-5 ${i < cat.aanbieders.length - 1 ? "border-b border-border/10" : ""}`}>
                     <div className="flex flex-wrap items-baseline gap-x-3">
                       <a
                         href={a.website} target="_blank" rel="noopener noreferrer"
@@ -306,9 +302,6 @@ export default function Geboortezorg() {
                       </p>
                     )}
                     <p className="text-xs text-foreground/60 mt-2">
-                      {TOON_KENMERKEN && a.tags.length > 0 && (
-                        <>{a.tags.map((tag) => TAG_LABELS[tag].label).join(" · ")}{" · "}</>
-                      )}
                       <a
                         href={a.website} target="_blank" rel="noopener noreferrer"
                         className="text-primary/80 hover:text-primary font-medium"
@@ -322,14 +315,14 @@ export default function Geboortezorg() {
             ))}
 
             {gefilterd.length === 0 && filterActief && (
-              <div className="py-20">
+              <div className="py-16">
                 <p className="font-display text-2xl text-foreground/80 mb-2">Niets gevonden</p>
-                <p className="text-sm text-foreground/60">Probeer een ander zoekwoord of haal een filter weg.</p>
+                <p className="text-sm text-foreground/60">Probeer een ander zoekwoord.</p>
               </div>
             )}
 
             {/* Feedback: direct doorgeven, zonder te hoeven mailen */}
-            <div className="mt-10">
+            <div className="mt-10 max-w-xl">
               <p className="text-sm text-foreground/60 leading-[1.85]">
                 Deze kaart wordt met zorg bijgehouden, maar aanbod verandert.{" "}
                 <button
@@ -348,33 +341,37 @@ export default function Geboortezorg() {
                     de kaart.
                   </p>
                 ) : (
-                  <form onSubmit={stuurFeedback} className="mt-5 space-y-3 max-w-xl">
-                    <textarea
-                      value={fbBericht}
-                      onChange={(e) => setFbBericht(e.target.value)}
-                      placeholder="Wat klopt er niet, of wie mis je op de kaart?"
-                      required
-                      rows={3}
-                      maxLength={2000}
-                      className="w-full px-4 py-3 rounded-2xl border border-border/40 bg-card text-[15px] text-foreground placeholder:text-foreground/55 resize-none leading-relaxed"
-                    />
-                    <div className="flex flex-col sm:flex-row gap-3">
+                  <form onSubmit={stuurFeedback} className="mt-5 space-y-4">
+                    <div>
+                      <label htmlFor="fb-bericht" className={labelKlasse}>Wat klopt er niet, of wie mis je op de kaart?</label>
+                      <textarea
+                        id="fb-bericht"
+                        value={fbBericht}
+                        onChange={(e) => setFbBericht(e.target.value)}
+                        required
+                        rows={3}
+                        maxLength={2000}
+                        className={`${veldKlasse} resize-none leading-relaxed`}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="fb-email" className={labelKlasse}>Je e-mailadres</label>
                       <input
+                        id="fb-email"
                         type="email"
                         value={fbEmail}
                         onChange={(e) => setFbEmail(e.target.value)}
-                        placeholder="jouw@email.nl"
                         required
-                        className="flex-1 px-4 py-3 rounded-2xl border border-border/40 bg-card text-sm text-foreground placeholder:text-foreground/55"
+                        className={veldKlasse}
                       />
-                      <button
-                        type="submit"
-                        disabled={fbStatus === "bezig"}
-                        className="bg-primary text-primary-foreground px-7 py-3 rounded-2xl font-semibold text-sm hover:bg-primary/88 disabled:opacity-60 shrink-0"
-                      >
-                        {fbStatus === "bezig" ? "Versturen…" : "Verstuur"}
-                      </button>
                     </div>
+                    <button
+                      type="submit"
+                      disabled={fbStatus === "bezig"}
+                      className="bg-primary text-primary-foreground px-7 py-3 rounded-md font-semibold text-sm hover:bg-primary/88 disabled:opacity-60"
+                    >
+                      {fbStatus === "bezig" ? "Versturen…" : "Verstuur"}
+                    </button>
                     {fbStatus === "fout" && <p className="text-xs text-red-600">{fbFout}</p>}
                   </form>
                 )
@@ -383,118 +380,96 @@ export default function Geboortezorg() {
           </div>
         </div>
 
-        {/* ── WAT DE KENMERKEN BETEKENEN ── */}
-        {TOON_KENMERKEN && (
-        <section id="kenmerken-uitleg" className="px-7 md:px-14 lg:px-18 py-12 md:py-16 scroll-mt-24">
-          <div className="max-w-3xl">
-            <motion.div
-              variants={fadeUp} initial="hidden" whileInView="show"
-              viewport={{ once: true, margin: "-40px" }} custom={0}
-            >
-              <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary/60 mb-4 flex items-center gap-3">
-                <span className="inline-block w-8 h-px bg-primary/40" />
-                Goed om te weten
-              </p>
-              <h2 className="font-display text-2xl md:text-3xl font-medium text-foreground leading-[1.15] mb-6">
-                Wat de kenmerken betekenen
-              </h2>
-              <div className="space-y-2.5">
-                {ALLE_TAGS.map((tag) => (
-                  <p key={tag} className="text-[15px] leading-[1.9] text-foreground/80">
-                    <span className="font-semibold text-foreground/80">{TAG_LABELS[tag].label}:</span>{" "}
-                    {TAG_LABELS[tag].uitleg}.
-                  </p>
-                ))}
-              </div>
-              <p className="text-sm text-foreground/60 leading-[1.85] mt-8">
-                De kenmerken zijn gebaseerd op wat aanbieders zelf op hun website vermelden.
-              </p>
-            </motion.div>
-          </div>
-        </section>
-        )}
-
-        {/* ── VOOR ZORGVERLENERS ── */}
-        <section id="voor-zorgverleners" className="px-7 md:px-14 lg:px-18 py-12 md:py-16 scroll-mt-24">
-          <motion.div
-            variants={fadeUp} initial="hidden" whileInView="show"
-            viewport={{ once: true, margin: "-40px" }} custom={0}
-            className="max-w-3xl"
-          >
-            <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary/60 mb-4 flex items-center gap-3">
-              <span className="inline-block w-8 h-px bg-primary/40" />
+        {/* ── VOOR ZORGVERLENERS — bewust klein, de kaart is er voor zwangeren ── */}
+        <section id="voor-zorgverleners" className="px-7 md:px-14 lg:px-18 py-10 md:py-12 scroll-mt-24">
+          <div className="max-w-xl border-t border-border/25 pt-8">
+            <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary/60 mb-3">
               Voor zorgverleners
             </p>
-            <h2 className="font-display text-2xl md:text-3xl font-medium text-foreground leading-[1.15] mb-5">
-              Sta jij nog niet op deze kaart?
-            </h2>
-            <p className="text-[15px] text-foreground/80 leading-[1.9] mb-4">
-              Ben jij zorgverlener in de regio Zuidplas en wil je op de lijst? Vermelding is
-              gratis. Laat hieronder je gegevens achter, dan komt je vermelding erbij.
-            </p>
-            <p className="text-[15px] text-foreground/80 leading-[1.9] mb-7">
-              Wil je de lezeressen van deze kaart daarnaast iets extra's geven, bijvoorbeeld een
-              kortingscode of een gratis kennismaking? Schrijf dan in je bericht wat de actie
-              inhoudt en hoe lang die geldig is, dan komt die als voordeel bij je vermelding te
-              staan.
+            <p className="text-[15px] text-foreground/80 leading-[1.9]">
+              Ben je zorgverlener in de regio Zuidplas en sta je er nog niet bij? Vermelding
+              is gratis.{" "}
+              <button
+                onClick={() => setZvOpen((v) => !v)}
+                className="text-primary font-semibold hover:text-primary/75"
+              >
+                Voeg je praktijk toe
+              </button>
+              .
             </p>
 
-            {zvStatus === "klaar" ? (
-              <p className="text-[15px] text-foreground/80 leading-[1.9] rounded-2xl bg-primary/8 border border-primary/15 px-5 py-4 max-w-xl">
-                Dankjewel voor je aanmelding! Ik bekijk je gegevens en je hoort van mij zodra
-                je vermelding op de kaart staat.
-              </p>
-            ) : (
-              <form onSubmit={meldZorgverlenerAan} className="space-y-3 max-w-xl">
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <input
-                    type="text"
-                    value={zvPraktijk}
-                    onChange={(e) => setZvPraktijk(e.target.value)}
-                    placeholder="Naam van je praktijk"
-                    required
-                    maxLength={160}
-                    className="flex-1 px-4 py-3 rounded-2xl border border-border/40 bg-card text-[15px] text-foreground placeholder:text-foreground/55"
-                  />
-                  <input
-                    type="text"
-                    value={zvWebsite}
-                    onChange={(e) => setZvWebsite(e.target.value)}
-                    placeholder="Je website (mag leeg)"
-                    maxLength={300}
-                    className="flex-1 px-4 py-3 rounded-2xl border border-border/40 bg-card text-[15px] text-foreground placeholder:text-foreground/55"
-                  />
-                </div>
-                <textarea
-                  value={zvBericht}
-                  onChange={(e) => setZvBericht(e.target.value)}
-                  placeholder="Wat doe je, en in welke plaatsen werk je?"
-                  required
-                  rows={3}
-                  maxLength={2000}
-                  className="w-full px-4 py-3 rounded-2xl border border-border/40 bg-card text-[15px] text-foreground placeholder:text-foreground/55 resize-none leading-relaxed"
-                />
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <input
-                    type="email"
-                    value={zvEmail}
-                    onChange={(e) => setZvEmail(e.target.value)}
-                    placeholder="jouw@email.nl"
-                    required
-                    className="flex-1 px-4 py-3 rounded-2xl border border-border/40 bg-card text-sm text-foreground placeholder:text-foreground/55"
-                  />
+            {zvOpen && (
+              zvStatus === "klaar" ? (
+                <p className="text-[15px] text-foreground/80 leading-[1.9] mt-5">
+                  Dankjewel voor je aanmelding! Ik bekijk je gegevens en je hoort van mij zodra
+                  je vermelding op de kaart staat.
+                </p>
+              ) : (
+                <form onSubmit={meldZorgverlenerAan} className="mt-6 space-y-4">
+                  <div>
+                    <label htmlFor="zv-praktijk" className={labelKlasse}>Naam van je praktijk</label>
+                    <input
+                      id="zv-praktijk"
+                      type="text"
+                      value={zvPraktijk}
+                      onChange={(e) => setZvPraktijk(e.target.value)}
+                      required
+                      maxLength={160}
+                      className={veldKlasse}
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="zv-website" className={labelKlasse}>Je website (mag leeg)</label>
+                    <input
+                      id="zv-website"
+                      type="text"
+                      value={zvWebsite}
+                      onChange={(e) => setZvWebsite(e.target.value)}
+                      maxLength={300}
+                      className={veldKlasse}
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="zv-bericht" className={labelKlasse}>Wat doe je, en in welke plaatsen werk je?</label>
+                    <textarea
+                      id="zv-bericht"
+                      value={zvBericht}
+                      onChange={(e) => setZvBericht(e.target.value)}
+                      required
+                      rows={3}
+                      maxLength={2000}
+                      className={`${veldKlasse} resize-none leading-relaxed`}
+                    />
+                    <p className="text-xs text-foreground/60 mt-1.5 leading-relaxed">
+                      Wil je de lezeressen van deze kaart iets extra's geven, bijvoorbeeld een
+                      kortingscode of gratis kennismaking? Schrijf in je bericht wat de actie
+                      inhoudt en hoe lang die geldig is, dan komt die als voordeel bij je
+                      vermelding te staan.
+                    </p>
+                  </div>
+                  <div>
+                    <label htmlFor="zv-email" className={labelKlasse}>Je e-mailadres</label>
+                    <input
+                      id="zv-email"
+                      type="email"
+                      value={zvEmail}
+                      onChange={(e) => setZvEmail(e.target.value)}
+                      required
+                      className={veldKlasse}
+                    />
+                  </div>
                   <button
                     type="submit"
                     disabled={zvStatus === "bezig"}
-                    className="bg-primary text-primary-foreground px-7 py-3 rounded-2xl font-semibold text-sm hover:bg-primary/88 disabled:opacity-60 shrink-0"
+                    className="bg-primary text-primary-foreground px-7 py-3 rounded-md font-semibold text-sm hover:bg-primary/88 disabled:opacity-60"
                   >
-                    {zvStatus === "bezig" ? "Versturen…" : "Meld je gratis aan"}
+                    {zvStatus === "bezig" ? "Versturen…" : "Praktijk aanmelden"}
                   </button>
-                </div>
-                {zvStatus === "fout" && <p className="text-xs text-red-600">{zvFout}</p>}
-              </form>
+                  {zvStatus === "fout" && <p className="text-xs text-red-600">{zvFout}</p>}
+                </form>
+              )
             )}
-          </motion.div>
+          </div>
         </section>
 
         <SeoFooter />
