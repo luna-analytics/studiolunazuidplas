@@ -21,15 +21,20 @@ function matcht(aanbieder: Zorgverlener, categorieTekst: string, zoek: string): 
 const FASEN: { titel: string; ids: string[] }[] = [
   {
     titel: "Tijdens je zwangerschap",
-    ids: ["verloskundigen", "echos", "bekkenfysiotherapie", "yoga-cursussen", "doulas", "zwangerschapsmassage-babyspa", "sporten"],
+    ids: ["verloskundigen", "echos", "bekkenfysiotherapie", "yoga-cursussen", "doulas"],
   },
   {
     titel: "Rond de geboorte",
-    ids: ["kraamzorg", "geboortefotografie", "mentale-steun", "lactatiekundigen"],
+    ids: ["kraamzorg", "geboortefotografie", "lactatiekundigen"],
   },
   {
     titel: "Na de geboorte",
-    ids: ["babymassage-dragen", "osteopathie", "matrescentie", "zwangerschaps-newborn-gezinsfotografie"],
+    ids: ["babymassage-dragen", "matrescentie"],
+  },
+  {
+    // Aanbod dat niet aan één fase hangt maar de hele periode doorloopt.
+    titel: "Voor elke fase",
+    ids: ["sporten", "zwangerschapsmassage-babyspa", "osteopathie", "zwangerschaps-newborn-gezinsfotografie", "mentale-steun"],
   },
   {
     titel: "Extra ondersteuning",
