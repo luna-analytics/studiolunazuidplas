@@ -73,7 +73,7 @@ export type ZorgCategorie = {
 
 /** Werk deze bij wanneer de kaart inhoudelijk verandert; hij staat zichtbaar
  *  op de pagina en in de structured data. */
-export const LAATST_BIJGEWERKT = { tekst: "augustus 2026", iso: "2026-08-30" };
+export const LAATST_BIJGEWERKT = { tekst: "september 2026", iso: "2026-09-04" };
 
 export const ZORGKAART: ZorgCategorie[] = [
   {
@@ -559,7 +559,7 @@ export const ZORGKAART: ZorgCategorie[] = [
   {
     id: "geboortefotografie",
     titel: "Geboortefotografie",
-    intro: "Een geboortefotograaf legt de bevalling en de eerste momenten met je baby vast.",
+    intro: "Een geboortefotograaf legt de bevalling en de eerste momenten met je baby vast. Voor een zwangerschapsshoot, newbornshoot of gezinsshoot heeft de kaart een eigen categorie.",
     zoektermen: "geboortefotograaf newborn fotografie fotograaf bevallingsreportage",
     aanbieders: [
       {
@@ -583,6 +583,54 @@ export const ZORGKAART: ZorgCategorie[] = [
         beschrijving: "Geboortefotograaf uit Rotterdam met ruim tien jaar ervaring en meer dan tweehonderd gefotografeerde bevallingen, die in heel Zuid-Holland fotografeert, in meerdere ziekenhuizen mee de operatiekamer op mag bij een keizersnede en is aangesloten bij de internationale beroepsvereniging voor geboortefotografen.",
         tags: ["aan-huis", "avond-weekend"],
         toegevoegd: "2026-08-30",
+      },
+    ],
+  },
+  {
+    id: "zwangerschaps-newborn-gezinsfotografie",
+    titel: "Zwangerschaps-, newborn- en gezinsfotografie",
+    intro: "Een mooie herinnering aan je zwangerschap, de eerste weken met je baby of jullie samen als gezin: deze fotografen uit de regio leggen het vast, in de studio of gewoon bij je thuis. Wil je juist de bevalling zelf laten fotograferen, kijk dan bij geboortefotografie.",
+    zoektermen: "zwangerschapsshoot zwangerschapsfotografie newbornshoot newborn babyshoot babyfotograaf gezinsfotograaf familiefotograaf gezinsshoot familieshoot fotoshoot cakesmash",
+    aanbieders: [
+      {
+        naam: "I-AM Fotografie & Design",
+        plaats: "Nieuwerkerk aan den IJssel",
+        website: "https://www.i-am-foto-design.nl/",
+        beschrijving: "Fotostudio aan de Eerste Tochtweg in Nieuwerkerk aan den IJssel voor zwangerschaps-, newborn-, kinder- en familiefotografie, op afspraak zodat er alle tijd en aandacht is.",
+        tags: ["op-locatie"],
+        toegevoegd: "2026-09-04",
+      },
+      {
+        naam: "Memorii Photography",
+        plaats: "Zevenhuizen",
+        website: "https://memoriiphotography.nl/",
+        beschrijving: "Fotograaf in Zevenhuizen voor zwangerschaps-, newborn- en familieshoots in Zevenhuizen en omgeving, met daarnaast de reportage In liefde gedragen voor gezinnen die een kindje verliezen.",
+        tags: [],
+        toegevoegd: "2026-09-04",
+      },
+      {
+        naam: "Pure Newborn Fotografie",
+        plaats: "Capelle aan den IJssel",
+        website: "https://purenewborn.nl/",
+        beschrijving: "Daglichtstudio aan de Mient in Capelle aan den IJssel, gespecialiseerd in zwangerschapsshoots rond 30 tot 34 weken, newbornshoots in de eerste drie weken en daarnaast gezins- en cakesmashshoots, met buitensessies van april tot oktober.",
+        tags: ["op-locatie"],
+        toegevoegd: "2026-09-04",
+      },
+      {
+        naam: "Foto Renée",
+        plaats: "Haastrecht (bij Gouda)",
+        website: "https://www.fotorenee.nl/",
+        beschrijving: "Fotograaf met eigen studio in Haastrecht bij Gouda voor zwangerschaps-, newborn-, gezins- en cakesmashshoots, waarbij een newbornshoot ook gewoon bij je thuis kan.",
+        tags: ["op-locatie", "aan-huis"],
+        toegevoegd: "2026-09-04",
+      },
+      {
+        naam: "Lotte Aerssens Fotografie",
+        plaats: "Gouda",
+        website: "https://lotteaerssensfotografie.nl/",
+        beschrijving: "Familie- en geboortefotograaf uit Gouda met Zuid-Holland als werkgebied, die naast bevallingen ook zwangerschapsshoots, newbornshoots en day in the life reportages van je gezin fotografeert.",
+        tags: [],
+        toegevoegd: "2026-09-04",
       },
     ],
   },
