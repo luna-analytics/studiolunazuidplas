@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { Link } from "wouter";
 import { BottomNav } from "@/components/bottom-nav";
 import { SeoFooter } from "@/components/seo-footer";
-import { ZORGKAART, TAG_LABELS, LAATST_BIJGEWERKT, isNieuw, type ZorgTag, type Zorgverlener } from "@/data/zorgkaart";
+import { ZORGKAART, TAG_LABELS, LAATST_BIJGEWERKT, PLAATSEN, isNieuw, type ZorgTag, type Zorgverlener } from "@/data/zorgkaart";
 import { usePageMeta } from "@/lib/seo";
 import { IMAGES } from "@/lib/images";
 
@@ -47,6 +47,35 @@ const FASEN: { titel: string; ids: string[] }[] = [
 
 // Snelzoekwoorden onder het zoekveld; klikken vult gewoon het zoekveld,
 // zodat zichtbaar blijft waarop gefilterd wordt.
+// Vragen zoals mensen ze intypen, met het antwoord in de eerste zin. Zo kan een
+// zoekmachine of een taalmodel het antwoord letterlijk overnemen.
+const ZORGKAART_VRAGEN = [
+  {
+    vraag: "Welke verloskundigen zijn er in Zuidplas?",
+    antwoord: "In Nieuwerkerk aan den IJssel, Zevenhuizen, Moordrecht en Moerkapelle werken meerdere verloskundigenpraktijken, en daarnaast begeleiden caseloadverloskundigen uit de regio hier bevallingen. Ze staan allemaal onder Verloskundigen op deze kaart, met hun plaats en website erbij.",
+  },
+  {
+    vraag: "Waar kan ik terecht voor kraamzorg in Nieuwerkerk aan den IJssel?",
+    antwoord: "Kraamzorg regel je het liefst in de eerste helft van je zwangerschap. Op deze kaart staan zowel de regionale kraamzorgorganisaties die heel gemeente Zuidplas bedienen als zelfstandige kraamverzorgenden uit de buurt.",
+  },
+  {
+    vraag: "Waar vind ik zwangerschapsyoga in Nieuwerkerk aan den IJssel?",
+    antwoord: "Studio Luna geeft zwangerschapsyoga in Nieuwerkerk aan den IJssel, in de vorm van de Geboortereeks: acht wekelijkse lessen in een vaste groep, met geboortevoorbereiding erin verweven. Andere aanbieders van yoga en cursussen in de regio staan er ook bij.",
+  },
+  {
+    vraag: "Waar kan ik terecht voor bekkenfysiotherapie tijdens mijn zwangerschap?",
+    antwoord: "Bekkenfysiotherapeuten in en rond Zuidplas behandelen klachten tijdens de zwangerschap en het herstel na de bevalling. Ze staan onder Bekkenfysiotherapie, met per praktijk de plaats erbij zodat je ziet wat het dichtst bij is.",
+  },
+  {
+    vraag: "Ik ben zwanger en woon in Zuidplas, wat heb ik allemaal nodig?",
+    antwoord: "Meestal begint het met een verloskundige, meteen gevolgd door het aanmelden voor kraamzorg en een eerste echo. Daarna komen geboortevoorbereiding of zwangerschapsyoga, en waar nodig bekkenfysiotherapie. Na de bevalling zijn een lactatiekundige, herstel en mama-en-babyactiviteiten aan de beurt. Deze kaart loopt in die volgorde.",
+  },
+  {
+    vraag: "Wie houdt deze kaart bij?",
+    antwoord: "Studio Luna in Nieuwerkerk aan den IJssel houdt de Geboortezorgkaart Zuidplas bij. Aanbieders betalen niet om erop te staan; ze staan erop omdat ze in of voor deze regio werken.",
+  },
+];
+
 const PLAATS_SNELZOEK = ["Nieuwerkerk", "Zevenhuizen", "Moordrecht", "Moerkapelle", "online"];
 
 const veldKlasse =
@@ -184,8 +213,7 @@ export default function Geboortezorg() {
         <div className="px-7 md:px-14 lg:px-18 pt-14 md:pt-12 pb-6">
           <div className="max-w-4xl md:grid md:grid-cols-[1fr_auto] md:gap-14 md:items-center">
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary/60 mb-3 flex items-center gap-3">
-                <span className="inline-block w-8 h-px bg-primary/40" />
+              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-primary/55 mb-3">
                 Regio Zuidplas
               </p>
               <h1 className="font-display text-4xl md:text-5xl font-medium text-foreground leading-[1.1]">
@@ -208,6 +236,24 @@ export default function Geboortezorg() {
               className="hidden md:block w-56 lg:w-64 aspect-[4/5] object-cover"
               style={{ borderRadius: "56% 44% 50% 50% / 46% 54% 46% 54%" }}
             />
+          </div>
+        </div>
+
+        {/* ── PER PLAATS ── */}
+        <div className="px-7 md:px-14 lg:px-18 pt-8 pb-4">
+          <h2 className="font-display text-2xl md:text-3xl font-medium text-foreground leading-[1.2]">
+            Waar woon je?
+          </h2>
+          <p className="text-[15px] text-foreground/75 leading-[1.9] mt-3 max-w-2xl">
+            Per plaats staat op een eigen pagina wie er in jouw dorp zit en wie er vanuit de regio
+            werkt.
+          </p>
+          <div className="flex flex-wrap gap-x-8 gap-y-3 mt-4">
+            {PLAATSEN.map((p) => (
+              <Link key={p.slug} href={`/zwanger-in-${p.slug}`} className="text-sm font-semibold text-primary border-b border-primary/30 pb-0.5">
+                Zwanger in {p.naam}
+              </Link>
+            ))}
           </div>
         </div>
 
@@ -492,6 +538,20 @@ export default function Geboortezorg() {
                 </form>
               )
             )}
+          </div>
+        </section>
+
+        <section className="px-7 md:px-14 lg:px-18 py-12 border-t border-border/15">
+          <h2 className="font-display text-2xl md:text-3xl font-medium text-foreground leading-[1.2]">
+            Veelgestelde vragen over geboortezorg in Zuidplas
+          </h2>
+          <div className="mt-6 max-w-2xl">
+            {ZORGKAART_VRAGEN.map((v) => (
+              <div key={v.vraag} className="py-5 border-b border-border/15">
+                <h3 className="font-semibold text-foreground">{v.vraag}</h3>
+                <p className="text-[15px] text-foreground/80 leading-[1.9] mt-2">{v.antwoord}</p>
+              </div>
+            ))}
           </div>
         </section>
 

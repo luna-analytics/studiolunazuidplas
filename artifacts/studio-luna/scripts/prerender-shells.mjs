@@ -22,6 +22,7 @@ const kort = (s, max = 158) => (s.length <= max ? s : s.slice(0, max - 1).replac
 const zorgkaartBron = readFileSync(join(src, "data", "zorgkaart.ts"), "utf8");
 const reeksBron = readFileSync(join(src, "pages", "geboortereeks.tsx"), "utf8");
 const homeBron = readFileSync(join(src, "pages", "studio-luna.tsx"), "utf8");
+const zorgkaartPaginaBron = readFileSync(join(src, "pages", "geboortezorg.tsx"), "utf8");
 
 // Categorieën met intro en hun aanbieders
 const categorieen = [];
@@ -45,6 +46,7 @@ const leesFaq = (bron) =>
   [...bron.matchAll(/vraag: "([^"]+)",\s*\n\s*antwoord: "([^"]+)"/g)].map(([, vraag, antwoord]) => ({ vraag, antwoord }));
 const reeksFaq = leesFaq(reeksBron);
 const homeFaq = leesFaq(homeBron);
+const zorgkaartFaq = leesFaq(zorgkaartPaginaBron);
 
 const inbegrepen = (() => {
   const m = reeksBron.match(/const INBEGREPEN = \[([\s\S]*?)\];/);
@@ -65,6 +67,32 @@ const faqJsonLd = (items) => ({
 const faqHtml = (items) =>
   `<h2>Veelgestelde vragen</h2>` +
   items.map((f) => `<h3>${tekstVeilig(f.vraag)}</h3><p>${tekstVeilig(f.antwoord)}</p>`).join("");
+
+// ── Plaatsen ────────────────────────────────────────────────────────────────
+// Zelfde regels als zorgkaartVoorPlaats() in src/data/zorgkaart.ts: een
+// aanbieder hoort bij een plaats als hij die plaats zelf noemt, en anders in de
+// groep "breder werkgebied" als hij een regio of landelijk gebied opgeeft
+// zonder een Zuidplas-plaats te noemen.
+const PLAATSEN = [
+  { slug: "nieuwerkerk-aan-den-ijssel", naam: "Nieuwerkerk aan den IJssel" },
+  { slug: "zevenhuizen", naam: "Zevenhuizen" },
+  { slug: "moordrecht", naam: "Moordrecht" },
+  { slug: "moerkapelle", naam: "Moerkapelle" },
+];
+const BREED = /regio|regionale|landelijk|werkgebied/i;
+const noemtPlaats = (tekst, naam) => tekst.toLowerCase().includes(naam.toLowerCase());
+const noemtZuidplas = (tekst) => PLAATSEN.some((p) => noemtPlaats(tekst, p.naam));
+const breedWerkgebied = (tekst) => BREED.test(tekst) && !noemtZuidplas(tekst);
+
+const voorPlaats = (naam) =>
+  categorieen
+    .map((c) => ({
+      titel: c.titel,
+      intro: c.intro,
+      hier: c.aanbieders.filter((a) => noemtPlaats(a.plaats, naam)),
+      breed: c.aanbieders.filter((a) => !noemtPlaats(a.plaats, naam) && breedWerkgebied(a.plaats)),
+    }))
+    .filter((r) => r.hier.length + r.breed.length > 0);
 
 // ── Routes ──────────────────────────────────────────────────────────────────
 const ROUTES = [
@@ -115,7 +143,11 @@ const ROUTES = [
     inhoud:
       `<h1>Geboortezorg in Zuidplas</h1>` +
       `<p>Zwanger of net bevallen in Nieuwerkerk aan den IJssel, Zevenhuizen, Moordrecht of Moerkapelle? Op deze pagina staat alle zorg en ondersteuning uit de regio op één plek: ${totaalAanbieders} aanbieders in ${categorieen.length} categorieën. Studio Luna houdt deze kaart bij.</p>` +
-      `<ul>` + categorieen.map((c) => `<li><a href="/geboortezorg-zuidplas/${c.id}">${tekstVeilig(c.titel)}</a> (${c.aanbieders.length} ${c.aanbieders.length === 1 ? "aanbieder" : "aanbieders"})</li>`).join("") + `</ul>`,
+      `<ul>` + categorieen.map((c) => `<li><a href="/geboortezorg-zuidplas/${c.id}">${tekstVeilig(c.titel)}</a> (${c.aanbieders.length} ${c.aanbieders.length === 1 ? "aanbieder" : "aanbieders"})</li>`).join("") + `</ul>` +
+      `<h2>Waar woon je?</h2>` +
+      `<ul>` + PLAATSEN.map((p) => `<li><a href="/zwanger-in-${p.slug}">Zwanger in ${tekstVeilig(p.naam)}</a></li>`).join("") + `</ul>` +
+      faqHtml(zorgkaartFaq),
+    jsonLd: [faqJsonLd(zorgkaartFaq)],
   },
   {
     pad: "over-mij",
@@ -145,6 +177,31 @@ for (const cat of categorieen) {
         `<h2>${tekstVeilig(a.naam)}</h2><p>${tekstVeilig(a.plaats)}. ${tekstVeilig(a.beschrijving)} <a href="${ontsmet(a.website)}" rel="nofollow">Website</a></p>`
       ).join("") +
       `<p>Deze kaart is een initiatief van <a href="/">Studio Luna</a> in Nieuwerkerk aan den IJssel, waar op 29 september <a href="/geboortereeks">de Geboortereeks</a> start.</p>`,
+  });
+}
+
+// De vier plaatspagina's: per dorp de aanbieders die dat dorp zelf noemen, en
+// daaronder wie er vanuit een breder gebied werkt, met het werkgebied erbij.
+for (const plaats of PLAATSEN) {
+  const rijen = voorPlaats(plaats.naam);
+  const aantalHier = new Set(rijen.flatMap((r) => r.hier.map((a) => a.naam))).size;
+  const aantalBreed = new Set(rijen.flatMap((r) => r.breed.map((a) => a.naam))).size;
+  ROUTES.push({
+    pad: `zwanger-in-${plaats.slug}`,
+    title: `Zwanger in ${plaats.naam}: geboortezorg in de buurt | Studio Luna`,
+    beschrijving: kort(`Verloskundigen, kraamzorg, echo's, zwangerschapsyoga, bekkenfysiotherapie en meer voor wie zwanger is in ${plaats.naam}. Onderdeel van de Geboortezorgkaart Zuidplas van Studio Luna.`),
+    inhoud:
+      `<h1>Zwanger in ${tekstVeilig(plaats.naam)}</h1>` +
+      `<p>Alles rondom je zwangerschap, je bevalling en de eerste tijd daarna in ${tekstVeilig(plaats.naam)}. ${aantalHier} aanbieders geven ${tekstVeilig(plaats.naam)} zelf op als plaats, ${aantalBreed} andere werken vanuit een breder gebied; bij die laatste staat hun eigen werkgebied erbij.</p>` +
+      rijen.map((r) =>
+        `<h2>${tekstVeilig(r.titel)} in ${tekstVeilig(plaats.naam)}</h2><p>${tekstVeilig(r.intro)}</p>` +
+        r.hier.map((a) => `<h3>${tekstVeilig(a.naam)}</h3><p>${tekstVeilig(a.plaats)}. ${tekstVeilig(a.beschrijving)} <a href="${ontsmet(a.website)}" rel="nofollow">Website</a></p>`).join("") +
+        (r.breed.length
+          ? `<p>Werkt vanuit een breder gebied:</p>` +
+            r.breed.map((a) => `<h3>${tekstVeilig(a.naam)}</h3><p>${tekstVeilig(a.plaats)}. ${tekstVeilig(a.beschrijving)} <a href="${ontsmet(a.website)}" rel="nofollow">Website</a></p>`).join("")
+          : "")
+      ).join("") +
+      `<p><a href="/geboortereeks">Zwangerschapsyoga bij Studio Luna</a> in Nieuwerkerk aan den IJssel, ook als je in ${tekstVeilig(plaats.naam)} woont. Terug naar <a href="/geboortezorg-zuidplas">de hele Geboortezorgkaart Zuidplas</a>.</p>`,
   });
 }
 

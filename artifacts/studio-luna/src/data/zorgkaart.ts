@@ -839,3 +839,64 @@ export const ZORGKAART: ZorgCategorie[] = [
     ],
   },
 ];
+
+/* ── Plaatsen in de gemeente Zuidplas ──────────────────────────────────────
+ * Voor de vier plaatspagina's (/zwanger-in-...). Een aanbieder komt op de
+ * pagina van een plaats als de eigen plaatsomschrijving die plaats noemt.
+ * Daarnaast is er een tweede groep: aanbieders die een breder werkgebied
+ * opgeven zonder een specifieke Zuidplas-plaats te noemen. Bij die groep
+ * staat het werkgebied er letterlijk bij, zodat de bezoeker zelf ziet waar
+ * de aanbieder werkt. We bedenken nergens dekking die de aanbieder zelf niet
+ * opschrijft.
+ */
+
+export type Plaats = { slug: string; naam: string; korteNaam: string };
+
+export const PLAATSEN: Plaats[] = [
+  { slug: "nieuwerkerk-aan-den-ijssel", naam: "Nieuwerkerk aan den IJssel", korteNaam: "Nieuwerkerk" },
+  { slug: "zevenhuizen", naam: "Zevenhuizen", korteNaam: "Zevenhuizen" },
+  { slug: "moordrecht", naam: "Moordrecht", korteNaam: "Moordrecht" },
+  { slug: "moerkapelle", naam: "Moerkapelle", korteNaam: "Moerkapelle" },
+];
+
+const BREED = /regio|regionale|landelijk|werkgebied/i;
+
+/** Noemt deze plaatsomschrijving deze plaats? */
+export function noemtPlaats(plaatsTekst: string, plaatsNaam: string): boolean {
+  return plaatsTekst.toLowerCase().includes(plaatsNaam.toLowerCase());
+}
+
+/** Noemt deze plaatsomschrijving een van de vier Zuidplas-plaatsen? */
+export function noemtEenZuidplasPlaats(plaatsTekst: string): boolean {
+  return PLAATSEN.some((p) => noemtPlaats(plaatsTekst, p.naam));
+}
+
+/** Geeft een breder werkgebied op zonder een specifieke plaats te noemen. */
+export function heeftBreedWerkgebied(plaatsTekst: string): boolean {
+  return BREED.test(plaatsTekst) && !noemtEenZuidplasPlaats(plaatsTekst);
+}
+
+export type PlaatsCategorie = {
+  categorie: ZorgCategorie;
+  hier: Zorgverlener[];
+  breed: Zorgverlener[];
+};
+
+/** De hele zorgkaart, gefilterd op een plaats en gegroepeerd per categorie. */
+export function zorgkaartVoorPlaats(plaatsNaam: string): PlaatsCategorie[] {
+  return ZORGKAART.map((categorie) => ({
+    categorie,
+    hier: categorie.aanbieders.filter((a) => noemtPlaats(a.plaats, plaatsNaam)),
+    breed: categorie.aanbieders.filter(
+      (a) => !noemtPlaats(a.plaats, plaatsNaam) && heeftBreedWerkgebied(a.plaats),
+    ),
+  })).filter((r) => r.hier.length + r.breed.length > 0);
+}
+
+/** Hoeveel aanbieders staan er in totaal op de pagina van deze plaats? */
+export function aantalVoorPlaats(plaatsNaam: string): { hier: number; breed: number } {
+  const rijen = zorgkaartVoorPlaats(plaatsNaam);
+  const namen = (kies: (r: PlaatsCategorie) => Zorgverlener[]) =>
+    new Set(rijen.flatMap((r) => kies(r).map((a) => a.naam))).size;
+  return { hier: namen((r) => r.hier), breed: namen((r) => r.breed) };
+}
