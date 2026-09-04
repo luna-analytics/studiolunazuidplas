@@ -391,13 +391,6 @@ export const ZORGKAART: ZorgCategorie[] = [
         tags: ["holistisch", "1-op-1", "partner-welkom", "aan-huis"],
       },
       {
-        naam: "Doula's aan de IJssel",
-        plaats: "Regio Hollandse IJssel (vestigingsplaats niet op de site vermeld)",
-        website: "https://doulasaandeijssel.nl",
-        beschrijving: "Twee samenwerkende doula's (Claudia en Natisja) die begeleiding bieden tijdens zwangerschap, bevalling en kraamtijd, zowel bij een thuis- als ziekenhuisbevalling.",
-        tags: ["1-op-1", "partner-welkom", "thuisbevalling"],
-      },
-      {
         naam: "Doula Marlies",
         plaats: "Werkgebied midden- en zuid-Nederland, o.a. Gouda en Rotterdam (vestigingsplaats niet op de site vermeld)",
         website: "https://doulamarlies.nl",
