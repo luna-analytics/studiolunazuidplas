@@ -18,6 +18,8 @@ function matcht(aanbieder: Zorgverlener, categorieTekst: string, zoek: string): 
 // De kaart leest als een gids in fasen in plaats van een muur van tegels.
 // Categorieën die hier niet genoemd worden schuiven vanzelf in de laatste groep,
 // zodat een nieuwe categorie in zorgkaart.ts nooit onzichtbaar blijft.
+// Een categorie zonder aanbieders (zoals Matrescentie) blijft bewust zichtbaar
+// met een 0 erachter: dat is het signaal dat die zorg nog gezocht wordt.
 const FASEN: { titel: string; ids: string[] }[] = [
   {
     titel: "Tijdens je zwangerschap",
