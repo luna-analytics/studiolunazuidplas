@@ -76,8 +76,6 @@ const ZORGKAART_VRAGEN = [
   },
 ];
 
-const PLAATS_SNELZOEK = ["Nieuwerkerk", "Zevenhuizen", "Moordrecht", "Moerkapelle", "online"];
-
 const veldKlasse =
   "w-full px-4 py-3 rounded-md border border-border/40 bg-card text-[15px] text-foreground placeholder:text-foreground/50";
 const labelKlasse = "block text-sm font-semibold text-foreground/80 mb-1.5";
@@ -269,22 +267,6 @@ export default function Geboortezorg() {
               placeholder="bijv. bekkenfysiotherapie, kraamzorg of Nieuwerkerk"
               className={veldKlasse}
             />
-            <p className="text-sm text-foreground/60 mt-2.5">
-              Of kies een plaats:{" "}
-              {PLAATS_SNELZOEK.map((p, i) => (
-                <span key={p}>
-                  {i > 0 && " · "}
-                  <button
-                    onClick={() => setZoek(zoek.trim() === p ? "" : p)}
-                    className={zoek.trim() === p
-                      ? "text-primary font-semibold underline underline-offset-4 decoration-primary/40"
-                      : "text-foreground/70 hover:text-primary"}
-                  >
-                    {p}
-                  </button>
-                </span>
-              ))}
-            </p>
 
             {filterActief && (
               <p className="text-sm text-foreground/60 mt-3">
