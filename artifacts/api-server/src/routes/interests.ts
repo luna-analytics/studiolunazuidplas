@@ -82,10 +82,10 @@ router.post("/zorgkaart-feedback", async (req, res) => {
   await saveList("zorgkaart_feedback", list);
   // Mailnotificatie naar de beheerder; als die faalt is de feedback zelf al bewaard
   await sendAdminNotification({
-    type: "aanvraag",
-    name: `Zorgkaart-tip: ${eersteWoorden(bericht)}`,
+    type: "zorgkaart",
+    name: `tip "${eersteWoorden(bericht, 50)}"`,
     email,
-    details: bericht.trim(),
+    details: `Tip van een bezoeker\n\n${bericht.trim()}`,
   }).catch(() => {});
   return res.json({ message: "Ontvangen" });
 });
@@ -138,6 +138,19 @@ router.delete("/admin/interests", requireAdmin, async (req: any, res: any) => {
   res.json({ verwijderd: list.length - nieuw.length });
 });
 
+// Tips van bezoekers en aanmeldingen van zorgverleners staan in de admin als
+// één zorgkaartlijst. Afhandelen gaat per item, herkenbaar aan soort en
+// tijdstip; afgehandelde items blijven bewaard en zijn terug te zetten.
+router.patch("/admin/zorgkaart-afgehandeld", requireAdmin, async (req: any, res: any) => {
+  const { soort, timestamp, afgehandeld } = req.body as { soort?: string; timestamp?: string; afgehandeld?: boolean };
+  const key = soort === "tip" ? "zorgkaart_feedback" : soort === "aanmelding" ? "zorgverlener_aanmeldingen" : null;
+  if (!key || !timestamp) return res.status(400).json({ error: "Onbekend item" });
+  const list = await readList<{ timestamp: string; afgehandeld?: boolean }>(key);
+  if (!list.some((i) => i.timestamp === timestamp)) return res.status(404).json({ error: "Item niet gevonden" });
+  await saveList(key, list.map((i) => (i.timestamp === timestamp ? { ...i, afgehandeld: afgehandeld !== false } : i)));
+  res.json({ ok: true });
+});
+
 router.get("/admin/zorgverlener-aanmeldingen", requireAdmin, async (_req: any, res: any) => {
   res.json(await readList<ZorgverlenerAanmelding>("zorgverlener_aanmeldingen"));
 });
@@ -165,10 +178,10 @@ router.post("/zorgverlener-aanmelding", async (req, res) => {
   });
   await saveList("zorgverlener_aanmeldingen", list);
   await sendAdminNotification({
-    type: "aanvraag",
-    name: `Zorgkaart-vermelding: ${praktijk.trim()}`,
+    type: "zorgkaart",
+    name: `aanmelding van ${praktijk.trim()}`,
     email,
-    details: `Website: ${(website ?? "").trim() || "niet opgegeven"}\n\n${bericht.trim()}`,
+    details: `Zorgverlener meldt zich aan\nWebsite: ${(website ?? "").trim() || "niet opgegeven"}\n\n${bericht.trim()}`,
   }).catch(() => {});
   return res.json({ message: "Ontvangen" });
 });

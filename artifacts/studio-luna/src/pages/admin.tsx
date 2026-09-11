@@ -3444,8 +3444,11 @@ function ReviewsBeheerTab() {
 // de interesselijst, feedback op de zorgkaart en zorgverleners die erop willen.
 type ReeksAanmelding = { naam: string; email: string; timestamp: string };
 type Interesse = { email: string; timestamp: string };
-type ZorgkaartFeedback = { bericht: string; email: string; timestamp: string };
-type ZorgverlenerAanmelding = { praktijk: string; website: string; bericht: string; email: string; timestamp: string };
+type ZorgkaartFeedback = { bericht: string; email: string; timestamp: string; afgehandeld?: boolean };
+type ZorgverlenerAanmelding = { praktijk: string; website: string; bericht: string; email: string; timestamp: string; afgehandeld?: boolean };
+type ZorgkaartItem =
+  | ({ soort: "tip" } & ZorgkaartFeedback)
+  | ({ soort: "aanmelding" } & ZorgverlenerAanmelding);
 type Kennismaking = { naam: string; email: string; telefoon: string; bericht: string; timestamp: string };
 
 const datumKort = (iso: string) =>
@@ -3515,6 +3518,39 @@ function MailWaarschuwing({ status, opnieuw }: { status: MailStatus; opnieuw: ()
   );
 }
 
+// Tips van bezoekers en aanmeldingen van zorgverleners gaan allebei over de
+// zorgkaart en komen daarom als één lijst binnen, met een label per soort.
+function ZorgkaartRegel({ item, onWissel }: { item: ZorgkaartItem; onWissel: (item: ZorgkaartItem) => void }) {
+  return (
+    <div className="bg-card border border-border/30 rounded-3xl px-5 py-4">
+      <p className="text-[11px] font-bold uppercase tracking-widest text-foreground/40 mb-1.5">
+        {item.soort === "tip" ? "Tip van een bezoeker" : "Zorgverlener meldt zich aan"}
+      </p>
+      {item.soort === "aanmelding" && (
+        <>
+          <p className="font-semibold text-foreground text-sm">{item.praktijk}</p>
+          {item.website && (
+            <a href={item.website.startsWith("http") ? item.website : `https://${item.website}`} target="_blank" rel="noopener noreferrer"
+              className="text-xs text-primary hover:underline">{item.website}</a>
+          )}
+        </>
+      )}
+      {item.bericht && (
+        <p className={`text-sm text-foreground/80 leading-[1.8] whitespace-pre-wrap ${item.soort === "aanmelding" ? "mt-2" : ""}`}>{item.bericht}</p>
+      )}
+      <div className="flex items-center justify-between gap-3 mt-3">
+        <a href={`mailto:${item.email}`} className="text-xs text-primary hover:underline">{item.email}</a>
+        <div className="flex items-center gap-3 shrink-0">
+          <button onClick={() => onWissel(item)} className="text-xs font-semibold text-foreground/50 hover:text-foreground underline">
+            {item.afgehandeld ? "Terugzetten" : "Afgehandeld"}
+          </button>
+          <p className="text-xs text-foreground/35">{datumKort(item.timestamp)}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function AanmeldingenTab() {
   const [laden, setLaden] = useState(true);
   const [aanmeldingen, setAanmeldingen] = useState<ReeksAanmelding[]>([]);
@@ -3544,6 +3580,21 @@ function AanmeldingenTab() {
   };
 
   useEffect(() => { laad(); }, []);
+
+  const zorgkaartItems: ZorgkaartItem[] = [
+    ...feedback.map((f) => ({ ...f, soort: "tip" as const })),
+    ...zorgverleners.map((z) => ({ ...z, soort: "aanmelding" as const })),
+  ].sort((a, b) => b.timestamp.localeCompare(a.timestamp));
+  const zorgkaartOpen = zorgkaartItems.filter((z) => !z.afgehandeld);
+  const zorgkaartKlaar = zorgkaartItems.filter((z) => z.afgehandeld);
+
+  const wisselAfgehandeld = async (item: ZorgkaartItem) => {
+    await apiFetch("/admin/zorgkaart-afgehandeld", {
+      method: "PATCH",
+      body: JSON.stringify({ soort: item.soort, timestamp: item.timestamp, afgehandeld: !item.afgehandeld }),
+    });
+    laad();
+  };
 
   if (laden) {
     return (
@@ -3620,21 +3671,21 @@ function AanmeldingenTab() {
         )}
       </Lijstblok>
 
-      <Lijstblok titel="Feedback op de zorgkaart" aantal={feedback.length}>
-        {feedback.length === 0 ? (
-          <LegeLijst tekst="Nog geen feedback op de zorgkaart." />
+      <Lijstblok titel="Zorgkaart: tips en aanmeldingen" aantal={zorgkaartOpen.length}>
+        {zorgkaartOpen.length === 0 ? (
+          <LegeLijst tekst="Niets open voor de zorgkaart. Tips van bezoekers en aanmeldingen van zorgverleners komen hier samen binnen." />
         ) : (
           <div className="space-y-3">
-            {feedback.map((f, i) => (
-              <div key={i} className="bg-card border border-border/30 rounded-3xl px-5 py-4">
-                <p className="text-sm text-foreground/80 leading-[1.8] whitespace-pre-wrap">{f.bericht}</p>
-                <div className="flex items-center justify-between gap-3 mt-3">
-                  <a href={`mailto:${f.email}`} className="text-xs text-primary hover:underline">{f.email}</a>
-                  <p className="text-xs text-foreground/35 shrink-0">{datumKort(f.timestamp)}</p>
-                </div>
-              </div>
-            ))}
+            {zorgkaartOpen.map((z) => <ZorgkaartRegel key={z.soort + z.timestamp} item={z} onWissel={wisselAfgehandeld} />)}
           </div>
+        )}
+        {zorgkaartKlaar.length > 0 && (
+          <details className="mt-3">
+            <summary className="text-xs font-semibold text-foreground/45 cursor-pointer">Afgehandeld ({zorgkaartKlaar.length})</summary>
+            <div className="space-y-3 mt-3 opacity-60">
+              {zorgkaartKlaar.map((z) => <ZorgkaartRegel key={z.soort + z.timestamp} item={z} onWissel={wisselAfgehandeld} />)}
+            </div>
+          </details>
         )}
       </Lijstblok>
 
@@ -3662,28 +3713,6 @@ function AanmeldingenTab() {
         )}
       </Lijstblok>
 
-      <Lijstblok titel="Zorgverleners die op de kaart willen" aantal={zorgverleners.length}>
-        {zorgverleners.length === 0 ? (
-          <LegeLijst tekst="Nog geen aanmeldingen van zorgverleners." />
-        ) : (
-          <div className="space-y-3">
-            {zorgverleners.map((z, i) => (
-              <div key={i} className="bg-card border border-border/30 rounded-3xl px-5 py-4">
-                <p className="font-semibold text-foreground text-sm">{z.praktijk}</p>
-                {z.website && (
-                  <a href={z.website.startsWith("http") ? z.website : `https://${z.website}`} target="_blank" rel="noopener noreferrer"
-                    className="text-xs text-primary hover:underline">{z.website}</a>
-                )}
-                {z.bericht && <p className="text-sm text-foreground/75 leading-[1.8] mt-2 whitespace-pre-wrap">{z.bericht}</p>}
-                <div className="flex items-center justify-between gap-3 mt-3">
-                  <a href={`mailto:${z.email}`} className="text-xs text-primary hover:underline">{z.email}</a>
-                  <p className="text-xs text-foreground/35 shrink-0">{datumKort(z.timestamp)}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </Lijstblok>
     </div>
   );
 }

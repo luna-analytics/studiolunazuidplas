@@ -268,20 +268,21 @@ export async function sendReeksAanmeldingBevestiging(params: { toEmail: string; 
 
 // ─── ADMIN NOTIFICATIE (bij nieuwe reservering / boeking / aanvraag) ─────────
 export async function sendAdminNotification(params: {
-  type: "reservering" | "boeking" | "aanvraag";
+  type: "reservering" | "boeking" | "aanvraag" | "zorgkaart";
   name: string;
   email: string;
   details: string;
 }): Promise<boolean> {
   const { type, name, email, details } = params;
-  const labels = { reservering: "Nieuwe reservering", boeking: "Nieuwe boeking", aanvraag: "Nieuwe aanvraag" };
+  const labels = { reservering: "Nieuwe reservering", boeking: "Nieuwe boeking", aanvraag: "Nieuwe aanvraag", zorgkaart: "Zorgkaart" };
   const label = labels[type];
+  const kop = type === "zorgkaart" ? "Er is iets binnengekomen voor de zorgkaart" : `Er is een ${type} binnengekomen!`;
 
   const inner = `
     ${HEADER(label)}
     <tr>
       <td style="padding:40px 45px;">
-        <h2 style="margin:0 0 20px; font-family:'Playfair Display', serif; font-size:22px; color:#3A4F41; font-weight:normal;">Er is een ${type} binnengekomen!</h2>
+        <h2 style="margin:0 0 20px; font-family:'Playfair Display', serif; font-size:22px; color:#3A4F41; font-weight:normal;">${kop}</h2>
 
         <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#F8F7F5; border-radius:8px; margin-bottom:20px;">
           <tr><td style="padding:22px 25px;">

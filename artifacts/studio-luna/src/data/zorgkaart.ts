@@ -73,7 +73,7 @@ export type ZorgCategorie = {
 
 /** Werk deze bij wanneer de kaart inhoudelijk verandert; hij staat zichtbaar
  *  op de pagina en in de structured data. */
-export const LAATST_BIJGEWERKT = { tekst: "september 2026", iso: "2026-09-04" };
+export const LAATST_BIJGEWERKT = { tekst: "september 2026", iso: "2026-09-11" };
 
 export const ZORGKAART: ZorgCategorie[] = [
   {
@@ -484,6 +484,14 @@ export const ZORGKAART: ZorgCategorie[] = [
         tags: ["op-locatie", "groepslessen", "avond-weekend", "1-op-1"],
       },
       {
+        naam: "PowerMama Zuidplas",
+        plaats: "Zevenhuizen",
+        website: "https://www.powermamamoerkapelle.nl/",
+        beschrijving: "Pre- en postnatale trainer Roos Brugman geeft aan de Koning Willem-Alexanderlaan in Zevenhuizen small group trainingen van maximaal acht vrouwen tijdens en na de zwangerschap, met aandacht voor core, bekkenbodem, ademhaling en houding, daarnaast personal training en een bevalcursus samen met je partner.",
+        tags: ["op-locatie", "groepslessen", "avond-weekend", "1-op-1", "partner-welkom", "vergoeding"],
+        toegevoegd: "2026-09-11",
+      },
+      {
         naam: "Mom in Balance Rotterdam",
         plaats: "Rotterdam-Nesselande (Zevenhuizerplas) en Capelle aan den IJssel (Vuykpark)",
         website: "https://mominbalance.com/workouts/locaties/rotterdam",
@@ -835,6 +843,14 @@ export const ZORGKAART: ZorgCategorie[] = [
         beschrijving: "Platform en centrum rond matrescentie in Rotterdam, met trajecten, workshops, events en een online kennisbank die landelijk te volgen is.",
         tags: ["online", "1-op-1", "groepslessen"],
         toegevoegd: "2026-08-30",
+      },
+      {
+        naam: "The Motherfood",
+        plaats: "Online (praktijk in Utrecht)",
+        website: "https://www.themotherfood.nl/",
+        beschrijving: "Postpartum voedingsdeskundige en chef Teuntje Teunissen helpt moeders met een persoonlijk consult en voedingsplan bij herstel en postnatale depletie, en maakt tijdens de zwangerschap een plan voor de periode na de bevalling; haar maaltijdpakketten worden alleen in de omgeving van Utrecht en het Gooi bezorgd.",
+        tags: ["online", "1-op-1"],
+        toegevoegd: "2026-09-11",
       },
     ],
   },
