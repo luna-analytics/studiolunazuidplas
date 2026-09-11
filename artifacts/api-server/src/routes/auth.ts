@@ -4,7 +4,13 @@ import { verifyMemberPassword, findMemberById, createMember, readMembers, saveMe
 import { Resend } from "resend";
 import crypto from "crypto";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Zelfde reden als in email.ts: niet op moduleniveau opbouwen, want een
+// ontbrekende sleutel zou dan het hele inloggen onderuit halen.
+let resendClient: Resend | null = null;
+function getResend(): Resend {
+  if (!resendClient) resendClient = new Resend(process.env.RESEND_API_KEY);
+  return resendClient;
+}
 
 const router = Router();
 
@@ -89,7 +95,7 @@ router.post("/auth/wachtwoord-vergeten", async (req, res) => {
   const link = `${baseUrl}/wachtwoord-reset?token=${token}`;
 
   try {
-    await resend.emails.send({
+    await getResend().emails.send({
       from: "Studio Luna <info@studiolunazuidplas.nl>",
       to: member.email,
       subject: "Wachtwoord opnieuw instellen — Studio Luna",

@@ -154,7 +154,7 @@ router.post("/reserveer", async (req: any, res: any) => {
       }
     }
     const reservering = await createReservering({ name, email, classId, classTitle, dateStr, time, type });
-    sendAdminNotification({
+    await sendAdminNotification({
       type: "reservering",
       name,
       email,
@@ -207,8 +207,8 @@ router.post("/boek-les", requireAuth, async (req: any, res: any) => {
       name: member.name, email: member.email, classId, classTitle, dateStr, time, type, betaaldStripe: true,
     });
 
-    sendReservationConfirmation({ toEmail: member.email, toName: member.name, classTitle, dateStr, time, type }).catch(console.error);
-    sendAdminNotification({
+    await sendReservationConfirmation({ toEmail: member.email, toName: member.name, classTitle, dateStr, time, type }).catch(console.error);
+    await sendAdminNotification({
       type: "reservering", name: member.name, email: member.email,
       details: `Les: ${classTitle}\nDatum: ${dateStr}\nTijd: ${time}\n(lid met rittenkaart)`,
     }).catch(console.error);
@@ -278,7 +278,7 @@ router.post("/rittenkaart-request", async (req: any, res: any) => {
   }
   try {
     const request = await createRequest({ name, email, package: pkg as any });
-    sendAdminNotification({
+    await sendAdminNotification({
       type: "aanvraag",
       name,
       email,

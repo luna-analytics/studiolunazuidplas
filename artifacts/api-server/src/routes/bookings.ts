@@ -50,7 +50,7 @@ router.post("/bookings", requireAuth, async (req, res) => {
     const updated = hasCredits ? await updateMemberCredits(userId, -1) : member;
     const credits = updated.credits;
 
-    sendAdminNotification({
+    await sendAdminNotification({
       type: "boeking",
       name: member.name,
       email: member.email,

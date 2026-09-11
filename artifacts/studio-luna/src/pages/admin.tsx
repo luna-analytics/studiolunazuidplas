@@ -3470,6 +3470,51 @@ function Lijstblok({ titel, aantal, children }: { titel: string; aantal: number;
   );
 }
 
+type MailStatus = {
+  sleutelAanwezig: boolean;
+  ontvanger: string;
+  mislukt: { context: string; to: string; error: string; timestamp: string }[];
+};
+
+// Een kapotte mailkoppeling merk je anders pas doordat berichten uitblijven,
+// en dan zijn er al dagen overheen. Vandaar dit blok bovenaan.
+function MailWaarschuwing({ status, opnieuw }: { status: MailStatus; opnieuw: () => void }) {
+  const problemen = status.mislukt.length;
+  if (status.sleutelAanwezig && problemen === 0) return null;
+
+  return (
+    <div className="bg-red-50 border border-red-200 rounded-3xl px-5 py-4">
+      <p className="text-sm font-semibold text-red-800 mb-1">
+        {status.sleutelAanwezig
+          ? `${problemen} ${problemen === 1 ? "melding is" : "meldingen zijn"} niet aangekomen`
+          : "De mailkoppeling is niet ingesteld"}
+      </p>
+      <p className="text-xs text-red-700 leading-[1.7] mb-3">
+        {status.sleutelAanwezig
+          ? `Berichten van de site worden wel bewaard, maar de mail naar ${status.ontvanger} lukte niet. Hieronder staat waarom.`
+          : "Er staat geen RESEND_API_KEY in de omgeving, waardoor er geen enkele mail verstuurd wordt."}
+      </p>
+      {problemen > 0 && (
+        <div className="space-y-1.5 mb-3">
+          {status.mislukt.slice(-5).reverse().map((m, i) => (
+            <p key={i} className="text-xs text-red-700 font-mono leading-[1.6]">
+              {datumKort(m.timestamp)} · {m.context} · {m.error}
+            </p>
+          ))}
+        </div>
+      )}
+      {problemen > 0 && (
+        <button
+          onClick={async () => { await apiFetch("/admin/mail-status", { method: "DELETE" }); opnieuw(); }}
+          className="text-xs font-semibold text-red-800 underline hover:no-underline"
+        >
+          Meldingen wissen
+        </button>
+      )}
+    </div>
+  );
+}
+
 function AanmeldingenTab() {
   const [laden, setLaden] = useState(true);
   const [aanmeldingen, setAanmeldingen] = useState<ReeksAanmelding[]>([]);
@@ -3477,6 +3522,7 @@ function AanmeldingenTab() {
   const [feedback, setFeedback] = useState<ZorgkaartFeedback[]>([]);
   const [zorgverleners, setZorgverleners] = useState<ZorgverlenerAanmelding[]>([]);
   const [kennismakingen, setKennismakingen] = useState<Kennismaking[]>([]);
+  const [mail, setMail] = useState<MailStatus | null>(null);
 
   const laad = async () => {
     setLaden(true);
@@ -3492,6 +3538,8 @@ function AanmeldingenTab() {
       haal<Kennismaking>("/admin/kennismakingen"),
     ]);
     setAanmeldingen(a); setInteresse(i); setFeedback(f); setZorgverleners(z); setKennismakingen(k);
+    const resMail = await apiFetch("/admin/mail-status");
+    setMail(resMail.ok ? await resMail.json() : null);
     setLaden(false);
   };
 
@@ -3507,6 +3555,7 @@ function AanmeldingenTab() {
 
   return (
     <div className="space-y-8">
+      {mail && <MailWaarschuwing status={mail} opnieuw={laad} />}
       <div className="flex items-center justify-between">
         <p className="text-sm text-foreground/60">
           {aanmeldingen.length} aangemeld voor de Geboortereeks · {interesse.length} op de interesselijst

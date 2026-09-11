@@ -194,8 +194,8 @@ router.post("/stripe/pakket-bevestig", async (req: any, res: any) => {
       await updateMemberCredits(member.id, creditsN);
     }
 
-    sendReservationConfirmation({ toEmail: email, toName: name, classTitle, dateStr, time, type }).catch(console.error);
-    sendAdminNotification({
+    await sendReservationConfirmation({ toEmail: email, toName: name, classTitle, dateStr, time, type }).catch(console.error);
+    await sendAdminNotification({
       type: "reservering", name, email,
       details: `Les: ${classTitle}\nDatum: ${dateStr}\nTijd: ${time}\nPakket: ${pakketId} (Stripe betaald)`,
     }).catch(console.error);
@@ -247,8 +247,8 @@ router.post("/stripe/contant", async (req: any, res: any) => {
     const member = await findMemberByEmail(email);
     if (member) { await updateMemberCredits(member.id, credits); }
 
-    sendReservationConfirmation({ toEmail: email, toName: name, classTitle, dateStr, time, type }).catch(console.error);
-    sendAdminNotification({
+    await sendReservationConfirmation({ toEmail: email, toName: name, classTitle, dateStr, time, type }).catch(console.error);
+    await sendAdminNotification({
       type: "reservering", name, email,
       details: `Les: ${classTitle}\nDatum: ${dateStr}\nTijd: ${time}\nPakket: ${pakketId ?? "onbekend"} (contant)`,
     }).catch(console.error);
@@ -342,8 +342,8 @@ router.post("/stripe/bevestig", async (req: any, res: any) => {
 
     const reservering = await createReservering({ name, email, classId, classTitle, dateStr, time, type });
 
-    sendReservationConfirmation({ toEmail: email, toName: name, classTitle, dateStr, time, type }).catch(console.error);
-    sendAdminNotification({
+    await sendReservationConfirmation({ toEmail: email, toName: name, classTitle, dateStr, time, type }).catch(console.error);
+    await sendAdminNotification({
       type: "reservering",
       name,
       email,

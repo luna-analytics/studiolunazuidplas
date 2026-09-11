@@ -3,6 +3,7 @@ import { db, studioSettings } from "@workspace/db";
 import { eq } from "drizzle-orm";
 import { requireAdmin } from "../middlewares/auth.js";
 import { sendAdminNotification, sendReeksAanmeldingBevestiging } from "../lib/email.js";
+import { readMailFailures, clearMailFailures } from "../lib/mail-log.js";
 
 // Interesselijst en zorgkaart-feedback, allebei opgeslagen in studio_settings
 // (het lokale JSON-bestand van vroeger werkt niet op Vercel: die schijf is
@@ -55,6 +56,12 @@ router.post("/interests", async (req, res) => {
   }
   list.push({ email, timestamp: new Date().toISOString() });
   await saveList("interests", list);
+  await sendAdminNotification({
+    type: "aanvraag",
+    name: "Nieuwe interesse",
+    email,
+    details: "Iemand heeft zich op de interesselijst gezet voor de Mama Circle of een workshop.",
+  }).catch(() => {});
   return res.json({ message: "Geregistreerd" });
 });
 
@@ -74,7 +81,7 @@ router.post("/zorgkaart-feedback", async (req, res) => {
   list.push({ bericht: bericht.trim(), email, timestamp: new Date().toISOString() });
   await saveList("zorgkaart_feedback", list);
   // Mailnotificatie naar de beheerder; als die faalt is de feedback zelf al bewaard
-  sendAdminNotification({
+  await sendAdminNotification({
     type: "aanvraag",
     name: `Zorgkaart-tip: ${eersteWoorden(bericht)}`,
     email,
@@ -108,7 +115,7 @@ router.post("/geboortereeks-aanmelding", async (req, res) => {
   }
   list.push({ naam: naam.trim(), email, timestamp: new Date().toISOString() });
   await saveList("geboortereeks_aanmeldingen", list);
-  sendAdminNotification({
+  await sendAdminNotification({
     type: "aanvraag",
     name: naam.trim(),
     email,
@@ -116,7 +123,7 @@ router.post("/geboortereeks-aanmelding", async (req, res) => {
   }).catch(() => {});
   // De aanmelder krijgt direct een bevestiging, zodat ze weet dat het gelukt
   // is en wat er nu gebeurt; de aanmelding zelf is dan al veilig opgeslagen.
-  sendReeksAanmeldingBevestiging({ toEmail: email, toName: naam.trim() }).catch(() => {});
+  await sendReeksAanmeldingBevestiging({ toEmail: email, toName: naam.trim() }).catch(() => {});
   return res.json({ message: "Aangemeld" });
 });
 
@@ -157,7 +164,7 @@ router.post("/zorgverlener-aanmelding", async (req, res) => {
     timestamp: new Date().toISOString(),
   });
   await saveList("zorgverlener_aanmeldingen", list);
-  sendAdminNotification({
+  await sendAdminNotification({
     type: "aanvraag",
     name: `Zorgkaart-vermelding: ${praktijk.trim()}`,
     email,
@@ -190,7 +197,7 @@ router.post("/kennismaking", async (req, res) => {
   const list = await readList<Kennismaking>("kennismakingen");
   list.push({ naam: naam.trim(), email, telefoon: tel, bericht: bericht.trim(), timestamp: new Date().toISOString() });
   await saveList("kennismakingen", list);
-  sendAdminNotification({
+  await sendAdminNotification({
     type: "aanvraag",
     name: `Kennismaking: ${naam.trim()}`,
     email,
@@ -199,6 +206,22 @@ router.post("/kennismaking", async (req, res) => {
 ${bericht.trim()}`,
   }).catch(() => {});
   return res.json({ message: "Ontvangen" });
+});
+
+// Mailstatus voor de admin. Zonder dit scherm is een kapotte mailkoppeling
+// alleen te merken doordat berichten uitblijven, en dat merk je pas veel te
+// laat.
+router.get("/admin/mail-status", requireAdmin, async (_req: any, res: any) => {
+  res.json({
+    sleutelAanwezig: Boolean(process.env.RESEND_API_KEY),
+    ontvanger: process.env.ADMIN_EMAIL ?? "info@studiolunazuidplas.nl",
+    mislukt: await readMailFailures(),
+  });
+});
+
+router.delete("/admin/mail-status", requireAdmin, async (_req: any, res: any) => {
+  await clearMailFailures();
+  res.json({ ok: true });
 });
 
 export default router;

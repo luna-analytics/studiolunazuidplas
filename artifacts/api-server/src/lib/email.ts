@@ -2,10 +2,50 @@ import { Resend } from "resend";
 import { getEmailSettings } from "./email-settings.js";
 import { readClassTypes } from "./class-types.js";
 import { readTarieven } from "./tarieven.js";
+import { logMailFailure } from "./mail-log.js";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Bewust lui opgebouwd. new Resend(undefined) gooit direct een fout, en op
+// moduleniveau zou een ontbrekende sleutel daarmee de complete API neerhalen
+// in plaats van alleen de mail.
+let resendClient: Resend | null = null;
+function getResend(): Resend {
+  if (!resendClient) resendClient = new Resend(process.env.RESEND_API_KEY);
+  return resendClient;
+}
 
 const FROM = "Studio Luna <info@studiolunazuidplas.nl>";
+const ADMIN_TO = process.env.ADMIN_EMAIL ?? "info@studiolunazuidplas.nl";
+// Meldingen gaan bewust van info@ naar info@. Bij een proef op 10 september
+// kwam die route aan en bleven mails met website@ als afzender weg.
+
+// Alle mail loopt via deze functie. Een ontbrekende sleutel gaf eerder geen
+// enkel signaal, en Resend gooit bij een geweigerde verzending geen fout maar
+// levert { error } terug, waar de oude code niet naar keek.
+//
+// Aanroepers moeten de verzending afwachten voordat ze antwoorden. Op Vercel
+// wordt de functie bevroren zodra het antwoord weg is, en een mail die dan
+// nog onderweg is komt nooit aan. Zo zijn in september berichten van de site
+// blijven liggen terwijl ze wel in de database stonden.
+async function verzend(
+  opts: { to: string; subject: string; html: string },
+  context: string,
+): Promise<boolean> {
+  if (!process.env.RESEND_API_KEY) {
+    await logMailFailure(context, opts.to, "RESEND_API_KEY ontbreekt in de omgeving van de server");
+    return false;
+  }
+  try {
+    const { error } = await getResend().emails.send({ from: FROM, ...opts });
+    if (error) {
+      await logMailFailure(context, opts.to, `${error.name ?? "fout"}: ${error.message ?? JSON.stringify(error)}`);
+      return false;
+    }
+    return true;
+  } catch (err: any) {
+    await logMailFailure(context, opts.to, err?.message ?? String(err));
+    return false;
+  }
+}
 
 function formatDate(dateStr: string): string {
   const [year, month, day] = dateStr.split("-").map(Number);
@@ -131,16 +171,10 @@ export async function sendReservationConfirmation(params: {
     ${FOOTER}
   `;
 
-  try {
-    await resend.emails.send({
-      from: FROM,
-      to: toEmail,
-      subject: `${classTitle} ${formattedDate} Studio Luna`,
-      html: WRAPPER(inner),
-    });
-  } catch (err) {
-    console.error("[email] Fout bij verzenden reserveringsbevestiging:", err);
-  }
+  await verzend(
+    { to: toEmail, subject: `${classTitle} ${formattedDate} Studio Luna`, html: WRAPPER(inner) },
+    "reserveringsbevestiging",
+  );
 }
 
 // ─── HERINNERING ──────────────────────────────────────────────────────────────
@@ -195,16 +229,10 @@ export async function sendReminderEmail(params: {
     ${FOOTER}
   `;
 
-  try {
-    await resend.emails.send({
-      from: FROM,
-      to: toEmail,
-      subject: `Tot morgen bij Studio Luna! — ${classTitle}`,
-      html: WRAPPER(inner),
-    });
-  } catch (err) {
-    console.error("[email] Fout bij verzenden herinnering:", err);
-  }
+  await verzend(
+    { to: toEmail, subject: `Tot morgen bij Studio Luna! — ${classTitle}`, html: WRAPPER(inner) },
+    "herinnering",
+  );
 }
 
 // ─── BEVESTIGING AANMELDING GEBOORTEREEKS (direct naar de aanmelder) ─────────
@@ -232,16 +260,10 @@ export async function sendReeksAanmeldingBevestiging(params: { toEmail: string; 
     ${FOOTER}
   `;
 
-  try {
-    await resend.emails.send({
-      from: FROM,
-      to: toEmail,
-      subject: "Je aanmelding voor de Geboortereeks is binnen",
-      html: WRAPPER(inner),
-    });
-  } catch (err) {
-    console.error("[email] Fout bij verzenden aanmeldbevestiging:", err);
-  }
+  await verzend(
+    { to: toEmail, subject: "Je aanmelding voor de Geboortereeks is binnen", html: WRAPPER(inner) },
+    "aanmeldbevestiging Geboortereeks",
+  );
 }
 
 // ─── ADMIN NOTIFICATIE (bij nieuwe reservering / boeking / aanvraag) ─────────
@@ -250,7 +272,7 @@ export async function sendAdminNotification(params: {
   name: string;
   email: string;
   details: string;
-}) {
+}): Promise<boolean> {
   const { type, name, email, details } = params;
   const labels = { reservering: "Nieuwe reservering", boeking: "Nieuwe boeking", aanvraag: "Nieuwe aanvraag" };
   const label = labels[type];
@@ -287,16 +309,10 @@ export async function sendAdminNotification(params: {
     ${FOOTER}
   `;
 
-  try {
-    await resend.emails.send({
-      from: FROM,
-      to: "info@studiolunazuidplas.nl",
-      subject: `[Studio Luna] ${label} — ${name}`,
-      html: WRAPPER(inner),
-    });
-  } catch (err) {
-    console.error("[email] Fout bij verzenden admin-notificatie:", err);
-  }
+  return verzend(
+    { to: ADMIN_TO, subject: `[Studio Luna] ${label}: ${name}`, html: WRAPPER(inner) },
+    `adminmelding (${type})`,
+  );
 }
 
 // ─── AANGEPASTE BEVESTIGINGSMAIL (door admin zelf geschreven) ────────────────
@@ -327,12 +343,10 @@ export async function sendCustomEmail(params: {
     ${FOOTER}
   `;
 
-  await resend.emails.send({
-    from: FROM,
-    to: toEmail,
-    subject,
-    html: WRAPPER(inner),
-  });
+  const gelukt = await verzend({ to: toEmail, subject, html: WRAPPER(inner) }, "handmatige mail");
+  if (!gelukt) {
+    throw new Error("De mail is niet verzonden. Kijk bij Mailstatus in de admin waarom.");
+  }
 }
 
 // ─── BOOKING BEVESTIGING (via rittenkaart / proefles / losse les flow) ────────
@@ -392,14 +406,8 @@ export async function sendBookingConfirmation(params: {
     ${FOOTER}
   `;
 
-  try {
-    await resend.emails.send({
-      from: FROM,
-      to: toEmail,
-      subject: `${className} ${formattedDate} Studio Luna`,
-      html: WRAPPER(inner),
-    });
-  } catch (err) {
-    console.error("[email] Fout bij verzenden bevestigingsmail:", err);
-  }
+  await verzend(
+    { to: toEmail, subject: `${className} ${formattedDate} Studio Luna`, html: WRAPPER(inner) },
+    "boekingsbevestiging",
+  );
 }
