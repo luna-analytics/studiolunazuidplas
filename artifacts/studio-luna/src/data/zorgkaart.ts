@@ -487,7 +487,7 @@ export const ZORGKAART: ZorgCategorie[] = [
         naam: "PowerMama Zuidplas",
         plaats: "Zevenhuizen",
         website: "https://www.powermamamoerkapelle.nl/",
-        beschrijving: "Pre- en postnatale trainer Roos Brugman geeft aan de Koning Willem-Alexanderlaan in Zevenhuizen small group trainingen van maximaal acht vrouwen tijdens en na de zwangerschap, met aandacht voor core, bekkenbodem, ademhaling en houding, daarnaast personal training en een bevalcursus samen met je partner.",
+        beschrijving: "Pre- en postnatale trainer Roos Brugman helpt je verantwoord sporten voor, tijdens en na de zwangerschap, zodat je krachtig in het moederschap staat, in small group trainingen van maximaal acht vrouwen in Zevenhuizen met aandacht voor core, bekkenbodem, ademhaling, houding en verbinding met elkaar, daarnaast personal training en een bevalcursus samen met je partner.",
         tags: ["op-locatie", "groepslessen", "avond-weekend", "1-op-1", "partner-welkom", "vergoeding"],
         toegevoegd: "2026-09-11",
       },
