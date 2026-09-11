@@ -848,7 +848,7 @@ export const ZORGKAART: ZorgCategorie[] = [
         naam: "The Motherfood",
         plaats: "Online (praktijk in Utrecht)",
         website: "https://www.themotherfood.nl/",
-        beschrijving: "Chef en Certified Postpartum Nutritionist Teuntje Teunissen gunt je een zachte landing in het moederschap en helpt je met persoonlijke coaching en een praktisch voedingsplan stap voor stap naar herstel, energie en hormoonbalans, al tijdens je zwangerschap of na de bevalling.",
+        beschrijving: "Chef en Certified Postpartum Nutritionist Teuntje Teunissen gunt je een zachte landing in het moederschap en helpt je met een persoonlijk online consult en een praktisch voedingsplan stap voor stap naar herstel, energie en hormoonbalans, al tijdens je zwangerschap of na de bevalling.",
         tags: ["online", "1-op-1"],
         toegevoegd: "2026-09-11",
       },
