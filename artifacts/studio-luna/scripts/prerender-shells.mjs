@@ -146,6 +146,13 @@ const ROUTES = [
       `<ul>` + categorieen.map((c) => `<li><a href="/geboortezorg-zuidplas/${c.id}">${tekstVeilig(c.titel)}</a> (${c.aanbieders.length} ${c.aanbieders.length === 1 ? "aanbieder" : "aanbieders"})</li>`).join("") + `</ul>` +
       `<h2>Waar woon je?</h2>` +
       `<ul>` + PLAATSEN.map((p) => `<li><a href="/zwanger-in-${p.slug}">Zwanger in ${tekstVeilig(p.naam)}</a></li>`).join("") + `</ul>` +
+      // Alle aanbieders per categorie, met plaats en beschrijving: AI-zoekmachines
+      // voeren meestal geen JavaScript uit en zagen hier eerst alleen de aantallen.
+      categorieen.map((c) =>
+        `<h2>${tekstVeilig(c.titel)} in Zuidplas</h2><p>${tekstVeilig(c.intro)}</p>` +
+        c.aanbieders.map((a) => `<h3>${tekstVeilig(a.naam)}</h3><p>${tekstVeilig(a.plaats)}. ${tekstVeilig(a.beschrijving)} <a href="${ontsmet(a.website)}" rel="nofollow">Website</a></p>`).join("") +
+        `<p><a href="/geboortezorg-zuidplas/${c.id}">Alle ${tekstVeilig(c.titel.toLowerCase())} in Zuidplas</a></p>`
+      ).join("") +
       faqHtml(zorgkaartFaq),
     jsonLd: [faqJsonLd(zorgkaartFaq)],
   },
@@ -265,3 +272,37 @@ for (const route of ROUTES) {
   writeFileSync(doel, html);
   console.log("geschreven:", route.pad || "(home)");
 }
+
+// ── Sitemap ─────────────────────────────────────────────────────────────────
+// Gebouwd uit dezelfde routes als de schillen. De oude handmatige sitemap in
+// public/ noemde categorieën die niet meer bestonden en miste nieuwe.
+const PRIORITEIT = (pad) =>
+  pad === "" || pad === "geboortezorg-zuidplas" ? "1.0"
+  : pad === "geboortereeks" ? "0.9"
+  : pad.startsWith("geboortezorg-zuidplas/") || pad.startsWith("zwanger-in-") ? "0.8"
+  : "0.6";
+const sitemap =
+  `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
+  ROUTES.map((r) => `  <url>\n    <loc>${r.pad ? `${BASIS}/${r.pad}` : `${BASIS}/`}</loc>\n    <changefreq>weekly</changefreq>\n    <priority>${PRIORITEIT(r.pad)}</priority>\n  </url>`).join("\n") +
+  `\n</urlset>\n`;
+writeFileSync(join(root, "sitemap.xml"), sitemap);
+console.log("geschreven: sitemap.xml met", ROUTES.length, "adressen");
+
+// ── llms.txt ────────────────────────────────────────────────────────────────
+// Kort overzicht voor AI-tools volgens de llms.txt-opzet, alleen met teksten
+// die al op de site staan.
+const llms =
+  `# Studio Luna\n\n` +
+  `> Studio Luna biedt de Geboortereeks, acht wekelijkse lessen zwangerschapsyoga en geboortevoorbereiding in Nieuwerkerk aan den IJssel, en houdt de Geboortezorgkaart Zuidplas bij met alle geboortezorg in de regio.\n\n` +
+  `## Geboortezorgkaart Zuidplas\n\n` +
+  `Zwanger of net bevallen in Nieuwerkerk aan den IJssel, Zevenhuizen, Moordrecht of Moerkapelle? Op de kaart staat alle zorg en ondersteuning uit de regio op één plek: ${totaalAanbieders} aanbieders in ${categorieen.length} categorieën.\n\n` +
+  `- [Geboortezorg in Zuidplas](${BASIS}/geboortezorg-zuidplas): de hele kaart\n` +
+  categorieen.map((c) => `- [${c.titel} in Zuidplas](${BASIS}/geboortezorg-zuidplas/${c.id}): ${c.intro}`).join("\n") +
+  `\n\n## Per plaats\n\n` +
+  PLAATSEN.map((p) => `- [Zwanger in ${p.naam}](${BASIS}/zwanger-in-${p.slug})`).join("\n") +
+  `\n\n## Studio Luna\n\n` +
+  `- [De Geboortereeks](${BASIS}/geboortereeks): 8-weekse zwangerschapsyoga- en geboortevoorbereidingsreeks in Nieuwerkerk aan den IJssel\n` +
+  `- [Over Marjolein](${BASIS}/over-mij): moeder, gepromoveerd onderzoeker en yogadocente\n` +
+  `- [Blog](${BASIS}/blog): artikelen over zwangerschap, geboortevoorbereiding en moederschap in Zuidplas\n`;
+writeFileSync(join(root, "llms.txt"), llms);
+console.log("geschreven: llms.txt");
