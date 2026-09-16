@@ -3,7 +3,7 @@ import { BottomNav } from "@/components/bottom-nav";
 import { SeoFooter } from "@/components/seo-footer";
 import { CtaBlock } from "@/components/cta-block";
 import { motion } from "framer-motion";
-import { Instagram, Mail, ArrowRight } from "lucide-react";
+import { Instagram, Mail } from "lucide-react";
 import { usePageMeta } from "@/lib/seo";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -166,16 +166,14 @@ export default function OverMij() {
             </div>
             <div className="flex flex-col gap-4">
               <a href="mailto:info@studiolunazuidplas.nl"
-                className="inline-flex items-center gap-2 text-[15px] text-foreground/75 hover:text-foreground group">
+                className="inline-flex items-center gap-2 text-[15px] text-foreground/75 hover:text-foreground">
                 <Mail className="w-4 h-4 text-primary shrink-0" />
                 info@studiolunazuidplas.nl
-                <ArrowRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:translate-x-1" />
               </a>
               <a href="https://www.instagram.com/studiolunazuidplas" target="_blank" rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-[15px] text-foreground/75 hover:text-foreground group">
+                className="inline-flex items-center gap-2 text-[15px] text-foreground/75 hover:text-foreground">
                 <Instagram className="w-4 h-4 text-primary shrink-0" />
                 @studiolunazuidplas
-                <ArrowRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:translate-x-1" />
               </a>
             </div>
           </motion.div>

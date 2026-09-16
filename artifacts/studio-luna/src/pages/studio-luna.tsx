@@ -4,7 +4,7 @@ import { BottomNav } from "@/components/bottom-nav";
 import { SeoFooter } from "@/components/seo-footer";
 import { CtaBlock } from "@/components/cta-block";
 import { motion } from "framer-motion";
-import { MapPin, ArrowRight, Mail, Phone, Instagram, Star, Calendar, BookOpen } from "lucide-react";
+import { MapPin, Mail, Phone, Instagram, Star, Calendar, BookOpen } from "lucide-react";
 import { IMAGES } from "@/lib/images";
 import { useAuth } from "@/hooks/use-auth";
 import { usePageMeta } from "@/lib/seo";
@@ -98,62 +98,58 @@ export default function StudioLuna() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background pb-28 md:pb-16 flex justify-center">
-      <div className="w-full max-w-7xl bg-background min-h-screen relative overflow-x-hidden">
+    <div className="min-h-screen bg-background pb-28 md:pb-16 md:pt-16">
 
-        {/* ── HERO — full-bleed, tekst zweeft over foto ── */}
-        <motion.div
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-          transition={{ duration: 1.1, ease: [0.4, 0, 0.2, 1] }}
-          className="relative overflow-hidden"
-          style={{ minHeight: "clamp(420px, 65vw, 720px)" }}
-        >
-          <img
-            src={teksten.foto_hero || IMAGES.hero}
-            alt="Zwangerschapsyoga Studio Luna"
-            className="absolute inset-0 w-full h-full object-cover"
-            style={{ objectPosition: teksten.foto_hero_positie || "center" }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/35 to-black/75 md:bg-gradient-to-r md:from-black/65 md:via-black/35 md:to-transparent" />
-
-          <div className="relative z-10 flex flex-col justify-end md:justify-center px-7 md:px-14 lg:px-18 pt-24 pb-12 md:py-20" style={{ minHeight: "clamp(420px, 65vw, 720px)" }}>
-            <div className="md:max-w-lg">
-              <motion.h1
-                initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.35 }}
-                // Kleiner op smalle schermen: "geboortevoorbereiding" is te breed
-                // voor 390 pixels en viel anders buiten beeld.
-                className="font-display text-[2rem] min-[400px]:text-[2.3rem] sm:text-[2.6rem] md:text-5xl font-medium text-white leading-[1.12] mb-7 break-words"
+      {/* ── HERO — kop op de lichte achtergrond, daaronder de foto van rand tot rand ── */}
+      <div className="w-full max-w-7xl mx-auto">
+        <div className="px-7 md:px-14 lg:px-18 pt-12 pb-10 md:pt-20 md:pb-14">
+          <div className="md:max-w-2xl">
+            <motion.h1
+              initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.15 }}
+              // Kleiner op smalle schermen: "geboortevoorbereiding" is te breed
+              // voor 390 pixels en viel anders buiten beeld.
+              className="font-display text-[2rem] min-[400px]:text-[2.3rem] sm:text-[2.6rem] md:text-5xl font-medium text-foreground leading-[1.12] mb-7 break-words"
+            >
+              {teksten.home_hero.split("\n").map((line, i, arr) => (
+                <span key={i}>{line}{i < arr.length - 1 && <br />}</span>
+              ))}
+            </motion.h1>
+            <motion.div
+              initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.35 }}
+              className="flex flex-wrap items-center gap-x-6 gap-y-4"
+            >
+              <button
+                onClick={() => navigate(teksten.cta_url)}
+                className="inline-flex items-center bg-primary text-primary-foreground px-7 py-3.5 rounded-[6px] font-semibold text-sm hover:bg-primary/88"
               >
-                {teksten.home_hero.split("\n").map((line, i, arr) => (
-                  <span key={i}>{line}{i < arr.length - 1 && <br />}</span>
-                ))}
-              </motion.h1>
-              <motion.div
-                initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.55 }}
-                className="flex flex-wrap gap-3"
+                {teksten.cta_label}
+              </button>
+              <button
+                onClick={() => navigate("/geboortezorg-zuidplas")}
+                className="inline-flex items-center text-foreground/80 text-sm font-medium border-b border-foreground/35 pb-0.5 hover:text-foreground hover:border-foreground"
               >
-                <button
-                  onClick={() => navigate(teksten.cta_url)}
-                  className="inline-flex items-center gap-2 bg-white text-foreground px-7 py-3.5 rounded-xl font-semibold text-sm hover:bg-white/92 group"
-                >
-                  {teksten.cta_label}
-                  <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
-                </button>
-                <button
-                  onClick={() => navigate("/geboortezorg-zuidplas")}
-                  className="inline-flex items-center self-center text-white/85 text-sm font-medium border-b border-white/45 pb-0.5 hover:text-white hover:border-white"
-                >
-                  Ontdek de zorgkaart
-                </button>
-              </motion.div>
-              <p className="mt-7 text-[13px] text-white/60">
-                Nieuwerkerk aan den IJssel, gemeente Zuidplas
-              </p>
-            </div>
+                Ontdek de zorgkaart
+              </button>
+            </motion.div>
+            <p className="mt-7 text-[13px] text-foreground/60">
+              Nieuwerkerk aan den IJssel, gemeente Zuidplas
+            </p>
           </div>
-        </motion.div>
+        </div>
+      </div>
+
+      <motion.img
+        initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+        transition={{ duration: 1.1, ease: [0.4, 0, 0.2, 1] }}
+        src={teksten.foto_hero || IMAGES.hero}
+        alt="Zwangerschapsyoga Studio Luna"
+        className="block w-full object-cover rounded-none"
+        style={{ height: "clamp(300px, 48vw, 680px)", objectPosition: teksten.foto_hero_positie || "center" }}
+      />
+
+      <div className="w-full max-w-7xl mx-auto relative overflow-x-hidden">
 
         {/* ── GEBOORTEREEKS AANKONDIGING ── */}
         <section className="px-7 md:px-14 lg:px-18 pt-14 md:pt-20">
@@ -161,9 +157,6 @@ export default function StudioLuna() {
             variants={fadeUp} initial="hidden" whileInView="show"
             viewport={{ once: true, margin: "-40px" }} custom={0}
           >
-            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-primary/55 mb-4">
-              Nieuw
-            </p>
             <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground leading-[1.15] mb-6">
               De Geboortereeks start <em className="not-italic text-primary">29 september</em>
             </h2>
@@ -180,10 +173,9 @@ export default function StudioLuna() {
             </p>
             <button
               onClick={() => navigate("/geboortereeks")}
-              className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-7 py-3.5 rounded-xl font-semibold text-sm hover:bg-primary/88 group"
+              className="inline-flex items-center bg-primary text-primary-foreground px-7 py-3.5 rounded-[6px] font-semibold text-sm hover:bg-primary/88"
             >
               Lees alles en meld je aan
-              <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
             </button>
           </motion.div>
         </section>
@@ -198,9 +190,6 @@ export default function StudioLuna() {
               variants={fadeUp} initial="hidden" whileInView="show"
               viewport={{ once: true, margin: "-80px" }} custom={0}
             >
-              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-primary/55 mb-4">
-                De missie
-              </p>
             </motion.div>
 
             <div className="md:grid md:grid-cols-[1fr_1.2fr] md:gap-20 md:items-start">
@@ -249,9 +238,6 @@ export default function StudioLuna() {
             variants={fadeUp} initial="hidden" whileInView="show"
             viewport={{ once: true, margin: "-80px" }} custom={0}
           >
-            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-primary/55 mb-4">
-              Wat we bieden
-            </p>
             <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground mb-14 leading-[1.15]">
               {teksten.home_aanbod_heading.split("\n").map((line, i, arr) => (
                 <span key={i}>{line}{i < arr.length - 1 && <br className="hidden md:block" />}</span>
@@ -324,10 +310,9 @@ export default function StudioLuna() {
               </p>
               <button
                 onClick={() => navigate("/over-mij")}
-                className="inline-flex items-center gap-2 mt-7 text-sm font-semibold text-primary group"
+                className="inline-flex items-center mt-7 text-sm font-semibold text-primary border-b border-primary/35 pb-0.5 hover:border-primary"
               >
                 Lees mijn verhaal
-                <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
               </button>
             </motion.div>
           </div>
@@ -346,9 +331,6 @@ export default function StudioLuna() {
               viewport={{ once: true, margin: "-60px" }} custom={0}
               className="mb-12"
             >
-              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-primary/55 mb-4">
-                Ervaringen
-              </p>
               <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground leading-[1.15]">
                 Wat vrouwen zeggen
               </h2>
@@ -395,9 +377,6 @@ export default function StudioLuna() {
             viewport={{ once: true, margin: "-60px" }} custom={0}
             className="mb-10"
           >
-            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-primary/55 mb-4">
-              Veelgestelde vragen
-            </p>
             <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground leading-[1.15]">
               Goed om te weten
             </h2>
@@ -421,10 +400,9 @@ export default function StudioLuna() {
             </Accordion>
             <button
               onClick={() => navigate("/geboortereeks")}
-              className="inline-flex items-center gap-2 mt-8 text-sm font-semibold text-primary group"
+              className="inline-flex items-center mt-8 text-sm font-semibold text-primary border-b border-primary/35 pb-0.5 hover:border-primary"
             >
               Bekijk de Geboortereeks
-              <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
             </button>
           </motion.div>
         </section>
@@ -437,9 +415,6 @@ export default function StudioLuna() {
             className="md:grid md:grid-cols-[1.2fr_1fr] md:gap-20 md:items-center"
           >
             <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-primary/55 mb-4">
-                Voor de hele regio
-              </p>
               <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground leading-[1.15] mb-6">
                 Alles over geboortezorg<br className="hidden md:block" /> in de regio Zuidplas
               </h2>
@@ -452,10 +427,9 @@ export default function StudioLuna() {
             <div className="mt-8 md:mt-0">
               <button
                 onClick={() => navigate("/geboortezorg-zuidplas")}
-                className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-7 py-3.5 rounded-xl font-semibold text-sm hover:bg-primary/88 group"
+                className="inline-flex items-center bg-primary text-primary-foreground px-7 py-3.5 rounded-[6px] font-semibold text-sm hover:bg-primary/88"
               >
                 Ontdek de zorgkaart
-                <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
               </button>
             </div>
           </motion.div>
@@ -471,10 +445,8 @@ export default function StudioLuna() {
               variants={fadeUp} initial="hidden" whileInView="show"
               viewport={{ once: true, margin: "-80px" }} custom={0}
             >
-              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-primary/55 mb-5">
-                Locatie
-              </p>
-              <h2 className="font-display text-2xl font-medium text-foreground mb-5">{teksten.home_locatie_naam}</h2>
+              <h2 className="font-display text-2xl font-medium text-foreground mb-5">Locatie</h2>
+              <p className="text-[15px] font-semibold text-foreground/85 leading-[1.9] mb-2">{teksten.home_locatie_naam}</p>
               {teksten.home_locatie_adres.split("\n").map((regel, i) => (
                 <p key={i} className="text-[15px] text-foreground/75 leading-[1.9] mb-2">{regel}</p>
               ))}
@@ -483,11 +455,10 @@ export default function StudioLuna() {
                 <a
                   href={`https://maps.google.com/?q=${encodeURIComponent(teksten.home_locatie_adres.replace("\n", ", "))}`}
                   target="_blank" rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 mt-7 text-sm font-semibold text-primary group"
+                  className="inline-flex items-center mt-7 text-sm font-semibold text-primary border-b border-primary/35 pb-0.5 hover:border-primary"
                 >
                   <MapPin className="w-3.5 h-3.5" />
                   Bekijk op kaart
-                  <ArrowRight className="w-3 h-3 transition-transform duration-300 group-hover:translate-x-1" />
                 </a>
               )}
             </motion.div>
@@ -497,9 +468,7 @@ export default function StudioLuna() {
               viewport={{ once: true, margin: "-80px" }} custom={0.15}
               className="mt-14 md:mt-0"
             >
-              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-primary/55 mb-5">
-                Contact
-              </p>
+              <h2 className="font-display text-2xl font-medium text-foreground mb-5">Contact</h2>
               <div className="space-y-5">
                 <a href={`mailto:${teksten.home_contact_email}`}
                   className="flex items-center gap-4 text-[15px] text-foreground/75 hover:text-foreground group">

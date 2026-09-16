@@ -5,7 +5,6 @@ import { SeoFooter } from "@/components/seo-footer";
 import { InterestModal } from "@/components/interest-modal";
 import { KennismakingModal } from "@/components/kennismaking-modal";
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { usePageMeta } from "@/lib/seo";
 
@@ -341,10 +340,9 @@ export default function Geboortereeks() {
                 <button
                   type="submit"
                   disabled={status === "bezig"}
-                  className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-7 py-3.5 rounded-xl font-semibold text-sm hover:bg-primary/88 disabled:opacity-60 group"
+                  className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-7 py-3.5 rounded-[6px] font-semibold text-sm hover:bg-primary/88 disabled:opacity-60"
                 >
                   {status === "bezig" ? "Versturen…" : "Meld je aan"}
-                  <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
                 </button>
                 {status === "fout" && <p className="text-xs text-red-600">{foutmelding}</p>}
               </form>
@@ -468,18 +466,16 @@ export default function Geboortereeks() {
             <div className="flex flex-wrap gap-x-8 gap-y-3 mt-6">
               <Link
                 href="/over-mij"
-                className="inline-flex items-center gap-2 text-sm font-semibold text-primary group"
+                className="inline-flex items-center text-sm font-semibold text-primary border-b border-primary/35 pb-0.5 hover:border-primary"
               >
                 Lees mijn verhaal
-                <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
               </Link>
               <a
                 href="https://maps.google.com/?cid=994021316573595651"
                 target="_blank" rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-sm font-semibold text-primary group"
+                className="inline-flex items-center text-sm font-semibold text-primary border-b border-primary/35 pb-0.5 hover:border-primary"
               >
                 Lees de ervaringen op Google
-                <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
               </a>
             </div>
           </motion.div>
@@ -518,10 +514,9 @@ export default function Geboortereeks() {
             </Accordion>
             <a
               href="#aanmelden"
-              className="inline-flex items-center gap-2 mt-8 text-sm font-semibold text-primary group"
+              className="inline-flex items-center mt-8 text-sm font-semibold text-primary border-b border-primary/35 pb-0.5 hover:border-primary"
             >
               Meld je aan voor 29 september
-              <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
             </a>
           </motion.div>
         </section>

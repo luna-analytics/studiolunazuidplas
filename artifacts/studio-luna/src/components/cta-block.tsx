@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
-import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -34,17 +33,15 @@ export function CtaBlock({ ctaUrl: propUrl, ctaLabel: propLabel }: Props = {}) {
         className="rounded-3xl bg-primary px-8 md:px-14 py-11 md:py-14 flex flex-col md:flex-row md:items-center md:justify-between gap-6"
       >
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/55 mb-2">Studio Luna</p>
           <p className="font-display text-2xl md:text-3xl font-medium text-white leading-snug">
             Klaar om te beginnen?
           </p>
         </div>
         <button
           onClick={() => navigate(ctaUrl)}
-          className="inline-flex items-center gap-2 bg-white text-primary px-8 py-3.5 rounded-2xl font-semibold text-sm hover:bg-white/92 shadow-md group transition-colors shrink-0"
+          className="inline-flex items-center bg-white text-primary px-8 py-3.5 rounded-[6px] font-semibold text-sm hover:bg-white/92 transition-colors shrink-0"
         >
           {ctaLabel}
-          <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
         </button>
       </motion.div>
     </section>

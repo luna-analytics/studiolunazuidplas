@@ -77,8 +77,8 @@ export function BottomNav() {
               const isActive = location === item.href;
               return (
                 <Link key={item.href} href={item.href}
-                  className={cn("px-3 py-2 rounded-xl text-sm font-medium transition-colors",
-                    isActive ? "bg-primary/10 text-foreground" : "text-foreground/55 hover:text-foreground hover:bg-secondary")}>
+                  className={cn("px-3 py-2 text-sm font-medium transition-colors underline-offset-[10px] decoration-[1.5px]",
+                    isActive ? "text-foreground underline decoration-primary" : "text-foreground/55 hover:text-foreground")}>
                   {item.label}
                 </Link>
               );
@@ -155,9 +155,7 @@ export function BottomNav() {
                   </span>
                 </div>
                 {isActive && (
-                  <motion.div layoutId="bottom-nav-indicator"
-                    className="absolute inset-0 bg-primary/10 rounded-2xl -z-0"
-                    transition={{ type: "spring", stiffness: 400, damping: 30 }} />
+                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-6 h-[1.5px] bg-primary" />
                 )}
               </Link>
             );
@@ -178,9 +176,7 @@ export function BottomNav() {
               </span>
             </div>
             {isMenuActive && (
-              <motion.div layoutId="bottom-nav-indicator"
-                className="absolute inset-0 bg-primary/10 rounded-2xl -z-0"
-                transition={{ type: "spring", stiffness: 400, damping: 30 }} />
+              <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-6 h-[1.5px] bg-primary" />
             )}
           </button>
         </nav>
