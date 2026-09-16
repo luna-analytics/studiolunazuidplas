@@ -94,6 +94,31 @@ const voorPlaats = (naam) =>
     }))
     .filter((r) => r.hier.length + r.breed.length > 0);
 
+// ── Gestructureerde gegevens voor de kaart ─────────────────────────────────
+// De kaart als verzamelpagina met de aanbieders als lijst, zodat zoekmachines
+// en AI-tools zien dat dit één geheel is ("Geboortezorgkaart Zuidplas") en
+// welke aanbieders erop staan. Alleen naam en website: geen soort, adres of
+// werkgebied, want dat zou meer beweren dan de aanbieder zelf opgeeft.
+const bijgewerkt = zorgkaartBron.match(/LAATST_BIJGEWERKT = \{ tekst: "[^"]+", iso: "([^"]+)" \}/)?.[1];
+const KAART_URL = `${BASIS}/geboortezorg-zuidplas`;
+const kaartJsonLd = ({ naam, url, beschrijving, aanbieders, deelVanKaart }) => ({
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: naam,
+  url,
+  description: beschrijving,
+  inLanguage: "nl",
+  ...(bijgewerkt ? { dateModified: bijgewerkt } : {}),
+  publisher: { "@type": "Organization", name: "Studio Luna", url: `${BASIS}/` },
+  ...(deelVanKaart ? { isPartOf: { "@type": "CollectionPage", name: "Geboortezorgkaart Zuidplas", url: KAART_URL } } : {}),
+  mainEntity: {
+    "@type": "ItemList",
+    numberOfItems: aanbieders.length,
+    itemListElement: aanbieders.map((a, i) => ({ "@type": "ListItem", position: i + 1, name: a.naam, url: a.website })),
+  },
+});
+const uniekeAanbieders = [...new Map(categorieen.flatMap((c) => c.aanbieders).map((a) => [a.naam, a])).values()];
+
 // ── Routes ──────────────────────────────────────────────────────────────────
 const ROUTES = [
   {
@@ -154,7 +179,15 @@ const ROUTES = [
         `<p><a href="/geboortezorg-zuidplas/${c.id}">Alle ${tekstVeilig(c.titel.toLowerCase())} in Zuidplas</a></p>`
       ).join("") +
       faqHtml(zorgkaartFaq),
-    jsonLd: [faqJsonLd(zorgkaartFaq)],
+    jsonLd: [
+      faqJsonLd(zorgkaartFaq),
+      kaartJsonLd({
+        naam: "Geboortezorgkaart Zuidplas",
+        url: KAART_URL,
+        beschrijving: "De Geboortezorgkaart Zuidplas: verloskundigen, kraamzorg, echo's, bekkenfysiotherapie, doula's, lactatiekundigen, cursussen en zwanger sporten in Nieuwerkerk aan den IJssel, Zevenhuizen, Moordrecht en Moerkapelle.",
+        aanbieders: uniekeAanbieders,
+      }),
+    ],
   },
   {
     pad: "over-mij",
@@ -177,6 +210,13 @@ for (const cat of categorieen) {
     pad: `geboortezorg-zuidplas/${cat.id}`,
     title: `${cat.titel} in Zuidplas | Geboortezorgkaart Studio Luna`,
     beschrijving: kort(`${cat.intro} Onderdeel van de Geboortezorgkaart Zuidplas van Studio Luna.`),
+    jsonLd: [kaartJsonLd({
+      naam: `${cat.titel} in Zuidplas`,
+      url: `${KAART_URL}/${cat.id}`,
+      beschrijving: cat.intro,
+      aanbieders: cat.aanbieders,
+      deelVanKaart: true,
+    })],
     inhoud:
       `<h1>${tekstVeilig(cat.titel)} in de regio Zuidplas</h1>` +
       `<p>${tekstVeilig(cat.intro)}</p>` +
