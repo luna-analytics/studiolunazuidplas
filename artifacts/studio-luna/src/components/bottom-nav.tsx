@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { Link, useLocation } from "wouter";
 import { Baby, Compass, Sparkles, LogOut, LogIn, Feather, User, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -54,8 +55,11 @@ export function BottomNav() {
 
   return (
     <>
-      {/* ── DESKTOP TOP NAV ── */}
-      <div className="hidden md:flex fixed top-0 left-0 right-0 z-40 bg-background/90 backdrop-blur-xl border-b border-border/30 h-16 items-center px-8">
+      {/* ── DESKTOP TOP NAV ── scrolt mee met de pagina; via een portal in body,
+          zodat absolute positionering altijd bovenaan het document uitkomt,
+          waar de component ook in de pagina staat. */}
+      {createPortal(
+      <div className="hidden md:flex absolute top-0 left-0 right-0 z-40 bg-background border-b border-border/30 h-16 items-center px-8">
         <div className="max-w-7xl mx-auto w-full flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5 select-none"
             onMouseDown={startLongPress} onMouseUp={cancelLongPress}
@@ -67,10 +71,7 @@ export function BottomNav() {
                 eens zichtbaar is. */}
             <img src={`/images/studio-luna-logo-klein.webp`} alt="Studio Luna" className="h-10 w-auto shrink-0" />
             {/* Naam */}
-            <div className="flex flex-col leading-none">
-              <span className="font-display text-[15px] font-medium text-foreground tracking-wide">Studio Luna</span>
-              <span className="text-[9px] uppercase tracking-[0.18em] text-foreground/40 font-sans mt-0.5">Zwangerschap en geboorte in Zuidplas</span>
-            </div>
+            <span className="font-display text-[19px] font-medium text-foreground leading-none">Studio Luna</span>
           </Link>
           <nav className="flex items-center gap-1">
             {visibleNav.map((item) => {
@@ -126,10 +127,12 @@ export function BottomNav() {
             ) : null}
           </div>
         </div>
-      </div>
+      </div>,
+      document.body
+      )}
 
       {/* ── MOBILE BOTTOM NAV — 4 primaire tabs + hamburger ── */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-background/85 backdrop-blur-xl border-t border-border/30 pb-safe">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-background border-t border-border/30 pb-safe">
         <nav className="max-w-md mx-auto flex items-center justify-around px-2 py-2">
           {primaryItems.map((item) => {
             const isActive = location === item.href;
@@ -190,7 +193,7 @@ export function BottomNav() {
             <motion.div
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               transition={{ duration: 0.25 }}
-              className="md:hidden fixed inset-0 z-50 bg-foreground/20 backdrop-blur-sm"
+              className="md:hidden fixed inset-0 z-50 bg-foreground/25"
               onClick={() => setMenuOpen(false)}
             />
 
@@ -202,50 +205,33 @@ export function BottomNav() {
             >
               {/* Header */}
               <div className="flex items-center justify-between px-6 pt-12 pb-6 border-b border-border/20">
-                <div>
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-primary/60">Studio Luna</p>
-                  <p className="font-display text-xl font-medium text-foreground mt-0.5">Menu</p>
-                </div>
-                <button onClick={() => setMenuOpen(false)}
-                  className="w-9 h-9 rounded-2xl bg-secondary flex items-center justify-center text-foreground/60 hover:text-foreground transition-colors">
+                <p className="font-display text-xl font-medium text-foreground">Menu</p>
+                <button onClick={() => setMenuOpen(false)} aria-label="Menu sluiten"
+                  className="w-9 h-9 flex items-center justify-center text-foreground/60 hover:text-foreground transition-colors">
                   <X className="w-4 h-4" />
                 </button>
               </div>
 
-              {/* Nav items — 2-koloms grid, alles zichtbaar zonder scrollen */}
-              <nav className="flex-1 px-4 py-5">
-                <div className="grid grid-cols-2 gap-2.5">
-                  {visibleNav.map((item, i) => {
-                    const isActive = location === item.href;
-                    const Icon = item.icon;
-                    return (
-                      <motion.div
-                        key={item.href}
-                        initial={{ opacity: 0, y: 12 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.04 + i * 0.035, duration: 0.28 }}
-                      >
-                        <Link
-                          href={item.href}
-                          onClick={() => setMenuOpen(false)}
-                          className={cn(
-                            "flex flex-col items-start gap-2.5 px-4 py-4 rounded-2xl transition-colors group w-full",
-                            isActive
-                              ? "bg-primary/12 text-foreground"
-                              : "bg-secondary/60 text-foreground/60 hover:bg-secondary hover:text-foreground"
-                          )}
-                        >
-                          <Icon
-                            className={cn("w-5 h-5 shrink-0 transition-colors",
-                              isActive ? "text-primary" : "text-foreground/35 group-hover:text-primary/60")}
-                            strokeWidth={isActive ? 2.5 : 2}
-                          />
-                          <span className="text-[13px] font-semibold leading-none">{item.label}</span>
-                        </Link>
-                      </motion.div>
-                    );
-                  })}
-                </div>
+              {/* Nav items: een rustige lijst met dunne lijnen */}
+              <nav className="flex-1 px-6 py-2">
+                {visibleNav.map((item) => {
+                  const isActive = location === item.href;
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      onClick={() => setMenuOpen(false)}
+                      className={cn(
+                        "block py-4 border-b border-border/25 font-display text-lg transition-colors",
+                        isActive
+                          ? "text-foreground underline decoration-primary decoration-[1.5px] underline-offset-[6px]"
+                          : "text-foreground/70 hover:text-foreground"
+                      )}
+                    >
+                      {item.label}
+                    </Link>
+                  );
+                })}
               </nav>
 
               {/* Footer: juridische links plus login/logout */}

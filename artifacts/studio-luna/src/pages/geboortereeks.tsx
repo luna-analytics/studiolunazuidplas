@@ -8,12 +8,10 @@ import { motion } from "framer-motion";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { usePageMeta } from "@/lib/seo";
 
+// Geen inloopanimaties meer: de inhoud staat er gewoon.
 const fadeUp = {
-  hidden: { opacity: 0, y: 24 },
-  show: (delay = 0) => ({
-    opacity: 1, y: 0,
-    transition: { duration: 0.9, ease: [0.4, 0, 0.2, 1] as [number, number, number, number], delay },
-  }),
+  hidden: { opacity: 1, y: 0 },
+  show: { opacity: 1, y: 0 },
 };
 
 const KALENDER = [
@@ -180,13 +178,10 @@ export default function Geboortereeks() {
           variants={fadeUp} initial="hidden" animate="show" custom={0}
           className="px-7 md:px-14 lg:px-18 pt-14 md:pt-12 pb-4"
         >
-          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-primary/55 mb-3">
-            Start dinsdag 29 september
-          </p>
           <h1 className="font-display text-4xl md:text-5xl font-medium text-foreground leading-[1.1]">
             De Geboortereeks
           </h1>
-          <p className="text-foreground/60 text-sm mt-3 tracking-wide">
+          <p className="text-foreground/60 text-[15px] mt-3">
             8-weekse zwangerschapsyoga- en geboortevoorbereidingsreeks
           </p>
           <p className="text-[15px] text-foreground/80 mt-4">
@@ -196,7 +191,6 @@ export default function Geboortereeks() {
 
         {/* ── INTRO ── */}
         <section className="relative px-7 md:px-14 lg:px-18 py-12 md:py-16">
-          <div className="absolute inset-0 bg-gradient-to-b from-background via-secondary/20 to-background pointer-events-none" />
           <div className="relative md:grid md:grid-cols-[1.2fr_1fr] md:gap-16 md:items-start">
             <motion.div
               variants={fadeUp} initial="hidden" whileInView="show"
@@ -225,7 +219,7 @@ export default function Geboortereeks() {
               viewport={{ once: true, margin: "-60px" }} custom={0.15}
               className="mt-10 md:mt-0"
             >
-              <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary/60 mb-4">Praktisch</p>
+              <h2 className="font-display text-2xl font-medium text-foreground mb-3">Praktisch</h2>
               <div>
                 {PRAKTISCH.map((r) => (
                   <div key={r.label} className="py-3 border-b border-border/15 text-sm leading-[1.8]">
@@ -250,9 +244,6 @@ export default function Geboortereeks() {
             className="md:grid md:grid-cols-[1fr_1fr] md:gap-16 md:items-start"
           >
             <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-primary/55 mb-4">
-                De les
-              </p>
               <h2 className="font-display text-2xl md:text-3xl font-medium text-foreground leading-[1.15] mb-5">
                 Hoe een dinsdagavond eruitziet
               </h2>
@@ -266,9 +257,6 @@ export default function Geboortereeks() {
             </div>
 
             <div className="mt-10 md:mt-0">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-primary/55 mb-4">
-                Instappen
-              </p>
               <h2 className="font-display text-2xl md:text-3xl font-medium text-foreground leading-[1.15] mb-5">
                 Wanneer begin je?
               </h2>
@@ -288,9 +276,6 @@ export default function Geboortereeks() {
             viewport={{ once: true, margin: "-40px" }} custom={0}
             className="max-w-2xl"
           >
-            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-primary/55 mb-4">
-              Aanmelden
-            </p>
             <h2 className="font-display text-2xl md:text-3xl font-medium text-foreground leading-[1.15] mb-5">
               Wil je erbij zijn op 29 september?
             </h2>
@@ -309,7 +294,7 @@ export default function Geboortereeks() {
             </p>
 
             {status === "klaar" ? (
-              <p className="text-[15px] text-foreground/80 leading-[1.9] rounded-xl bg-primary/8 border border-primary/15 px-5 py-4">
+              <p className="text-[15px] text-foreground/80 leading-[1.9] rounded-[6px] bg-primary/8 border border-primary/15 px-5 py-4">
                 Dankjewel voor je aanmelding! Er staat een bevestiging in je mail, en daarna
                 ontvang je van mij persoonlijk het intakeformulier en de factuur; dan is je
                 plek definitief.
@@ -325,7 +310,7 @@ export default function Geboortereeks() {
                     aria-label="Je naam"
                     required
                     maxLength={120}
-                    className="flex-1 px-4 py-3 rounded-xl border border-border/40 bg-card text-[15px] text-foreground placeholder:text-foreground/55"
+                    className="flex-1 px-4 py-3 rounded-[6px] border border-border/40 bg-card text-[15px] text-foreground placeholder:text-foreground/55"
                   />
                   <input
                     type="email"
@@ -334,7 +319,7 @@ export default function Geboortereeks() {
                     placeholder="jouw@email.nl"
                     aria-label="Je e-mailadres"
                     required
-                    className="flex-1 px-4 py-3 rounded-xl border border-border/40 bg-card text-[15px] text-foreground placeholder:text-foreground/55"
+                    className="flex-1 px-4 py-3 rounded-[6px] border border-border/40 bg-card text-[15px] text-foreground placeholder:text-foreground/55"
                   />
                 </div>
                 <button
@@ -355,7 +340,7 @@ export default function Geboortereeks() {
               </p>
               <button
                 onClick={() => setIsKennismakingOpen(true)}
-                className="inline-flex items-center gap-2 border border-primary/40 text-primary px-6 py-3 rounded-xl font-semibold text-sm hover:bg-primary/8"
+                className="inline-flex items-center border border-primary/40 text-primary px-6 py-3 rounded-[6px] font-semibold text-sm hover:bg-primary/8"
               >
                 Stuur een berichtje
               </button>
@@ -376,15 +361,11 @@ export default function Geboortereeks() {
 
         {/* ── WAT ZIT ERIN ── */}
         <section className="relative px-7 md:px-14 lg:px-18 py-12 md:py-16">
-          <div className="absolute inset-0 bg-gradient-to-b from-background via-secondary/25 to-background pointer-events-none" />
           <div className="relative max-w-3xl">
             <motion.div
               variants={fadeUp} initial="hidden" whileInView="show"
               viewport={{ once: true, margin: "-60px" }} custom={0}
             >
-              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-primary/55 mb-5">
-                Wat zit erin
-              </p>
               <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground mb-8 leading-[1.15]">
                 Een complete geboortevoorbereiding
               </h2>
@@ -412,9 +393,6 @@ export default function Geboortereeks() {
               variants={fadeUp} initial="hidden" whileInView="show"
               viewport={{ once: true, margin: "-60px" }} custom={0}
             >
-              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-primary/55 mb-5">
-                Week voor week
-              </p>
               <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground mb-8 leading-[1.15]">
                 Acht lessen, één reis
               </h2>
@@ -444,15 +422,11 @@ export default function Geboortereeks() {
 
         {/* ── WIE GEEFT DE LESSEN ── */}
         <section className="relative px-7 md:px-14 lg:px-18 py-12 md:py-16">
-          <div className="absolute inset-0 bg-gradient-to-b from-background via-secondary/20 to-background pointer-events-none" />
           <motion.div
             variants={fadeUp} initial="hidden" whileInView="show"
             viewport={{ once: true, margin: "-60px" }} custom={0}
             className="relative max-w-2xl"
           >
-            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-primary/55 mb-5">
-              Wie je lesgeeft
-            </p>
             <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground leading-[1.15] mb-6">
               Hoi, ik ben Marjolein
             </h2>
@@ -488,9 +462,6 @@ export default function Geboortereeks() {
             viewport={{ once: true, margin: "-60px" }} custom={0}
             className="mb-8"
           >
-            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-primary/55 mb-5">
-              Veelgestelde vragen
-            </p>
             <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground leading-[1.15]">
               Goed om te weten
             </h2>

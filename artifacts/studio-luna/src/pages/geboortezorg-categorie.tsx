@@ -48,10 +48,6 @@ export default function GeboortezorgCategorie() {
       <div className="w-full max-w-7xl bg-background min-h-screen relative overflow-x-hidden">
 
         <div className="px-7 md:px-14 lg:px-18 pt-14 md:pt-12 pb-6">
-          <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary/60 mb-3 flex items-center gap-3">
-            <span className="inline-block w-8 h-px bg-primary/40" />
-            Geboortezorgkaart Zuidplas
-          </p>
           <h1 className="font-display text-4xl md:text-5xl font-medium text-foreground leading-[1.1]">
             {cat.titel} in Zuidplas
           </h1>

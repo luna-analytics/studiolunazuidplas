@@ -1,15 +1,16 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
-import { motion } from "framer-motion";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 type Props = {
   ctaUrl?: string;
   ctaLabel?: string;
+  // In een artikel staat het blok al binnen de tekstkolom en krijgt het geen eigen zijmarge.
+  inKolom?: boolean;
 };
 
-export function CtaBlock({ ctaUrl: propUrl, ctaLabel: propLabel }: Props = {}) {
+export function CtaBlock({ ctaUrl: propUrl, ctaLabel: propLabel, inKolom = false }: Props = {}) {
   const [, navigate] = useLocation();
   const [ctaUrl, setCtaUrl] = useState(propUrl ?? "/geboortereeks");
   const [ctaLabel, setCtaLabel] = useState(propLabel ?? "Bekijk de Geboortereeks");
@@ -25,25 +26,20 @@ export function CtaBlock({ ctaUrl: propUrl, ctaLabel: propLabel }: Props = {}) {
       .catch(() => {});
   }, [propUrl, propLabel]);
 
+  // Geen gekleurd afgerond vlak meer: een gewone afsluiting met een dunne lijn erboven.
   return (
-    <section className="mx-5 md:mx-8 lg:mx-12 mb-10 md:mb-14">
-      <motion.div
-        initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }} transition={{ duration: 0.6 }}
-        className="rounded-3xl bg-primary px-8 md:px-14 py-11 md:py-14 flex flex-col md:flex-row md:items-center md:justify-between gap-6"
-      >
-        <div>
-          <p className="font-display text-2xl md:text-3xl font-medium text-white leading-snug">
-            Klaar om te beginnen?
-          </p>
-        </div>
+    <section className={inKolom ? "mb-10" : "px-7 md:px-14 lg:px-18 mb-10 md:mb-14"}>
+      <div className="border-t border-border/30 pt-10 md:pt-12 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+        <p className="font-display text-2xl md:text-3xl font-medium text-foreground leading-snug">
+          Klaar om te beginnen?
+        </p>
         <button
           onClick={() => navigate(ctaUrl)}
-          className="inline-flex items-center bg-white text-primary px-8 py-3.5 rounded-[6px] font-semibold text-sm hover:bg-white/92 transition-colors shrink-0"
+          className="inline-flex items-center self-start md:self-auto bg-primary text-primary-foreground px-7 py-3.5 rounded-[6px] font-semibold text-sm hover:bg-primary/88 transition-colors shrink-0"
         >
           {ctaLabel}
         </button>
-      </motion.div>
+      </div>
     </section>
   );
 }

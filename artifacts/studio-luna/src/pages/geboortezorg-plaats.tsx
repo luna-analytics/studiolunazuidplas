@@ -40,9 +40,6 @@ export default function GeboortezorgPlaats() {
       <div className="w-full max-w-7xl bg-background min-h-screen relative overflow-x-hidden">
 
         <div className="px-7 md:px-14 lg:px-18 pt-14 md:pt-12 pb-6">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-primary/55 mb-3">
-            Geboortezorgkaart Zuidplas
-          </p>
           <h1 className="font-display text-4xl md:text-5xl font-medium text-foreground leading-[1.1]">
             Zwanger in {plaats.naam}
           </h1>
@@ -87,9 +84,9 @@ export default function GeboortezorgPlaats() {
 
             {breed.length > 0 && (
               <div className="mt-8 max-w-3xl">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-primary/55 mb-3">
+                <h3 className="font-display text-xl font-medium text-foreground mb-2">
                   Werkt vanuit een breder gebied
-                </p>
+                </h3>
                 {breed.map((a) => (
                   <div key={a.naam} className="py-4 border-b border-border/15">
                     <p className="font-semibold text-foreground">{a.naam}</p>
@@ -120,9 +117,9 @@ export default function GeboortezorgPlaats() {
         </section>
 
         <section className="px-7 md:px-14 lg:px-18 py-10 border-t border-border/15">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-primary/55 mb-4">
+          <h2 className="font-display text-2xl font-medium text-foreground mb-4">
             De andere plaatsen in Zuidplas
-          </p>
+          </h2>
           <div className="flex flex-wrap gap-x-8 gap-y-3">
             {PLAATSEN.filter((p) => p.slug !== plaats.slug).map((p) => (
               <Link key={p.slug} href={`/zwanger-in-${p.slug}`} className="text-sm font-semibold text-primary border-b border-primary/30 pb-0.5">

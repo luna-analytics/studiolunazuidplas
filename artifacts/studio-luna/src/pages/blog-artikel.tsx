@@ -2,8 +2,6 @@ import { useState, useEffect, useRef } from "react";
 import { Link, useRoute } from "wouter";
 import { BottomNav } from "@/components/bottom-nav";
 import { CtaBlock } from "@/components/cta-block";
-import { motion } from "framer-motion";
-import { ArrowLeft, Send } from "lucide-react";
 import { usePageMeta } from "@/lib/seo";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -26,18 +24,6 @@ type BlogComment = {
   reply?: string;
   repliedAt?: string;
 };
-
-const CATEGORY_COLORS: Record<string, string> = {
-  "Geboortevoorbereiding": "bg-accent/80 text-foreground",
-  "Community": "bg-primary/20 text-primary",
-  "Zwangerschapsyoga": "bg-primary/15 text-primary",
-  "Mama": "bg-accent/60 text-foreground/80",
-  "Over Studio Luna": "bg-secondary text-foreground/70",
-};
-
-function categoryColor(cat: string) {
-  return CATEGORY_COLORS[cat] ?? "bg-secondary text-foreground/60";
-}
 
 function formatDate(iso: string) {
   if (!iso) return "";
@@ -136,7 +122,7 @@ export default function BlogArtikel() {
       <div className="min-h-screen bg-background pb-28 flex justify-center">
         <div className="w-full max-w-2xl flex flex-col items-center justify-center px-8 text-center" style={{ minHeight: "70vh" }}>
           <p className="font-display text-3xl font-medium text-foreground mb-3">Artikel niet gevonden</p>
-          <Link href="/blog" className="mt-4 text-sm text-primary font-semibold hover:text-primary/70 transition-colors">← Terug naar Blog</Link>
+          <Link href="/blog" className="mt-4 text-sm text-primary font-semibold border-b border-primary/35 pb-0.5 hover:border-primary">Terug naar het blog</Link>
         </div>
         <BottomNav />
       </div>
@@ -153,44 +139,32 @@ export default function BlogArtikel() {
         {/* Terug-knop */}
         <div className="px-6 md:px-12 pt-12 md:pt-10 pb-6">
           <Link href="/blog"
-            className="inline-flex items-center gap-1.5 text-sm text-foreground/50 hover:text-foreground transition-colors">
-            <ArrowLeft className="w-4 h-4" /> Blog
+            className="text-sm text-foreground/60 border-b border-foreground/25 pb-0.5 hover:text-foreground hover:border-foreground transition-colors">
+            Alle artikelen
           </Link>
         </div>
 
         {/* Cover foto */}
         {post.coverImage && (
-          <motion.div
-            initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
-            className="mx-6 md:mx-12 rounded-3xl overflow-hidden mb-8"
-            style={{ aspectRatio: "16/9" }}
-          >
+          <div className="mx-6 md:mx-12 overflow-hidden mb-8" style={{ aspectRatio: "16/9" }}>
             <img src={post.coverImage} alt={post.title} className="w-full h-full object-cover" loading="lazy" />
-          </motion.div>
+          </div>
         )}
 
         {/* Header: categorie + titel + datum */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.05 }}
-          className="px-6 md:px-12 mb-8"
-        >
-          <span className={`inline-block text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full mb-4 ${categoryColor(post.category)}`}>
-            {post.category}
-          </span>
+        <div className="px-6 md:px-12 mb-8">
+          <p className="text-sm text-primary mb-2">{post.category}</p>
           <h1 className="font-display text-3xl md:text-4xl font-medium text-foreground leading-tight mb-3">
             {post.title}
           </h1>
-          <p className="text-sm text-foreground/40">{formatDate(post.publishedAt)}</p>
-        </motion.div>
+          <p className="text-sm text-foreground/55">{formatDate(post.publishedAt)}</p>
+        </div>
 
         {/* Scheidingslijn */}
         <div className="mx-6 md:mx-12 h-px bg-border/30 mb-8" />
 
         {/* Artikel tekst */}
-        <motion.div
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.1 }}
-          className="px-6 md:px-12 pb-12"
-        >
+        <div className="px-6 md:px-12 pb-12">
           <div className="blog-content">
             {isHtml(post.body)
               ? <div dangerouslySetInnerHTML={{ __html: post.body }} />
@@ -205,15 +179,15 @@ export default function BlogArtikel() {
           {/* Terug-knop onderaan */}
           <div className="mt-12 pt-8 border-t border-border/20">
             <Link href="/blog"
-              className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:text-primary/70 transition-colors">
-              <ArrowLeft className="w-4 h-4" /> Terug naar Blog
+              className="text-sm font-semibold text-primary border-b border-primary/35 pb-0.5 hover:border-primary transition-colors">
+              Terug naar het blog
             </Link>
           </div>
 
           {/* Blogs zijn binnenkomers via Google en Instagram; zonder dit blok
               eindigde een artikel als dood spoor zonder weg naar de reeks. */}
-          <div className="mt-8">
-            <CtaBlock />
+          <div className="mt-10">
+            <CtaBlock inKolom />
           </div>
 
           {/* ── REACTIES SECTIE ── */}
@@ -224,10 +198,10 @@ export default function BlogArtikel() {
 
             {/* Bestaande reacties */}
             {comments.length > 0 && (
-              <div className="space-y-5 mb-10">
+              <div className="mb-10 border-t border-border/25">
                 {comments.map((comment) => (
-                  <div key={comment.id} className="space-y-2">
-                    <div className="bg-secondary/60 rounded-2xl px-5 py-4">
+                  <div key={comment.id} className="py-5 border-b border-border/25">
+                    <div>
                       <div className="flex items-center gap-2 mb-2">
                         <span className="text-sm font-semibold text-foreground">{comment.name}</span>
                         <span className="text-xs text-foreground/35">·</span>
@@ -238,8 +212,8 @@ export default function BlogArtikel() {
                       <p className="text-sm text-foreground/75 leading-relaxed">{comment.body}</p>
                     </div>
                     {comment.reply && (
-                      <div className="ml-6 bg-primary/8 border-l-2 border-primary/25 rounded-r-2xl px-4 py-3">
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-primary/60 mb-1">Studio Luna</p>
+                      <div className="ml-6 mt-3">
+                        <p className="text-sm font-semibold text-primary mb-1">Studio Luna</p>
                         <p className="text-sm text-foreground/70 leading-relaxed">{comment.reply}</p>
                       </div>
                     )}
@@ -249,12 +223,12 @@ export default function BlogArtikel() {
             )}
 
             {/* Reactieformulier */}
-            <div className="border border-border/25 rounded-3xl p-5 md:p-6">
+            <div>
               <p className="font-display text-base font-medium text-foreground mb-4">Laat een reactie achter</p>
               {formDone ? (
-                <div className="bg-primary/8 rounded-2xl px-5 py-4 text-center">
+                <div>
                   <p className="text-sm font-medium text-primary">Bedankt voor je reactie!</p>
-                  <p className="text-xs text-foreground/50 mt-1">Je reactie wordt zichtbaar na goedkeuring.</p>
+                  <p className="text-sm text-foreground/60 mt-1">Je reactie wordt zichtbaar na goedkeuring.</p>
                 </div>
               ) : (
                 <form ref={formRef} onSubmit={submitComment} className="space-y-3">
@@ -264,7 +238,7 @@ export default function BlogArtikel() {
                     value={formName}
                     onChange={(e) => setFormName(e.target.value)}
                     required
-                    className="w-full bg-secondary border-0 rounded-xl px-4 py-3 text-sm placeholder:text-foreground/55"
+                    className="w-full bg-card border border-border/40 rounded-[6px] px-4 py-3 text-sm placeholder:text-foreground/55"
                   />
                   <textarea
                     placeholder="Schrijf je reactie..."
@@ -272,22 +246,21 @@ export default function BlogArtikel() {
                     onChange={(e) => setFormBody(e.target.value)}
                     required
                     rows={4}
-                    className="w-full bg-secondary border-0 rounded-xl px-4 py-3 text-sm placeholder:text-foreground/55 resize-none leading-relaxed"
+                    className="w-full bg-card border border-border/40 rounded-[6px] px-4 py-3 text-sm placeholder:text-foreground/55 resize-none leading-relaxed"
                   />
                   {formError && <p className="text-xs text-red-500">{formError}</p>}
                   <button
                     type="submit"
                     disabled={formSending}
-                    className="flex items-center gap-2 bg-primary text-primary-foreground rounded-xl px-5 py-2.5 text-sm font-semibold hover:bg-primary/90 transition-colors disabled:opacity-60"
+                    className="inline-flex items-center bg-primary text-primary-foreground rounded-[6px] px-6 py-3 text-sm font-semibold hover:bg-primary/88 transition-colors disabled:opacity-60"
                   >
-                    <Send className="w-3.5 h-3.5" />
                     {formSending ? "Versturen..." : "Reactie plaatsen"}
                   </button>
                 </form>
               )}
             </div>
           </div>
-        </motion.div>
+        </div>
 
         <BottomNav />
       </div>

@@ -211,9 +211,6 @@ export default function Geboortezorg() {
         <div className="px-7 md:px-14 lg:px-18 pt-14 md:pt-12 pb-6">
           <div className="max-w-4xl md:grid md:grid-cols-[1fr_auto] md:gap-14 md:items-center">
             <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-primary/55 mb-3">
-                Regio Zuidplas
-              </p>
               <h1 className="font-display text-4xl md:text-5xl font-medium text-foreground leading-[1.1]">
                 Geboortezorg in Zuidplas
               </h1>
@@ -434,9 +431,9 @@ export default function Geboortezorg() {
         {/* ── VOOR ZORGVERLENERS — bewust klein, de kaart is er voor zwangeren ── */}
         <section id="voor-zorgverleners" className="px-7 md:px-14 lg:px-18 py-10 md:py-12 scroll-mt-24">
           <div className="max-w-xl border-t border-border/25 pt-8">
-            <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary/60 mb-3">
+            <h2 className="font-display text-2xl font-medium text-foreground mb-3">
               Voor zorgverleners
-            </p>
+            </h2>
             <p className="text-[15px] text-foreground/80 leading-[1.9]">
               Ben je zorgverlener in de regio Zuidplas en sta je er nog niet bij? Vermelding
               is gratis.{" "}

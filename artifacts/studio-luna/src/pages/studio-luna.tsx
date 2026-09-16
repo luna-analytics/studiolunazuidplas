@@ -4,7 +4,7 @@ import { BottomNav } from "@/components/bottom-nav";
 import { SeoFooter } from "@/components/seo-footer";
 import { CtaBlock } from "@/components/cta-block";
 import { motion } from "framer-motion";
-import { MapPin, Mail, Phone, Instagram, Star, Calendar, BookOpen } from "lucide-react";
+import { MapPin, Mail, Phone, Instagram, Star } from "lucide-react";
 import { IMAGES } from "@/lib/images";
 import { useAuth } from "@/hooks/use-auth";
 import { usePageMeta } from "@/lib/seo";
@@ -58,12 +58,10 @@ const FAQ_ITEMS = [
   },
 ];
 
+// Geen inloopanimaties meer: de inhoud staat er gewoon.
 const fadeUp = {
-  hidden: { opacity: 0, y: 24 },
-  show: (delay = 0) => ({
-    opacity: 1, y: 0,
-    transition: { duration: 0.9, ease: [0.4, 0, 0.2, 1], delay },
-  }),
+  hidden: { opacity: 1, y: 0 },
+  show: { opacity: 1, y: 0 },
 };
 
 export default function StudioLuna() {
@@ -104,22 +102,16 @@ export default function StudioLuna() {
       <div className="w-full max-w-7xl mx-auto">
         <div className="px-7 md:px-14 lg:px-18 pt-12 pb-10 md:pt-20 md:pb-14">
           <div className="md:max-w-2xl">
-            <motion.h1
-              initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.15 }}
-              // Kleiner op smalle schermen: "geboortevoorbereiding" is te breed
-              // voor 390 pixels en viel anders buiten beeld.
+            {/* Kleiner op smalle schermen: "geboortevoorbereiding" is te breed
+                voor 390 pixels en viel anders buiten beeld. */}
+            <h1
               className="font-display text-[2rem] min-[400px]:text-[2.3rem] sm:text-[2.6rem] md:text-5xl font-medium text-foreground leading-[1.12] mb-7 break-words"
             >
               {teksten.home_hero.split("\n").map((line, i, arr) => (
                 <span key={i}>{line}{i < arr.length - 1 && <br />}</span>
               ))}
-            </motion.h1>
-            <motion.div
-              initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.35 }}
-              className="flex flex-wrap items-center gap-x-6 gap-y-4"
-            >
+            </h1>
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-4">
               <button
                 onClick={() => navigate(teksten.cta_url)}
                 className="inline-flex items-center bg-primary text-primary-foreground px-7 py-3.5 rounded-[6px] font-semibold text-sm hover:bg-primary/88"
@@ -132,7 +124,7 @@ export default function StudioLuna() {
               >
                 Ontdek de zorgkaart
               </button>
-            </motion.div>
+            </div>
             <p className="mt-7 text-[13px] text-foreground/60">
               Nieuwerkerk aan den IJssel, gemeente Zuidplas
             </p>
@@ -140,9 +132,7 @@ export default function StudioLuna() {
         </div>
       </div>
 
-      <motion.img
-        initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-        transition={{ duration: 1.1, ease: [0.4, 0, 0.2, 1] }}
+      <img
         src={teksten.foto_hero || IMAGES.hero}
         alt="Zwangerschapsyoga Studio Luna"
         className="block w-full object-cover rounded-none"
@@ -182,8 +172,6 @@ export default function StudioLuna() {
 
         {/* ── MISSIE — editorial: label + grote heading + asymmetrisch ── */}
         <section className="relative px-7 md:px-14 lg:px-18 py-24 md:py-32">
-          {/* Subtiele achtergrond-overgang */}
-          <div className="absolute inset-0 bg-gradient-to-b from-background via-secondary/30 to-background pointer-events-none" />
 
           <div className="relative">
             <motion.div
@@ -218,12 +206,12 @@ export default function StudioLuna() {
               <motion.div
                 variants={fadeUp} initial="hidden" whileInView="show"
                 viewport={{ once: true, margin: "-80px" }} custom={0.2}
-                className="md:pt-20"
+                className="mt-10 md:mt-0 md:pt-20"
               >
                 <p className="text-[15px] text-foreground/75 leading-[1.95]">
                   {teksten.home_missie_tekst}
                 </p>
-                <p className="mt-8 text-sm font-semibold text-foreground/80 tracking-widest uppercase">
+                <p className="mt-8 font-display text-xl text-primary">
                   {teksten.home_village_tagline}
                 </p>
               </motion.div>
@@ -245,13 +233,13 @@ export default function StudioLuna() {
             </h2>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-8">
+          <div className="max-w-2xl border-t border-border/15">
             {teksten.home_aanbod_items.split("\n").filter(Boolean).map((tekst, i) => (
               <motion.div
                 key={i}
                 variants={fadeUp} initial="hidden" whileInView="show"
                 viewport={{ once: true, margin: "-60px" }} custom={i * 0.07}
-                className="pb-8 border-b border-border/15 last:border-0"
+                className="py-5 border-b border-border/15"
               >
                 <p className="text-[15px] text-foreground/80 leading-[1.9]">{tekst}</p>
               </motion.div>
@@ -270,14 +258,12 @@ export default function StudioLuna() {
               onClick={() => navigate("/geboortereeks")}
               className="inline-flex items-center gap-2 text-primary/80 hover:text-primary text-sm font-semibold border-b border-primary/30 pb-0.5 transition-colors"
             >
-              <Calendar className="w-3.5 h-3.5" />
               De Geboortereeks
             </button>
             <button
               onClick={() => navigate("/geboortezorg-zuidplas")}
               className="inline-flex items-center gap-2 text-primary/80 hover:text-primary text-sm font-semibold border-b border-primary/30 pb-0.5 transition-colors"
             >
-              <BookOpen className="w-3.5 h-3.5" />
               De zorgkaart
             </button>
           </motion.div>
@@ -335,20 +321,20 @@ export default function StudioLuna() {
                 Wat vrouwen zeggen
               </h2>
             </motion.div>
-            <div className="grid md:grid-cols-3 gap-6">
+            <div className="max-w-2xl border-t border-border/15">
               {reviewsConfig.items.map((review, i) => (
                 <motion.div
                   key={review.id}
                   variants={fadeUp} initial="hidden" whileInView="show"
                   viewport={{ once: true, margin: "-40px" }} custom={i * 0.1}
-                  className="bg-secondary/30 rounded-2xl p-7 flex flex-col gap-4"
+                  className="py-7 border-b border-border/15 flex flex-col gap-3"
                 >
                   <div className="flex gap-1">
                     {Array.from({ length: 5 }).map((_, s) => (
                       <Star key={s} className={`w-3.5 h-3.5 ${s < review.stars ? "text-primary fill-primary" : "text-foreground/20"}`} />
                     ))}
                   </div>
-                  <p className="text-[15px] text-foreground/70 leading-[1.85] flex-1">"{review.text}"</p>
+                  <p className="font-display text-xl text-foreground leading-[1.5]">“{review.text}”</p>
                   <div>
                     <p className="text-sm font-semibold text-foreground">{review.name}</p>
                     {review.role && <p className="text-xs text-foreground/60 mt-0.5">{review.role}</p>}
@@ -437,7 +423,6 @@ export default function StudioLuna() {
 
         {/* ── LOCATIE & CONTACT — plain tekst, geen kaarten ── */}
         <section className="relative px-7 md:px-14 lg:px-18 py-20 md:py-28 mb-4">
-          <div className="absolute inset-0 bg-gradient-to-b from-background via-secondary/25 to-background pointer-events-none" />
 
           <div className="relative md:grid md:grid-cols-2 md:gap-24">
 
