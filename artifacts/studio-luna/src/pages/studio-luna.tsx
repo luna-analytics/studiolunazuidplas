@@ -378,7 +378,7 @@ export default function StudioLuna() {
                   <AccordionTrigger className="text-left text-[15px] font-semibold text-foreground/80 hover:no-underline">
                     {item.vraag}
                   </AccordionTrigger>
-                  <AccordionContent className="text-[15px] text-foreground/80 leading-[1.85]">
+                  <AccordionContent forceMount className="text-[15px] text-foreground/80 leading-[1.85]">
                     {item.antwoord}
                   </AccordionContent>
                 </AccordionItem>

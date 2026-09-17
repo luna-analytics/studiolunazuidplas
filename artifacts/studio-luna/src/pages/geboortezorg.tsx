@@ -4,6 +4,7 @@ import { BottomNav } from "@/components/bottom-nav";
 import { SeoFooter } from "@/components/seo-footer";
 import { ZORGKAART, TAG_LABELS, LAATST_BIJGEWERKT, PLAATSEN, isNieuw, type ZorgTag, type Zorgverlener } from "@/data/zorgkaart";
 import { usePageMeta } from "@/lib/seo";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { IMAGES } from "@/lib/images";
 
 const normalize = (s: string) =>
@@ -552,14 +553,20 @@ export default function Geboortezorg() {
           <h2 className="font-display text-2xl md:text-3xl font-medium text-foreground leading-[1.2]">
             Veelgestelde vragen over geboortezorg in Zuidplas
           </h2>
-          <div className="mt-6 max-w-2xl">
-            {ZORGKAART_VRAGEN.map((v) => (
-              <div key={v.vraag} className="py-5 border-b border-border/15">
-                <h3 className="font-semibold text-foreground">{v.vraag}</h3>
-                <p className="text-[15px] text-foreground/80 leading-[1.9] mt-2">{v.antwoord}</p>
-              </div>
+          {/* Ingeklapt zoals op de andere pagina's. forceMount houdt de antwoorden in
+              de HTML, zodat zoekmachines en AI-tools ze ook lezen als ze dicht zijn. */}
+          <Accordion type="single" collapsible className="mt-6 max-w-2xl">
+            {ZORGKAART_VRAGEN.map((v, i) => (
+              <AccordionItem key={v.vraag} value={`zorgkaart-${i}`} className="border-border/20">
+                <AccordionTrigger className="text-left text-[15px] font-semibold text-foreground/80 hover:no-underline">
+                  {v.vraag}
+                </AccordionTrigger>
+                <AccordionContent forceMount className="text-[15px] text-foreground/80 leading-[1.85]">
+                  {v.antwoord}
+                </AccordionContent>
+              </AccordionItem>
             ))}
-          </div>
+          </Accordion>
         </section>
 
         <SeoFooter />
