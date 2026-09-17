@@ -52,7 +52,7 @@ const FASEN: { titel: string; ids: string[] }[] = [
 const ZORGKAART_VRAGEN = [
   {
     vraag: "Welke verloskundigen zijn er in Zuidplas?",
-    antwoord: "In Nieuwerkerk aan den IJssel, Zevenhuizen, Moordrecht en Moerkapelle werken meerdere verloskundigenpraktijken, en daarnaast begeleiden caseloadverloskundigen uit de regio hier bevallingen. Ze staan allemaal onder Verloskundigen op deze kaart, met hun plaats en website erbij.",
+    antwoord: "In Zuidplas houden vier verloskundigenpraktijken spreekuur: Verloskundige Praktijk Een Goed Begin in Nieuwerkerk aan den IJssel, Verloskundigenpraktijk Zuidplas in Zevenhuizen en Moerkapelle, Ive Verloskundigen met een avondspreekuur in Zevenhuizen, en Verloskundigenpraktijk Gouda (Team Antje) met een wekelijks spreekuur in Moordrecht. Daarnaast staan er zes praktijken uit Capelle aan den IJssel en Rotterdam op de kaart.",
   },
   {
     vraag: "Waar kan ik terecht voor kraamzorg in Nieuwerkerk aan den IJssel?",
@@ -69,6 +69,34 @@ const ZORGKAART_VRAGEN = [
   {
     vraag: "Ik ben zwanger en woon in Zuidplas, wat heb ik allemaal nodig?",
     antwoord: "Meestal begint het met een verloskundige, meteen gevolgd door het aanmelden voor kraamzorg en een eerste echo. Daarna komen geboortevoorbereiding of zwangerschapsyoga, en waar nodig bekkenfysiotherapie. Na de bevalling zijn een lactatiekundige, herstel en mama-en-babyactiviteiten aan de beurt. Deze kaart loopt in die volgorde.",
+  },
+  {
+    vraag: "Welke kraamzorgorganisaties werken in Zuidplas?",
+    antwoord: "Op de Geboortezorgkaart Zuidplas staan negen kraamzorgaanbieders: Kraamzorg de Waarden, Naviva Kraamzorg, Ria's Kraamburo, Kraamzorg de IJssel, Marley's Kraamzorg, De Kraamwolk, Kraamzorg De Babynurse, Kraamzorg Another Miracle en Kraamzorg Sylvia. Kraamzorg regel je het liefst in de eerste helft van je zwangerschap.",
+  },
+  {
+    vraag: "Welke verloskundige houdt spreekuur in Zevenhuizen of Moordrecht?",
+    antwoord: "In Zevenhuizen houdt Verloskundigenpraktijk Zuidplas spreekuur, net als in Moerkapelle, en Ive Verloskundigen uit Waddinxveen heeft er een avondspreekuur. In Moordrecht houdt Verloskundigenpraktijk Gouda (Team Antje) elke week spreekuur.",
+  },
+  {
+    vraag: "Waar vind ik een echocentrum in Zuidplas?",
+    antwoord: "In Zuidplas zitten Baby Glow in Zevenhuizen en EchoKeten in Nieuwerkerk aan den IJssel; vlakbij zitten In Zwang Echografie in Gouda en BovenMaas Prenataal in Capelle aan den IJssel. Voor medische echo's zoals de 13 en 20 wekenecho verwijst je verloskundige je door.",
+  },
+  {
+    vraag: "Welke doula's zijn er in en rond Zuidplas?",
+    antwoord: "Op de Geboortezorgkaart Zuidplas staan zeven doula's: Doula Karin uit Nieuwerkerk aan den IJssel, Doula Sophie en About You Holistic Doula uit Capelle aan den IJssel, Doula Bianca en Alies Verstegen uit Rotterdam, Bella Mama uit Leidschendam en Doula Marlies, die in midden- en zuid-Nederland werkt. Een doula begeleidt je niet-medisch, naast je verloskundige.",
+  },
+  {
+    vraag: "Waar vind ik hulp bij borstvoeding in Nieuwerkerk aan den IJssel?",
+    antwoord: "In Nieuwerkerk aan den IJssel zit Lactatiekundige Praktijk Liefde en Vertrouwen, en Nultien Borstvoeding komt onder meer in Nieuwerkerk bij je thuis. Op de Geboortezorgkaart Zuidplas staan in totaal zes lactatiekundigen uit de regio.",
+  },
+  {
+    vraag: "Waar kan ik zwanger sporten in Zuidplas?",
+    antwoord: "In Zuidplas kun je zwanger en na je bevalling sporten bij Spirit for Two in Nieuwerkerk aan den IJssel en bij PowerMama Zuidplas in Zevenhuizen. Vlakbij traint Mom in Balance bij de Zevenhuizerplas in Rotterdam-Nesselande, en zijn er zwembaden in Rotterdam-Zevenkamp en Waddinxveen.",
+  },
+  {
+    vraag: "Waar vind ik steun bij het verlies van een kindje?",
+    antwoord: "Op de Geboortezorgkaart Zuidplas staan vier plekken voor steun bij verlies: Praktijk Rode Roos in Capelle aan den IJssel, EC Coaching in Delft en online, Stichting Make a Memory, die landelijk werkt, en Groei naar de Toekomst, met afspraken op een plek naar keuze in de regio.",
   },
   {
     vraag: "Wie houdt deze kaart bij?",

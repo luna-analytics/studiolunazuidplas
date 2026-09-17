@@ -42,6 +42,17 @@ const categorieen = [];
 // Two bij sporten én massage) telt maar één keer mee in het totaal.
 const totaalAanbieders = new Set(categorieen.flatMap((c) => c.aanbieders.map((a) => a.naam))).size;
 
+// Goedgekeurde openingszinnen per categorie (src/data/zorgkaart-openingszinnen.ts).
+const openingBron = readFileSync(join(src, "data", "zorgkaart-openingszinnen.ts"), "utf8");
+const openingszinnen = {};
+{
+  const lijst = (t) => [...t.matchAll(/"([^"]+)"/g)].map((x) => x[1]);
+  for (const m of openingBron.matchAll(/"([a-z0-9-]+)": \{\s*zin: "([^"]+)",\s*(vervangtIntro: true,\s*)?faq: \[([^\]]*)\],\s*gecontroleerdMet: \[([^\]]*)\],/g)) {
+    openingszinnen[m[1]] = { zin: m[2], vervangtIntro: Boolean(m[3]), faq: lijst(m[4]), gecontroleerdMet: lijst(m[5]) };
+  }
+}
+const openingVoor = (cat) => openingszinnen[cat.id]?.zin.replace("{aantal}", String(cat.aanbieders.length));
+
 const leesFaq = (bron) =>
   [...bron.matchAll(/vraag: "([^"]+)",\s*\n\s*antwoord: "([^"]+)"/g)].map(([, vraag, antwoord]) => ({ vraag, antwoord }));
 const reeksFaq = leesFaq(reeksBron);
@@ -67,6 +78,36 @@ const faqJsonLd = (items) => ({
 const faqHtml = (items) =>
   `<h2>Veelgestelde vragen</h2>` +
   items.map((f) => `<h3>${tekstVeilig(f.vraag)}</h3><p>${tekstVeilig(f.antwoord)}</p>`).join("");
+
+// De openingszinnen noemen vaste namen en plaatsen. Zijn de aanbieders van een
+// categorie veranderd sinds de zin is goedgekeurd, dan stopt de build hier, zodat
+// er nooit ongemerkt een verouderde zin of FAQ-antwoord online komt.
+{
+  const fouten = [];
+  const faqVragen = new Set(zorgkaartFaq.map((f) => f.vraag));
+  if (Object.keys(openingszinnen).length === 0) {
+    fouten.push("Geen openingszinnen gevonden; klopt de opmaak van src/data/zorgkaart-openingszinnen.ts nog?");
+  }
+  for (const [id, o] of Object.entries(openingszinnen)) {
+    const cat = categorieen.find((c) => c.id === id);
+    if (!cat) { fouten.push(`Openingszin voor onbekende categorie "${id}".`); continue; }
+    const nu = cat.aanbieders.map((a) => a.naam);
+    const erbij = nu.filter((n) => !o.gecontroleerdMet.includes(n));
+    const eraf = o.gecontroleerdMet.filter((n) => !nu.includes(n));
+    if (erbij.length || eraf.length) {
+      fouten.push(`${cat.titel}: aanbieders veranderd (erbij: ${erbij.join(", ") || "geen"}; eraf: ${eraf.join(", ") || "geen"}). ` +
+        `Werk de openingszin${o.faq.length ? " en de FAQ-antwoorden op " + o.faq.map((v) => `"${v}"`).join(", ") : ""} bij, ` +
+        `laat de nieuwe tekst goedkeuren en pas gecontroleerdMet aan in src/data/zorgkaart-openingszinnen.ts.`);
+    }
+    for (const v of o.faq) {
+      if (!faqVragen.has(v)) fouten.push(`${cat.titel}: de FAQ-vraag "${v}" staat niet meer in src/pages/geboortezorg.tsx.`);
+    }
+  }
+  if (fouten.length) {
+    console.error("\nDe zorgkaartteksten kloppen niet meer met de aanbieders:\n- " + fouten.join("\n- ") + "\n");
+    process.exit(1);
+  }
+}
 
 // ── Plaatsen ────────────────────────────────────────────────────────────────
 // Zelfde regels als zorgkaartVoorPlaats() in src/data/zorgkaart.ts: een
@@ -219,7 +260,8 @@ for (const cat of categorieen) {
     })],
     inhoud:
       `<h1>${tekstVeilig(cat.titel)} in de regio Zuidplas</h1>` +
-      `<p>${tekstVeilig(cat.intro)}</p>` +
+      (openingVoor(cat) ? `<p>${tekstVeilig(openingVoor(cat))}</p>` : "") +
+      (openingszinnen[cat.id]?.vervangtIntro ? "" : `<p>${tekstVeilig(cat.intro)}</p>`) +
       cat.aanbieders.map((a) =>
         `<h2>${tekstVeilig(a.naam)}</h2><p>${tekstVeilig(a.plaats)}. ${tekstVeilig(a.beschrijving)} <a href="${ontsmet(a.website)}" rel="nofollow">Website</a></p>`
       ).join("") +

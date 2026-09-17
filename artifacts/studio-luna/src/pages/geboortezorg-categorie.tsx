@@ -3,6 +3,7 @@ import { Link, useLocation, useParams } from "wouter";
 import { BottomNav } from "@/components/bottom-nav";
 import { SeoFooter } from "@/components/seo-footer";
 import { ZORGKAART, LAATST_BIJGEWERKT, isNieuw } from "@/data/zorgkaart";
+import { OPENINGSZINNEN } from "@/data/zorgkaart-openingszinnen";
 import { usePageMeta } from "@/lib/seo";
 
 export default function GeboortezorgCategorie() {
@@ -42,6 +43,7 @@ export default function GeboortezorgCategorie() {
   if (!cat) return null;
 
   const aanbieders = cat.aanbieders;
+  const opening = OPENINGSZINNEN[cat.id];
 
   return (
     <div className="min-h-screen bg-background pb-28 md:pb-16 md:pt-16 flex justify-center">
@@ -51,7 +53,14 @@ export default function GeboortezorgCategorie() {
           <h1 className="font-display text-4xl md:text-5xl font-medium text-foreground leading-[1.1]">
             {cat.titel} in Zuidplas
           </h1>
-          <p className="text-[15px] text-foreground/75 leading-[1.9] mt-5 max-w-2xl">{cat.intro}</p>
+          {opening && (
+            <p className="text-[17px] text-foreground/85 leading-[1.8] mt-5 max-w-2xl">
+              {opening.zin.replace("{aantal}", String(aanbieders.length))}
+            </p>
+          )}
+          {!opening?.vervangtIntro && (
+            <p className={`text-[15px] text-foreground/75 leading-[1.9] max-w-2xl ${opening ? "mt-3" : "mt-5"}`}>{cat.intro}</p>
+          )}
           <p className="text-xs text-foreground/55 mt-3">Bijgewerkt in {LAATST_BIJGEWERKT.tekst}</p>
           <Link
             href="/geboortezorg-zuidplas"
