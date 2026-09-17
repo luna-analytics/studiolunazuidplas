@@ -2709,7 +2709,7 @@ function InhoudTab() {
           return (
             <div className="border-t border-border/20 pt-5 first:border-0 first:pt-0">
               <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Headerfoto (Studio Luna pagina)</label>
-              <p className="text-xs text-foreground/40 mb-3">Grote achtergrondafbeelding bovenaan. Liggend formaat, bij voorkeur 1400×900 px of groter.</p>
+              <p className="text-xs text-foreground/40 mb-3">Brede foto over de hele breedte van het scherm. Kies een liggende foto van minstens 2400 px breed; een staande foto wordt op grote schermen sterk ingezoomd.</p>
               <div className="flex items-start gap-4 mb-4">
                 {teksten[fotoKey] ? (
                   <div className="shrink-0 overflow-hidden rounded-xl border border-border/30 bg-secondary w-32 h-20">
@@ -2727,7 +2727,7 @@ function InhoudTab() {
                     <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={(e) => {
                       const file = e.target.files?.[0]; if (!file) return;
                       if (file.size > 15 * 1024 * 1024) { alert("Foto is te groot (max 15 MB)."); return; }
-                      verkleinFoto(file, 1600)
+                      verkleinFoto(file, 2400)
                         .then((dataUrl) => setTeksten((prev) => ({ ...prev, [fotoKey]: dataUrl })))
                         .catch(() => alert("Foto kon niet gelezen worden."));
                     }} />
