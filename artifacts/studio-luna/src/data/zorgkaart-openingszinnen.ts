@@ -125,6 +125,7 @@ export const OPENINGSZINNEN: Record<string, Openingszin> = {
   },
   "babymassage-babyspa": {
     zin: "Voor babymassage of een babyspa noemt de Geboortezorgkaart Zuidplas {aantal} aanbieders: Spirit for Two in Nieuwerkerk aan den IJssel, Bureau Babyzorg, dat onder meer in Zevenhuizen en Moerkapelle werkt, en Baby Spa Gouda.",
+    vervangtIntro: true,
     faq: [],
     gecontroleerdMet: [
       "Baby Spa Gouda",
@@ -134,6 +135,7 @@ export const OPENINGSZINNEN: Record<string, Openingszin> = {
   },
   "baby-dragen": {
     zin: "Voor hulp bij het dragen van je baby noemt de Geboortezorgkaart Zuidplas {aantal} aanbieders: Bureau Babyzorg, dat onder meer in Zevenhuizen en Moerkapelle werkt, en Draag me mee in Capelle aan den IJssel.",
+    vervangtIntro: true,
     faq: [],
     gecontroleerdMet: [
       "Draag me mee",
