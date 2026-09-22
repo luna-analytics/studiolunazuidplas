@@ -206,7 +206,7 @@ export default function Geboortereeks() {
         </motion.div>
 
         {/* ── INTRO ── */}
-        <section className="relative px-7 md:px-14 lg:px-18 py-12 md:py-16">
+        <section className="relative px-7 md:px-14 lg:px-18 py-10 md:py-12">
           <div className="relative md:grid md:grid-cols-[1.2fr_1fr] md:gap-16 md:items-start">
             <motion.div
               variants={fadeUp} initial="hidden" whileInView="show"
@@ -254,7 +254,7 @@ export default function Geboortereeks() {
         </section>
 
         {/* ── EEN DINSDAGAVOND ── */}
-        <section className="px-7 md:px-14 lg:px-18 py-10 md:py-14">
+        <section className="px-7 md:px-14 lg:px-18 py-8 md:py-10">
           <motion.div
             variants={fadeUp} initial="hidden" whileInView="show"
             viewport={{ once: true, margin: "-60px" }} custom={0}
@@ -271,13 +271,6 @@ export default function Geboortereeks() {
                   </p>
                 ))}
               </div>
-              <img
-                src={IMAGES.staand}
-                alt="Marjolein in een staande houding voor het raam"
-                className="w-full max-w-[280px] object-cover mt-8"
-                style={{ aspectRatio: "2/3" }}
-                loading="lazy"
-              />
             </div>
 
             <div className="mt-10 md:mt-0">
@@ -289,12 +282,19 @@ export default function Geboortereeks() {
                 reeks rond de 28 tot 36 weken, met de bevalling in zicht. Val je daarbuiten maar
                 wil je toch graag meedoen, stuur me dan even een berichtje.
               </p>
+              <img
+                src={IMAGES.staand}
+                alt="Marjolein in een staande houding voor het raam"
+                className="w-full max-w-[240px] object-cover mt-8"
+                style={{ aspectRatio: "2/3" }}
+                loading="lazy"
+              />
             </div>
           </motion.div>
         </section>
 
         {/* ── AANMELDEN ── */}
-        <section id="aanmelden" className="px-7 md:px-14 lg:px-18 py-10 md:py-14 scroll-mt-24">
+        <section id="aanmelden" className="px-7 md:px-14 lg:px-18 py-8 md:py-10 scroll-mt-24">
           <motion.div
             variants={fadeUp} initial="hidden" whileInView="show"
             viewport={{ once: true, margin: "-40px" }} custom={0}
@@ -384,7 +384,7 @@ export default function Geboortereeks() {
         </section>
 
         {/* ── WAT ZIT ERIN ── */}
-        <section className="relative px-7 md:px-14 lg:px-18 py-12 md:py-16">
+        <section className="relative px-7 md:px-14 lg:px-18 py-10 md:py-12">
           <div className="relative md:grid md:grid-cols-[1.4fr_1fr] md:gap-14 md:items-start">
             <div className="max-w-3xl">
               <motion.div
@@ -427,7 +427,7 @@ export default function Geboortereeks() {
         </section>
 
         {/* ── WEEKOVERZICHT ── */}
-        <section className="px-7 md:px-14 lg:px-18 py-12 md:py-16">
+        <section className="px-7 md:px-14 lg:px-18 py-10 md:py-12">
           <div className="max-w-3xl">
             <motion.div
               variants={fadeUp} initial="hidden" whileInView="show"
@@ -461,7 +461,7 @@ export default function Geboortereeks() {
         </section>
 
         {/* ── WIE GEEFT DE LESSEN ── */}
-        <section className="relative px-7 md:px-14 lg:px-18 py-12 md:py-16">
+        <section className="relative px-7 md:px-14 lg:px-18 py-10 md:py-12">
           <motion.div
             variants={fadeUp} initial="hidden" whileInView="show"
             viewport={{ once: true, margin: "-60px" }} custom={0}
@@ -496,7 +496,7 @@ export default function Geboortereeks() {
         </section>
 
         {/* ── FAQ ── */}
-        <section className="px-7 md:px-14 lg:px-18 py-12 md:py-16">
+        <section className="px-7 md:px-14 lg:px-18 py-10 md:py-12">
           <motion.div
             variants={fadeUp} initial="hidden" whileInView="show"
             viewport={{ once: true, margin: "-60px" }} custom={0}
