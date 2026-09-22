@@ -184,7 +184,7 @@ export default function Geboortereeks() {
         {/* ── TITEL, met de foto ernaast ── */}
         <motion.div
           variants={fadeUp} initial="hidden" animate="show" custom={0}
-          className="px-7 md:px-14 lg:px-18 pt-14 md:pt-12 pb-4 md:flex md:items-end md:gap-14"
+          className="px-7 md:px-14 lg:px-18 pt-14 md:pt-12 pb-4 md:flex md:items-start md:gap-14"
         >
           <div className="md:flex-1">
             <h1 className="font-display text-4xl md:text-5xl font-medium text-foreground leading-[1.1]">
@@ -201,7 +201,7 @@ export default function Geboortereeks() {
           <img
             src={IMAGES.yoga}
             alt="Zwangerschapsyoga bij Studio Luna in Nieuwerkerk aan den IJssel"
-            className="block w-full max-w-[320px] mt-8 md:mt-0 shrink-0"
+            className="block w-full max-w-[260px] mt-8 md:mt-0 shrink-0"
           />
         </motion.div>
 
