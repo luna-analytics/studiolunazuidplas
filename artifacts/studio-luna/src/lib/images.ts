@@ -33,10 +33,6 @@ export const IMAGES = {
    *  een hand op het hart, uit de shoot van 4 september. */
   zorgkaart: img("zorgkaart-hero.webp"),
 
-  /** Kleinere tweede foto op de zorgkaart, bij "Waar woon je?", in een andere
-   *  organische vorm dan de eerste. */
-  zorgkaartKlein: img("zorgkaart-klein.webp"),
-
   /** Portret van Marjolein bij het blok "Hoi, ik ben Marjolein" op de
    *  landingspagina. Via /admin is een andere foto in te stellen
    *  (over_mij_foto); zonder die instelling wordt deze getoond. */
