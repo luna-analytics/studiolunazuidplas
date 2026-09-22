@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { Link, useLocation } from "wouter";
-import { Baby, Compass, Sparkles, LogOut, LogIn, Feather, User, Menu, X } from "lucide-react";
+import { LogOut, LogIn, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { AlgemeneVoorwaardenModal } from "./algemene-voorwaarden-modal";
@@ -18,11 +18,11 @@ const TOON_LOGIN = false;
 // pagina's bestaan nog en kunnen hier zo weer worden toegevoegd.
 // "kort" is het label in de mobiele balk onderin.
 const ALL_NAV = [
-  { href: "/", label: "Studio Luna", kort: "Studio Luna", icon: Sparkles },
-  { href: "/geboortereeks", label: "Zwangerschapsyoga", kort: "Yoga", icon: Baby },
-  { href: "/geboortezorg-zuidplas", label: "Zorgkaart", kort: "Zorgkaart", icon: Compass },
-  { href: "/over-mij", label: "Over mij", kort: "Over mij", icon: User },
-  { href: "/blog", label: "Blog", kort: "Blog", icon: Feather },
+  { href: "/", label: "Studio Luna", kort: "Studio Luna" },
+  { href: "/geboortereeks", label: "Zwangerschapsyoga", kort: "Yoga" },
+  { href: "/geboortezorg-zuidplas", label: "Zorgkaart", kort: "Zorgkaart" },
+  { href: "/over-mij", label: "Over mij", kort: "Over mij" },
+  { href: "/blog", label: "Blog", kort: "Blog" },
 ];
 
 // Vier tabs die altijd zichtbaar zijn in de balk
@@ -136,7 +136,6 @@ export function BottomNav() {
         <nav className="max-w-md mx-auto flex items-center justify-around px-2 py-2">
           {primaryItems.map((item) => {
             const isActive = location === item.href;
-            const Icon = item.icon;
             const isStudioLuna = item.href === "/";
             return (
               <Link key={item.href} href={item.href}
@@ -148,12 +147,9 @@ export function BottomNav() {
                 onTouchEnd={isStudioLuna ? cancelLongPress : undefined}
                 onTouchCancel={isStudioLuna ? cancelLongPress : undefined}
               >
-                <div className="relative z-10 flex flex-col items-center gap-1 py-1.5 px-1">
-                  <Icon strokeWidth={isActive ? 2.5 : 2}
-                    className={cn("w-5 h-5 transition-colors duration-300",
-                      isActive ? "text-foreground" : "text-muted-foreground")} />
-                  <span className={cn("text-[10px] font-medium transition-colors duration-300 leading-none",
-                    isActive ? "text-foreground" : "text-foreground/75")}>
+                <div className="relative z-10 flex flex-col items-center py-3 px-1">
+                  <span className={cn("text-[12px] transition-colors duration-300 leading-none whitespace-nowrap",
+                    isActive ? "text-foreground font-semibold" : "text-foreground/70")}>
                     {item.kort ?? item.label}
                   </span>
                 </div>
@@ -169,12 +165,9 @@ export function BottomNav() {
             onClick={() => setMenuOpen(true)}
             className="relative flex flex-col items-center justify-center flex-1 tap-highlight-transparent select-none"
           >
-            <div className="relative z-10 flex flex-col items-center gap-1 py-1.5 px-1">
-              <Menu strokeWidth={isMenuActive ? 2.5 : 2}
-                className={cn("w-5 h-5 transition-colors duration-300",
-                  isMenuActive ? "text-foreground" : "text-muted-foreground")} />
-              <span className={cn("text-[10px] font-medium transition-colors duration-300 leading-none",
-                isMenuActive ? "text-foreground" : "text-foreground/75")}>
+            <div className="relative z-10 flex flex-col items-center py-3 px-1">
+              <span className={cn("text-[12px] transition-colors duration-300 leading-none",
+                isMenuActive ? "text-foreground font-semibold" : "text-foreground/70")}>
                 Menu
               </span>
             </div>
