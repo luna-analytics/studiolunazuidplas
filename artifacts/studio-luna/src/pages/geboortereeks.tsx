@@ -197,14 +197,12 @@ export default function Geboortereeks() {
           </p>
         </motion.div>
 
-        <div className="px-7 md:px-14 lg:px-18 pb-4">
-          <img
-            src={IMAGES.yoga}
-            alt="Zwangerschapsyoga bij Studio Luna in Nieuwerkerk aan den IJssel"
-            className="w-full max-w-3xl object-cover"
-            style={{ aspectRatio: "4/3" }}
-          />
-        </div>
+        <img
+          src={IMAGES.yoga}
+          alt="Zwangerschapsyoga bij Studio Luna in Nieuwerkerk aan den IJssel"
+          className="block w-full object-cover mt-2"
+          style={{ height: "clamp(180px, 26vw, 340px)", objectPosition: "center 35%" }}
+        />
 
         {/* ── INTRO ── */}
         <section className="relative px-7 md:px-14 lg:px-18 py-12 md:py-16">
@@ -230,19 +228,6 @@ export default function Geboortereeks() {
                 moederschap met een groep vrouwen die je echt hebt leren kennen.
               </p>
 
-              <figure className="mt-10">
-                <img
-                  src={IMAGES.partnerles}
-                  alt="Een zwangere vrouw en haar geboortepartner zitten rug aan rug op de grond"
-                  className="w-full object-cover"
-                  style={{ aspectRatio: "4/5" }}
-                  loading="lazy"
-                />
-                <figcaption className="text-[13px] text-foreground/60 leading-[1.8] mt-3">
-                  In de partnerles leert je geboortepartner ademtechnieken, massage en
-                  bevalhoudingen waarmee die jou tijdens de bevalling echt kan ondersteunen.
-                </figcaption>
-              </figure>
             </motion.div>
 
             <motion.div
@@ -286,10 +271,10 @@ export default function Geboortereeks() {
                 ))}
               </div>
               <img
-                src={IMAGES.adem}
-                alt="Een hand op het hart tijdens het ademwerk"
-                className="w-full max-w-sm object-cover mt-8"
-                style={{ aspectRatio: "1/1" }}
+                src={IMAGES.staand}
+                alt="Marjolein in een staande houding voor het raam"
+                className="w-full max-w-[280px] object-cover mt-8"
+                style={{ aspectRatio: "2/3" }}
                 loading="lazy"
               />
             </div>
@@ -399,28 +384,44 @@ export default function Geboortereeks() {
 
         {/* ── WAT ZIT ERIN ── */}
         <section className="relative px-7 md:px-14 lg:px-18 py-12 md:py-16">
-          <div className="relative max-w-3xl">
-            <motion.div
-              variants={fadeUp} initial="hidden" whileInView="show"
-              viewport={{ once: true, margin: "-60px" }} custom={0}
-            >
-              <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground mb-8 leading-[1.15]">
-                Een complete geboortevoorbereiding
-              </h2>
-            </motion.div>
+          <div className="relative md:grid md:grid-cols-[1.4fr_1fr] md:gap-14 md:items-start">
+            <div className="max-w-3xl">
+              <motion.div
+                variants={fadeUp} initial="hidden" whileInView="show"
+                viewport={{ once: true, margin: "-60px" }} custom={0}
+              >
+                <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground mb-8 leading-[1.15]">
+                  Een complete geboortevoorbereiding
+                </h2>
+              </motion.div>
 
-            <div>
-              {INBEGREPEN.map((tekst, i) => (
-                <motion.p
-                  key={i}
-                  variants={fadeUp} initial="hidden" whileInView="show"
-                  viewport={{ once: true, margin: "-40px" }} custom={Math.min(i * 0.05, 0.2)}
-                  className="text-[15px] text-foreground/80 leading-[1.9] py-4 border-b border-border/15"
-                >
-                  {tekst}
-                </motion.p>
-              ))}
+              <div>
+                {INBEGREPEN.map((tekst, i) => (
+                  <motion.p
+                    key={i}
+                    variants={fadeUp} initial="hidden" whileInView="show"
+                    viewport={{ once: true, margin: "-40px" }} custom={Math.min(i * 0.05, 0.2)}
+                    className="text-[15px] text-foreground/80 leading-[1.9] py-4 border-b border-border/15"
+                  >
+                    {tekst}
+                  </motion.p>
+                ))}
+              </div>
             </div>
+
+            <figure className="mt-10 md:mt-16 max-w-xs">
+              <img
+                src={IMAGES.partnerles}
+                alt="Een zwangere vrouw en haar geboortepartner zitten rug aan rug op de grond"
+                className="w-full object-cover"
+                style={{ aspectRatio: "4/5" }}
+                loading="lazy"
+              />
+              <figcaption className="text-[13px] text-foreground/60 leading-[1.8] mt-3">
+                In de partnerles leert je geboortepartner ademtechnieken, massage en
+                bevalhoudingen waarmee die jou tijdens de bevalling echt kan ondersteunen.
+              </figcaption>
+            </figure>
           </div>
         </section>
 

@@ -26,13 +26,17 @@ export const IMAGES = {
    *  zonder die instelling wordt deze getoond. */
   yoga: img("reeks-yoga.webp"),
 
-  /** Foto bij "Hoe een dinsdagavond eruitziet" op de reekspagina: hand op het
-   *  hart, uit de shoot van 4 september. */
-  adem: img("reeks-adem.webp"),
+  /** Foto bij "Hoe een dinsdagavond eruitziet" op de reekspagina: staande
+   *  houding voor het gordijn, uit de shoot van 4 september. */
+  staand: img("reeks-staand.webp"),
 
   /** Foto naast de kop van de Zorgkaart (staande uitsnede): een zwangere met
-   *  haar partner achter zich, uit de shoot van 4 september. */
+   *  een hand op het hart, uit de shoot van 4 september. */
   zorgkaart: img("zorgkaart-hero.webp"),
+
+  /** Kleinere tweede foto op de zorgkaart, bij "Waar woon je?", in een andere
+   *  organische vorm dan de eerste. */
+  zorgkaartKlein: img("zorgkaart-klein.webp"),
 
   /** Portret van Marjolein bij het blok "Hoi, ik ben Marjolein" op de
    *  landingspagina. Via /admin is een andere foto in te stellen

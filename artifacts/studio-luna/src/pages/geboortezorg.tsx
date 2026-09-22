@@ -264,7 +264,8 @@ export default function Geboortezorg() {
         </div>
 
         {/* ── PER PLAATS ── */}
-        <div className="px-7 md:px-14 lg:px-18 pt-8 pb-4">
+        <div className="px-7 md:px-14 lg:px-18 pt-8 pb-4 md:flex md:items-start md:gap-12">
+          <div className="md:flex-1">
           <h2 className="font-display text-2xl md:text-3xl font-medium text-foreground leading-[1.2]">
             Waar woon je?
           </h2>
@@ -279,6 +280,14 @@ export default function Geboortezorg() {
               </Link>
             ))}
           </div>
+          </div>
+          <img
+            src={IMAGES.zorgkaartKlein}
+            alt=""
+            className="hidden md:block w-36 lg:w-44 aspect-[4/5] object-cover shrink-0 -rotate-2"
+            style={{ borderRadius: "44% 56% 52% 48% / 52% 46% 54% 48%" }}
+            loading="lazy"
+          />
         </div>
 
         {/* ── ZOEKEN ── */}
