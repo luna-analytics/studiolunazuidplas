@@ -279,7 +279,7 @@ export default function StudioLuna() {
               <img
                 src={IMAGES.overMij}
                 alt="Marjolein, oprichter van Studio Luna"
-                className="w-full max-w-[20rem] aspect-[4/5] object-cover mb-8 md:mb-0"
+                className="w-full max-w-[20rem] aspect-[2/3] object-cover mb-8 md:mb-0"
                 loading="lazy"
               />
             </motion.div>

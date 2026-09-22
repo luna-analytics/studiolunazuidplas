@@ -74,7 +74,7 @@ export default function OverMij() {
                 viewport={{ once: true, margin: "-60px" }} custom={0}
               >
                 {(
-                  <div className="overflow-hidden" style={{ aspectRatio: "3/4" }}>
+                  <div className="overflow-hidden" style={{ aspectRatio: "2/3" }}>
                     <img
                       src={IMAGES.overMij}
                       alt={data.over_mij_naam}
