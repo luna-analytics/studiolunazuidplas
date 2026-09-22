@@ -2758,7 +2758,7 @@ function InhoudTab() {
           const positie = "foto_yoga_positie" as const;
           return (
             <div className="border-t border-border/20 pt-5">
-              <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Zwangerschapsyoga foto (Aanbod pagina)</label>
+              <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Foto bovenaan de reekspagina</label>
               <p className="text-xs text-foreground/40 mb-3">Grote sfeerfoto boven de yoga-beschrijving.</p>
               <div className="flex items-start gap-4 mb-4">
                 {teksten[fotoKey] ? (
@@ -2821,7 +2821,7 @@ function InhoudTab() {
           const positie = "foto_circle_positie" as const;
           return (
             <div className="border-t border-border/20 pt-5">
-              <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Mama Circle foto (Aanbod pagina)</label>
+              <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Tweede foto op de homepage</label>
               <p className="text-xs text-foreground/40 mb-3">Foto naast de Mama Circle beschrijving.</p>
               <div className="flex items-start gap-4 mb-4">
                 {teksten[fotoKey] ? (

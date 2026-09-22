@@ -32,6 +32,9 @@ const DEFAULT_TEKSTEN = {
   home_contact_instagram: "@studiolunazuidplas",
   foto_hero: "",
   foto_hero_positie: "center",
+  foto_circle: "",
+  foto_circle_hoogte: "hoog",
+  foto_circle_positie: "center",
   over_mij_foto: "",
 };
 
@@ -63,6 +66,9 @@ const fadeUp = {
   hidden: { opacity: 1, y: 0 },
   show: { opacity: 1, y: 0 },
 };
+
+const RATIO_MAP: Record<string, string> = { smal: "21/9", normaal: "16/9", hoog: "4/3", portret: "3/4" };
+const POS_MAP: Record<string, string> = { top: "top", center: "center", bottom: "bottom" };
 
 export default function StudioLuna() {
   const [, navigate] = useLocation();
@@ -246,6 +252,24 @@ export default function StudioLuna() {
             ))}
           </div>
         </section>
+
+        {/* ── SFEERFOTO — tweede foto, in te stellen via /admin (foto_circle) ── */}
+        <motion.div
+          variants={fadeUp} initial="hidden" whileInView="show"
+          viewport={{ once: true, margin: "-60px" }} custom={0}
+          className="px-7 md:px-14 lg:px-18 py-4"
+        >
+          <img
+            src={teksten.foto_circle || IMAGES.circle}
+            alt="Zwangerschapsyoga bij Studio Luna"
+            className="w-full object-cover"
+            style={{
+              aspectRatio: RATIO_MAP[teksten.foto_circle_hoogte] ?? "4/3",
+              objectPosition: POS_MAP[teksten.foto_circle_positie] ?? "center",
+            }}
+            loading="lazy"
+          />
+        </motion.div>
 
         {/* ── SNELLE LINKS — interne navigatie naar rooster / tarieven / aanbod ── */}
         <section className="px-7 md:px-14 lg:px-18 py-6 md:py-10">

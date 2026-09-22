@@ -22,14 +22,16 @@ export const IMAGES = {
    *  (public/images/foto-hero.webp), anders flitst kort de oude foto. */
   hero: img("foto-hero.webp"),
 
-  /** Foto bij de Zwangerschapsyoga sectie op de Aanbod-pagina (portret of liggend) */
-  yoga: img("hero-yoga.webp"),
+  /** Foto bovenaan de reekspagina. Via /admin in te stellen (foto_yoga);
+   *  zonder die instelling wordt deze getoond. */
+  yoga: img("reeks-yoga.webp"),
 
-  /** Foto bij de Mama Circle sectie (bijv. groepsfoto of sfeerbeeld) */
-  circle: img("hero-yoga.webp"),
+  /** Tweede foto op de homepage, onder het aanbod. Via /admin in te stellen
+   *  (foto_circle); zonder die instelling wordt deze getoond. */
+  circle: img("homepage-yoga.webp"),
 
-  /** Foto naast de kop van de Zorgkaart (staande uitsnede). Gratis stockfoto
-   *  van Unsplash, fotograaf Anna Mysłowska-Kiczek. */
+  /** Foto naast de kop van de Zorgkaart (staande uitsnede): de handen van een
+   *  zwangere en haar partner samen op de buik, uit de shoot van 4 september. */
   zorgkaart: img("zorgkaart-hero.webp"),
 
   /** Portret van Marjolein bij het blok "Hoi, ik ben Marjolein" op de
