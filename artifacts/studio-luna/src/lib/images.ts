@@ -30,7 +30,7 @@ export const IMAGES = {
   staand: img("reeks-staand.webp"),
 
   /** Foto naast de kop van de Zorgkaart (staande uitsnede): een zwangere met
-   *  de handen op de buik, uit de shoot van 4 september. */
+   *  een hand op het hart, uit de shoot van 4 september. */
   zorgkaart: img("zorgkaart-hero.webp"),
 
   /** Kleinere tweede foto op de zorgkaart, bij "Waar woon je?", in een andere
