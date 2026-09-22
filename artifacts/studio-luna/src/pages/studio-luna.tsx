@@ -32,9 +32,6 @@ const DEFAULT_TEKSTEN = {
   home_contact_instagram: "@studiolunazuidplas",
   foto_hero: "",
   foto_hero_positie: "center",
-  foto_circle: "",
-  foto_circle_hoogte: "hoog",
-  foto_circle_positie: "center",
   over_mij_foto: "",
 };
 
@@ -66,9 +63,6 @@ const fadeUp = {
   hidden: { opacity: 1, y: 0 },
   show: { opacity: 1, y: 0 },
 };
-
-const RATIO_MAP: Record<string, string> = { smal: "21/9", normaal: "16/9", hoog: "4/3", portret: "3/4" };
-const POS_MAP: Record<string, string> = { top: "top", center: "center", bottom: "bottom" };
 
 export default function StudioLuna() {
   const [, navigate] = useLocation();
@@ -142,7 +136,7 @@ export default function StudioLuna() {
         src={IMAGES.hero}
         alt="Zwangerschapsyoga Studio Luna"
         className="block w-full object-cover rounded-none"
-        style={{ height: "clamp(300px, 48vw, 680px)", objectPosition: "center" }}
+        style={{ height: "clamp(220px, 32vw, 420px)", objectPosition: "center" }}
       />
 
       <div className="w-full max-w-7xl mx-auto relative overflow-x-hidden">
@@ -252,21 +246,6 @@ export default function StudioLuna() {
             ))}
           </div>
         </section>
-
-        {/* ── SFEERFOTO — tweede foto, in te stellen via /admin (foto_circle) ── */}
-        <motion.div
-          variants={fadeUp} initial="hidden" whileInView="show"
-          viewport={{ once: true, margin: "-60px" }} custom={0}
-          className="px-7 md:px-14 lg:px-18 py-4"
-        >
-          <img
-            src={IMAGES.circle}
-            alt="Marjolein tijdens een zijbuiging op de mat"
-            className="w-full max-w-[420px] object-cover"
-            style={{ aspectRatio: "3/4" }}
-            loading="lazy"
-          />
-        </motion.div>
 
         {/* ── SNELLE LINKS — interne navigatie naar rooster / tarieven / aanbod ── */}
         <section className="px-7 md:px-14 lg:px-18 py-6 md:py-10">

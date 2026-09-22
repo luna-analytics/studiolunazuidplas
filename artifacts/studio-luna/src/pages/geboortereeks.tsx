@@ -285,6 +285,13 @@ export default function Geboortereeks() {
                   </p>
                 ))}
               </div>
+              <img
+                src={IMAGES.adem}
+                alt="Een hand op het hart tijdens het ademwerk"
+                className="w-full max-w-sm object-cover mt-8"
+                style={{ aspectRatio: "1/1" }}
+                loading="lazy"
+              />
             </div>
 
             <div className="mt-10 md:mt-0">

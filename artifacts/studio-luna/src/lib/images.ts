@@ -26,12 +26,12 @@ export const IMAGES = {
    *  zonder die instelling wordt deze getoond. */
   yoga: img("reeks-yoga.webp"),
 
-  /** Tweede foto op de homepage, onder het aanbod. Via /admin in te stellen
-   *  (foto_circle); zonder die instelling wordt deze getoond. */
-  circle: img("homepage-yoga.webp"),
+  /** Foto bij "Hoe een dinsdagavond eruitziet" op de reekspagina: hand op het
+   *  hart, uit de shoot van 4 september. */
+  adem: img("reeks-adem.webp"),
 
-  /** Foto naast de kop van de Zorgkaart (staande uitsnede): de handen van een
-   *  zwangere en haar partner samen op de buik, uit de shoot van 4 september. */
+  /** Foto naast de kop van de Zorgkaart (staande uitsnede): een zwangere met
+   *  haar partner achter zich, uit de shoot van 4 september. */
   zorgkaart: img("zorgkaart-hero.webp"),
 
   /** Portret van Marjolein bij het blok "Hoi, ik ben Marjolein" op de
