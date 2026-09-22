@@ -317,7 +317,7 @@ export default function Geboortereeks() {
               </p>
             )}
             <p className="text-[15px] text-foreground/80 leading-[1.9] mb-7">
-              Er is plek voor acht zwangeren. Je
+              Er is plek voor maximaal acht zwangeren. Je
               kunt meedoen als je bij de start ongeveer tussen de 20 en 28 weken zwanger bent. Meld je
               aan met je naam en e-mailadres; daarna stuur ik je persoonlijk het
               intakeformulier en de factuur per mail, en is je plekje gereserveerd.
