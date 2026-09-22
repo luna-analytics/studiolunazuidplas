@@ -5,6 +5,7 @@ import { CtaBlock } from "@/components/cta-block";
 import { motion } from "framer-motion";
 import { Instagram, Mail } from "lucide-react";
 import { usePageMeta } from "@/lib/seo";
+import { IMAGES } from "@/lib/images";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -72,10 +73,10 @@ export default function OverMij() {
                 variants={fadeUp} initial="hidden" whileInView="show"
                 viewport={{ once: true, margin: "-60px" }} custom={0}
               >
-                {data.over_mij_foto && (
+                {(
                   <div className="overflow-hidden" style={{ aspectRatio: "3/4" }}>
                     <img
-                      src={data.over_mij_foto}
+                      src={IMAGES.overMij}
                       alt={data.over_mij_naam}
                       className="w-full h-full object-cover object-top"
                       loading="lazy"

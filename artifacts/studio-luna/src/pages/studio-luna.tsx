@@ -139,10 +139,10 @@ export default function StudioLuna() {
       </div>
 
       <img
-        src={teksten.foto_hero || IMAGES.hero}
+        src={IMAGES.hero}
         alt="Zwangerschapsyoga Studio Luna"
         className="block w-full object-cover rounded-none"
-        style={{ height: "clamp(300px, 48vw, 680px)", objectPosition: teksten.foto_hero_positie || "center" }}
+        style={{ height: "clamp(300px, 48vw, 680px)", objectPosition: "center" }}
       />
 
       <div className="w-full max-w-7xl mx-auto relative overflow-x-hidden">
@@ -260,13 +260,10 @@ export default function StudioLuna() {
           className="px-7 md:px-14 lg:px-18 py-4"
         >
           <img
-            src={teksten.foto_circle || IMAGES.circle}
-            alt="Zwangerschapsyoga bij Studio Luna"
-            className="w-full object-cover"
-            style={{
-              aspectRatio: RATIO_MAP[teksten.foto_circle_hoogte] ?? "4/3",
-              objectPosition: POS_MAP[teksten.foto_circle_positie] ?? "center",
-            }}
+            src={IMAGES.circle}
+            alt="Marjolein tijdens een zijbuiging op de mat"
+            className="w-full max-w-[420px] object-cover"
+            style={{ aspectRatio: "3/4" }}
             loading="lazy"
           />
         </motion.div>
@@ -301,7 +298,7 @@ export default function StudioLuna() {
               viewport={{ once: true, margin: "-60px" }} custom={0}
             >
               <img
-                src={teksten.over_mij_foto || IMAGES.overMij}
+                src={IMAGES.overMij}
                 alt="Marjolein, oprichter van Studio Luna"
                 className="w-full max-w-[20rem] aspect-[4/5] object-cover mb-8 md:mb-0"
                 loading="lazy"

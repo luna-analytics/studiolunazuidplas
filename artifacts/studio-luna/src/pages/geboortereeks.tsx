@@ -104,9 +104,6 @@ const FAQ_ITEMS = [
 // intakeformulier (Tally) en de factuur per mail. Geen online betaling.
 const WHATSAPP_URL = "https://wa.me/31643735343?text=" + encodeURIComponent("Hoi! Ik heb een vraag over de Geboortereeks die op 29 september start.");
 
-const RATIO_MAP: Record<string, string> = { smal: "21/9", normaal: "16/9", hoog: "4/3", portret: "3/4" };
-const POS_MAP: Record<string, string> = { top: "top", center: "center", bottom: "bottom" };
-
 export default function Geboortereeks() {
   const [isInterestOpen, setIsInterestOpen] = useState(false);
   const [isKennismakingOpen, setIsKennismakingOpen] = useState(false);
@@ -147,22 +144,6 @@ export default function Geboortereeks() {
       setStatus("fout");
     }
   };
-
-  const [fotoReeks, setFotoReeks] = useState({ src: "", hoogte: "hoog", positie: "center" });
-
-  useEffect(() => {
-    fetch(`${import.meta.env.BASE_URL}api/pagina-teksten`)
-      .then((r) => (r.ok ? r.json() : null))
-      .then((d) => {
-        if (!d) return;
-        setFotoReeks({
-          src: d.foto_yoga || "",
-          hoogte: d.foto_yoga_hoogte || "hoog",
-          positie: d.foto_yoga_positie || "center",
-        });
-      })
-      .catch(() => {});
-  }, []);
 
   usePageMeta({
     title: "Zwangerschapscursus in Zuidplas: de Geboortereeks | Studio Luna",
@@ -218,13 +199,10 @@ export default function Geboortereeks() {
 
         <div className="px-7 md:px-14 lg:px-18 pb-4">
           <img
-            src={fotoReeks.src || IMAGES.yoga}
+            src={IMAGES.yoga}
             alt="Zwangerschapsyoga bij Studio Luna in Nieuwerkerk aan den IJssel"
-            className="w-full object-cover"
-            style={{
-              aspectRatio: RATIO_MAP[fotoReeks.hoogte] ?? "4/3",
-              objectPosition: POS_MAP[fotoReeks.positie] ?? "center",
-            }}
+            className="w-full max-w-3xl object-cover"
+            style={{ aspectRatio: "4/3" }}
           />
         </div>
 

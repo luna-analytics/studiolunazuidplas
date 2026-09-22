@@ -2646,236 +2646,24 @@ function InhoudTab() {
         {field("Quote (groot citaat bovenaan)", "over_mij_quote", false, "Korte, krachtige zin die jou typeert.")}
         {field("Jouw verhaal (biografie)", "over_mij_tekst", true, "Gebruik een lege regel tussen alinea's. Je kunt zo lang schrijven als je wilt.")}
 
-        {/* FOTO UPLOAD */}
-        <div>
-          <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Profielfoto</label>
-          <p className="text-xs text-foreground/40 mb-2">Upload een foto (max. 4 MB, JPG of PNG). De foto wordt direct opgeslagen.</p>
-          <div className="flex items-start gap-4">
-            {teksten.over_mij_foto && (
-              <div className="shrink-0 w-20 h-24 rounded-xl overflow-hidden border border-border/30">
-                <img src={teksten.over_mij_foto} alt="Profielfoto" className="w-full h-full object-cover" />
-              </div>
-            )}
-            <div className="flex-1">
-              <label className="cursor-pointer inline-flex items-center gap-2 bg-secondary border border-border/40 text-foreground/70 hover:text-foreground px-4 py-2.5 rounded-2xl text-sm font-medium transition-colors">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                Kies foto
-                <input
-                  type="file"
-                  accept="image/jpeg,image/png,image/webp"
-                  className="hidden"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (!file) return;
-                    if (file.size > 15 * 1024 * 1024) { alert("Foto is te groot (max 15 MB)."); return; }
-                    verkleinFoto(file, 800)
-                      .then((dataUrl) => setTeksten((prev) => ({ ...prev, over_mij_foto: dataUrl })))
-                      .catch(() => alert("Foto kon niet gelezen worden."));
-                  }}
-                />
-              </label>
-              {teksten.over_mij_foto && (
-                <button
-                  onClick={() => setTeksten((prev) => ({ ...prev, over_mij_foto: "" }))}
-                  className="ml-2 text-xs text-foreground/40 hover:text-red-500 transition-colors"
-                >
-                  Verwijder foto
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-
         {saveBtn("over_mij", {
           over_mij_naam: teksten.over_mij_naam,
           over_mij_functie: teksten.over_mij_functie,
           over_mij_quote: teksten.over_mij_quote,
           over_mij_tekst: teksten.over_mij_tekst,
-          over_mij_foto: teksten.over_mij_foto,
         })}
       </div>
 
       {/* FOTO'S */}
-      <div className="bg-card border border-border/30 rounded-3xl p-5 space-y-6">
-        <div>
-          <h3 className="font-display text-lg font-medium">Foto's op de website</h3>
-          <p className="text-xs text-foreground/50 mt-1">Upload foto's en stel per foto de hoogte en het beeldgedeelte in. Max. 4 MB, JPG of PNG.</p>
-        </div>
-
-        {/* ─ HERO FOTO ─ */}
-        {(() => {
-          const fotoKey = "foto_hero" as const;
-          const positieKey = "foto_hero_positie" as const;
-          return (
-            <div className="border-t border-border/20 pt-5 first:border-0 first:pt-0">
-              <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Headerfoto (Studio Luna pagina)</label>
-              <p className="text-xs text-foreground/40 mb-3">Brede foto over de hele breedte van het scherm. Kies een liggende foto van minstens 2400 px breed; een staande foto wordt op grote schermen sterk ingezoomd.</p>
-              <div className="flex items-start gap-4 mb-4">
-                {teksten[fotoKey] ? (
-                  <div className="shrink-0 overflow-hidden rounded-xl border border-border/30 bg-secondary w-32 h-20">
-                    <img src={teksten[fotoKey]} alt="Hero" className="w-full h-full object-cover" />
-                  </div>
-                ) : (
-                  <div className="shrink-0 rounded-xl border border-dashed border-border/40 bg-secondary/50 flex items-center justify-center w-32 h-20">
-                    <svg className="w-6 h-6 text-foreground/20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                  </div>
-                )}
-                <div className="flex flex-col gap-2">
-                  <label className="cursor-pointer inline-flex items-center gap-2 bg-secondary border border-border/40 text-foreground/70 hover:text-foreground px-4 py-2.5 rounded-2xl text-sm font-medium transition-colors">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                    {teksten[fotoKey] ? "Andere foto" : "Kies foto"}
-                    <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={(e) => {
-                      const file = e.target.files?.[0]; if (!file) return;
-                      if (file.size > 15 * 1024 * 1024) { alert("Foto is te groot (max 15 MB)."); return; }
-                      verkleinFoto(file, 2400)
-                        .then((dataUrl) => setTeksten((prev) => ({ ...prev, [fotoKey]: dataUrl })))
-                        .catch(() => alert("Foto kon niet gelezen worden."));
-                    }} />
-                  </label>
-                  {teksten[fotoKey] && <button onClick={() => setTeksten((prev) => ({ ...prev, [fotoKey]: "" }))} className="text-xs text-foreground/40 hover:text-red-500 transition-colors text-left">Verwijder foto</button>}
-                </div>
-              </div>
-              <div>
-                <p className="text-xs font-semibold text-foreground/50 uppercase tracking-wide mb-2">Beeldgedeelte</p>
-                <div className="flex gap-2 flex-wrap">
-                  {[{ v: "top", l: "Boven" }, { v: "center", l: "Midden" }, { v: "bottom", l: "Onder" }].map(({ v, l }) => (
-                    <button key={v} onClick={() => setTeksten((prev) => ({ ...prev, [positieKey]: v }))}
-                      className={`px-3 py-1.5 rounded-xl text-xs font-medium border transition-colors ${teksten[positieKey] === v ? "bg-primary text-primary-foreground border-primary" : "bg-secondary border-border/40 text-foreground/60 hover:text-foreground"}`}>
-                      {l}
-                    </button>
-                  ))}
-                </div>
-              </div>
-              <div className="pt-4">{saveBtn("foto_hero", { foto_hero: teksten.foto_hero, foto_hero_positie: teksten.foto_hero_positie })}</div>
-            </div>
-          );
-        })()}
-
-        {/* ─ YOGA FOTO ─ */}
-        {(() => {
-          const fotoKey = "foto_yoga" as const;
-          const hoogte = "foto_yoga_hoogte" as const;
-          const positie = "foto_yoga_positie" as const;
-          return (
-            <div className="border-t border-border/20 pt-5">
-              <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Foto bovenaan de reekspagina</label>
-              <p className="text-xs text-foreground/40 mb-3">Grote sfeerfoto boven de yoga-beschrijving.</p>
-              <div className="flex items-start gap-4 mb-4">
-                {teksten[fotoKey] ? (
-                  <div className="shrink-0 overflow-hidden rounded-xl border border-border/30 bg-secondary w-20 h-24">
-                    <img src={teksten[fotoKey]} alt="Yoga" className="w-full h-full object-cover" />
-                  </div>
-                ) : (
-                  <div className="shrink-0 rounded-xl border border-dashed border-border/40 bg-secondary/50 flex items-center justify-center w-20 h-24">
-                    <svg className="w-6 h-6 text-foreground/20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                  </div>
-                )}
-                <div className="flex flex-col gap-2">
-                  <label className="cursor-pointer inline-flex items-center gap-2 bg-secondary border border-border/40 text-foreground/70 hover:text-foreground px-4 py-2.5 rounded-2xl text-sm font-medium transition-colors">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                    {teksten[fotoKey] ? "Andere foto" : "Kies foto"}
-                    <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={(e) => {
-                      const file = e.target.files?.[0]; if (!file) return;
-                      if (file.size > 15 * 1024 * 1024) { alert("Foto is te groot (max 15 MB)."); return; }
-                      verkleinFoto(file, 1600)
-                        .then((dataUrl) => setTeksten((prev) => ({ ...prev, [fotoKey]: dataUrl })))
-                        .catch(() => alert("Foto kon niet gelezen worden."));
-                    }} />
-                  </label>
-                  {teksten[fotoKey] && <button onClick={() => setTeksten((prev) => ({ ...prev, [fotoKey]: "" }))} className="text-xs text-foreground/40 hover:text-red-500 transition-colors text-left">Verwijder foto</button>}
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-xs font-semibold text-foreground/50 uppercase tracking-wide mb-2">Hoogte foto</p>
-                  <div className="flex gap-2 flex-wrap">
-                    {[{ v: "smal", l: "Smal" }, { v: "normaal", l: "Normaal" }, { v: "hoog", l: "Hoog" }, { v: "portret", l: "Portret" }].map(({ v, l }) => (
-                      <button key={v} onClick={() => setTeksten((prev) => ({ ...prev, [hoogte]: v }))}
-                        className={`px-3 py-1.5 rounded-xl text-xs font-medium border transition-colors ${teksten[hoogte] === v ? "bg-primary text-primary-foreground border-primary" : "bg-secondary border-border/40 text-foreground/60 hover:text-foreground"}`}>
-                        {l}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <p className="text-xs font-semibold text-foreground/50 uppercase tracking-wide mb-2">Beeldgedeelte</p>
-                  <div className="flex gap-2 flex-wrap">
-                    {[{ v: "top", l: "Boven" }, { v: "center", l: "Midden" }, { v: "bottom", l: "Onder" }].map(({ v, l }) => (
-                      <button key={v} onClick={() => setTeksten((prev) => ({ ...prev, [positie]: v }))}
-                        className={`px-3 py-1.5 rounded-xl text-xs font-medium border transition-colors ${teksten[positie] === v ? "bg-primary text-primary-foreground border-primary" : "bg-secondary border-border/40 text-foreground/60 hover:text-foreground"}`}>
-                        {l}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-              <div className="pt-4">{saveBtn("foto_yoga", { foto_yoga: teksten.foto_yoga, foto_yoga_hoogte: teksten.foto_yoga_hoogte, foto_yoga_positie: teksten.foto_yoga_positie })}</div>
-            </div>
-          );
-        })()}
-
-        {/* ─ CIRCLE FOTO ─ */}
-        {(() => {
-          const fotoKey = "foto_circle" as const;
-          const hoogte = "foto_circle_hoogte" as const;
-          const positie = "foto_circle_positie" as const;
-          return (
-            <div className="border-t border-border/20 pt-5">
-              <label className="text-xs font-semibold text-foreground/60 uppercase tracking-wide mb-1 block">Tweede foto op de homepage</label>
-              <p className="text-xs text-foreground/40 mb-3">Foto naast de Mama Circle beschrijving.</p>
-              <div className="flex items-start gap-4 mb-4">
-                {teksten[fotoKey] ? (
-                  <div className="shrink-0 overflow-hidden rounded-xl border border-border/30 bg-secondary w-20 h-24">
-                    <img src={teksten[fotoKey]} alt="Circle" className="w-full h-full object-cover" />
-                  </div>
-                ) : (
-                  <div className="shrink-0 rounded-xl border border-dashed border-border/40 bg-secondary/50 flex items-center justify-center w-20 h-24">
-                    <svg className="w-6 h-6 text-foreground/20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                  </div>
-                )}
-                <div className="flex flex-col gap-2">
-                  <label className="cursor-pointer inline-flex items-center gap-2 bg-secondary border border-border/40 text-foreground/70 hover:text-foreground px-4 py-2.5 rounded-2xl text-sm font-medium transition-colors">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                    {teksten[fotoKey] ? "Andere foto" : "Kies foto"}
-                    <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={(e) => {
-                      const file = e.target.files?.[0]; if (!file) return;
-                      if (file.size > 15 * 1024 * 1024) { alert("Foto is te groot (max 15 MB)."); return; }
-                      verkleinFoto(file, 1600)
-                        .then((dataUrl) => setTeksten((prev) => ({ ...prev, [fotoKey]: dataUrl })))
-                        .catch(() => alert("Foto kon niet gelezen worden."));
-                    }} />
-                  </label>
-                  {teksten[fotoKey] && <button onClick={() => setTeksten((prev) => ({ ...prev, [fotoKey]: "" }))} className="text-xs text-foreground/40 hover:text-red-500 transition-colors text-left">Verwijder foto</button>}
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-xs font-semibold text-foreground/50 uppercase tracking-wide mb-2">Hoogte foto</p>
-                  <div className="flex gap-2 flex-wrap">
-                    {[{ v: "smal", l: "Smal" }, { v: "normaal", l: "Normaal" }, { v: "hoog", l: "Hoog" }, { v: "portret", l: "Portret" }].map(({ v, l }) => (
-                      <button key={v} onClick={() => setTeksten((prev) => ({ ...prev, [hoogte]: v }))}
-                        className={`px-3 py-1.5 rounded-xl text-xs font-medium border transition-colors ${teksten[hoogte] === v ? "bg-primary text-primary-foreground border-primary" : "bg-secondary border-border/40 text-foreground/60 hover:text-foreground"}`}>
-                        {l}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <p className="text-xs font-semibold text-foreground/50 uppercase tracking-wide mb-2">Beeldgedeelte</p>
-                  <div className="flex gap-2 flex-wrap">
-                    {[{ v: "top", l: "Boven" }, { v: "center", l: "Midden" }, { v: "bottom", l: "Onder" }].map(({ v, l }) => (
-                      <button key={v} onClick={() => setTeksten((prev) => ({ ...prev, [positie]: v }))}
-                        className={`px-3 py-1.5 rounded-xl text-xs font-medium border transition-colors ${teksten[positie] === v ? "bg-primary text-primary-foreground border-primary" : "bg-secondary border-border/40 text-foreground/60 hover:text-foreground"}`}>
-                        {l}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-              <div className="pt-4">{saveBtn("foto_circle", { foto_circle: teksten.foto_circle, foto_circle_hoogte: teksten.foto_circle_hoogte, foto_circle_positie: teksten.foto_circle_positie })}</div>
-            </div>
-          );
-        })()}
+      <div className="bg-card border border-border/30 rounded-3xl p-5 space-y-2">
+        <h3 className="font-display text-lg font-medium">Foto's op de website</h3>
+        <p className="text-xs text-foreground/50">
+          De foto's staan sinds 22 september vast in de website zelf: de header en de tweede
+          foto op de homepage, de foto bovenaan de reekspagina, de foto bij de partnerles, het
+          portret op Over mij en de foto op de zorgkaart. Ze komen allemaal uit de shoot van
+          4 september. Wil je een andere foto op een van die plekken, geef dan door welke foto
+          waar moet komen.
+        </p>
       </div>
     </div>
   );
