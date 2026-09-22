@@ -196,6 +196,12 @@ export default function Geboortereeks() {
             <p className="text-[15px] text-foreground/80 mt-4">
               Start dinsdag 29 september · €175 introductieprijs voor deze eerste groep, daarna €195
             </p>
+            <a
+              href="#aanmelden"
+              className="inline-block mt-5 text-sm font-semibold text-primary border-b border-primary/30 pb-0.5"
+            >
+              Meld je aan voor de reeks
+            </a>
           </div>
 
           <img
