@@ -198,9 +198,9 @@ export default function Geboortereeks() {
             </p>
             <a
               href="#aanmelden"
-              className="inline-block mt-5 text-sm font-semibold text-primary border-b border-primary/30 pb-0.5"
+              className="inline-flex items-center mt-6 bg-primary text-primary-foreground px-7 py-3.5 rounded-[6px] font-semibold text-sm hover:bg-primary/88"
             >
-              Meld je aan voor de reeks
+              Meld je aan voor 29 september
             </a>
           </div>
 
