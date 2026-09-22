@@ -181,29 +181,29 @@ export default function Geboortereeks() {
     <div className="min-h-screen bg-background pb-28 md:pb-16 md:pt-16 flex justify-center">
       <div className="w-full max-w-7xl bg-background min-h-screen relative overflow-x-hidden">
 
-        {/* ── TITEL ── */}
+        {/* ── TITEL, met de foto ernaast ── */}
         <motion.div
           variants={fadeUp} initial="hidden" animate="show" custom={0}
-          className="px-7 md:px-14 lg:px-18 pt-14 md:pt-12 pb-4"
+          className="px-7 md:px-14 lg:px-18 pt-14 md:pt-12 pb-4 md:flex md:items-end md:gap-14"
         >
-          <h1 className="font-display text-4xl md:text-5xl font-medium text-foreground leading-[1.1]">
-            De Geboortereeks
-          </h1>
-          <p className="text-foreground/60 text-[15px] mt-3">
-            8-weekse zwangerschapsyoga- en geboortevoorbereidingsreeks
-          </p>
-          <p className="text-[15px] text-foreground/80 mt-4">
-            Start dinsdag 29 september · €175 introductieprijs voor deze eerste groep, daarna €195
-          </p>
-        </motion.div>
+          <div className="md:flex-1">
+            <h1 className="font-display text-4xl md:text-5xl font-medium text-foreground leading-[1.1]">
+              De Geboortereeks
+            </h1>
+            <p className="text-foreground/60 text-[15px] mt-3">
+              8-weekse zwangerschapsyoga- en geboortevoorbereidingsreeks
+            </p>
+            <p className="text-[15px] text-foreground/80 mt-4">
+              Start dinsdag 29 september · €175 introductieprijs voor deze eerste groep, daarna €195
+            </p>
+          </div>
 
-        <div className="px-7 md:px-14 lg:px-18 pb-2">
           <img
             src={IMAGES.yoga}
             alt="Zwangerschapsyoga bij Studio Luna in Nieuwerkerk aan den IJssel"
-            className="block w-full max-w-[320px]"
+            className="block w-full max-w-[320px] mt-8 md:mt-0 shrink-0"
           />
-        </div>
+        </motion.div>
 
         {/* ── INTRO ── */}
         <section className="relative px-7 md:px-14 lg:px-18 py-12 md:py-16">
