@@ -7,6 +7,7 @@ import { KennismakingModal } from "@/components/kennismaking-modal";
 import { motion } from "framer-motion";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { usePageMeta } from "@/lib/seo";
+import { IMAGES } from "@/lib/images";
 
 // Geen inloopanimaties meer: de inhoud staat er gewoon.
 const fadeUp = {
@@ -219,6 +220,20 @@ export default function Geboortereeks() {
                 mama-en-babyyoga; deze postpartumles is mijn cadeautje aan jullie. Zo begint je
                 moederschap met een groep vrouwen die je echt hebt leren kennen.
               </p>
+
+              <figure className="mt-10">
+                <img
+                  src={IMAGES.partnerles}
+                  alt="Een zwangere vrouw en haar geboortepartner zitten rug aan rug op de grond"
+                  className="w-full object-cover"
+                  style={{ aspectRatio: "4/5" }}
+                  loading="lazy"
+                />
+                <figcaption className="text-[13px] text-foreground/60 leading-[1.8] mt-3">
+                  In de partnerles leert je geboortepartner ademtechnieken, massage en
+                  bevalhoudingen waarmee die jou tijdens de bevalling echt kan ondersteunen.
+                </figcaption>
+              </figure>
             </motion.div>
 
             <motion.div

@@ -35,7 +35,11 @@ export const IMAGES = {
   /** Portret van Marjolein bij het blok "Hoi, ik ben Marjolein" op de
    *  landingspagina. Via /admin is een andere foto in te stellen
    *  (over_mij_foto); zonder die instelling wordt deze getoond. */
-  overMij: img("marjolein-studio.jpg"),
+  overMij: img("marjolein-over-mij.webp"),
+
+  /** Foto bij de partnerles op de reekspagina: een zwangere en haar
+   *  geboortepartner rug aan rug op de grond. */
+  partnerles: img("partnerles.webp"),
 
   /** Logo bovenin de Aanbod-header */
   logo: img("studio-luna-logo.png"),
