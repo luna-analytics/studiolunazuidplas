@@ -41,7 +41,14 @@ const PRAKTISCH = [
       </>
     ),
   },
-  { label: "Aanmelden", waarde: "de groep wordt half september definitief, meld je voor die tijd aan" },
+  {
+    label: "Aanmelden",
+    waarde: (
+      <a href="#aanmelden" className="text-primary border-b border-primary/30 pb-0.5">
+        via het formulier onderaan deze pagina
+      </a>
+    ),
+  },
 ];
 
 const AVOND = [
@@ -287,7 +294,7 @@ export default function Geboortereeks() {
               </p>
             )}
             <p className="text-[15px] text-foreground/80 leading-[1.9] mb-7">
-              Er is plek voor acht zwangeren en de groep wordt half september definitief. Je
+              Er is plek voor acht zwangeren. Je
               kunt meedoen als je bij de start ongeveer tussen de 20 en 28 weken zwanger bent. Meld je
               aan met je naam en e-mailadres; daarna stuur ik je persoonlijk het
               intakeformulier en de factuur per mail, en is je plekje gereserveerd.
