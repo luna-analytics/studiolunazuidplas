@@ -33,8 +33,11 @@ const categorieen = [];
     const van = m.index;
     const tot = i + 1 < treffers.length ? treffers[i + 1].index : zorgkaartBron.length;
     const blok = zorgkaartBron.slice(van, tot);
-    const aanbieders = [...blok.matchAll(/naam: "([^"]+)",\s*\n\s*plaats: "([^"]+)",\s*\n\s*website: "([^"]+)",\s*\n\s*beschrijving: "([^"]+)"/g)]
-      .map(([, naam, plaats, website, beschrijving]) => ({ naam, plaats, website, beschrijving }));
+    const aanbieders = [...blok.matchAll(/naam: "([^"]+)",\s*\n\s*plaats: "([^"]+)",\s*\n\s*website: "([^"]+)",\s*\n\s*beschrijving: "([^"]+)",(?:\s*\n\s*werkgebied: \[([^\]]*)\],)?/g)]
+      .map(([, naam, plaats, website, beschrijving, werkgebied]) => ({
+        naam, plaats, website, beschrijving,
+        werkgebied: werkgebied ? [...werkgebied.matchAll(/"([^"]+)"/g)].map((x) => x[1]) : [],
+      }));
     categorieen.push({ id: m[1], titel: m[2], intro: m[3], aanbieders });
   });
 }
@@ -131,7 +134,11 @@ const voorPlaats = (naam) =>
       titel: c.titel,
       intro: c.intro,
       hier: c.aanbieders.filter((a) => noemtPlaats(a.plaats, naam)),
-      breed: c.aanbieders.filter((a) => !noemtPlaats(a.plaats, naam) && breedWerkgebied(a.plaats)),
+      breed: c.aanbieders.filter(
+        (a) =>
+          !noemtPlaats(a.plaats, naam) &&
+          (breedWerkgebied(a.plaats) || a.werkgebied.some((p) => noemtPlaats(p, naam))),
+      ),
     }))
     .filter((r) => r.hier.length + r.breed.length > 0);
 
@@ -164,8 +171,8 @@ const uniekeAanbieders = [...new Map(categorieen.flatMap((c) => c.aanbieders).ma
 const ROUTES = [
   {
     pad: "",
-    title: "Studio Luna | Zwangerschapsyoga Nieuwerkerk aan den IJssel",
-    beschrijving: "Studio Luna biedt de Geboortereeks, acht wekelijkse lessen zwangerschapsyoga en geboortevoorbereiding in Nieuwerkerk aan den IJssel (Zuidplas), en de zorgkaart met alle geboortezorg in de regio.",
+    title: "Studio Luna | Zwangerschapsyoga in Zuidplas, Nieuwerkerk aan den IJssel",
+    beschrijving: "Studio Luna geeft de Geboortereeks, zwangerschapsyoga en geboortevoorbereiding in Nieuwerkerk aan den IJssel, voor zwangeren uit heel Zuidplas: Zevenhuizen, Moordrecht en Moerkapelle. Plus de Geboortezorgkaart met alle geboortezorg in de regio.",
     jsonLd: [faqJsonLd(homeFaq)],
     // De herofoto vast laten voorladen zodat hij er staat zodra de app rendert.
     preload: "/images/foto-hero.webp",
@@ -177,8 +184,8 @@ const ROUTES = [
   },
   {
     pad: "geboortereeks",
-    title: "De Geboortereeks: zwangerschapscursus Nieuwerkerk aan den IJssel",
-    beschrijving: "Acht wekelijkse lessen zwangerschapsyoga en geboortevoorbereiding in Nieuwerkerk aan den IJssel (Zuidplas), plus mama-en-babyyoga na afloop. Start dinsdag 29 september, maximaal 8 zwangeren, introductieprijs €175.",
+    title: "Zwangerschapscursus in Zuidplas: de Geboortereeks | Studio Luna",
+    beschrijving: "Acht wekelijkse lessen zwangerschapsyoga en geboortevoorbereiding in Nieuwerkerk aan den IJssel, voor zwangeren uit heel Zuidplas: Zevenhuizen, Moordrecht en Moerkapelle. Start dinsdag 29 september, introductieprijs €175.",
     jsonLd: [
       {
         "@context": "https://schema.org",
@@ -290,7 +297,8 @@ for (const plaats of PLAATSEN) {
             r.breed.map((a) => `<h3>${tekstVeilig(a.naam)}</h3><p>${tekstVeilig(a.plaats)}. ${tekstVeilig(a.beschrijving)} <a href="${ontsmet(a.website)}" rel="nofollow">Website</a></p>`).join("")
           : "")
       ).join("") +
-      `<p><a href="/geboortereeks">Zwangerschapsyoga bij Studio Luna</a> in Nieuwerkerk aan den IJssel, ook als je in ${tekstVeilig(plaats.naam)} woont. Terug naar <a href="/geboortezorg-zuidplas">de hele Geboortezorgkaart Zuidplas</a>.</p>`,
+      `<h2>Zwangerschapsyoga in ${tekstVeilig(plaats.naam)}</h2>` +
+      `<p>Studio Luna geeft <a href="/geboortereeks">de Geboortereeks</a> in Nieuwerkerk aan den IJssel: acht wekelijkse lessen zwangerschapsyoga en geboortevoorbereiding in een vaste groep, met daarna mama-en-babyyoga. De groep is er voor zwangeren uit de hele gemeente Zuidplas, dus ook als je in ${tekstVeilig(plaats.naam)} woont. Terug naar <a href="/geboortezorg-zuidplas">de hele Geboortezorgkaart Zuidplas</a>.</p>`,
   });
 }
 

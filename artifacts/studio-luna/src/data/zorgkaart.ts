@@ -42,6 +42,10 @@ export type Zorgverlener = {
   website: string;
   beschrijving: string;
   tags: ZorgTag[];
+  /** Plaatsen in Zuidplas waar deze aanbieder ook voor werkt, terwijl de
+   *  praktijk of lesruimte ergens anders zit. Zo verschijnt de aanbieder ook
+   *  op de pagina van die plaats, onder "Werkt vanuit een breder gebied". */
+  werkgebied?: string[];
   /** Optioneel voordeel dat deze zorgverlener via Studio Luna aanbiedt,
    *  bijvoorbeeld een kortingscode of gratis kennismaking. Eén lopende zin. */
   voordeel?: string;
@@ -271,9 +275,10 @@ export const ZORGKAART: ZorgCategorie[] = [
     aanbieders: [
       {
         naam: "Studio Luna Zuidplas",
-        plaats: "Nieuwerkerk aan den IJssel",
+        plaats: "Nieuwerkerk aan den IJssel, voor de hele gemeente Zuidplas",
         website: "https://www.studiolunazuidplas.nl/geboortereeks",
-        beschrijving: "Zwangerschapsyoga en geboortevoorbereiding in een vaste kleine groep; de Geboortereeks van acht wekelijkse lessen, met mama-en-babyyoga na afloop, start op dinsdag 29 september.",
+        beschrijving: "Zwangerschapsyoga en geboortevoorbereiding in een vaste kleine groep; de Geboortereeks van acht wekelijkse lessen, met mama-en-babyyoga na afloop, start op dinsdag 29 september. De lessen zijn in Nieuwerkerk aan den IJssel en de groep is er voor zwangeren uit Nieuwerkerk, Zevenhuizen, Moordrecht en Moerkapelle.",
+        werkgebied: ["Zevenhuizen", "Moordrecht", "Moerkapelle"],
         tags: ["op-locatie", "groepslessen", "partner-welkom"],
       },
       {
@@ -904,7 +909,10 @@ export function zorgkaartVoorPlaats(plaatsNaam: string): PlaatsCategorie[] {
     categorie,
     hier: categorie.aanbieders.filter((a) => noemtPlaats(a.plaats, plaatsNaam)),
     breed: categorie.aanbieders.filter(
-      (a) => !noemtPlaats(a.plaats, plaatsNaam) && heeftBreedWerkgebied(a.plaats),
+      (a) =>
+        !noemtPlaats(a.plaats, plaatsNaam) &&
+        (heeftBreedWerkgebied(a.plaats) ||
+          (a.werkgebied ?? []).some((p) => noemtPlaats(p, plaatsNaam))),
     ),
   })).filter((r) => r.hier.length + r.breed.length > 0);
 }

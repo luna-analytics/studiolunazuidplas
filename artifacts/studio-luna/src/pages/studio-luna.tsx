@@ -71,8 +71,8 @@ export default function StudioLuna() {
   const [reviewsConfig, setReviewsConfig] = useState<ReviewsConfig | null>(null);
 
   usePageMeta({
-    title: "Studio Luna | Zwangerschapsyoga Nieuwerkerk aan den IJssel",
-    description: "Studio Luna biedt de Geboortereeks, acht wekelijkse lessen zwangerschapsyoga en geboortevoorbereiding in Nieuwerkerk aan den IJssel (Zuidplas), en de zorgkaart met alle geboortezorg in de regio.",
+    title: "Studio Luna | Zwangerschapsyoga in Zuidplas, Nieuwerkerk aan den IJssel",
+    description: "Studio Luna geeft de Geboortereeks, zwangerschapsyoga en geboortevoorbereiding in Nieuwerkerk aan den IJssel, voor zwangeren uit heel Zuidplas: Zevenhuizen, Moordrecht en Moerkapelle. Plus de Geboortezorgkaart met alle geboortezorg in de regio.",
   });
 
   useEffect(() => {

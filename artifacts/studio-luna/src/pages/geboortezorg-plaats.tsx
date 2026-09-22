@@ -104,12 +104,13 @@ export default function GeboortezorgPlaats() {
 
         <section className="px-7 md:px-14 lg:px-18 py-12 border-t border-border/15">
           <h2 className="font-display text-2xl md:text-3xl font-medium text-foreground leading-[1.2]">
-            Ook zwangerschapsyoga in de buurt
+            Zwangerschapsyoga in {plaats.korteNaam}
           </h2>
           <p className="text-[15px] text-foreground/75 leading-[1.9] mt-4 max-w-2xl">
             Studio Luna geeft de Geboortereeks in Nieuwerkerk aan den IJssel: acht wekelijkse lessen
             zwangerschapsyoga en geboortevoorbereiding in een vaste groep, met daarna
-            mama-en-babyyoga. Ook als je in {plaats.naam} woont ben je welkom.
+            mama-en-babyyoga. De groep is er voor zwangeren uit de hele gemeente Zuidplas, dus ook
+            als je in {plaats.naam} woont.
           </p>
           <Link href="/geboortereeks" className="inline-block mt-5 text-sm font-semibold text-primary border-b border-primary/30 pb-0.5">
             Bekijk de Geboortereeks

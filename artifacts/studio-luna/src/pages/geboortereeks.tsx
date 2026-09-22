@@ -138,8 +138,8 @@ export default function Geboortereeks() {
   };
 
   usePageMeta({
-    title: "De Geboortereeks: zwangerschapscursus Nieuwerkerk aan den IJssel",
-    description: "Acht wekelijkse lessen zwangerschapsyoga en geboortevoorbereiding in Nieuwerkerk aan den IJssel (Zuidplas), plus mama-en-babyyoga na afloop. Start dinsdag 29 september, maximaal 8 zwangeren, introductieprijs €175.",
+    title: "Zwangerschapscursus in Zuidplas: de Geboortereeks | Studio Luna",
+    description: "Acht wekelijkse lessen zwangerschapsyoga en geboortevoorbereiding in Nieuwerkerk aan den IJssel, voor zwangeren uit heel Zuidplas: Zevenhuizen, Moordrecht en Moerkapelle. Start dinsdag 29 september, introductieprijs €175.",
     jsonLd: [
       {
         "@context": "https://schema.org",
