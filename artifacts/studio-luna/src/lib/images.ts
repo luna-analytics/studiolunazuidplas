@@ -22,8 +22,7 @@ export const IMAGES = {
    *  (public/images/foto-hero.webp), anders flitst kort de oude foto. */
   hero: img("foto-hero.webp"),
 
-  /** Foto bovenaan de reekspagina. Via /admin in te stellen (foto_yoga);
-   *  zonder die instelling wordt deze getoond. */
+  /** Brede band bovenaan de reekspagina: de open hand in kleermakerszit. */
   yoga: img("reeks-yoga.webp"),
 
   /** Foto bij "Hoe een dinsdagavond eruitziet" op de reekspagina: staande
@@ -31,7 +30,7 @@ export const IMAGES = {
   staand: img("reeks-staand.webp"),
 
   /** Foto naast de kop van de Zorgkaart (staande uitsnede): een zwangere met
-   *  een hand op het hart, uit de shoot van 4 september. */
+   *  de handen op de buik, uit de shoot van 4 september. */
   zorgkaart: img("zorgkaart-hero.webp"),
 
   /** Kleinere tweede foto op de zorgkaart, bij "Waar woon je?", in een andere
