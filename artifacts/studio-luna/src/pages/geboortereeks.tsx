@@ -197,12 +197,13 @@ export default function Geboortereeks() {
           </p>
         </motion.div>
 
-        <img
-          src={IMAGES.yoga}
-          alt="Zwangerschapsyoga bij Studio Luna in Nieuwerkerk aan den IJssel"
-          className="block w-full object-cover mt-2"
-          style={{ height: "clamp(180px, 26vw, 340px)", objectPosition: "center 35%" }}
-        />
+        <div className="px-7 md:px-14 lg:px-18 pb-2">
+          <img
+            src={IMAGES.yoga}
+            alt="Zwangerschapsyoga bij Studio Luna in Nieuwerkerk aan den IJssel"
+            className="block w-full max-w-[320px]"
+          />
+        </div>
 
         {/* ── INTRO ── */}
         <section className="relative px-7 md:px-14 lg:px-18 py-12 md:py-16">
