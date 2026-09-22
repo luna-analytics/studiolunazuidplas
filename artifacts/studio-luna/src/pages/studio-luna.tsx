@@ -136,7 +136,7 @@ export default function StudioLuna() {
         src={IMAGES.hero}
         alt="Zwangerschapsyoga Studio Luna"
         className="block w-full object-cover rounded-none"
-        style={{ height: "clamp(220px, 32vw, 420px)", objectPosition: "center" }}
+        style={{ height: "clamp(220px, 32vw, 420px)", objectPosition: "center top" }}
       />
 
       <div className="w-full max-w-7xl mx-auto relative overflow-x-hidden">
