@@ -18,6 +18,9 @@ export function SeoFooter() {
           info@studiolunazuidplas.nl
         </a>
       </p>
+      <p className="text-xs mt-1 text-foreground/60">
+        Studio Luna Zuidplas · KvK 99747529
+      </p>
     </footer>
   );
 }
