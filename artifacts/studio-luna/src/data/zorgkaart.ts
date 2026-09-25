@@ -363,7 +363,7 @@ export const ZORGKAART: ZorgCategorie[] = [
         naam: "Fysiotherapie De Rozenburcht",
         plaats: "Capelle aan den IJssel",
         website: "https://www.fysiotherapiederozenburcht.nl/",
-        beschrijving: "Fysiotherapiepraktijk in Capelle aan den IJssel met een gespecialiseerde bekkenfysiotherapeut die onder meer bekkeninstabiliteit tijdens de zwangerschap behandelt.",
+        beschrijving: "Fysiotherapiepraktijk in Capelle aan den IJssel met een gespecialiseerde bekkenfysiotherapeut die onder meer bekkenpijn tijdens de zwangerschap behandelt.",
         tags: ["op-locatie"],
       },
     ],
