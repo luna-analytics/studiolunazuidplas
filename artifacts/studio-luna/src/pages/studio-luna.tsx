@@ -101,7 +101,9 @@ export default function StudioLuna() {
       {/* ── HERO — kop op de lichte achtergrond, daaronder de foto van rand tot rand ── */}
       <div className="w-full max-w-7xl mx-auto">
         <div className="px-7 md:px-14 lg:px-18 pt-12 pb-10 md:pt-20 md:pb-14">
-          <div className="md:max-w-2xl">
+          {/* Breder dan een tekstkolom: op een groot scherm hoort de kop de ruimte
+              te vullen in plaats van links in een hoek te blijven hangen. */}
+          <div className="md:max-w-3xl lg:max-w-4xl">
             {/* Kleiner op smalle schermen: "geboortevoorbereiding" is te breed
                 voor 390 pixels en viel anders buiten beeld. */}
             <h1
@@ -146,32 +148,35 @@ export default function StudioLuna() {
           <motion.div
             variants={fadeUp} initial="hidden" whileInView="show"
             viewport={{ once: true, margin: "-40px" }} custom={0}
+            className="md:grid md:grid-cols-[1fr_1.5fr] md:gap-14 lg:gap-20 md:items-start"
           >
-            <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground leading-[1.15] mb-6">
+            <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground leading-[1.15] mb-6 md:mb-0">
               De Geboortereeks start <em className="not-italic text-primary">29 september</em>
             </h2>
-            <p className="text-[15px] text-foreground/80 leading-[1.95] max-w-2xl mb-8">
-              Acht weken zwangerschapsyoga en geboortevoorbereiding in een vaste groep,
-              inclusief een partnerles. Een aantal weken na de laatste bevalling is er de
-              ruimte om samen te komen voor het uitwisselen van verhalen en mama-en-babyyoga;
-              deze postpartumles is inbegrepen in de reeks.
-            </p>
-            <p className="text-[15px] text-foreground/80 leading-[1.9] mb-8">
-              De reeks kost €175 als introductieprijs voor deze eerste groep, daarna €195.
-              Veel zorgverzekeraars vergoeden een zwangerschapscursus geheel of gedeeltelijk
-              vanuit de aanvullende verzekering.
-            </p>
-            <button
-              onClick={() => navigate("/geboortereeks")}
-              className="inline-flex items-center bg-primary text-primary-foreground px-7 py-3.5 rounded-[6px] font-semibold text-sm hover:bg-primary/88"
-            >
-              Lees alles en meld je aan
-            </button>
+            <div>
+              <p className="text-[15px] text-foreground/80 leading-[1.95] mb-8">
+                Acht weken zwangerschapsyoga en geboortevoorbereiding in een vaste groep,
+                inclusief een partnerles. Een aantal weken na de laatste bevalling is er de
+                ruimte om samen te komen voor het uitwisselen van verhalen en mama-en-babyyoga;
+                deze postpartumles is inbegrepen in de reeks.
+              </p>
+              <p className="text-[15px] text-foreground/80 leading-[1.9] mb-8">
+                De reeks kost €175 als introductieprijs voor deze eerste groep, daarna €195.
+                Veel zorgverzekeraars vergoeden een zwangerschapscursus geheel of gedeeltelijk
+                vanuit de aanvullende verzekering.
+              </p>
+              <button
+                onClick={() => navigate("/geboortereeks")}
+                className="inline-flex items-center bg-primary text-primary-foreground px-7 py-3.5 rounded-[6px] font-semibold text-sm hover:bg-primary/88"
+              >
+                Lees alles en meld je aan
+              </button>
+            </div>
           </motion.div>
         </section>
 
         {/* ── MISSIE — editorial: label + grote heading + asymmetrisch ── */}
-        <section className="relative px-7 md:px-14 lg:px-18 py-24 md:py-32">
+        <section className="relative px-7 md:px-14 lg:px-18 py-20 md:py-24">
 
           <div className="relative">
             <motion.div
@@ -220,60 +225,63 @@ export default function StudioLuna() {
           </div>
         </section>
 
-        {/* ── WAT BIEDT STUDIO LUNA — geen kaart, vrij zwevend ── */}
+        {/* ── WAT BIEDT STUDIO LUNA — geen kaart, vrij zwevend. Kop links, lijst rechts,
+             zodat de breedte gevuld wordt in plaats van dat er rechts een gat valt. ── */}
         <section className="px-7 md:px-14 lg:px-18 py-16 md:py-24">
-          <motion.div
-            variants={fadeUp} initial="hidden" whileInView="show"
-            viewport={{ once: true, margin: "-80px" }} custom={0}
-          >
-            <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground mb-14 leading-[1.15]">
-              {teksten.home_aanbod_heading.split("\n").map((line, i, arr) => (
-                <span key={i}>{line}{i < arr.length - 1 && <br className="hidden md:block" />}</span>
+          <div className="md:grid md:grid-cols-[1fr_1.5fr] md:gap-14 lg:gap-20 md:items-start">
+            <motion.div
+              variants={fadeUp} initial="hidden" whileInView="show"
+              viewport={{ once: true, margin: "-80px" }} custom={0}
+            >
+              <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground mb-10 md:mb-0 leading-[1.15]">
+                {teksten.home_aanbod_heading.split("\n").map((line, i, arr) => (
+                  <span key={i}>{line}{i < arr.length - 1 && <br className="hidden md:block" />}</span>
+                ))}
+              </h2>
+            </motion.div>
+
+            <div className="border-t border-border/15">
+              {teksten.home_aanbod_items.split("\n").filter(Boolean).map((tekst, i) => (
+                <motion.div
+                  key={i}
+                  variants={fadeUp} initial="hidden" whileInView="show"
+                  viewport={{ once: true, margin: "-60px" }} custom={i * 0.07}
+                  className="py-5 border-b border-border/15"
+                >
+                  <p className="text-[15px] text-foreground/80 leading-[1.9]">{tekst}</p>
+                </motion.div>
               ))}
-            </h2>
-          </motion.div>
 
-          <div className="max-w-2xl border-t border-border/15">
-            {teksten.home_aanbod_items.split("\n").filter(Boolean).map((tekst, i) => (
+              {/* De twee snelle links hoorden bij deze lijst, maar stonden als losse
+                  sectie tussen twee blokken in met wit eromheen. Ze staan nu direct
+                  onder de lijst waar ze naar verwijzen. */}
               <motion.div
-                key={i}
                 variants={fadeUp} initial="hidden" whileInView="show"
-                viewport={{ once: true, margin: "-60px" }} custom={i * 0.07}
-                className="py-5 border-b border-border/15"
+                viewport={{ once: true, margin: "-40px" }} custom={0}
+                className="flex flex-wrap gap-x-7 gap-y-3 pt-8"
               >
-                <p className="text-[15px] text-foreground/80 leading-[1.9]">{tekst}</p>
+                <button
+                  onClick={() => navigate("/geboortereeks")}
+                  className="inline-flex items-center gap-2 text-primary/80 hover:text-primary text-sm font-semibold border-b border-primary/30 pb-0.5 transition-colors"
+                >
+                  De Geboortereeks
+                </button>
+                <button
+                  onClick={() => navigate("/geboortezorg-zuidplas")}
+                  className="inline-flex items-center gap-2 text-primary/80 hover:text-primary text-sm font-semibold border-b border-primary/30 pb-0.5 transition-colors"
+                >
+                  De zorgkaart
+                </button>
               </motion.div>
-            ))}
+            </div>
           </div>
-        </section>
-
-        {/* ── SNELLE LINKS — interne navigatie naar rooster / tarieven / aanbod ── */}
-        <section className="px-7 md:px-14 lg:px-18 py-6 md:py-10">
-          <motion.div
-            variants={fadeUp} initial="hidden" whileInView="show"
-            viewport={{ once: true, margin: "-40px" }} custom={0}
-            className="flex flex-wrap gap-3"
-          >
-            <button
-              onClick={() => navigate("/geboortereeks")}
-              className="inline-flex items-center gap-2 text-primary/80 hover:text-primary text-sm font-semibold border-b border-primary/30 pb-0.5 transition-colors"
-            >
-              De Geboortereeks
-            </button>
-            <button
-              onClick={() => navigate("/geboortezorg-zuidplas")}
-              className="inline-flex items-center gap-2 text-primary/80 hover:text-primary text-sm font-semibold border-b border-primary/30 pb-0.5 transition-colors"
-            >
-              De zorgkaart
-            </button>
-          </motion.div>
         </section>
 
         {/* ── OVER MIJ — kort blok met gezicht en link naar het volledige verhaal.
              Krijgt bewust meer lucht dan de blokken eromheen: ongelijke witruimte
              geeft de pagina ritme. ── */}
-        <section className="px-7 md:px-14 lg:px-18 py-20 md:py-32">
-          <div className="md:grid md:grid-cols-[20rem_1fr] md:gap-14 md:items-center">
+        <section className="px-7 md:px-14 lg:px-18 py-16 md:py-24">
+          <div className="md:grid md:grid-cols-[24rem_1fr] md:gap-14 lg:gap-20 md:items-center">
             <motion.div
               variants={fadeUp} initial="hidden" whileInView="show"
               viewport={{ once: true, margin: "-60px" }} custom={0}
@@ -281,7 +289,7 @@ export default function StudioLuna() {
               <img
                 src={IMAGES.overMij}
                 alt="Marjolein, oprichter van Studio Luna"
-                className="w-full max-w-[20rem] aspect-[2/3] object-cover mb-8 md:mb-0"
+                className="w-full max-w-[24rem] aspect-[2/3] object-cover mb-8 md:mb-0"
                 loading="lazy"
               />
             </motion.div>
@@ -314,22 +322,24 @@ export default function StudioLuna() {
       {reviewsConfig && (reviewsConfig.visible || user?.isAdmin) && reviewsConfig.items.length > 0 && (
       <div className="w-full bg-muted">
         <div className="w-full max-w-7xl mx-auto">
-          <section className="px-7 md:px-14 lg:px-18 py-20 md:py-28">
+          <section className="px-7 md:px-14 lg:px-18 py-16 md:py-24">
             {!reviewsConfig.visible && user?.isAdmin && (
               <p className="text-xs text-center text-amber-700/80 bg-amber-50 border border-amber-200 rounded-2xl px-4 py-2 mb-8">
                 Reviews staan uit — alleen zichtbaar voor jou als admin
               </p>
             )}
+            <div className="md:grid md:grid-cols-[1fr_1.5fr] md:gap-14 lg:gap-20 md:items-start">
             <motion.div
               variants={fadeUp} initial="hidden" whileInView="show"
               viewport={{ once: true, margin: "-60px" }} custom={0}
-              className="mb-12"
+              className="mb-10 md:mb-0"
             >
               <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground leading-[1.15]">
                 Wat vrouwen zeggen
               </h2>
             </motion.div>
-            <div className="max-w-2xl border-t border-border/15">
+            <div>
+            <div className="border-t border-border/15">
               {reviewsConfig.items.map((review, i) => (
                 <motion.div
                   key={review.id}
@@ -361,6 +371,8 @@ export default function StudioLuna() {
               </a>
               , daar maak je mij en andere mama's heel blij mee.
             </p>
+            </div>
+            </div>
           </section>
         </div>
       </div>
@@ -371,10 +383,11 @@ export default function StudioLuna() {
         {/* ── FAQ — veelgestelde vragen. Staat dicht op de zandbaan erboven,
              zodat niet elk blok evenveel ruimte krijgt. ── */}
         <section className="px-7 md:px-14 lg:px-18 py-14 md:py-20">
+          <div className="md:grid md:grid-cols-[1fr_1.5fr] md:gap-14 lg:gap-20 md:items-start">
           <motion.div
             variants={fadeUp} initial="hidden" whileInView="show"
             viewport={{ once: true, margin: "-60px" }} custom={0}
-            className="mb-10"
+            className="mb-8 md:mb-0"
           >
             <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground leading-[1.15]">
               Goed om te weten
@@ -383,7 +396,6 @@ export default function StudioLuna() {
           <motion.div
             variants={fadeUp} initial="hidden" whileInView="show"
             viewport={{ once: true, margin: "-60px" }} custom={0.1}
-            className="md:max-w-2xl"
           >
             <Accordion type="single" collapsible className="w-full">
               {FAQ_ITEMS.map((item, i) => (
@@ -404,23 +416,12 @@ export default function StudioLuna() {
               Bekijk de Geboortereeks
             </button>
           </motion.div>
+          </div>
         </section>
 
-      </div>
-
-      {/* ── BEELDBAND — een brede foto van rand tot rand breekt het wit in de onderste
-           helft van de pagina. Lager dan de herofoto, zodat het een adempauze blijft
-           en geen tweede opening wordt. Een andere foto kiezen? Pas het pad aan in
-           src/lib/images.ts. ── */}
-      <img
-        src={IMAGES.yoga}
-        alt="Zwangerschapsyoga bij Studio Luna in Nieuwerkerk aan den IJssel"
-        className="block w-full object-cover"
-        style={{ height: "clamp(180px, 24vw, 320px)", objectPosition: "center 40%" }}
-        loading="lazy"
-      />
-
-      <div className="w-full max-w-7xl mx-auto relative overflow-x-hidden">
+        {/* Hier stond een brede fotoband. Die is eruit gehaald: op één na zijn alle
+            foto's staand, en in een brede strook zie je daar alleen een reepje van.
+            Komt er een liggende foto uit een volgende shoot, dan kan de band terug. */}
 
         {/* ── ZORGKAART TEASER ── */}
         <section className="px-7 md:px-14 lg:px-18 py-16 md:py-24">
@@ -451,7 +452,7 @@ export default function StudioLuna() {
         </section>
 
         {/* ── LOCATIE & CONTACT — plain tekst, geen kaarten ── */}
-        <section className="relative px-7 md:px-14 lg:px-18 py-20 md:py-28 mb-4">
+        <section className="relative px-7 md:px-14 lg:px-18 py-16 md:py-24 mb-4">
 
           <div className="relative md:grid md:grid-cols-2 md:gap-24">
 
