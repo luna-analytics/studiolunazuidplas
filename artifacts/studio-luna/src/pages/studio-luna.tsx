@@ -269,8 +269,10 @@ export default function StudioLuna() {
           </motion.div>
         </section>
 
-        {/* ── OVER MIJ — kort blok met gezicht en link naar het volledige verhaal ── */}
-        <section className="px-7 md:px-14 lg:px-18 py-16 md:py-24">
+        {/* ── OVER MIJ — kort blok met gezicht en link naar het volledige verhaal.
+             Krijgt bewust meer lucht dan de blokken eromheen: ongelijke witruimte
+             geeft de pagina ritme. ── */}
+        <section className="px-7 md:px-14 lg:px-18 py-20 md:py-32">
           <div className="md:grid md:grid-cols-[20rem_1fr] md:gap-14 md:items-center">
             <motion.div
               variants={fadeUp} initial="hidden" whileInView="show"
@@ -287,7 +289,7 @@ export default function StudioLuna() {
               variants={fadeUp} initial="hidden" whileInView="show"
               viewport={{ once: true, margin: "-60px" }} custom={0.1}
             >
-              <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground mb-5 leading-[1.15]">
+              <h2 className="font-display text-4xl md:text-5xl font-medium text-foreground mb-6 leading-[1.1]">
                 Hoi, ik ben Marjolein.
               </h2>
               <p className="text-[15px] text-foreground/80 leading-[1.9] md:max-w-xl">
@@ -304,9 +306,15 @@ export default function StudioLuna() {
           </div>
         </section>
 
-        {/* ── REVIEWS — zichtbaar als admin ze heeft aangezet (of admin bekijkt pagina) ── */}
-        {reviewsConfig && (reviewsConfig.visible || user?.isAdmin) && reviewsConfig.items.length > 0 && (
-          <section className="px-7 md:px-14 lg:px-18 py-16 md:py-24">
+      </div>
+
+      {/* ── REVIEWS — op een zandkleurige baan van rand tot rand. Halverwege de pagina
+           een rustpunt, en bewust geen gekleurd kaartje in het midden.
+           Zichtbaar als admin ze heeft aangezet (of admin bekijkt de pagina). ── */}
+      {reviewsConfig && (reviewsConfig.visible || user?.isAdmin) && reviewsConfig.items.length > 0 && (
+      <div className="w-full bg-muted">
+        <div className="w-full max-w-7xl mx-auto">
+          <section className="px-7 md:px-14 lg:px-18 py-20 md:py-28">
             {!reviewsConfig.visible && user?.isAdmin && (
               <p className="text-xs text-center text-amber-700/80 bg-amber-50 border border-amber-200 rounded-2xl px-4 py-2 mb-8">
                 Reviews staan uit — alleen zichtbaar voor jou als admin
@@ -354,10 +362,15 @@ export default function StudioLuna() {
               , daar maak je mij en andere mama's heel blij mee.
             </p>
           </section>
-        )}
+        </div>
+      </div>
+      )}
 
-        {/* ── FAQ — veelgestelde vragen ── */}
-        <section className="px-7 md:px-14 lg:px-18 py-16 md:py-24">
+      <div className="w-full max-w-7xl mx-auto relative overflow-x-hidden">
+
+        {/* ── FAQ — veelgestelde vragen. Staat dicht op de zandbaan erboven,
+             zodat niet elk blok evenveel ruimte krijgt. ── */}
+        <section className="px-7 md:px-14 lg:px-18 py-14 md:py-20">
           <motion.div
             variants={fadeUp} initial="hidden" whileInView="show"
             viewport={{ once: true, margin: "-60px" }} custom={0}
@@ -393,8 +406,24 @@ export default function StudioLuna() {
           </motion.div>
         </section>
 
+      </div>
+
+      {/* ── BEELDBAND — een brede foto van rand tot rand breekt het wit in de onderste
+           helft van de pagina. Lager dan de herofoto, zodat het een adempauze blijft
+           en geen tweede opening wordt. Een andere foto kiezen? Pas het pad aan in
+           src/lib/images.ts. ── */}
+      <img
+        src={IMAGES.yoga}
+        alt="Zwangerschapsyoga bij Studio Luna in Nieuwerkerk aan den IJssel"
+        className="block w-full object-cover"
+        style={{ height: "clamp(180px, 24vw, 320px)", objectPosition: "center 40%" }}
+        loading="lazy"
+      />
+
+      <div className="w-full max-w-7xl mx-auto relative overflow-x-hidden">
+
         {/* ── ZORGKAART TEASER ── */}
-        <section className="px-7 md:px-14 lg:px-18 py-12 md:py-16">
+        <section className="px-7 md:px-14 lg:px-18 py-16 md:py-24">
           <motion.div
             variants={fadeUp} initial="hidden" whileInView="show"
             viewport={{ once: true, margin: "-60px" }} custom={0}
@@ -478,10 +507,21 @@ export default function StudioLuna() {
           </div>
         </section>
 
-        <CtaBlock ctaUrl={teksten.cta_url} ctaLabel={teksten.cta_label} />
-        <SeoFooter />
-        <BottomNav />
       </div>
+
+      {/* ── SLOT — de tweede zandbaan sluit de pagina af, zodat de laatste vraag
+           niet in het wit wegzakt. Twee banen per pagina is het maximum, en ze
+           staan nooit naast elkaar. ── */}
+      <div className="w-full bg-muted">
+        <div className="w-full max-w-7xl mx-auto">
+          <CtaBlock ctaUrl={teksten.cta_url} ctaLabel={teksten.cta_label} opBand />
+        </div>
+      </div>
+
+      <div className="w-full max-w-7xl mx-auto">
+        <SeoFooter />
+      </div>
+      <BottomNav />
     </div>
   );
 }
