@@ -230,8 +230,8 @@ export default function Geboortezorg() {
   const aantalGevonden = gefilterd.reduce((n, c) => n + c.aanbieders.length, 0);
 
   return (
-    <div className="min-h-screen bg-background pb-28 md:pb-16 md:pt-16 flex justify-center">
-      <div className="w-full max-w-7xl bg-background min-h-screen relative overflow-x-hidden">
+    <div className="min-h-screen bg-background pb-28 md:pb-16 md:pt-16">
+      <div className="w-full max-w-7xl mx-auto relative overflow-x-hidden">
 
         {/* ── TITEL EN INTRO — typografisch, met de herofoto in een zachte
                organische uitsnede ernaast in plaats van een gekleurd vlak.
@@ -283,8 +283,26 @@ export default function Geboortezorg() {
           </div>
         </div>
 
+      </div>
+
+      {/* ── DE KAART — op een zandkleurige baan van rand tot rand. Dit is het hart van
+           de pagina, en dan hoort het er niet uit te zien als een lijstje kleine letters
+           tussen twee alinea's. De baan, de eigen kop en de grotere regels doen dat werk. ── */}
+      <div className="w-full bg-muted mt-6">
+        <div className="w-full max-w-7xl mx-auto relative overflow-x-hidden">
+
+        <div className="px-7 md:px-14 lg:px-18 pt-12 md:pt-16 pb-2">
+          <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground leading-[1.15]">
+            Alle geboortezorg op een rij
+          </h2>
+          <p className="text-[15px] text-foreground/75 leading-[1.9] mt-3 max-w-2xl">
+            Kies waar je naar op zoek bent, dan zie je wie er in de regio werkt. Achter elke
+            soort zorg staat hoeveel aanbieders er nu op de kaart staan.
+          </p>
+        </div>
+
         {/* ── ZOEKEN ── */}
-        <div className="px-7 md:px-14 lg:px-18 pb-2">
+        <div className="px-7 md:px-14 lg:px-18 pt-7 pb-2">
           <div className="max-w-xl">
             <label htmlFor="zorg-zoek" className={labelKlasse}>Zoek op zorg, naam of plaats</label>
             <input
@@ -293,7 +311,9 @@ export default function Geboortezorg() {
               value={zoek}
               onChange={(e) => setZoek(e.target.value)}
               placeholder="bijv. bekkenfysiotherapie, kraamzorg of Nieuwerkerk"
-              className={veldKlasse}
+              /* Op de zandbaan zou het veld in de achtergrond wegvallen, dus krijgt het
+                 hier de lichte paginakleur in plaats van de kaartkleur. */
+              className="w-full px-4 py-3 rounded-md border border-border/50 bg-background text-[15px] text-foreground placeholder:text-foreground/50"
             />
 
             {filterActief && (
@@ -318,23 +338,23 @@ export default function Geboortezorg() {
           {!filterActief && (
             /* Op brede schermen vullen de fasegroepen twee kolommen, zodat de
                gids de pagina vult in plaats van in één smalle strook te hangen. */
-            <div className="max-w-4xl md:columns-2 md:gap-x-16">
+            <div className="md:columns-2 md:gap-x-20 lg:gap-x-28">
               {fasen.map((fase) => (
-                <section key={fase.titel} className="break-inside-avoid mb-10">
-                  <h2 className="font-display text-xl md:text-2xl font-medium text-foreground leading-[1.2] pb-3 border-b border-border/25">
+                <section key={fase.titel} className="break-inside-avoid mb-12">
+                  <h3 className="font-display text-2xl md:text-[1.7rem] font-medium text-foreground leading-[1.2] pb-3 border-b border-border/45">
                     {fase.titel}
-                  </h2>
+                  </h3>
                   <ul className="m-0 p-0 list-none">
                     {fase.categorieen.map((cat) => (
-                      <li key={cat.id} className="border-b border-border/10">
+                      <li key={cat.id} className="border-b border-border/25">
                         <Link
                           href={`/geboortezorg-zuidplas/${cat.id}`}
-                          className="group flex items-baseline justify-between gap-4 py-3.5"
+                          className="group flex items-baseline justify-between gap-4 py-4"
                         >
-                          <span className="text-[15px] font-medium text-foreground group-hover:text-primary transition-colors leading-snug">
+                          <span className="text-[17px] font-medium text-foreground group-hover:text-primary transition-colors leading-snug">
                             {cat.titel}
                           </span>
-                          <span className="text-sm text-foreground/55 tabular-nums shrink-0">
+                          <span className="text-[15px] text-foreground/65 tabular-nums shrink-0">
                             {cat.aanbieders.length}
                           </span>
                         </Link>
@@ -458,6 +478,11 @@ export default function Geboortezorg() {
             </div>
           </div>
         </div>
+
+        </div>
+      </div>
+
+      <div className="w-full max-w-7xl mx-auto relative overflow-x-hidden">
 
         {/* ── VOOR ZORGVERLENERS — bewust klein, de kaart is er voor zwangeren ── */}
         <section id="voor-zorgverleners" className="px-7 md:px-14 lg:px-18 py-10 md:py-12 scroll-mt-24">
