@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Link, useLocation, useParams } from "wouter";
 import { BottomNav } from "@/components/bottom-nav";
 import { SeoFooter } from "@/components/seo-footer";
-import { ZORGKAART, LAATST_BIJGEWERKT, isNieuw } from "@/data/zorgkaart";
+import { ZORGKAART, LAATST_BIJGEWERKT, isNieuw, verwanteCategorieen } from "@/data/zorgkaart";
 import { OPENINGSZINNEN } from "@/data/zorgkaart-openingszinnen";
 import { usePageMeta } from "@/lib/seo";
 
@@ -44,6 +44,7 @@ export default function GeboortezorgCategorie() {
 
   const aanbieders = cat.aanbieders;
   const opening = OPENINGSZINNEN[cat.id];
+  const verwant = verwanteCategorieen(cat.id);
 
   return (
     <div className="min-h-screen bg-background pb-28 md:pb-16 md:pt-16 flex justify-center">
@@ -73,17 +74,24 @@ export default function GeboortezorgCategorie() {
         {/* De lijst */}
         <div className="px-7 md:px-14 lg:px-18 pb-10">
           <div className="max-w-3xl">
+            {aanbieders.length > 0 && (
+              <h2 className="font-display text-xl md:text-2xl font-medium text-foreground leading-[1.2] pb-3 border-b border-border/40">
+                {aanbieders.length === 1
+                  ? "Eén aanbieder in deze categorie"
+                  : `${aanbieders.length} aanbieders in deze categorie`}
+              </h2>
+            )}
             {aanbieders.map((a, i) => (
               <div key={a.naam} className={`py-6 ${i < aanbieders.length - 1 ? "border-b border-border/15" : ""}`}>
                 <div className="flex flex-wrap items-baseline gap-x-3">
-                  <h2 className="text-[16px] font-semibold leading-snug m-0" style={{ fontFamily: "inherit" }}>
+                  <h3 className="text-[16px] font-semibold leading-snug m-0" style={{ fontFamily: "inherit" }}>
                     <a
                       href={a.website} target="_blank" rel="noopener noreferrer"
                       className="text-foreground hover:text-primary transition-colors"
                     >
                       {a.naam}
                     </a>
-                  </h2>
+                  </h3>
                   <span className="text-sm text-foreground/70">{a.plaats}</span>
                   {isNieuw(a.toegevoegd) && (
                     <span className="text-[11px] uppercase tracking-[0.18em] text-primary/70">
@@ -106,14 +114,50 @@ export default function GeboortezorgCategorie() {
               </div>
             ))}
 
+            {verwant.categorieen.length > 0 && (
+              <section className="mt-10 border-t border-border/35 pt-7">
+                <h2 className="font-display text-xl md:text-2xl font-medium text-foreground leading-[1.2]">
+                  {/* "Ook interessant tijdens je zwangerschap", maar bij een groep die
+                      geen fase is blijft het gewoon "Ook interessant". */}
+                  {["Tijdens je zwangerschap", "Rond de geboorte", "Na de geboorte", "Voor elke fase"].includes(verwant.fase)
+                    ? `Ook interessant ${verwant.fase.toLowerCase()}`
+                    : "Ook interessant"}
+                </h2>
+                <ul className="m-0 p-0 list-none mt-2">
+                  {verwant.categorieen.map((c) => (
+                    <li key={c.id} className="border-b border-border/25">
+                      <Link
+                        href={`/geboortezorg-zuidplas/${c.id}`}
+                        className="group flex items-baseline justify-between gap-4 py-3.5"
+                      >
+                        <span className="text-[16px] font-medium text-foreground group-hover:text-primary transition-colors leading-snug">
+                          {c.titel}
+                        </span>
+                        <span className="text-[15px] text-foreground/65 tabular-nums shrink-0">
+                          {c.aanbieders.length}
+                        </span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+                <Link
+                  href="/geboortezorg-zuidplas"
+                  className="inline-block mt-5 text-sm font-semibold text-primary hover:text-primary/75"
+                >
+                  Bekijk alle geboortezorg in Zuidplas
+                </Link>
+              </section>
+            )}
+
             <p className="text-sm text-foreground/60 leading-[1.85] mt-8">
               Klopt er iets niet of mis je iemand? Geef het door via{" "}
               <Link href="/geboortezorg-zuidplas" className="text-primary font-semibold hover:text-primary/75">
                 de zorgkaart
               </Link>
-              . Ben je zelf zorgverlener in de regio? Vermelding is gratis;{" "}
+              . Werk je zelf in de geboortezorg in Zuidplas en sta je er nog niet bij? Je kunt je
+              gratis{" "}
               <Link href="/geboortezorg-zuidplas#voor-zorgverleners" className="text-primary font-semibold hover:text-primary/75">
-                meld je aan via het formulier op de zorgkaart
+                aanmelden via het formulier op de zorgkaart
               </Link>
               .
             </p>

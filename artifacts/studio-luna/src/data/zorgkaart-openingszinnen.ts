@@ -173,7 +173,7 @@ export const OPENINGSZINNEN: Record<string, Openingszin> = {
     ],
   },
   "mentale-steun": {
-    zin: "Voor mentale steun rond je zwangerschap of bevalling noemt de Geboortezorgkaart Zuidplas {aantal} hulpverleners, in Gouda, in Rotterdam vlak bij Capelle aan den IJssel, en een die afspreekt op een plek naar keuze in de regio.",
+    zin: "Voor mentale steun tijdens je zwangerschap of na je bevalling noemt de Geboortezorgkaart Zuidplas {aantal} hulpverleners, in Gouda, in Rotterdam vlak bij Capelle aan den IJssel, en een die afspreekt op een plek naar keuze in de regio.",
     faq: [],
     gecontroleerdMet: [
       "Bureau Visser (Jantine Visser)",

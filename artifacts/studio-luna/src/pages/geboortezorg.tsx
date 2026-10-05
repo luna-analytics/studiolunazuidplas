@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { Link } from "wouter";
 import { BottomNav } from "@/components/bottom-nav";
 import { SeoFooter } from "@/components/seo-footer";
-import { ZORGKAART, TAG_LABELS, LAATST_BIJGEWERKT, PLAATSEN, isNieuw, type ZorgTag, type Zorgverlener } from "@/data/zorgkaart";
+import { ZORGKAART, TAG_LABELS, LAATST_BIJGEWERKT, PLAATSEN, isNieuw, type ZorgTag, type Zorgverlener, categorieenPerFase } from "@/data/zorgkaart";
 import { usePageMeta } from "@/lib/seo";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { IMAGES } from "@/lib/images";
@@ -16,35 +16,6 @@ function matcht(aanbieder: Zorgverlener, categorieTekst: string, zoek: string): 
   );
   return zoek.split(/\s+/).filter(Boolean).every((term) => doel.includes(term));
 }
-
-// De kaart leest als een gids in fasen in plaats van een muur van tegels.
-// Categorieën die hier niet genoemd worden schuiven vanzelf in de laatste groep,
-// zodat een nieuwe categorie in zorgkaart.ts nooit onzichtbaar blijft.
-// Een categorie zonder aanbieders (zoals Matrescentie) blijft bewust zichtbaar
-// met een 0 erachter: dat is het signaal dat die zorg nog gezocht wordt.
-const FASEN: { titel: string; ids: string[] }[] = [
-  {
-    titel: "Tijdens je zwangerschap",
-    ids: ["verloskundigen", "echos", "bekkenfysiotherapie", "yoga-cursussen", "doulas", "zwangerschapsmassage"],
-  },
-  {
-    titel: "Rond de geboorte",
-    ids: ["kraamzorg", "geboortefotografie", "lactatiekundigen"],
-  },
-  {
-    titel: "Na de geboorte",
-    ids: ["babymassage-babyspa", "baby-dragen", "ouderschap-opvoeding"],
-  },
-  {
-    // Aanbod dat niet aan één fase hangt maar de hele periode doorloopt.
-    titel: "Voor elke fase",
-    ids: ["sporten", "osteopathie", "zwangerschaps-newborn-gezinsfotografie", "mentale-steun", "matrescentie"],
-  },
-  {
-    titel: "Extra ondersteuning",
-    ids: ["steun-bij-verlies", "online"],
-  },
-];
 
 // Snelzoekwoorden onder het zoekveld; klikken vult gewoon het zoekveld,
 // zodat zichtbaar blijft waarop gefilterd wordt.
@@ -172,20 +143,8 @@ export default function Geboortezorg() {
 
   const aantalAanbieders = useMemo(() => ZORGKAART.reduce((n, c) => n + c.aanbieders.length, 0), []);
 
-  // Categorieën gegroepeerd per fase; wat nergens is ingedeeld komt achteraan.
-  const fasen = useMemo(() => {
-    const ingedeeld = new Set(FASEN.flatMap((f) => f.ids));
-    const rest = ZORGKAART.filter((c) => !ingedeeld.has(c.id));
-    return FASEN.map((fase, i) => ({
-      titel: fase.titel,
-      categorieen: [
-        ...fase.ids
-          .map((id) => ZORGKAART.find((c) => c.id === id))
-          .filter((c): c is (typeof ZORGKAART)[number] => Boolean(c)),
-        ...(i === FASEN.length - 1 ? rest : []),
-      ],
-    })).filter((fase) => fase.categorieen.length > 0);
-  }, []);
+  // Categorieën gegroepeerd per fase; de indeling staat in src/data/zorgkaart.ts.
+  const fasen = useMemo(() => categorieenPerFase(), []);
 
   usePageMeta({
     title: "Geboortezorg in Zuidplas: verloskundigen, kraamzorg en meer | Studio Luna",
@@ -237,49 +196,43 @@ export default function Geboortezorg() {
                organische uitsnede ernaast in plaats van een gekleurd vlak.
                Andere foto? Vervang public/images/foto-hero.webp of pas het
                pad aan in lib/images.ts. ── */}
-        <div className="px-7 md:px-14 lg:px-18 pt-14 md:pt-12 pb-6">
-          <div className="max-w-4xl md:grid md:grid-cols-[1fr_auto] md:gap-14 md:items-center">
+        <div className="px-7 md:px-14 lg:px-18 pt-12 md:pt-10 pb-6">
+          <div className="max-w-4xl md:grid md:grid-cols-[1fr_auto] md:gap-12 md:items-center">
             <div>
               <h1 className="font-display text-4xl md:text-5xl font-medium text-foreground leading-[1.1]">
                 Geboortezorg in Zuidplas
               </h1>
               <p className="text-[15px] text-foreground/75 leading-[1.9] mt-4 max-w-xl">
-                Vind zorg en ondersteuning tijdens je zwangerschap, bevalling en kraamtijd,
-                van verloskundige en kraamzorg tot bekkenfysiotherapie en sporten met je baby.
+                Vind zorg en ondersteuning tijdens je zwangerschap, rond de geboorte en daarna.
               </p>
-              <p className="text-sm text-foreground/60 mt-3">
-                Nieuwerkerk aan den IJssel · Zevenhuizen · Moordrecht · Moerkapelle
+
+              {/* Meteen de eerste ingang, zodat wie hier komt niet eerst een
+                  schermhoogte aan wit voorbij hoeft te scrollen. */}
+              <h2 className="font-display text-xl md:text-2xl font-medium text-foreground leading-[1.2] mt-7">
+                Waar woon je?
+              </h2>
+              <div className="flex flex-wrap gap-x-7 gap-y-3 mt-3">
+                {PLAATSEN.map((p) => (
+                  <Link key={p.slug} href={`/zwanger-in-${p.slug}`} className="text-sm font-semibold text-primary border-b border-primary/30 pb-0.5">
+                    Zwanger in {p.naam}
+                  </Link>
+                ))}
+              </div>
+              <p className="text-sm text-foreground/65 leading-[1.8] mt-3 max-w-xl">
+                Elke plaats heeft een eigen pagina met wie er in jouw dorp zit en wie er vanuit
+                de regio werkt.
               </p>
-              <p className="text-xs text-foreground/60 mt-2">
+
+              <p className="text-xs text-foreground/60 mt-5">
                 Met zorg bijgehouden door Studio Luna · bijgewerkt in {LAATST_BIJGEWERKT.tekst}
               </p>
             </div>
             <img
               src={IMAGES.zorgkaart}
               alt=""
-              className="hidden md:block w-56 lg:w-64 aspect-[4/5] object-cover"
+              className="hidden md:block w-44 lg:w-52 aspect-[4/5] object-cover self-start md:mt-2"
               style={{ borderRadius: "56% 44% 50% 50% / 46% 54% 46% 54%" }}
             />
-          </div>
-        </div>
-
-        {/* ── PER PLAATS ── */}
-        <div className="px-7 md:px-14 lg:px-18 pt-8 pb-4">
-          <div>
-          <h2 className="font-display text-2xl md:text-3xl font-medium text-foreground leading-[1.2]">
-            Waar woon je?
-          </h2>
-          <p className="text-[15px] text-foreground/75 leading-[1.9] mt-3 max-w-2xl">
-            Per plaats staat op een eigen pagina wie er in jouw dorp zit en wie er vanuit de regio
-            werkt.
-          </p>
-          <div className="flex flex-wrap gap-x-8 gap-y-3 mt-4">
-            {PLAATSEN.map((p) => (
-              <Link key={p.slug} href={`/zwanger-in-${p.slug}`} className="text-sm font-semibold text-primary border-b border-primary/30 pb-0.5">
-                Zwanger in {p.naam}
-              </Link>
-            ))}
-          </div>
           </div>
         </div>
 
@@ -296,8 +249,8 @@ export default function Geboortezorg() {
             Alle geboortezorg op een rij
           </h2>
           <p className="text-[15px] text-foreground/75 leading-[1.9] mt-3 max-w-2xl">
-            Kies waar je naar op zoek bent, dan zie je wie er in de regio werkt. Achter elke
-            soort zorg staat hoeveel aanbieders er nu op de kaart staan.
+            Waar ben je naar op zoek? Kies een soort zorg, dan zie je wie er in de regio werkt.
+            Het aantal ernaast laat zien hoeveel aanbieders dat er op dit moment zijn.
           </p>
         </div>
 
@@ -491,8 +444,8 @@ export default function Geboortezorg() {
               Voor zorgverleners
             </h2>
             <p className="text-[15px] text-foreground/80 leading-[1.9]">
-              Ben je zorgverlener in de regio Zuidplas en sta je er nog niet bij? Vermelding
-              is gratis.{" "}
+              Werk je in de geboortezorg in Zuidplas en sta je er nog niet bij? Je kunt je
+              gratis aanmelden.{" "}
               <button
                 onClick={() => setZvOpen((v) => !v)}
                 className="text-primary font-semibold hover:text-primary/75"

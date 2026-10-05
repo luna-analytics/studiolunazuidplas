@@ -877,6 +877,64 @@ export const ZORGKAART: ZorgCategorie[] = [
   },
 ];
 
+/* ── De fasen waarin de kaart leest ───────────────────────────────────────
+ * De kaart leest als een gids in fasen in plaats van een muur van tegels.
+ * Categorieën die hier niet genoemd worden schuiven vanzelf in de laatste
+ * groep, zodat een nieuwe categorie in ZORGKAART nooit onzichtbaar blijft.
+ * Een categorie zonder aanbieders (zoals Matrescentie) blijft bewust
+ * zichtbaar met een 0 erachter: dat is het signaal dat die zorg nog gezocht
+ * wordt.
+ */
+
+export const FASEN: { titel: string; ids: string[] }[] = [
+  {
+    titel: "Tijdens je zwangerschap",
+    ids: ["verloskundigen", "echos", "bekkenfysiotherapie", "yoga-cursussen", "doulas", "zwangerschapsmassage"],
+  },
+  {
+    titel: "Rond de geboorte",
+    ids: ["kraamzorg", "geboortefotografie", "lactatiekundigen"],
+  },
+  {
+    titel: "Na de geboorte",
+    ids: ["babymassage-babyspa", "baby-dragen", "ouderschap-opvoeding"],
+  },
+  {
+    // Aanbod dat niet aan één fase hangt maar de hele periode doorloopt.
+    titel: "Voor elke fase",
+    ids: ["sporten", "osteopathie", "zwangerschaps-newborn-gezinsfotografie", "mentale-steun", "matrescentie"],
+  },
+  {
+    titel: "Extra ondersteuning",
+    ids: ["steun-bij-verlies", "online"],
+  },
+];
+
+/** De categorieën per fase, in de volgorde van FASEN; wat nergens is
+ *  ingedeeld komt achteraan bij de laatste groep. */
+export function categorieenPerFase(): { titel: string; categorieen: ZorgCategorie[] }[] {
+  const ingedeeld = new Set(FASEN.flatMap((f) => f.ids));
+  const rest = ZORGKAART.filter((c) => !ingedeeld.has(c.id));
+  return FASEN.map((fase, i) => ({
+    titel: fase.titel,
+    categorieen: [
+      ...fase.ids.map((id) => ZORGKAART.find((c) => c.id === id)).filter((c): c is ZorgCategorie => Boolean(c)),
+      ...(i === FASEN.length - 1 ? rest : []),
+    ],
+  })).filter((fase) => fase.categorieen.length > 0);
+}
+
+/** De andere categorieën uit dezelfde fase, voor de verderlezen-lijst onder
+ *  een categoriepagina. Lege categorieën blijven eruit, want daar is voor de
+ *  bezoeker nog niets te halen. */
+export function verwanteCategorieen(id: string): { fase: string; categorieen: ZorgCategorie[] } {
+  const fase = categorieenPerFase().find((f) => f.categorieen.some((c) => c.id === id));
+  return {
+    fase: fase?.titel ?? "",
+    categorieen: (fase?.categorieen ?? []).filter((c) => c.id !== id && c.aanbieders.length > 0),
+  };
+}
+
 /* ── Plaatsen in de gemeente Zuidplas ──────────────────────────────────────
  * Voor de vier plaatspagina's (/zwanger-in-...). Een aanbieder komt op de
  * pagina van een plaats als de eigen plaatsomschrijving die plaats noemt.

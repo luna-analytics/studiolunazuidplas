@@ -272,6 +272,7 @@ for (const cat of categorieen) {
       cat.aanbieders.map((a) =>
         `<h2>${tekstVeilig(a.naam)}</h2><p>${tekstVeilig(a.plaats)}. ${tekstVeilig(a.beschrijving)} <a href="${ontsmet(a.website)}" rel="nofollow">Website</a></p>`
       ).join("") +
+      `<p><a href="/geboortezorg-zuidplas">Bekijk alle geboortezorg in Zuidplas</a></p>` +
       `<p>Deze kaart is een initiatief van <a href="/">Studio Luna</a> in Nieuwerkerk aan den IJssel, waar op 29 september <a href="/geboortereeks">de Geboortereeks</a> start.</p>`,
   });
 }
