@@ -77,7 +77,7 @@ export type ZorgCategorie = {
 
 /** Werk deze bij wanneer de kaart inhoudelijk verandert; hij staat zichtbaar
  *  op de pagina en in de structured data. */
-export const LAATST_BIJGEWERKT = { tekst: "september 2026", iso: "2026-09-11" };
+export const LAATST_BIJGEWERKT = { tekst: "oktober 2026", iso: "2026-10-05" };
 
 export const ZORGKAART: ZorgCategorie[] = [
   {
@@ -826,6 +826,22 @@ export const ZORGKAART: ZorgCategorie[] = [
     intro: "Matrescentie is de overgang naar het moederschap: net zoals de adolescentie een periode waarin je lichaam, je gevoel en je identiteit tegelijk veranderen, en die dus tijd en aandacht verdient. De term krijgt in Nederland langzaam bekendheid, onder meer via het boek Moederteit. In de regio Zuidplas is er op dit moment nog niemand die zich hier speciaal op richt; zodra dat verandert, krijgt het hier meteen een plek. Werk jij hiermee in de regio? Meld je dan via het formulier op de zorgkaart, want deze pagina staat voor je klaar.",
     zoektermen: "matrescentie moederteit moedercoach moederschap identiteit postpartum coaching overgang",
     aanbieders: [],
+  },
+  {
+    id: "ouderschap-opvoeding",
+    titel: "Ouderschap en opvoeding",
+    intro: "Met je kind groeit ook een ouder mee, en de vragen die daarbij horen beginnen vaak al in het eerste jaar. Deze begeleiders kijken verder dan het gedrag van je kind en betrekken er ook jouw eigen verhaal bij, zodat je rustiger en met meer vertrouwen je eigen weg vindt. Je hoeft geen groot probleem te hebben om er aan te kloppen.",
+    zoektermen: "ouderschap opvoeding opvoedvragen orthopedagoog ouderschapscoach ouder en kind gezin hechting mindset peuter kind",
+    aanbieders: [
+      {
+        naam: "Lumen by Anouk (Anouk Lemmen)",
+        plaats: "Pijnacker (grotendeels online)",
+        website: "https://lumenbyanouk.nl/",
+        beschrijving: "Orthopedagoog en mindsetcoach met twintig jaar ervaring met kinderen, ouders en opvoeders, die ouders een op een begeleidt bij wat hun kind in hen losmaakt, in een traject van drie of zes maanden dat grotendeels online loopt, met de Access Bars-behandelingen in haar praktijkruimte in Pijnacker.",
+        tags: ["online", "1-op-1", "op-locatie"],
+        toegevoegd: "2026-10-05",
+      },
+    ],
   },
   {
     id: "online",

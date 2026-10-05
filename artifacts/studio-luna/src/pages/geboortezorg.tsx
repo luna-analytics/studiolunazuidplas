@@ -38,7 +38,7 @@ const FASEN: { titel: string; ids: string[] }[] = [
   {
     // Aanbod dat niet aan één fase hangt maar de hele periode doorloopt.
     titel: "Voor elke fase",
-    ids: ["sporten", "osteopathie", "zwangerschaps-newborn-gezinsfotografie", "mentale-steun", "matrescentie"],
+    ids: ["sporten", "osteopathie", "zwangerschaps-newborn-gezinsfotografie", "mentale-steun", "ouderschap-opvoeding", "matrescentie"],
   },
   {
     titel: "Extra ondersteuning",
