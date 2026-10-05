@@ -710,7 +710,7 @@ export const ZORGKAART: ZorgCategorie[] = [
   },
   {
     id: "mentale-steun",
-    titel: "Mentale steun bij zwangerschap en bevalling",
+    titel: "Mentale steun bij zwangerschap en na de bevalling",
     intro: "Sombere gevoelens, angst voor de bevalling of een eerdere bevalling die nog naspeelt verdienen net zo goed zorg. Deze hulpverleners zijn gespecialiseerd in de periode rond zwangerschap en geboorte; bij acute nood bel je altijd je huisarts.",
     zoektermen: "psycholoog psychiater bevalangst bevallingstrauma postpartum depressie angst somber emdr mentaal therapie",
     aanbieders: [
