@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Link, useLocation, useParams } from "wouter";
+import { Link, useLocation } from "wouter";
 import { BottomNav } from "@/components/bottom-nav";
 import { SeoFooter } from "@/components/seo-footer";
 import {
@@ -12,10 +12,11 @@ import {
 import { usePageMeta } from "@/lib/seo";
 
 export default function GeboortezorgPlaats() {
-  const params = useParams<{ plaats: string }>();
-  const [, navigate] = useLocation();
+  // Het adres zelf zegt om welke plaats het gaat: /zwanger-in-zevenhuizen.
+  const [pad, navigate] = useLocation();
+  const slug = pad.replace(/^\/zwanger-in-/, "").replace(/\/$/, "");
 
-  const plaats = PLAATSEN.find((p) => p.slug === params.plaats);
+  const plaats = PLAATSEN.find((p) => p.slug === slug);
 
   useEffect(() => {
     if (!plaats) navigate("/geboortezorg-zuidplas", { replace: true });

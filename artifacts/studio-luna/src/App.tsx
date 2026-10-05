@@ -15,6 +15,7 @@ import Geboortereeks from "./pages/geboortereeks";
 import Geboortezorg from "./pages/geboortezorg";
 import GeboortezorgCategorie from "./pages/geboortezorg-categorie";
 import GeboortezorgPlaats from "./pages/geboortezorg-plaats";
+import { PLAATSEN } from "@/data/zorgkaart";
 import StudioLuna from "./pages/studio-luna";
 import Inspiratie from "./pages/inspiratie";
 import BlogArtikel from "./pages/blog-artikel";
@@ -70,7 +71,12 @@ function Router() {
         <Route path="/geboortereeks" component={Geboortereeks} />
         <Route path="/geboortezorg-zuidplas" component={Geboortezorg} />
         <Route path="/geboortezorg-zuidplas/:categorie" component={GeboortezorgCategorie} />
-        <Route path="/zwanger-in-:plaats" component={GeboortezorgPlaats} />
+        {/* Vier vaste adressen in plaats van een patroon: de router van wouter
+            herkent een parameter alleen als die een heel pad-deel is, dus
+            "/zwanger-in-:plaats" kwam nooit uit en gaf een 404. */}
+        {PLAATSEN.map((p) => (
+          <Route key={p.slug} path={`/zwanger-in-${p.slug}`} component={GeboortezorgPlaats} />
+        ))}
         <Route path="/geboortezorg" component={() => { const [,nav] = useLocation(); useEffect(() => { nav("/geboortezorg-zuidplas", { replace: true }); }, [nav]); return null; }} />
         <Route path="/rooster" component={() => { const [,nav] = useLocation(); useEffect(() => { nav("/geboortereeks", { replace: true }); }, [nav]); return null; }} />
         <Route path="/tarieven" component={() => { const [,nav] = useLocation(); useEffect(() => { nav("/geboortereeks", { replace: true }); }, [nav]); return null; }} />
