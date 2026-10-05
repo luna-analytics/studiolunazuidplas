@@ -100,7 +100,7 @@ export default function StudioLuna() {
 
       {/* ── HERO — kop op de lichte achtergrond, daaronder de foto van rand tot rand ── */}
       <div className="w-full max-w-7xl mx-auto">
-        <div className="px-7 md:px-14 lg:px-18 pt-12 pb-10 md:pt-20 md:pb-14">
+        <div className="px-7 md:px-14 lg:px-20 xl:px-28 pt-12 pb-10 md:pt-20 md:pb-14">
           {/* Breder dan een tekstkolom: op een groot scherm hoort de kop de ruimte
               te vullen in plaats van links in een hoek te blijven hangen. */}
           <div className="md:max-w-3xl lg:max-w-4xl">
@@ -144,7 +144,7 @@ export default function StudioLuna() {
       <div className="w-full max-w-7xl mx-auto relative overflow-x-hidden">
 
         {/* ── GEBOORTEREEKS AANKONDIGING ── */}
-        <section className="px-7 md:px-14 lg:px-18 pt-14 md:pt-20">
+        <section className="px-7 md:px-14 lg:px-20 xl:px-28 pt-14 md:pt-20">
           <motion.div
             variants={fadeUp} initial="hidden" whileInView="show"
             viewport={{ once: true, margin: "-40px" }} custom={0}
@@ -176,7 +176,7 @@ export default function StudioLuna() {
         </section>
 
         {/* ── MISSIE — editorial: label + grote heading + asymmetrisch ── */}
-        <section className="relative px-7 md:px-14 lg:px-18 py-20 md:py-24">
+        <section className="relative px-7 md:px-14 lg:px-20 xl:px-28 py-20 md:py-24">
 
           <div className="relative">
             <motion.div
@@ -227,7 +227,7 @@ export default function StudioLuna() {
 
         {/* ── WAT BIEDT STUDIO LUNA — geen kaart, vrij zwevend. Kop links, lijst rechts,
              zodat de breedte gevuld wordt in plaats van dat er rechts een gat valt. ── */}
-        <section className="px-7 md:px-14 lg:px-18 py-16 md:py-24">
+        <section className="px-7 md:px-14 lg:px-20 xl:px-28 py-16 md:py-24">
           <div className="md:grid md:grid-cols-[1fr_1.5fr] md:gap-14 lg:gap-20 md:items-start">
             <motion.div
               variants={fadeUp} initial="hidden" whileInView="show"
@@ -280,7 +280,7 @@ export default function StudioLuna() {
         {/* ── OVER MIJ — kort blok met gezicht en link naar het volledige verhaal.
              Krijgt bewust meer lucht dan de blokken eromheen: ongelijke witruimte
              geeft de pagina ritme. ── */}
-        <section className="px-7 md:px-14 lg:px-18 py-16 md:py-24">
+        <section className="px-7 md:px-14 lg:px-20 xl:px-28 py-16 md:py-24">
           <div className="md:grid md:grid-cols-[24rem_1fr] md:gap-14 lg:gap-20 md:items-center">
             <motion.div
               variants={fadeUp} initial="hidden" whileInView="show"
@@ -322,7 +322,7 @@ export default function StudioLuna() {
       {reviewsConfig && (reviewsConfig.visible || user?.isAdmin) && reviewsConfig.items.length > 0 && (
       <div className="w-full bg-muted">
         <div className="w-full max-w-7xl mx-auto">
-          <section className="px-7 md:px-14 lg:px-18 py-16 md:py-24">
+          <section className="px-7 md:px-14 lg:px-20 xl:px-28 py-16 md:py-24">
             {!reviewsConfig.visible && user?.isAdmin && (
               <p className="text-xs text-center text-amber-700/80 bg-amber-50 border border-amber-200 rounded-2xl px-4 py-2 mb-8">
                 Reviews staan uit — alleen zichtbaar voor jou als admin
@@ -382,7 +382,7 @@ export default function StudioLuna() {
 
         {/* ── FAQ — veelgestelde vragen. Staat dicht op de zandbaan erboven,
              zodat niet elk blok evenveel ruimte krijgt. ── */}
-        <section className="px-7 md:px-14 lg:px-18 py-14 md:py-20">
+        <section className="px-7 md:px-14 lg:px-20 xl:px-28 py-14 md:py-20">
           <div className="md:grid md:grid-cols-[1fr_1.5fr] md:gap-14 lg:gap-20 md:items-start">
           <motion.div
             variants={fadeUp} initial="hidden" whileInView="show"
@@ -424,7 +424,7 @@ export default function StudioLuna() {
             Komt er een liggende foto uit een volgende shoot, dan kan de band terug. */}
 
         {/* ── ZORGKAART TEASER ── */}
-        <section className="px-7 md:px-14 lg:px-18 py-16 md:py-24">
+        <section className="px-7 md:px-14 lg:px-20 xl:px-28 py-16 md:py-24">
           <motion.div
             variants={fadeUp} initial="hidden" whileInView="show"
             viewport={{ once: true, margin: "-60px" }} custom={0}
@@ -452,7 +452,7 @@ export default function StudioLuna() {
         </section>
 
         {/* ── LOCATIE & CONTACT — plain tekst, geen kaarten ── */}
-        <section className="relative px-7 md:px-14 lg:px-18 py-16 md:py-24 mb-4">
+        <section className="relative px-7 md:px-14 lg:px-20 xl:px-28 py-16 md:py-24 mb-4">
 
           <div className="relative md:grid md:grid-cols-2 md:gap-24">
 

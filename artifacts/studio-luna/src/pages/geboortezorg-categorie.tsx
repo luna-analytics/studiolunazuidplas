@@ -50,7 +50,7 @@ export default function GeboortezorgCategorie() {
     <div className="min-h-screen bg-background pb-28 md:pb-16 md:pt-16 flex justify-center">
       <div className="w-full max-w-7xl bg-background min-h-screen relative overflow-x-hidden">
 
-        <div className="px-7 md:px-14 lg:px-18 pt-14 md:pt-12 pb-6">
+        <div className="px-7 md:px-14 lg:px-20 xl:px-28 pt-14 md:pt-12 pb-6">
           <h1 className="font-display text-4xl md:text-5xl font-medium text-foreground leading-[1.1]">
             {cat.titel} in Zuidplas
           </h1>
@@ -72,7 +72,7 @@ export default function GeboortezorgCategorie() {
         </div>
 
         {/* De lijst */}
-        <div className="px-7 md:px-14 lg:px-18 pb-10">
+        <div className="px-7 md:px-14 lg:px-20 xl:px-28 pb-10">
           <div className="max-w-3xl">
             {aanbieders.length > 0 && (
               <h2 className="font-display text-xl md:text-2xl font-medium text-foreground leading-[1.2] pb-3 border-b border-border/40">

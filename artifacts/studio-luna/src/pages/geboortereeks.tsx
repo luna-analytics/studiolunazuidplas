@@ -184,7 +184,7 @@ export default function Geboortereeks() {
         {/* ── TITEL, met de foto ernaast ── */}
         <motion.div
           variants={fadeUp} initial="hidden" animate="show" custom={0}
-          className="px-7 md:px-14 lg:px-18 pt-14 md:pt-12 pb-4 md:flex md:items-start md:gap-14"
+          className="px-7 md:px-14 lg:px-20 xl:px-28 pt-14 md:pt-12 pb-4 md:flex md:items-start md:gap-14"
         >
           <div className="md:flex-1">
             <h1 className="font-display text-4xl md:text-5xl font-medium text-foreground leading-[1.1]">
@@ -212,7 +212,7 @@ export default function Geboortereeks() {
         </motion.div>
 
         {/* ── INTRO ── */}
-        <section className="relative px-7 md:px-14 lg:px-18 py-10 md:py-12">
+        <section className="relative px-7 md:px-14 lg:px-20 xl:px-28 py-10 md:py-12">
           <div className="relative md:grid md:grid-cols-[1.2fr_1fr] md:gap-16 md:items-start">
             <motion.div
               variants={fadeUp} initial="hidden" whileInView="show"
@@ -260,7 +260,7 @@ export default function Geboortereeks() {
         </section>
 
         {/* ── EEN DINSDAGAVOND ── */}
-        <section className="px-7 md:px-14 lg:px-18 py-8 md:py-10">
+        <section className="px-7 md:px-14 lg:px-20 xl:px-28 py-8 md:py-10">
           <motion.div
             variants={fadeUp} initial="hidden" whileInView="show"
             viewport={{ once: true, margin: "-60px" }} custom={0}
@@ -300,7 +300,7 @@ export default function Geboortereeks() {
         </section>
 
         {/* ── AANMELDEN ── */}
-        <section id="aanmelden" className="px-7 md:px-14 lg:px-18 py-8 md:py-10 scroll-mt-24">
+        <section id="aanmelden" className="px-7 md:px-14 lg:px-20 xl:px-28 py-8 md:py-10 scroll-mt-24">
           <motion.div
             variants={fadeUp} initial="hidden" whileInView="show"
             viewport={{ once: true, margin: "-40px" }} custom={0}
@@ -390,7 +390,7 @@ export default function Geboortereeks() {
         </section>
 
         {/* ── WAT ZIT ERIN ── */}
-        <section className="relative px-7 md:px-14 lg:px-18 py-10 md:py-12">
+        <section className="relative px-7 md:px-14 lg:px-20 xl:px-28 py-10 md:py-12">
           <div className="relative md:grid md:grid-cols-[1.4fr_1fr] md:gap-14 md:items-start">
             <div className="max-w-3xl">
               <motion.div
@@ -433,7 +433,7 @@ export default function Geboortereeks() {
         </section>
 
         {/* ── WEEKOVERZICHT ── */}
-        <section className="px-7 md:px-14 lg:px-18 py-10 md:py-12">
+        <section className="px-7 md:px-14 lg:px-20 xl:px-28 py-10 md:py-12">
           <div className="max-w-3xl">
             <motion.div
               variants={fadeUp} initial="hidden" whileInView="show"
@@ -467,7 +467,7 @@ export default function Geboortereeks() {
         </section>
 
         {/* ── WIE GEEFT DE LESSEN ── */}
-        <section className="relative px-7 md:px-14 lg:px-18 py-10 md:py-12">
+        <section className="relative px-7 md:px-14 lg:px-20 xl:px-28 py-10 md:py-12">
           <motion.div
             variants={fadeUp} initial="hidden" whileInView="show"
             viewport={{ once: true, margin: "-60px" }} custom={0}
@@ -502,7 +502,7 @@ export default function Geboortereeks() {
         </section>
 
         {/* ── FAQ ── */}
-        <section className="px-7 md:px-14 lg:px-18 py-10 md:py-12">
+        <section className="px-7 md:px-14 lg:px-20 xl:px-28 py-10 md:py-12">
           <motion.div
             variants={fadeUp} initial="hidden" whileInView="show"
             viewport={{ once: true, margin: "-60px" }} custom={0}

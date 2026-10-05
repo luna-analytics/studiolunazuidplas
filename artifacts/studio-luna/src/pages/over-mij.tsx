@@ -54,7 +54,7 @@ export default function OverMij() {
         {/* ── LABEL + NAAM ── */}
         <motion.div
           variants={fadeUp} initial="hidden" animate="show" custom={0}
-          className="px-7 md:px-14 lg:px-18 pt-14 md:pt-12 pb-6"
+          className="px-7 md:px-14 lg:px-20 xl:px-28 pt-14 md:pt-12 pb-6"
         >
           <h1 className="font-display text-4xl md:text-5xl font-medium text-foreground leading-[1.1]">
             Over mij
@@ -65,7 +65,7 @@ export default function OverMij() {
         {/* ── FOTO + QUOTE (asymmetrisch) ── */}
         <section className="relative py-10 md:py-16">
 
-          <div className="relative px-7 md:px-14 lg:px-18">
+          <div className="relative px-7 md:px-14 lg:px-20 xl:px-28">
             <div className="md:grid md:grid-cols-[1fr_1.15fr] md:gap-16 md:items-start">
 
               {/* Foto */}
@@ -106,7 +106,7 @@ export default function OverMij() {
 
         {/* ── BIOGRAFIE TEKST ── */}
         {alineas.length > 0 && (
-          <section className="px-7 md:px-14 lg:px-18 py-12 md:py-20">
+          <section className="px-7 md:px-14 lg:px-20 xl:px-28 py-12 md:py-20">
             <div className="md:grid md:grid-cols-[1fr_2fr] md:gap-20">
 
               <motion.div
@@ -136,7 +136,7 @@ export default function OverMij() {
         )}
 
         {/* ── CONTACT STRIP ── */}
-        <section className="relative px-7 md:px-14 lg:px-18 py-16 md:py-24 mb-4">
+        <section className="relative px-7 md:px-14 lg:px-20 xl:px-28 py-16 md:py-24 mb-4">
           <motion.div
             variants={fadeUp} initial="hidden" whileInView="show"
             viewport={{ once: true, margin: "-80px" }} custom={0}

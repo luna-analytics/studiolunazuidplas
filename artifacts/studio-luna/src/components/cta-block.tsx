@@ -35,10 +35,10 @@ export function CtaBlock({ ctaUrl: propUrl, ctaLabel: propLabel, inKolom = false
     <section
       className={
         opBand
-          ? "px-7 md:px-14 lg:px-18 py-14 md:py-20"
+          ? "px-7 md:px-14 lg:px-20 xl:px-28 py-14 md:py-20"
           : inKolom
             ? "mb-10"
-            : "px-7 md:px-14 lg:px-18 mb-10 md:mb-14"
+            : "px-7 md:px-14 lg:px-20 xl:px-28 mb-10 md:mb-14"
       }
     >
       <div className={`${opBand ? "" : "border-t border-border/30 pt-10 md:pt-12"} flex flex-col md:flex-row md:items-center md:justify-between gap-6`}>

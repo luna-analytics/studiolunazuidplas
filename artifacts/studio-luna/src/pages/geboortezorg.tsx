@@ -196,7 +196,7 @@ export default function Geboortezorg() {
                organische uitsnede ernaast in plaats van een gekleurd vlak.
                Andere foto? Vervang public/images/foto-hero.webp of pas het
                pad aan in lib/images.ts. ── */}
-        <div className="px-7 md:px-14 lg:px-18 pt-12 md:pt-10 pb-6">
+        <div className="px-7 md:px-14 lg:px-20 xl:px-28 pt-12 md:pt-10 pb-6">
           <div className="max-w-4xl md:grid md:grid-cols-[1fr_auto] md:gap-12 md:items-center">
             <div>
               <h1 className="font-display text-4xl md:text-5xl font-medium text-foreground leading-[1.1]">
@@ -244,7 +244,7 @@ export default function Geboortezorg() {
       <div className="w-full bg-muted mt-6">
         <div className="w-full max-w-7xl mx-auto relative overflow-x-hidden">
 
-        <div className="px-7 md:px-14 lg:px-18 pt-12 md:pt-16 pb-2">
+        <div className="px-7 md:px-14 lg:px-20 xl:px-28 pt-12 md:pt-16 pb-2">
           <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground leading-[1.15]">
             Alle geboortezorg op een rij
           </h2>
@@ -255,7 +255,7 @@ export default function Geboortezorg() {
         </div>
 
         {/* ── ZOEKEN ── */}
-        <div className="px-7 md:px-14 lg:px-18 pt-7 pb-2">
+        <div className="px-7 md:px-14 lg:px-20 xl:px-28 pt-7 pb-2">
           <div className="max-w-xl">
             <label htmlFor="zorg-zoek" className={labelKlasse}>Zoek op zorg, naam of plaats</label>
             <input
@@ -287,7 +287,7 @@ export default function Geboortezorg() {
 
         {/* ── DE GIDS: categorieën per fase, als lijst met haarlijnen.
                Bij zoeken verschijnen de aanbieders direct als lijst. ── */}
-        <div className="px-7 md:px-14 lg:px-18 pt-6 pb-8">
+        <div className="px-7 md:px-14 lg:px-20 xl:px-28 pt-6 pb-8">
           {!filterActief && (
             /* Op brede schermen vullen de fasegroepen twee kolommen, zodat de
                gids de pagina vult in plaats van in één smalle strook te hangen. */
@@ -438,7 +438,7 @@ export default function Geboortezorg() {
       <div className="w-full max-w-7xl mx-auto relative overflow-x-hidden">
 
         {/* ── VOOR ZORGVERLENERS — bewust klein, de kaart is er voor zwangeren ── */}
-        <section id="voor-zorgverleners" className="px-7 md:px-14 lg:px-18 py-10 md:py-12 scroll-mt-24">
+        <section id="voor-zorgverleners" className="px-7 md:px-14 lg:px-20 xl:px-28 py-10 md:py-12 scroll-mt-24">
           <div className="max-w-xl border-t border-border/25 pt-8">
             <h2 className="font-display text-2xl font-medium text-foreground mb-3">
               Voor zorgverleners
@@ -529,7 +529,7 @@ export default function Geboortezorg() {
           </div>
         </section>
 
-        <section className="px-7 md:px-14 lg:px-18 py-12 border-t border-border/15">
+        <section className="px-7 md:px-14 lg:px-20 xl:px-28 py-12 border-t border-border/15">
           <h2 className="font-display text-2xl md:text-3xl font-medium text-foreground leading-[1.2]">
             Veelgestelde vragen over geboortezorg in Zuidplas
           </h2>

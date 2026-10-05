@@ -108,7 +108,7 @@ export default function Home() {
         {/* ── PAGE TITLE — minimaal, geen kader ── */}
         <motion.div
           variants={fadeUp} initial="hidden" animate="show" custom={0}
-          className="px-7 md:px-14 lg:px-18 pt-14 md:pt-12 pb-4"
+          className="px-7 md:px-14 lg:px-20 xl:px-28 pt-14 md:pt-12 pb-4"
         >
           <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary/60 mb-3 flex items-center gap-3">
             <span className="inline-block w-8 h-px bg-primary/40" />
@@ -121,7 +121,7 @@ export default function Home() {
         {/* ══════════════════════════════════════════════════════════
             0 — DE GEBOORTEREEKS (uitgelicht, klik door naar /geboortereeks)
         ══════════════════════════════════════════════════════════ */}
-        <section id="geboortereeks" className="px-7 md:px-14 lg:px-18 pt-12 md:pt-16">
+        <section id="geboortereeks" className="px-7 md:px-14 lg:px-20 xl:px-28 pt-12 md:pt-16">
           <motion.div
             variants={fadeUp} initial="hidden" whileInView="show"
             viewport={{ once: true, margin: "-40px" }} custom={0}
@@ -177,7 +177,7 @@ export default function Home() {
               />
             </motion.div>
 
-            <div className="px-7 md:px-14 lg:px-18">
+            <div className="px-7 md:px-14 lg:px-20 xl:px-28">
               {/* Label */}
               <motion.p
                 variants={fadeUp} initial="hidden" whileInView="show"
@@ -257,7 +257,7 @@ export default function Home() {
             2 — MAMA CIRCLE
             Omgekeerde volgorde: tekst breed, geen foto (sfeer door achtergrond)
         ══════════════════════════════════════════════════════════ */}
-        <section id="circle" className="relative px-7 md:px-14 lg:px-18 py-20 md:py-32">
+        <section id="circle" className="relative px-7 md:px-14 lg:px-20 xl:px-28 py-20 md:py-32">
           <div className="absolute inset-0 bg-gradient-to-b from-background via-secondary/30 to-background pointer-events-none" />
 
           <div className="relative">
@@ -320,7 +320,7 @@ export default function Home() {
             2b — DYNAMISCHE EXTRA AANBOD SECTIES (beheerd via admin)
         ══════════════════════════════════════════════════════════ */}
         {extraTypes.map((type) => (
-          <section key={type.id} id={toSlug(type.naam)} className="relative px-7 md:px-14 lg:px-18 py-20 md:py-28">
+          <section key={type.id} id={toSlug(type.naam)} className="relative px-7 md:px-14 lg:px-20 xl:px-28 py-20 md:py-28">
             <div className="absolute inset-0 bg-gradient-to-b from-background via-secondary/25 to-background pointer-events-none" />
             <div className="relative">
               <motion.p
@@ -384,7 +384,7 @@ export default function Home() {
             3 — BEVALLINGS SPECIALS (tijdelijk uit, zie TOON_SPECIALS)
         ══════════════════════════════════════════════════════════ */}
         {TOON_SPECIALS && (
-        <section className="px-7 md:px-14 lg:px-18 py-16 md:py-24">
+        <section className="px-7 md:px-14 lg:px-20 xl:px-28 py-16 md:py-24">
           <motion.div
             variants={fadeUp} initial="hidden" whileInView="show"
             viewport={{ once: true, margin: "-80px" }} custom={0}

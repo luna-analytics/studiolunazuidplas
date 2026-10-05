@@ -88,14 +88,14 @@ export default function Inspiratie() {
       <div className="w-full max-w-7xl bg-background min-h-screen relative">
 
         {/* KOP: gewoon op de achtergrond, zonder gekleurd vlak */}
-        <div className="px-7 md:px-14 lg:px-18 pt-14 md:pt-12 pb-10">
+        <div className="px-7 md:px-14 lg:px-20 xl:px-28 pt-14 md:pt-12 pb-10">
           <h1 className="font-display text-4xl md:text-5xl font-medium text-foreground leading-[1.1]">Blog</h1>
           <p className="text-[15px] text-foreground/75 leading-[1.9] mt-4 max-w-xl">
             Ik neem je mee in mijn zoektocht over alles rondom zwangerschap, postpartum en het moederschap, waar ik gevoel en wetenschap allebei een plek geef.
           </p>
         </div>
 
-        <div className="px-7 md:px-14 lg:px-18 pb-8">
+        <div className="px-7 md:px-14 lg:px-20 xl:px-28 pb-8">
 
           {/* Laden */}
           {!postsLoaded && (

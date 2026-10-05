@@ -39,7 +39,7 @@ export default function GeboortezorgPlaats() {
     <div className="min-h-screen bg-background pb-28 md:pb-16 md:pt-16 flex justify-center">
       <div className="w-full max-w-7xl bg-background min-h-screen relative overflow-x-hidden">
 
-        <div className="px-7 md:px-14 lg:px-18 pt-14 md:pt-12 pb-6">
+        <div className="px-7 md:px-14 lg:px-20 xl:px-28 pt-14 md:pt-12 pb-6">
           <h1 className="font-display text-4xl md:text-5xl font-medium text-foreground leading-[1.1]">
             Zwanger in {plaats.naam}
           </h1>
@@ -57,7 +57,7 @@ export default function GeboortezorgPlaats() {
         </div>
 
         {rijen.map(({ categorie, hier, breed }) => (
-          <section key={categorie.id} className="px-7 md:px-14 lg:px-18 py-8 border-t border-border/15">
+          <section key={categorie.id} className="px-7 md:px-14 lg:px-20 xl:px-28 py-8 border-t border-border/15">
             <h2 className="font-display text-2xl md:text-3xl font-medium text-foreground leading-[1.2]">
               {categorie.titel} in {plaats.korteNaam}
             </h2>
@@ -102,7 +102,7 @@ export default function GeboortezorgPlaats() {
           </section>
         ))}
 
-        <section className="px-7 md:px-14 lg:px-18 py-12 border-t border-border/15">
+        <section className="px-7 md:px-14 lg:px-20 xl:px-28 py-12 border-t border-border/15">
           <h2 className="font-display text-2xl md:text-3xl font-medium text-foreground leading-[1.2]">
             Zwangerschapsyoga in {plaats.korteNaam}
           </h2>
@@ -117,7 +117,7 @@ export default function GeboortezorgPlaats() {
           </Link>
         </section>
 
-        <section className="px-7 md:px-14 lg:px-18 py-10 border-t border-border/15">
+        <section className="px-7 md:px-14 lg:px-20 xl:px-28 py-10 border-t border-border/15">
           <h2 className="font-display text-2xl font-medium text-foreground mb-4">
             De andere plaatsen in Zuidplas
           </h2>
