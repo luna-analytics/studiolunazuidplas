@@ -197,30 +197,13 @@ export default function Geboortezorg() {
                Andere foto? Vervang public/images/foto-hero.webp of pas het
                pad aan in lib/images.ts. ── */}
         <div className="px-7 md:px-14 lg:px-20 xl:px-28 pt-12 md:pt-10 pb-6">
-          <div className="max-w-4xl md:grid md:grid-cols-[1fr_auto] md:gap-12 md:items-center">
+          <div className="max-w-4xl md:grid md:grid-cols-[1fr_auto] md:gap-12 md:items-start">
             <div>
               <h1 className="font-display text-4xl md:text-5xl font-medium text-foreground leading-[1.1]">
                 Geboortezorg in Zuidplas
               </h1>
               <p className="text-[15px] text-foreground/75 leading-[1.9] mt-4 max-w-xl">
                 Vind zorg en ondersteuning tijdens je zwangerschap, rond de geboorte en daarna.
-              </p>
-
-              {/* Meteen de eerste ingang, zodat wie hier komt niet eerst een
-                  schermhoogte aan wit voorbij hoeft te scrollen. */}
-              <h2 className="font-display text-xl md:text-2xl font-medium text-foreground leading-[1.2] mt-7">
-                Waar woon je?
-              </h2>
-              <div className="flex flex-wrap gap-x-7 gap-y-3 mt-3">
-                {PLAATSEN.map((p) => (
-                  <Link key={p.slug} href={`/zwanger-in-${p.slug}`} className="text-sm font-semibold text-primary border-b border-primary/30 pb-0.5">
-                    Zwanger in {p.naam}
-                  </Link>
-                ))}
-              </div>
-              <p className="text-sm text-foreground/65 leading-[1.8] mt-3 max-w-xl">
-                Elke plaats heeft een eigen pagina met wie er in jouw dorp zit en wie er vanuit
-                de regio werkt.
               </p>
 
               <p className="text-xs text-foreground/60 mt-5">
@@ -230,7 +213,7 @@ export default function Geboortezorg() {
             <img
               src={IMAGES.zorgkaart}
               alt=""
-              className="hidden md:block w-44 lg:w-52 aspect-[4/5] object-cover self-start md:mt-2"
+              className="hidden md:block w-36 lg:w-44 aspect-[4/5] object-cover self-start"
               style={{ borderRadius: "56% 44% 50% 50% / 46% 54% 46% 54%" }}
             />
           </div>
@@ -436,6 +419,29 @@ export default function Geboortezorg() {
       </div>
 
       <div className="w-full max-w-7xl mx-auto relative overflow-x-hidden">
+
+        {/* ── PER PLAATS — bewust onderaan. Bijna iedereen op deze kaart werkt in
+               heel Zuidplas, dus wie binnenkomt hoort eerst het hele aanbod te zien
+               en pas daarna de afslag naar het eigen dorp. ── */}
+        <section className="px-7 md:px-14 lg:px-20 xl:px-28 pt-10 md:pt-12">
+          <div className="max-w-2xl border-t border-border/25 pt-8">
+            <h2 className="font-display text-2xl font-medium text-foreground leading-[1.2]">
+              Liever per dorp kijken?
+            </h2>
+            <p className="text-[15px] text-foreground/80 leading-[1.9] mt-3">
+              De meeste aanbieders hierboven werken in heel Zuidplas, dus je hoeft je niet te
+              beperken tot je eigen dorp. Wil je toch zien wie er bij jou in de buurt zit, dan
+              heeft elke plaats een eigen pagina, met daarbij wie er vanuit de regio werkt.
+            </p>
+            <div className="flex flex-wrap gap-x-7 gap-y-3 mt-4">
+              {PLAATSEN.map((p) => (
+                <Link key={p.slug} href={`/zwanger-in-${p.slug}`} className="text-sm font-semibold text-primary border-b border-primary/30 pb-0.5">
+                  Zwanger in {p.naam}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
 
         {/* ── VOOR ZORGVERLENERS — bewust klein, de kaart is er voor zwangeren ── */}
         <section id="voor-zorgverleners" className="px-7 md:px-14 lg:px-20 xl:px-28 py-10 md:py-12 scroll-mt-24">
