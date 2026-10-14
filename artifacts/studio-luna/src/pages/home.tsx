@@ -27,7 +27,7 @@ const DEFAULT_TEKSTEN = {
   aanbod_yoga_locatie: "Waldorfhaus de Perenboom · Raadhuisplein 28, Nieuwerkerk aan den IJssel",
   aanbod_yoga_extra: "Na afloop: verse thee en tijd voor verbinding",
   aanbod_circle_titel: "Zwanger & Mama Circle",
-  aanbod_circle_tekst: "Naast de lessen is er ruimte om samen te zitten: je deelt je ervaringen, stelt je vragen en kijkt naar elkaar om. Met zachte yoga- en ademhalingsoefeningen vertraag je eerst, zodat er ruimte ontstaat om echt naar jezelf en naar elkaar te luisteren. Zo kom je andere zwangeren en moeders uit Zuidplas tegen.",
+  aanbod_circle_tekst: "Naast de actieve yogalessen is er een vrouwencirkel voor zwangeren en mama's, waarin je ervaringen deelt, vragen stelt en naar elkaar omkijkt. Met zachte yoga- en ademhalingsoefeningen bereid je je voor op je bevalling, en ontstaat er ruimte om echt naar jezelf en naar elkaar te luisteren. Zo kom je andere zwangeren en moeders uit Zuidplas tegen.",
   aanbod_specials_heading: "Bevallings Specials",
   aanbod_specials_items: "Bevallings Yoga Workshop | Focus & Vertrouwen · 120 min | € 49,-\nPartner Workshop | Verbinding & Support · 120 min | € 79,-\nMama Spa | Ultiem ontspannen · 120 min | € 49,-",
   aanbod_specials_bundel: "De Geboorte-Bundel | Alle drie workshops · meest complete voorbereiding | bespaar € 22,- | € 155,-",

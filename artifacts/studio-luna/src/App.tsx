@@ -20,7 +20,7 @@ import StudioLuna from "./pages/studio-luna";
 import Inspiratie from "./pages/inspiratie";
 import BlogArtikel from "./pages/blog-artikel";
 import OverMij from "./pages/over-mij";
-import Agenda from "./pages/agenda";
+import Events from "./pages/events";
 
 const Admin = lazy(() => import("./pages/admin"));
 const WachtwoordReset = lazy(() => import("./pages/wachtwoord-reset").then((m) => ({ default: m.WachtwoordReset })));
@@ -70,7 +70,7 @@ function Router() {
         <Route path="/" component={StudioLuna} />
         <Route path="/aanbod" component={() => { const [,nav] = useLocation(); useEffect(() => { nav("/geboortereeks", { replace: true }); }, [nav]); return null; }} />
         <Route path="/geboortereeks" component={Geboortereeks} />
-        <Route path="/agenda" component={Agenda} />
+        <Route path="/events" component={Events} />
         <Route path="/geboortezorg-zuidplas" component={Geboortezorg} />
         <Route path="/geboortezorg-zuidplas/:categorie" component={GeboortezorgCategorie} />
         {/* Vier vaste adressen in plaats van een patroon: de router van wouter
