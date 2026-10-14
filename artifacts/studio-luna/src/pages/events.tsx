@@ -65,8 +65,7 @@ export default function Events() {
             </h2>
             <p className="text-[15px] text-foreground/75 leading-[1.95] mb-6">
               Ben je zorgverlener of ondernemer in Zuidplas en past jouw werk bij zwangeren en
-              moeders, dan kom ik graag met je in contact. Ik heb de ruimte, de groep en de
-              zorgkaart van de regio, en ik zoek mensen die iets weten wat ik niet weet.
+              moeders, dan kom ik graag met je in contact.
             </p>
             <button
               onClick={() => navigate("/over-mij")}
