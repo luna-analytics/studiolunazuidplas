@@ -12,7 +12,9 @@ const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 const DEFAULTS = {
   over_mij_naam: "Marjolein",
   over_mij_functie: "Zwangerschapsyoga docente & oprichter Studio Luna",
-  over_mij_quote: "Ik geloof dat elke vrouw kracht in zich draagt, soms moet je die alleen even leren voelen.",
+  // Geen standaardcitaat: een quote die niet van haar is, mag hier nooit
+  // onder haar naam verschijnen. Leeg betekent: het blok valt weg.
+  over_mij_quote: "",
   over_mij_tekst: "",
   over_mij_foto: "",
 };
@@ -91,9 +93,11 @@ export default function OverMij() {
                 viewport={{ once: true, margin: "-60px" }} custom={0.15}
                 className="md:pt-20 mt-8 md:mt-0"
               >
-                <blockquote className="font-display text-2xl md:text-3xl font-medium text-foreground leading-[1.3] mb-6">
-                  “{data.over_mij_quote}”
-                </blockquote>
+                {data.over_mij_quote?.trim() && (
+                  <blockquote className="font-display text-2xl md:text-3xl font-medium text-foreground leading-[1.3] mb-6">
+                    “{data.over_mij_quote}”
+                  </blockquote>
+                )}
 
                 <p className="text-[15px] font-semibold text-foreground/75">
                   {data.over_mij_naam}

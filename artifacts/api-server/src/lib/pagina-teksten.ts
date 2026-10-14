@@ -66,7 +66,7 @@ const DEFAULT: PaginaTeksten = {
     "Studio Luna voegt zo snel mogelijk je credits toe aan je account. De betaling vindt in de studio plaats bij je eerstvolgende les.",
   over_mij_naam: "Jouw naam",
   over_mij_functie: "Zwangerschapsyoga docente & oprichter Studio Luna",
-  over_mij_quote: "Ik geloof dat elke vrouw kracht in zich draagt — soms moet je die alleen even leren voelen.",
+  over_mij_quote: "",
   over_mij_tekst: "Vertel hier jouw verhaal. Waarom ben je begonnen met Studio Luna? Wat drijft je? Hoe ben je bij zwangerschapsyoga terechtgekomen?\n\nJe kunt hier meerdere alinea's schrijven. Elke lege regel wordt een nieuwe alinea op de pagina.",
   over_mij_foto: "",
   foto_hero: "",
