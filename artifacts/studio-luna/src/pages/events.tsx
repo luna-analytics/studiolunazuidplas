@@ -4,9 +4,10 @@ import { BottomNav } from "@/components/bottom-nav";
 import { SeoFooter } from "@/components/seo-footer";
 import { CtaBlock } from "@/components/cta-block";
 
-// Deze pagina legt met opzet niet vast wat voor events er komen: dat kan van
-// alles zijn, van een samenwerking tot iets van Marjolein zelf. Zodra er een
-// datum staat, komt die hier boven de tekst dat de eerste data nog volgen.
+// De inleiding is haar eigen tekst (14 oktober); niet herschrijven. De pagina
+// legt met opzet niet vast wat voor events er komen: dat kan van alles zijn,
+// van een samenwerking tot iets van Studio Luna zelf. Zodra er een datum staat,
+// komt die hier boven de tekst dat de eerste data nog volgen.
 export default function Events() {
   const [, navigate] = useLocation();
 
@@ -28,9 +29,10 @@ export default function Events() {
             Events
           </h1>
           <p className="text-[15px] text-foreground/75 leading-[1.9] mt-4 max-w-xl">
-            Naast de wekelijkse lessen organiseer ik dingen die eenmalig zijn. Soms samen met
-            iemand anders die ergens meer van weet dan ik, soms iets van mezelf. Je hoeft er geen
-            reeks voor te volgen en je hoeft ook niet zwanger te zijn.
+            Naast de wekelijkse lessen organiseert Studio Luna ook workshops en events. Soms
+            vanuit Studio Luna, en soms vanuit een samenwerking met andere inspirerende vrouwen.
+            Deze events zijn voor zwangeren, moeders en ondernemende vrouwen die verdieping,
+            inspiratie en verbinding zoeken.
           </p>
         </div>
 
