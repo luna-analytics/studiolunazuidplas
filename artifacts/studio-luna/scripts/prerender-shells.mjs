@@ -244,6 +244,12 @@ const ROUTES = [
     inhoud: `<h1>Over Marjolein</h1><p>Moeder, gepromoveerd onderzoeker en yogadocente. Zij geeft de Geboortereeks van Studio Luna in Nieuwerkerk aan den IJssel, gemeente Zuidplas.</p>`,
   },
   {
+    pad: "agenda",
+    title: "Agenda: workshops, wandelingen en events | Studio Luna Zuidplas",
+    beschrijving: "De agenda van Studio Luna in Nieuwerkerk aan den IJssel: workshops met experts, wandelingen met andere moeders en avonden over het moederschap, voor zwangeren en moeders uit heel Zuidplas.",
+    inhoud: `<h1>Agenda van Studio Luna</h1><p>Workshops met experts, wandelingen met andere moeders en avonden over het moederschap, in Nieuwerkerk aan den IJssel en voor heel Zuidplas. De eerste data volgen binnenkort.</p>`,
+  },
+  {
     pad: "blog",
     title: "Blog over zwangerschap en moederschap in Zuidplas | Studio Luna",
     beschrijving: "Artikelen van Studio Luna over zwangerschap, geboortevoorbereiding en moederschap, voor zwangeren en moeders in Nieuwerkerk aan den IJssel en de rest van Zuidplas.",
@@ -370,6 +376,7 @@ for (const route of ROUTES) {
 const PRIORITEIT = (pad) =>
   pad === "" || pad === "geboortezorg-zuidplas" ? "1.0"
   : pad === "geboortereeks" ? "0.9"
+  : pad === "agenda" ? "0.8"
   : pad.startsWith("geboortezorg-zuidplas/") || pad.startsWith("zwanger-in-") ? "0.8"
   : "0.6";
 const sitemap =
@@ -394,6 +401,7 @@ const llms =
   `\n\n## Studio Luna\n\n` +
   `- [De Geboortereeks](${BASIS}/geboortereeks): 8-weekse zwangerschapsyoga- en geboortevoorbereidingsreeks in Nieuwerkerk aan den IJssel\n` +
   `- [Over Marjolein](${BASIS}/over-mij): moeder, gepromoveerd onderzoeker en yogadocente\n` +
+  `- [Agenda](${BASIS}/agenda): workshops met experts, wandelingen met andere moeders en avonden over het moederschap\n` +
   `- [Blog](${BASIS}/blog): artikelen over zwangerschap, geboortevoorbereiding en moederschap in Zuidplas\n`;
 writeFileSync(join(root, "llms.txt"), llms);
 console.log("geschreven: llms.txt");

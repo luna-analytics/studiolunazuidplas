@@ -2371,16 +2371,16 @@ type PaginaTeksten = {
 };
 
 const DEFAULT_PT: PaginaTeksten = {
-  home_hero: "It takes a village.\nStudio Luna is jouw mama tribe.",
+  home_hero: "Zwangerschapsyoga, workshops\nen wandelingen voor zwangeren\nen moeders in Zuidplas.",
   home_missie_tekst: "Het moederschap hoef je niet alleen te doen. De missie van Studio Luna is het faciliteren van een community voor alle vrouwen in Nieuwerkerk aan den IJssel en omgeving, van zwangerschap tot ver daarna. Een veilige haven om fysiek op te laden, mentaal tot rust te komen en bovenal in verbinding te staan met andere moeders in dezelfde fase.",
-  home_missie_bullets: "Een plek om te landen.\nEen plek om fysiek sterk, gezond en in balans te blijven.\nEen plek om vertrouwen te vinden in je veranderende lichaam.\nEen plek om te connecten met andere moeders.\nStudio Luna is jouw mama tribe.",
+  home_missie_bullets: "Een plek om te landen, voor en na je bevalling.\nEen plek om fysiek sterk, gezond en in balans te blijven.\nEen plek om vertrouwen te vinden in je veranderende lichaam.\nEen plek waar je andere moeders uit Zuidplas tegenkomt.\nEen plek waar experts langskomen die iets weten wat ik niet weet.",
   aanbod_yoga_tekst1: "Sterk, ontspannen en vol vertrouwen richting je bevalling. Met zachte houdingen houden we je veranderende lichaam in balans. We oefenen met ademhaling en maken contact met je baby.",
   aanbod_yoga_tekst2: "Elke les heeft een net andere focus, zoals het bekken, de kracht van je adem of ruimte in je rug. De lessen vormen samen de Geboortereeks, waarin je in een vaste groep naar je bevalling toewerkt.",
   aanbod_yoga_tijd: "Elke dinsdag 19:00",
   aanbod_yoga_locatie: "Waldorfhaus de Perenboom · Raadhuisplein 28, Nieuwerkerk aan den IJssel",
   aanbod_yoga_extra: "Na afloop: verse thee en tijd voor verbinding",
   aanbod_circle_titel: "Zwanger & Mama Circle",
-  aanbod_circle_tekst: "Bij Studio Luna geloven we in de kracht van de 'village'. Naast de fysieke lessen creëren we een veilige cirkel waarin je ervaringen deelt, vragen stelt en naar elkaar omkijkt. We gebruiken zachte yoga- en ademhalingsoefeningen om samen te vertragen, zodat er ruimte ontstaat om echt te luisteren naar jezelf en elkaar. Echte verbinding met andere zwangeren en mama's in Zuidplas!",
+  aanbod_circle_tekst: "Naast de lessen is er ruimte om samen te zitten: je deelt je ervaringen, stelt je vragen en kijkt naar elkaar om. Met zachte yoga- en ademhalingsoefeningen vertraag je eerst, zodat er ruimte ontstaat om echt naar jezelf en naar elkaar te luisteren. Zo kom je andere zwangeren en moeders uit Zuidplas tegen.",
   tarieven_ondertitel: "Gun jezelf dit wekelijkse rustmoment tijdens je zwangerschap.",
   tarieven_aanvraag_tekst: "Studio Luna voegt zo snel mogelijk je credits toe aan je account. De betaling vindt in de studio plaats bij je eerstvolgende les.",
   over_mij_naam: "Jouw naam",
@@ -2397,7 +2397,7 @@ const DEFAULT_PT: PaginaTeksten = {
   foto_circle_hoogte: "hoog",
   foto_circle_positie: "center",
   home_missie_heading: "Een plek om\nte landen.",
-  home_village_tagline: "Welkom in jouw village.",
+  home_village_tagline: "Je bent welkom, of je nu zwanger bent of allang moeder.",
   home_aanbod_heading: "Alles wat je nodig hebt\nop weg naar de bevalling.",
   home_aanbod_items: "Kleine groepen, veel aandacht en persoonlijk contact.\nZwangerschapsyoga: bevalling voorbereiden, kracht van de adem en fysieke balans.\nNa afloop altijd tijd voor een kopje thee en verbinding.\nEen vaste groep die samen naar de bevalling toewerkt.\nWhatsApp-community voor vragen en tips tussen lessen door.\nAandacht voor zowel het fysieke als het mentale aspect van moederschap.",
   home_locatie_naam: "Waldorfhaus de Perenboom",
@@ -2542,7 +2542,7 @@ function InhoudTab() {
         {field("Missie koptekst", "home_missie_heading", true, "De grote kop boven de bullets. Gebruik een nieuwe regel voor een regeleinde.")}
         {field("Missie bullets", "home_missie_bullets", true, "Eén bullet per regel.")}
         {field("Missie alinea (rechterkolom)", "home_missie_tekst", true)}
-        {field("Afsluitende tagline", "home_village_tagline", false, "Kleine zin onderaan de missie-sectie, bijv. 'Welkom in jouw village.'")}
+        {field("Afsluitende tagline", "home_village_tagline", false, "Kleine zin onderaan de missie-sectie, bijv. 'Je bent welkom, of je nu zwanger bent of allang moeder.'")}
         {saveBtn("home_missie", {
           home_missie_heading: teksten.home_missie_heading,
           home_missie_bullets: teksten.home_missie_bullets,

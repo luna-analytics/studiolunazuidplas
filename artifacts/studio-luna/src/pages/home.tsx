@@ -27,7 +27,7 @@ const DEFAULT_TEKSTEN = {
   aanbod_yoga_locatie: "Waldorfhaus de Perenboom · Raadhuisplein 28, Nieuwerkerk aan den IJssel",
   aanbod_yoga_extra: "Na afloop: verse thee en tijd voor verbinding",
   aanbod_circle_titel: "Zwanger & Mama Circle",
-  aanbod_circle_tekst: "Bij Studio Luna geloven we in de kracht van de 'village'. Naast de fysieke lessen creëren we een veilige cirkel waarin je ervaringen deelt, vragen stelt en naar elkaar omkijkt. We gebruiken zachte yoga- en ademhalingsoefeningen om samen te vertragen, zodat er ruimte ontstaat om echt te luisteren naar jezelf en elkaar. Echte verbinding met andere zwangeren en mama's in Zuidplas!",
+  aanbod_circle_tekst: "Naast de lessen is er ruimte om samen te zitten: je deelt je ervaringen, stelt je vragen en kijkt naar elkaar om. Met zachte yoga- en ademhalingsoefeningen vertraag je eerst, zodat er ruimte ontstaat om echt naar jezelf en naar elkaar te luisteren. Zo kom je andere zwangeren en moeders uit Zuidplas tegen.",
   aanbod_specials_heading: "Bevallings Specials",
   aanbod_specials_items: "Bevallings Yoga Workshop | Focus & Vertrouwen · 120 min | € 49,-\nPartner Workshop | Verbinding & Support · 120 min | € 79,-\nMama Spa | Ultiem ontspannen · 120 min | € 49,-",
   aanbod_specials_bundel: "De Geboorte-Bundel | Alle drie workshops · meest complete voorbereiding | bespaar € 22,- | € 155,-",
@@ -69,7 +69,7 @@ export default function Home() {
   const [extraTypes, setExtraTypes] = useState<LesType[]>([]);
 
   useEffect(() => {
-    document.title = "Aanbod: Geboortereeks, Zwangerschapsyoga en Circles | Studio Luna Zuidplas";
+    document.title = "Aanbod: Geboortereeks, zwangerschapsyoga en events | Studio Luna Zuidplas";
   }, []);
 
   useEffect(() => {
@@ -115,7 +115,7 @@ export default function Home() {
             Studio Luna
           </p>
           <h1 className="font-display text-4xl md:text-5xl font-medium text-foreground leading-[1.1]">Aanbod</h1>
-          <p className="text-foreground/45 text-sm mt-3 tracking-wide">Geboortereeks · Zwangerschapsyoga · Circles</p>
+          <p className="text-foreground/45 text-sm mt-3 tracking-wide">Geboortereeks · Zwangerschapsyoga · Events</p>
         </motion.div>
 
         {/* ══════════════════════════════════════════════════════════

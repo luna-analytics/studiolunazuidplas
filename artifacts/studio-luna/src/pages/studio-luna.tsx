@@ -18,13 +18,13 @@ const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 const DEFAULT_TEKSTEN = {
   cta_url: "/geboortereeks",
   cta_label: "Bekijk de Geboortereeks",
-  home_hero: "Zwangerschapsyoga en\ngeboortevoorbereiding in Zuidplas.",
+  home_hero: "Zwangerschapsyoga, workshops\nen wandelingen voor zwangeren\nen moeders in Zuidplas.",
   home_missie_heading: "Een plek om\nte landen.",
-  home_missie_tekst: "Het moederschap hoef je niet alleen te doen. De missie van Studio Luna is het faciliteren van een community voor alle vrouwen in Nieuwerkerk aan den IJssel en omgeving, van zwangerschap tot ver daarna. Een veilige haven om fysiek op te laden, mentaal tot rust te komen en bovenal in verbinding te staan met andere moeders in dezelfde fase.",
-  home_missie_bullets: "Een plek om te landen.\nEen plek om fysiek sterk, gezond en in balans te blijven.\nEen plek om vertrouwen te vinden in je veranderende lichaam.\nEen plek om te connecten met andere moeders.\nStudio Luna is jouw mama tribe.",
-  home_village_tagline: "Welkom in jouw village.",
-  home_aanbod_heading: "Alles wat je nodig hebt\nop weg naar de bevalling.",
-  home_aanbod_items: "Kleine groepen, veel aandacht en persoonlijk contact.\nZwangerschapsyoga: bevalling voorbereiden, kracht van de adem en fysieke balans.\nNa afloop altijd tijd voor een kopje thee en verbinding.\nEen vaste groep die samen naar de bevalling toewerkt.\nWhatsApp-community voor vragen en tips tussen lessen door.\nAandacht voor zowel het fysieke als het mentale aspect van moederschap.",
+  home_missie_tekst: "Ik geef elke week les aan een kleine groep zwangeren, ik haal er experts bij die iets weten wat ik niet weet, en ik organiseer ertussendoor workshops en wandelingen waar je andere moeders uit Zuidplas tegenkomt. Je hoeft het moederschap niet alleen te doen, en je hoeft er ook niet alleen yoga voor te komen doen. Ben je zwanger, net bevallen of allang moeder, dan ben je hier welkom.",
+  home_missie_bullets: "Een plek om te landen, voor en na je bevalling.\nEen plek om fysiek sterk, gezond en in balans te blijven.\nEen plek om vertrouwen te vinden in je veranderende lichaam.\nEen plek waar je andere moeders uit Zuidplas tegenkomt.\nEen plek waar experts langskomen die iets weten wat ik niet weet.",
+  home_village_tagline: "Je bent welkom, of je nu zwanger bent of allang moeder.",
+  home_aanbod_heading: "Alles wat je nodig hebt,\nvan zwangerschap tot moederschap.",
+  home_aanbod_items: "Kleine groepen, veel aandacht en persoonlijk contact.\nZwangerschapsyoga: bevalling voorbereiden, kracht van de adem en fysieke balans.\nNa afloop altijd tijd voor een kopje thee en verbinding.\nEen vaste groep die samen naar de bevalling toewerkt.\nWorkshops van experts en wandelingen met andere moeders, ook na je bevalling.\nEen WhatsApp-groep voor vragen en tips tussen de lessen door.\nAandacht voor zowel het fysieke als het mentale aspect van moederschap.",
   home_locatie_naam: "Waldorfhaus de Perenboom",
   home_locatie_adres: "Raadhuisplein 28\n2914 KM Nieuwerkerk aan den IJssel",
   home_contact_email: "info@studiolunazuidplas.nl",
@@ -128,7 +128,7 @@ export default function StudioLuna() {
               </button>
             </div>
             <p className="mt-7 text-[13px] text-foreground/60">
-              Nieuwerkerk aan den IJssel, gemeente Zuidplas
+              Lessen, events en de zorgkaart voor de regio. Nieuwerkerk aan den IJssel, gemeente Zuidplas.
             </p>
           </div>
         </div>

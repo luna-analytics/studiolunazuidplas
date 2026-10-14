@@ -19,14 +19,16 @@ const TOON_LOGIN = false;
 // "kort" is het label in de mobiele balk onderin.
 const ALL_NAV = [
   { href: "/", label: "Studio Luna", kort: "Studio Luna" },
-  { href: "/geboortereeks", label: "Zwangerschapsyoga", kort: "Yoga" },
+  { href: "/geboortereeks", label: "Lessen", kort: "Lessen" },
+  { href: "/agenda", label: "Agenda", kort: "Agenda" },
   { href: "/geboortezorg-zuidplas", label: "Zorgkaart", kort: "Zorgkaart" },
-  { href: "/over-mij", label: "Over mij", kort: "Over mij" },
   { href: "/blog", label: "Blog", kort: "Blog" },
+  { href: "/over-mij", label: "Over mij", kort: "Over mij" },
 ];
 
-// Vier tabs die altijd zichtbaar zijn in de balk
-const PRIMARY_NAV = ["/", "/geboortereeks", "/geboortezorg-zuidplas", "/blog"];
+// Vier tabs die altijd zichtbaar zijn in de balk; Blog en Over mij staan in
+// het uitklapmenu, want de agenda hoort nu bij het eerste wat je ziet.
+const PRIMARY_NAV = ["/", "/geboortereeks", "/agenda", "/geboortezorg-zuidplas"];
 
 export function BottomNav() {
   const [location, navigate] = useLocation();
