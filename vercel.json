@@ -10,6 +10,16 @@
       "has": [{ "type": "host", "value": "studiolunazuidplas.nl" }],
       "destination": "https://www.studiolunazuidplas.nl/:path*",
       "permanent": true
+    },
+    {
+      "source": "/zorgkaart",
+      "destination": "/geboortezorg-zuidplas",
+      "permanent": true
+    },
+    {
+      "source": "/zorgkaart-zuidplas",
+      "destination": "/geboortezorg-zuidplas",
+      "permanent": true
     }
   ],
   "rewrites": [
