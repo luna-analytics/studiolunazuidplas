@@ -179,13 +179,13 @@ const ROUTES = [
     inhoud:
       `<h1>Zwangerschapsyoga en geboortevoorbereiding in Zuidplas</h1>` +
       `<p>Studio Luna biedt de Geboortereeks, acht wekelijkse lessen zwangerschapsyoga en geboortevoorbereiding in Nieuwerkerk aan den IJssel, en houdt de Geboortezorgkaart Zuidplas bij met alle geboortezorg in de regio.</p>` +
-      `<p><a href="/geboortereeks">De Geboortereeks, start dinsdag 29 september</a> · <a href="/geboortezorg-zuidplas">De Geboortezorgkaart Zuidplas</a></p>` +
+      `<p><a href="/geboortereeks">De Geboortereeks, start woensdag 13 januari</a> · <a href="/geboortezorg-zuidplas">De Geboortezorgkaart Zuidplas</a></p>` +
       faqHtml(homeFaq),
   },
   {
     pad: "geboortereeks",
     title: "Zwangerschapscursus in Zuidplas: de Geboortereeks | Studio Luna",
-    beschrijving: "Acht wekelijkse lessen zwangerschapsyoga en geboortevoorbereiding in Nieuwerkerk aan den IJssel, voor zwangeren uit heel Zuidplas: Zevenhuizen, Moordrecht en Moerkapelle. Start dinsdag 29 september, introductieprijs €175.",
+    beschrijving: "Acht wekelijkse lessen zwangerschapsyoga en geboortevoorbereiding in Nieuwerkerk aan den IJssel, voor zwangeren uit heel Zuidplas: Zevenhuizen, Moordrecht en Moerkapelle. Start woensdag 13 januari 2027, €195.",
     jsonLd: [
       {
         "@context": "https://schema.org",
@@ -196,16 +196,16 @@ const ROUTES = [
         hasCourseInstance: {
           "@type": "CourseInstance",
           courseMode: "onsite",
-          startDate: "2026-09-29",
+          startDate: "2027-01-13",
           location: { "@type": "Place", name: "Nieuwerkerk aan den IJssel", address: { "@type": "PostalAddress", addressLocality: "Nieuwerkerk aan den IJssel", addressRegion: "Zuidplas", addressCountry: "NL" } },
         },
-        offers: [{ "@type": "Offer", name: "Geboortereeks, introductieprijs eerste groep", price: "175.00", priceCurrency: "EUR" }],
+        offers: [{ "@type": "Offer", name: "Geboortereeks, acht wekelijkse lessen", price: "195.00", priceCurrency: "EUR" }],
       },
       faqJsonLd(reeksFaq),
     ],
     inhoud:
       `<h1>De Geboortereeks</h1>` +
-      `<p>8-weekse zwangerschapsyoga- en geboortevoorbereidingsreeks in Nieuwerkerk aan den IJssel. Start dinsdag 29 september, elke dinsdag van 19:00 tot 20:15 uur, maximaal acht zwangeren. €175 introductieprijs voor deze eerste groep, daarna €195.</p>` +
+      `<p>8-weekse zwangerschapsyoga- en geboortevoorbereidingsreeks in Nieuwerkerk aan den IJssel. Start woensdag 13 januari 2027, elke woensdag van 19:00 tot 20:15 uur, maximaal acht zwangeren. €195 voor de hele reeks.</p>` +
       `<h2>Wat zit erin</h2><ul>` + inbegrepen.map((t) => `<li>${tekstVeilig(t)}</li>`).join("") + `</ul>` +
       faqHtml(reeksFaq),
   },
@@ -279,7 +279,7 @@ for (const cat of categorieen) {
         `<h2>${tekstVeilig(a.naam)}</h2><p>${tekstVeilig(a.plaats)}. ${tekstVeilig(a.beschrijving)} <a href="${ontsmet(a.website)}" rel="nofollow">Website</a></p>`
       ).join("") +
       `<p><a href="/geboortezorg-zuidplas">Bekijk alle geboortezorg in Zuidplas</a></p>` +
-      `<p>Deze kaart is een initiatief van <a href="/">Studio Luna</a> in Nieuwerkerk aan den IJssel, waar op 29 september <a href="/geboortereeks">de Geboortereeks</a> start.</p>`,
+      `<p>Deze kaart is een initiatief van <a href="/">Studio Luna</a> in Nieuwerkerk aan den IJssel, waar op 13 januari <a href="/geboortereeks">de Geboortereeks</a> start.</p>`,
   });
 }
 

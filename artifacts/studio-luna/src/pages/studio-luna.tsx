@@ -38,7 +38,7 @@ const DEFAULT_TEKSTEN = {
 const FAQ_ITEMS = [
   {
     vraag: "Vanaf hoeveel weken kan ik meedoen?",
-    antwoord: "Bij de start ben je ongeveer tussen de 20 en 28 weken zwanger. Val je daarbuiten maar wil je toch graag meedoen, stuur me dan even een berichtje. De eerstvolgende reeks start op dinsdag 29 september.",
+    antwoord: "Bij de start ben je ongeveer tussen de 20 en 28 weken zwanger. Val je daarbuiten maar wil je toch graag meedoen, stuur me dan even een berichtje. De eerstvolgende reeks start op woensdag 13 januari.",
   },
   {
     vraag: "Heb ik yoga-ervaring nodig?",
@@ -46,7 +46,7 @@ const FAQ_ITEMS = [
   },
   {
     vraag: "Wat kost het?",
-    antwoord: "De Geboortereeks van acht wekelijkse lessen kost €195; deze eerste groep betaalt eenmalig de introductieprijs van €175. De mama-en-babyles na afloop krijg je cadeau.",
+    antwoord: "De Geboortereeks van acht wekelijkse lessen kost €195. De mama-en-babyles na afloop krijg je cadeau.",
   },
   {
     vraag: "Waar zijn de lessen?",
@@ -151,9 +151,14 @@ export default function StudioLuna() {
             className="md:grid md:grid-cols-[1fr_1.5fr] md:gap-14 lg:gap-20 md:items-start"
           >
             <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground leading-[1.15] mb-6 md:mb-0">
-              De Geboortereeks start <em className="not-italic text-primary">29 september</em>
+              De volgende Geboortereeks start <em className="not-italic text-primary">13 januari</em>
             </h2>
             <div>
+              <p className="text-[15px] text-foreground/80 leading-[1.95] mb-8">
+                De reeks die op 29 september is begonnen loopt nu, dus daar kun je niet meer
+                bij instappen. Voor de nieuwe groep kun je je wel aanmelden: die start op
+                woensdag 13 januari en loopt acht woensdagavonden tot en met 3 maart.
+              </p>
               <p className="text-[15px] text-foreground/80 leading-[1.95] mb-8">
                 Acht weken zwangerschapsyoga en geboortevoorbereiding in een vaste groep,
                 inclusief een partnerles. Een aantal weken na de laatste bevalling is er de
@@ -161,9 +166,8 @@ export default function StudioLuna() {
                 deze postpartumles is inbegrepen in de reeks.
               </p>
               <p className="text-[15px] text-foreground/80 leading-[1.9] mb-8">
-                De reeks kost €175 als introductieprijs voor deze eerste groep, daarna €195.
-                Veel zorgverzekeraars vergoeden een zwangerschapscursus geheel of gedeeltelijk
-                vanuit de aanvullende verzekering.
+                De reeks kost €195. Veel zorgverzekeraars vergoeden een zwangerschapscursus
+                geheel of gedeeltelijk vanuit de aanvullende verzekering.
               </p>
               <button
                 onClick={() => navigate("/geboortereeks")}

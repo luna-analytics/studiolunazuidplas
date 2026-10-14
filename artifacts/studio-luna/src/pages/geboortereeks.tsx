@@ -16,19 +16,19 @@ const fadeUp = {
 };
 
 const KALENDER = [
-  { datum: "dinsdag 29 september" },
-  { datum: "dinsdag 6 oktober" },
-  { datum: "dinsdag 13 oktober" },
-  { datum: "dinsdag 20 oktober" },
-  { datum: "dinsdag 27 oktober", noot: "Een bekkenfysiotherapeut uit de regio sluit aan als gastexpert over het bekken en de bekkenbodem." },
-  { datum: "dinsdag 3 november" },
-  { datum: "dinsdag 10 november", noot: "Partnerles" },
-  { datum: "dinsdag 17 november" },
-  { datum: "voorjaar 2027", noot: "Mama-en-babyyoga cadeau, datum volgt" },
+  { datum: "woensdag 13 januari" },
+  { datum: "woensdag 20 januari" },
+  { datum: "woensdag 27 januari" },
+  { datum: "woensdag 3 februari" },
+  { datum: "woensdag 10 februari", noot: "Een bekkenfysiotherapeut uit de regio sluit aan als gastexpert over het bekken en de bekkenbodem." },
+  { datum: "woensdag 17 februari" },
+  { datum: "woensdag 24 februari", noot: "Partnerles" },
+  { datum: "woensdag 3 maart" },
+  { datum: "datum volgt", noot: "Mama-en-babyyoga cadeau, zodra alle kindjes geboren zijn" },
 ];
 
 const PRAKTISCH = [
-  { label: "Start", waarde: "dinsdag 29 september, daarna elke week op dinsdag van 19:00 tot 20:15 uur" },
+  { label: "Start", waarde: "woensdag 13 januari, daarna elke week op woensdag van 19:00 tot 20:15 uur" },
   { label: "Groep", waarde: "maximaal 8 zwangeren, een vaste groep" },
   { label: "Voor wie", waarde: "bij de start ben je ongeveer tussen de 20 en 28 weken zwanger" },
   { label: "Locatie", waarde: "Waldorfhaus de Perenboom, Raadhuisplein 28 in Nieuwerkerk aan den IJssel" },
@@ -37,8 +37,7 @@ const PRAKTISCH = [
     label: "Prijs",
     waarde: (
       <>
-        <span className="font-semibold text-foreground">€175</span> introductieprijs voor deze
-        eerste groep, daarna €195
+        <span className="font-semibold text-foreground">€195</span> voor de hele reeks
       </>
     ),
   },
@@ -61,7 +60,7 @@ const AVOND = [
 ];
 
 const INBEGREPEN = [
-  "Acht wekelijkse lessen van 75 minuten op de dinsdagavond, plus mama-en-babyyoga cadeau zodra alle kindjes geboren zijn",
+  "Acht wekelijkse lessen van 75 minuten op de woensdagavond, plus mama-en-babyyoga cadeau zodra alle kindjes geboren zijn",
   "Een vaste groep van maximaal acht zwangeren, zodat je elkaar echt leert kennen",
   "Een les over je bekken en bekkenbodem die een bekkenfysiotherapeut samen met mij geeft",
   "Een complete bevallingsles en een partnerles waarin je geboortepartner tools krijgt om jou te ondersteunen",
@@ -72,11 +71,11 @@ const INBEGREPEN = [
 const FAQ_ITEMS = [
   {
     vraag: "Voor wie is de Geboortereeks?",
-    antwoord: "Bij de start op 29 september ben je ongeveer tussen de 20 en 28 weken zwanger. Val je daarbuiten maar wil je toch graag meedoen, stuur me dan even een berichtje. Yoga-ervaring is niet nodig, alles wordt rustig opgebouwd en uitgelegd.",
+    antwoord: "Bij de start op 13 januari ben je ongeveer tussen de 20 en 28 weken zwanger. Val je daarbuiten maar wil je toch graag meedoen, stuur me dan even een berichtje. Yoga-ervaring is niet nodig, alles wordt rustig opgebouwd en uitgelegd.",
   },
   {
     vraag: "Wat kost de reeks?",
-    antwoord: "De Geboortereeks van acht wekelijkse lessen kost €195; deze eerste groep betaalt eenmalig de introductieprijs van €175. De mama-en-babyles na afloop krijg je cadeau.",
+    antwoord: "De Geboortereeks van acht wekelijkse lessen kost €195. De mama-en-babyles na afloop krijg je cadeau.",
   },
   {
     vraag: "Hoe meld ik me aan?",
@@ -102,7 +101,7 @@ const FAQ_ITEMS = [
 
 // Aanmelden = naam en e-mailadres achterlaten; daarna stuurt Marjolein zelf het
 // intakeformulier (Tally) en de factuur per mail. Geen online betaling.
-const WHATSAPP_URL = "https://wa.me/31643735343?text=" + encodeURIComponent("Hoi! Ik heb een vraag over de Geboortereeks die op 29 september start.");
+const WHATSAPP_URL = "https://wa.me/31643735343?text=" + encodeURIComponent("Hoi! Ik heb een vraag over de Geboortereeks die op 13 januari start.");
 
 export default function Geboortereeks() {
   const [isInterestOpen, setIsInterestOpen] = useState(false);
@@ -147,7 +146,7 @@ export default function Geboortereeks() {
 
   usePageMeta({
     title: "Zwangerschapscursus in Zuidplas: de Geboortereeks | Studio Luna",
-    description: "Acht wekelijkse lessen zwangerschapsyoga en geboortevoorbereiding in Nieuwerkerk aan den IJssel, voor zwangeren uit heel Zuidplas: Zevenhuizen, Moordrecht en Moerkapelle. Start dinsdag 29 september, introductieprijs €175.",
+    description: "Acht wekelijkse lessen zwangerschapsyoga en geboortevoorbereiding in Nieuwerkerk aan den IJssel, voor zwangeren uit heel Zuidplas: Zevenhuizen, Moordrecht en Moerkapelle. Start woensdag 13 januari 2027, €195.",
     jsonLd: [
       {
         "@context": "https://schema.org",
@@ -158,11 +157,11 @@ export default function Geboortereeks() {
         hasCourseInstance: {
           "@type": "CourseInstance",
           courseMode: "onsite",
-          startDate: "2026-09-29",
+          startDate: "2027-01-13",
           location: { "@type": "Place", name: "Waldorfhaus de Perenboom", address: { "@type": "PostalAddress", streetAddress: "Raadhuisplein 28", postalCode: "2914 KM", addressLocality: "Nieuwerkerk aan den IJssel", addressRegion: "Zuidplas", addressCountry: "NL" } },
         },
         offers: [
-          { "@type": "Offer", name: "Geboortereeks, introductieprijs eerste groep", price: "175.00", priceCurrency: "EUR" },
+          { "@type": "Offer", name: "Geboortereeks, acht wekelijkse lessen", price: "195.00", priceCurrency: "EUR" },
         ],
       },
       {
@@ -194,13 +193,13 @@ export default function Geboortereeks() {
               8-weekse zwangerschapsyoga- en geboortevoorbereidingsreeks
             </p>
             <p className="text-[15px] text-foreground/80 mt-4">
-              Start dinsdag 29 september · €175 introductieprijs voor deze eerste groep, daarna €195
+              Start woensdag 13 januari · €195 voor de hele reeks
             </p>
             <a
               href="#aanmelden"
               className="inline-flex items-center mt-6 bg-primary text-primary-foreground px-7 py-3.5 rounded-[6px] font-semibold text-sm hover:bg-primary/88"
             >
-              Meld je aan voor 29 september
+              Meld je aan voor 13 januari
             </a>
           </div>
 
@@ -268,7 +267,7 @@ export default function Geboortereeks() {
           >
             <div>
               <h2 className="font-display text-2xl md:text-3xl font-medium text-foreground leading-[1.15] mb-5">
-                Hoe een dinsdagavond eruitziet
+                Hoe een woensdagavond eruitziet
               </h2>
               <div className="max-w-sm">
                 {AVOND.map((stap) => (
@@ -307,7 +306,7 @@ export default function Geboortereeks() {
             className="max-w-2xl"
           >
             <h2 className="font-display text-2xl md:text-3xl font-medium text-foreground leading-[1.15] mb-5">
-              Wil je erbij zijn op 29 september?
+              Wil je erbij zijn op 13 januari?
             </h2>
             {aanmeldingen !== null && aanmeldingen > 0 && (
               <p className="text-sm font-semibold text-primary mb-3">
@@ -533,7 +532,7 @@ export default function Geboortereeks() {
               href="#aanmelden"
               className="inline-flex items-center mt-8 text-sm font-semibold text-primary border-b border-primary/35 pb-0.5 hover:border-primary"
             >
-              Meld je aan voor 29 september
+              Meld je aan voor 13 januari
             </a>
           </motion.div>
         </section>
