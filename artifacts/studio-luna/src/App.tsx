@@ -39,6 +39,19 @@ const CANONICAL_BASE = "https://www.studiolunazuidplas.nl";
 function ScrollToTop() {
   const [location] = useLocation();
   useEffect(() => {
+    // Een link met een anker (zoals /geboortereeks#mama-en-babyyoga uit het
+    // menu) gaat naar die plek; de pagina moet dan eerst getekend zijn.
+    const anker = window.location.hash.slice(1);
+    if (anker && location !== "/") {
+      let pogingen = 0;
+      const zoek = () => {
+        const el = document.getElementById(anker);
+        if (el) el.scrollIntoView({ block: "start" });
+        else if (pogingen++ < 20) setTimeout(zoek, 50);
+      };
+      zoek();
+      return;
+    }
     window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
   }, [location]);
   return null;

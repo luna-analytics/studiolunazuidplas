@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useRoute } from "wouter";
 import { BottomNav } from "@/components/bottom-nav";
+import { SeoFooter } from "@/components/seo-footer";
 import { CtaBlock } from "@/components/cta-block";
 import { usePageMeta } from "@/lib/seo";
 
@@ -262,6 +263,7 @@ export default function BlogArtikel() {
           </div>
         </div>
 
+        <SeoFooter />
         <BottomNav />
       </div>
     </div>

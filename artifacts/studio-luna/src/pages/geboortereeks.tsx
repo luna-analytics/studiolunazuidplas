@@ -228,7 +228,7 @@ export default function Geboortereeks() {
                 Wat deze reeks bijzonder maakt: een bekkenfysiotherapeut geeft één van de
                 lessen samen met mij en neemt je mee in alles over je bekken en bekkenbodem.
               </p>
-              <p className="text-[15px] text-foreground/80 leading-[1.95]">
+              <p id="mama-en-babyyoga" className="text-[15px] text-foreground/80 leading-[1.95] scroll-mt-28">
                 En als alle kindjes geboren zijn, komt de groep nog één keer samen voor
                 mama-en-babyyoga; deze postpartumles is mijn cadeautje aan jullie. Zo begint je
                 moederschap met een groep vrouwen die je echt hebt leren kennen.
