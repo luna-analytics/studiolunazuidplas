@@ -43,6 +43,23 @@ export const IMAGES = {
    *  op de buik (50). */
   zorgkaart: img("zorgkaart-buiten.webp"),
 
+  /** Waar de Zorgkaart-foto langzaam naar overloopt: door de moestuin lopen
+   *  met haar kind (81). Zwangerschap en daarna, zoals de kop ernaast zegt. */
+  zorgkaartTuin: img("zorgkaart-tuin.webp"),
+
+  /** In de gids op de Zorgkaart, boven Na de geboorte: haar kind op de arm in
+   *  de tuin (26). Ze koos deze foto's op 27 oktober omdat de kaart ook over
+   *  moeders en postpartum gaat. */
+  zorgkaartMoeder: img("zorgkaart-moeder.webp"),
+
+  /** In de gids op de Zorgkaart, onder de eerste kolom: handen om haar kind
+   *  op schoot (45). */
+  zorgkaartHanden: img("zorgkaart-handen.webp"),
+
+  /** Onderaan de Zorgkaart, naast per dorp en voor zorgverleners: lavendel in
+   *  de hand (35). */
+  zorgkaartKruiden: img("zorgkaart-kruiden.webp"),
+
   /** Foto naast de kop van de eventspagina: handen naar de lucht (59). */
   events: img("events-buiten.webp"),
 

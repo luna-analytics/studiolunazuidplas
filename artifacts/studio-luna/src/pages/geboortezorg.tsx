@@ -2,10 +2,15 @@ import { useMemo, useState } from "react";
 import { Link } from "wouter";
 import { BottomNav } from "@/components/bottom-nav";
 import { SeoFooter } from "@/components/seo-footer";
-import { ZORGKAART, TAG_LABELS, LAATST_BIJGEWERKT, PLAATSEN, isNieuw, type ZorgTag, type Zorgverlener, categorieenPerFase } from "@/data/zorgkaart";
+import { ZORGKAART, TAG_LABELS, LAATST_BIJGEWERKT, PLAATSEN, isNieuw, type ZorgTag, type Zorgverlener, type ZorgCategorie, categorieenPerFase } from "@/data/zorgkaart";
 import { usePageMeta } from "@/lib/seo";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { IMAGES } from "@/lib/images";
+import { WisselFoto, Meebewegen } from "@/components/beweging";
+
+/* De organische uitsnede van de foto's op deze pagina, dezelfde als sinds 4 september. */
+const BLOB = "56% 44% 50% 50% / 46% 54% 46% 54%";
+const BLOB_ANDERS = "48% 52% 44% 56% / 54% 46% 54% 46%";
 
 const normalize = (s: string) =>
   s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
@@ -75,6 +80,35 @@ const ZORGKAART_VRAGEN = [
     antwoord: "Studio Luna in Nieuwerkerk aan den IJssel houdt de Geboortezorgkaart Zuidplas bij. Aanbieders betalen niet om erop te staan; ze staan erop omdat ze in of voor deze regio werken.",
   },
 ];
+
+/** Eén fase van de gids: de kop met daaronder de soorten zorg als lijst met
+ *  haarlijnen, met rechts het aantal aanbieders. */
+function FaseLijst({ titel, categorieen }: { titel: string; categorieen: ZorgCategorie[] }) {
+  return (
+    <section className="mb-12">
+      <h3 className="font-display text-2xl md:text-[1.7rem] font-medium text-foreground leading-[1.2] pb-3 border-b border-border/45">
+        {titel}
+      </h3>
+      <ul className="m-0 p-0 list-none">
+        {categorieen.map((cat) => (
+          <li key={cat.id} className="border-b border-border/25">
+            <Link
+              href={`/geboortezorg-zuidplas/${cat.id}`}
+              className="group flex items-baseline justify-between gap-4 py-4"
+            >
+              <span className="text-[17px] font-medium text-foreground group-hover:text-primary transition-colors leading-snug">
+                {cat.titel}
+              </span>
+              <span className="text-[15px] text-foreground/65 tabular-nums shrink-0">
+                {cat.aanbieders.length}
+              </span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
 
 const veldKlasse =
   "w-full px-4 py-3 rounded-md border border-border/40 bg-card text-[15px] text-foreground placeholder:text-foreground/50";
@@ -192,12 +226,12 @@ export default function Geboortezorg() {
     <div className="min-h-screen bg-background pb-28 md:pb-16 md:pt-16">
       <div className="w-full max-w-7xl mx-auto relative overflow-x-hidden">
 
-        {/* ── TITEL EN INTRO — typografisch, met de herofoto in een zachte
+        {/* ── TITEL EN INTRO — typografisch, met haar foto's in een zachte
                organische uitsnede ernaast in plaats van een gekleurd vlak.
-               Andere foto? Vervang public/images/foto-hero.webp of pas het
-               pad aan in lib/images.ts. ── */}
+               Andere foto's? Pas zorgkaart en zorgkaartTuin aan in
+               lib/images.ts. ── */}
         <div className="px-7 md:px-14 lg:px-20 xl:px-28 pt-12 md:pt-10 pb-6">
-          <div className="max-w-4xl md:grid md:grid-cols-[1fr_auto] md:gap-12 md:items-start">
+          <div className="max-w-5xl md:grid md:grid-cols-[1fr_auto] md:gap-14 md:items-center">
             <div>
               <h1 className="font-display text-4xl md:text-5xl font-medium text-foreground leading-[1.1]">
                 Geboortezorg in Zuidplas
@@ -210,12 +244,16 @@ export default function Geboortezorg() {
                 Met zorg bijgehouden door Studio Luna · bijgewerkt in {LAATST_BIJGEWERKT.tekst}
               </p>
             </div>
-            <img
-              src={IMAGES.zorgkaart}
-              alt=""
-              className="hidden md:block w-36 lg:w-44 aspect-[4/5] object-cover self-start"
-              style={{ borderRadius: "56% 44% 50% 50% / 46% 54% 46% 54%" }}
-            />
+            {/* Groter dan voorheen en ook op de telefoon, en de foto loopt rustig over
+                van de zwangere buik naar moeder en kind in de tuin: zwangerschap en
+                daarna, zoals de zin ernaast (27 oktober, haar foto's). */}
+            <Meebewegen afstand={18} className="mt-9 md:mt-0 ml-auto md:ml-0 w-48 sm:w-60 md:w-64 lg:w-80">
+              <div className="relative aspect-[4/5] w-full overflow-hidden" style={{ borderRadius: BLOB }}>
+                <div className="absolute inset-0">
+                  <WisselFoto fotos={[IMAGES.zorgkaart, IMAGES.zorgkaartTuin]} alt="" hoogte="100%" positie="center" interval={7000} />
+                </div>
+              </div>
+            </Meebewegen>
           </div>
         </div>
 
@@ -272,33 +310,40 @@ export default function Geboortezorg() {
                Bij zoeken verschijnen de aanbieders direct als lijst. ── */}
         <div className="px-7 md:px-14 lg:px-20 xl:px-28 pt-6 pb-8">
           {!filterActief && (
-            /* Op brede schermen vullen de fasegroepen twee kolommen, zodat de
-               gids de pagina vult in plaats van in één smalle strook te hangen. */
-            <div className="md:columns-2 md:gap-x-20 lg:gap-x-28">
-              {fasen.map((fase) => (
-                <section key={fase.titel} className="break-inside-avoid mb-12">
-                  <h3 className="font-display text-2xl md:text-[1.7rem] font-medium text-foreground leading-[1.2] pb-3 border-b border-border/45">
-                    {fase.titel}
-                  </h3>
-                  <ul className="m-0 p-0 list-none">
-                    {fase.categorieen.map((cat) => (
-                      <li key={cat.id} className="border-b border-border/25">
-                        <Link
-                          href={`/geboortezorg-zuidplas/${cat.id}`}
-                          className="group flex items-baseline justify-between gap-4 py-4"
-                        >
-                          <span className="text-[17px] font-medium text-foreground group-hover:text-primary transition-colors leading-snug">
-                            {cat.titel}
-                          </span>
-                          <span className="text-[15px] text-foreground/65 tabular-nums shrink-0">
-                            {cat.aanbieders.length}
-                          </span>
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </section>
-              ))}
+            /* Op brede schermen twee kolommen, zodat de gids de pagina vult in plaats
+               van in één smalle strook te hangen. Sinds 27 oktober staan er haar
+               foto's tussen, omdat de kaart ook over moeders en postpartum gaat: de
+               tweede kolom begint met moeder en kind (26) boven Na de geboorte, en de
+               eerste kolom eindigt met handen om haar kind (45). Op de telefoon staat
+               alleen de eerste foto, precies tussen Rond de geboorte en Na de geboorte.
+               De eerste twee fasen staan links, de rest rechts. */
+            <div className="md:grid md:grid-cols-2 md:gap-x-20 lg:gap-x-28 md:items-start">
+              <div>
+                {fasen.slice(0, 2).map((fase) => (
+                  <FaseLijst key={fase.titel} titel={fase.titel} categorieen={fase.categorieen} />
+                ))}
+                <Meebewegen afstand={26} className="hidden md:block mb-12">
+                  <img
+                    src={IMAGES.zorgkaartHanden}
+                    alt=""
+                    loading="lazy"
+                    className="w-full max-w-[26rem] aspect-[4/5] object-cover"
+                  />
+                </Meebewegen>
+              </div>
+              <div>
+                <Meebewegen afstand={-18} className="mb-12">
+                  <img
+                    src={IMAGES.zorgkaartMoeder}
+                    alt=""
+                    loading="lazy"
+                    className="w-full max-w-[26rem] aspect-[4/5] object-cover"
+                  />
+                </Meebewegen>
+                {fasen.slice(2).map((fase) => (
+                  <FaseLijst key={fase.titel} titel={fase.titel} categorieen={fase.categorieen} />
+                ))}
+              </div>
             </div>
           )}
 
@@ -423,6 +468,11 @@ export default function Geboortezorg() {
         {/* ── PER PLAATS — bewust onderaan. Bijna iedereen op deze kaart werkt in
                heel Zuidplas, dus wie binnenkomt hoort eerst het hele aanbod te zien
                en pas daarna de afslag naar het eigen dorp. ── */}
+        {/* Lavendel in de hand (35) in de organische uitsnede, rechts naast per dorp
+            en voor zorgverleners, waar de pagina anders leeg bleef. Alleen op
+            brede schermen; op de telefoon staan de foto's al in de gids. */}
+        <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start">
+        <div>
         <section className="px-7 md:px-14 lg:px-20 xl:px-28 pt-10 md:pt-12">
           <div className="max-w-2xl border-t border-border/25 pt-8">
             <h2 className="font-display text-2xl font-medium text-foreground leading-[1.2]">
@@ -534,6 +584,17 @@ export default function Geboortezorg() {
             )}
           </div>
         </section>
+        </div>
+        <Meebewegen afstand={30} className="hidden lg:block w-56 xl:w-72 mt-16 mr-20 xl:mr-28">
+          <img
+            src={IMAGES.zorgkaartKruiden}
+            alt=""
+            loading="lazy"
+            className="w-full aspect-[4/5] object-cover"
+            style={{ borderRadius: BLOB_ANDERS }}
+          />
+        </Meebewegen>
+        </div>
 
         <section className="px-7 md:px-14 lg:px-20 xl:px-28 py-12 border-t border-border/15">
           <h2 className="font-display text-2xl md:text-3xl font-medium text-foreground leading-[1.2]">

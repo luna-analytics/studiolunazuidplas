@@ -128,11 +128,11 @@ export default function StudioLuna() {
                 Ontdek de zorgkaart
               </button>
             </div>
-            <p className="mt-7 text-[13px] text-foreground/60">
-              Lessen, events en de zorgkaart voor de regio. Nieuwerkerk aan den IJssel, gemeente Zuidplas.
-            </p>
-            {/* Haar tekst, 27 oktober. */}
-            <p className="mt-2 text-[13px] text-foreground/70 max-w-xl">
+            {/* Haar tekst, 27 oktober. De regel "Lessen, events en de zorgkaart voor
+                de regio" stond hierboven en is op haar verzoek weg (27 oktober): hij
+                zei niets wat de kop niet al zegt en hield deze uitnodiging klein. De
+                plaatsnaam staat nog in de paginatitel, het adres en de voettekst. */}
+            <p className="mt-8 text-[15px] text-foreground/80 leading-[1.8] max-w-xl">
               Ben je een zorgverlener of vrouwelijke ondernemer en wil je graag samenwerken met
               Studio Luna? Stuur me dan een{" "}
               <a
