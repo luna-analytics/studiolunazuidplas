@@ -3,6 +3,7 @@ import { useLocation } from "wouter";
 import { BottomNav } from "@/components/bottom-nav";
 import { SeoFooter } from "@/components/seo-footer";
 import { CtaBlock } from "@/components/cta-block";
+import { IMAGES } from "@/lib/images";
 
 // De inleiding is haar eigen tekst (14 oktober); niet herschrijven. De pagina
 // legt met opzet niet vast wat voor events er komen: dat kan van alles zijn,
@@ -20,11 +21,8 @@ export default function Events() {
       <div className="w-full max-w-7xl bg-background min-h-screen relative">
 
         {/* KOP */}
-        <div className="px-7 md:px-14 lg:px-20 xl:px-28 pt-14 md:pt-12 pb-10">
-          <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary/60 mb-3 flex items-center gap-3">
-            <span className="inline-block w-8 h-px bg-primary/40" />
-            Studio Luna
-          </p>
+        <div className="px-7 md:px-14 lg:px-20 xl:px-28 pt-14 md:pt-12 pb-10 md:flex md:items-start md:justify-between md:gap-12">
+          <div>
           <h1 className="font-display text-4xl md:text-5xl font-medium text-foreground leading-[1.1]">
             Events
           </h1>
@@ -34,6 +32,12 @@ export default function Events() {
             Deze events zijn voor zwangeren, moeders en ondernemende vrouwen die verdieping,
             inspiratie en verbinding zoeken.
           </p>
+          </div>
+          <img
+            src={IMAGES.events}
+            alt="Twee handen die elkaar vasthouden tegen de lucht"
+            className="block w-full max-w-[280px] aspect-[4/5] object-cover mt-8 md:mt-0 shrink-0"
+          />
         </div>
 
         {/* WAT ER STAAT GEPLAND */}

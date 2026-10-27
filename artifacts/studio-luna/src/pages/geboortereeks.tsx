@@ -206,7 +206,7 @@ export default function Geboortereeks() {
           <img
             src={IMAGES.yoga}
             alt="Zwangerschapsyoga bij Studio Luna in Nieuwerkerk aan den IJssel"
-            className="block w-full max-w-[260px] mt-8 md:mt-0 shrink-0"
+            className="block w-full max-w-[320px] aspect-[2/3] object-cover mt-8 md:mt-0 shrink-0"
           />
         </motion.div>
 
@@ -289,8 +289,8 @@ export default function Geboortereeks() {
               </p>
               <img
                 src={IMAGES.staand}
-                alt="Marjolein in een staande houding voor het raam"
-                className="w-full max-w-[240px] object-cover mt-8"
+                alt="Marjolein strekt een arm naar de hemel"
+                className="w-full max-w-[300px] object-cover mt-8"
                 style={{ aspectRatio: "2/3" }}
                 loading="lazy"
               />

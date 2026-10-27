@@ -6,6 +6,7 @@ import { CtaBlock } from "@/components/cta-block";
 import { motion } from "framer-motion";
 import { MapPin, Mail, Phone, Instagram, Star } from "lucide-react";
 import { IMAGES } from "@/lib/images";
+import { WisselFoto, ScrollZin, Meebewegen, RaamFoto } from "@/components/beweging";
 import { useAuth } from "@/hooks/use-auth";
 import { usePageMeta } from "@/lib/seo";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -130,15 +131,26 @@ export default function StudioLuna() {
             <p className="mt-7 text-[13px] text-foreground/60">
               Lessen, events en de zorgkaart voor de regio. Nieuwerkerk aan den IJssel, gemeente Zuidplas.
             </p>
+            {/* Haar tekst, 27 oktober. */}
+            <p className="mt-2 text-[13px] text-foreground/70 max-w-xl">
+              Ben je een zorgverlener of vrouwelijke ondernemer en wil je graag samenwerken met
+              Studio Luna? Stuur me dan een{" "}
+              <a
+                href="mailto:info@studiolunazuidplas.nl?subject=Samenwerken%20met%20Studio%20Luna"
+                className="text-foreground border-b border-foreground/35 hover:border-foreground"
+              >
+                berichtje
+              </a>.
+            </p>
           </div>
         </div>
       </div>
 
-      <img
-        src={IMAGES.hero}
-        alt="Zwangerschapsyoga Studio Luna"
-        className="block w-full object-cover rounded-none"
-        style={{ height: "clamp(220px, 32vw, 420px)", objectPosition: "center top" }}
+      {/* Groot en rustig wisselend, naar het voorbeeld van akoko.nl. */}
+      <WisselFoto
+        fotos={[IMAGES.hero, IMAGES.hero2, IMAGES.hero3]}
+        alt="Marjolein in een yogahouding in het gras, in het avondlicht"
+        hoogte="clamp(300px, 46vw, 660px)"
       />
 
       <div className="w-full max-w-7xl mx-auto relative overflow-x-hidden">
@@ -177,6 +189,15 @@ export default function StudioLuna() {
               </button>
             </div>
           </motion.div>
+        </section>
+
+        {/* ── HAAR ZIN — komt woord voor woord samen terwijl je scrolt. Haar eigen
+             zin (ook op haar folder); hooguit één keer per pagina. ── */}
+        <section className="px-7 md:px-14 lg:px-20 xl:px-28 py-24 md:py-36">
+          <ScrollZin
+            tekst="Elke keer als er een kind wordt geboren, wordt er ook een moeder geboren."
+            className="font-display text-[2.1rem] md:text-5xl lg:text-6xl font-medium text-foreground leading-[1.2] text-center max-w-4xl mx-auto"
+          />
         </section>
 
         {/* ── MISSIE — editorial: label + grote heading + asymmetrisch ── */}
@@ -285,25 +306,30 @@ export default function StudioLuna() {
              Krijgt bewust meer lucht dan de blokken eromheen: ongelijke witruimte
              geeft de pagina ritme. ── */}
         <section className="px-7 md:px-14 lg:px-20 xl:px-28 py-16 md:py-24">
-          <div className="md:grid md:grid-cols-[24rem_1fr] md:gap-14 lg:gap-20 md:items-center">
+          <div className="md:grid md:grid-cols-[minmax(0,28rem)_1fr] md:gap-14 lg:gap-20 md:items-center">
             <motion.div
               variants={fadeUp} initial="hidden" whileInView="show"
               viewport={{ once: true, margin: "-60px" }} custom={0}
             >
-              <img
-                src={IMAGES.overMij}
-                alt="Marjolein, oprichter van Studio Luna"
-                className="w-full max-w-[24rem] aspect-[2/3] object-cover mb-8 md:mb-0"
-                loading="lazy"
-              />
+              {/* Foto en kop schuiven bij het scrollen een beetje langs elkaar. */}
+              <Meebewegen afstand={45}>
+                <img
+                  src={IMAGES.overMij}
+                  alt="Marjolein, oprichter van Studio Luna"
+                  className="w-full max-w-[28rem] aspect-[2/3] object-cover mb-8 md:mb-0"
+                  loading="lazy"
+                />
+              </Meebewegen>
             </motion.div>
             <motion.div
               variants={fadeUp} initial="hidden" whileInView="show"
               viewport={{ once: true, margin: "-60px" }} custom={0.1}
             >
-              <h2 className="font-display text-4xl md:text-5xl font-medium text-foreground mb-6 leading-[1.1]">
-                Hoi, ik ben Marjolein.
-              </h2>
+              <Meebewegen afstand={-20}>
+                <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-medium text-foreground mb-6 leading-[1.1]">
+                  Hoi, ik ben Marjolein.
+                </h2>
+              </Meebewegen>
               <p className="text-[15px] text-foreground/80 leading-[1.9] md:max-w-xl">
                 Moeder, gepromoveerd onderzoeker en yogadocente. Bij Studio Luna combineer ik gevoel en wetenschap:
                 je bereidt je sterk en met vertrouwen voor op je bevalling, en je leert andere moeders uit Zuidplas kennen.
@@ -319,6 +345,16 @@ export default function StudioLuna() {
         </section>
 
       </div>
+
+      {/* ── TWEEDE FOTOBAND — van rand tot rand; het beeld beweegt langzamer dan
+           de pagina. Op smalle schermen schuift de uitsnede naar rechts, waar de
+           handen zijn. ── */}
+      <RaamFoto
+        src={IMAGES.gras}
+        alt="Liggend in het gras met de handen op de borst"
+        hoogte="clamp(260px, 36vw, 520px)"
+        positieX="70%"
+      />
 
       {/* ── REVIEWS — op een zandkleurige baan van rand tot rand. Halverwege de pagina
            een rustpunt, en bewust geen gekleurd kaartje in het midden.

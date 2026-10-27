@@ -175,7 +175,7 @@ const ROUTES = [
     beschrijving: "Studio Luna geeft de Geboortereeks, zwangerschapsyoga en geboortevoorbereiding in Nieuwerkerk aan den IJssel, voor zwangeren uit heel Zuidplas: Zevenhuizen, Moordrecht en Moerkapelle. Plus de Geboortezorgkaart met alle geboortezorg in de regio.",
     jsonLd: [faqJsonLd(homeFaq)],
     // De herofoto vast laten voorladen zodat hij er staat zodra de app rendert.
-    preload: "/images/foto-hero.webp",
+    preload: "/images/buiten-hero.webp",
     inhoud:
       `<h1>Zwangerschapsyoga en geboortevoorbereiding in Zuidplas</h1>` +
       `<p>Studio Luna biedt de Geboortereeks, acht wekelijkse lessen zwangerschapsyoga en geboortevoorbereiding in Nieuwerkerk aan den IJssel, en houdt de Geboortezorgkaart Zuidplas bij met alle geboortezorg in de regio.</p>` +

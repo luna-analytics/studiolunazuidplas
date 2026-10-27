@@ -78,7 +78,7 @@ export default function OverMij() {
                 {(
                   <div className="overflow-hidden" style={{ aspectRatio: "2/3" }}>
                     <img
-                      src={IMAGES.overMij}
+                      src={IMAGES.overMijPagina}
                       alt={data.over_mij_naam}
                       className="w-full h-full object-cover object-top"
                       loading="lazy"

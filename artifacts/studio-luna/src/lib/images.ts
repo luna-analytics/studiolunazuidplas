@@ -20,23 +20,38 @@ export const IMAGES = {
    *  echte foto zien in plaats van eerst de stockfoto. Na het uploaden van een
    *  nieuwe herofoto in /admin moet deze kopie ook ververst worden
    *  (public/images/foto-hero.webp), anders flitst kort de oude foto. */
-  hero: img("foto-hero.webp"),
+  /*  Sinds 27 oktober de buitenfoto's uit haar shoot (map kleur, nummers 48,
+   *  49, 50, 53, 57, 58, 59 en 62). De oude binnenfoto's staan nog in
+   *  public/images voor als ze terug moeten. */
+  hero: img("buiten-hero.webp"), // 58, gestrekte driehoek in het gras
 
-  /** Brede band bovenaan de reekspagina: de open hand in kleermakerszit. */
-  yoga: img("reeks-yoga.webp"),
+  /** De twee foto's waar de herofoto langzaam naar overloopt: armen om
+   *  zichzelf in het avondlicht (53) en handen naar de lucht (59). */
+  hero2: img("buiten-hero-2.webp"),
+  hero3: img("buiten-hero-3.webp"),
 
-  /** Foto bij "Hoe een dinsdagavond eruitziet" op de reekspagina: staande
-   *  houding voor het gordijn, uit de shoot van 4 september. */
-  staand: img("reeks-staand.webp"),
+  /** Tweede brede band op de homepage: liggend in het gras (62). */
+  gras: img("buiten-gras.webp"),
 
-  /** Foto naast de kop van de Zorgkaart (staande uitsnede): een zwangere met
-   *  een hand op het hart, uit de shoot van 4 september. */
-  zorgkaart: img("zorgkaart-hero.webp"),
+  /** Foto bovenaan de reekspagina: godinnenhouding op het vlonderpad (49). */
+  yoga: img("reeks-buiten.webp"),
 
-  /** Portret van Marjolein bij het blok "Hoi, ik ben Marjolein" op de
-   *  landingspagina. Via /admin is een andere foto in te stellen
-   *  (over_mij_foto); zonder die instelling wordt deze getoond. */
-  overMij: img("marjolein-over-mij.webp"),
+  /** Foto bij "Wanneer begin je?" op de reekspagina: arm naar de hemel (57). */
+  staand: img("reeks-buiten-hemel.webp"),
+
+  /** Foto naast de kop van de Zorgkaart, in de organische uitsnede: handen
+   *  op de buik (50). */
+  zorgkaart: img("zorgkaart-buiten.webp"),
+
+  /** Foto naast de kop van de eventspagina: handen naar de lucht (59). */
+  events: img("events-buiten.webp"),
+
+  /** Portret bij "Hoi, ik ben Marjolein" op de homepage: zittend op het
+   *  vlonderpad met de ogen dicht (48). */
+  overMij: img("marjolein-buiten.webp"),
+
+  /** Portret op de pagina Over mij: armen om zichzelf in het avondlicht (53). */
+  overMijPagina: img("marjolein-over-mij-buiten.webp"),
 
   /** Foto bij de partnerles op de reekspagina: een zwangere en haar
    *  geboortepartner rug aan rug op de grond. */
