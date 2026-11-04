@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { Fragment, useState, useEffect } from "react";
 import { Link } from "wouter";
 import { BottomNav } from "@/components/bottom-nav";
 import { SeoFooter } from "@/components/seo-footer";
@@ -16,14 +16,14 @@ const fadeUp = {
 };
 
 const KALENDER = [
-  { datum: "woensdag 13 januari" },
-  { datum: "woensdag 20 januari" },
-  { datum: "woensdag 27 januari" },
-  { datum: "woensdag 3 februari" },
-  { datum: "woensdag 10 februari", noot: "Een bekkenfysiotherapeut uit de regio sluit aan als gastexpert over het bekken en de bekkenbodem." },
-  { datum: "woensdag 17 februari" },
-  { datum: "woensdag 24 februari", noot: "Partnerles" },
-  { datum: "woensdag 3 maart" },
+  { datum: "13 januari" },
+  { datum: "20 januari" },
+  { datum: "27 januari" },
+  { datum: "3 februari" },
+  { datum: "10 februari", noot: "Gastles van een bekkenfysiotherapeut" },
+  { datum: "17 februari" },
+  { datum: "24 februari", noot: "Partnerles" },
+  { datum: "3 maart" },
   { datum: "datum volgt", noot: "Mama-en-babyyoga cadeau, zodra alle kindjes geboren zijn" },
 ];
 
@@ -449,21 +449,17 @@ export default function Geboortereeks() {
               </h2>
             </motion.div>
 
-            <div className="max-w-md">
-              {KALENDER.map((les, i) => (
-                <motion.div
-                  key={les.datum}
-                  variants={fadeUp} initial="hidden" whileInView="show"
-                  viewport={{ once: true, margin: "-40px" }} custom={Math.min(i * 0.03, 0.15)}
-                  className="py-3 border-b border-border/15"
-                >
-                  <p className="text-[15px] text-foreground/80 leading-[1.9]">{les.datum}</p>
-                  {les.noot && (
-                    <p className="text-[13.5px] text-foreground/60 leading-[1.7] mt-1">{les.noot}</p>
-                  )}
-                </motion.div>
+            <p className="text-[15px] text-foreground/80 leading-[1.9] mb-3">
+              Elke woensdag van 19:00 tot 20:15 uur.
+            </p>
+            <dl className="grid grid-cols-[7rem_1fr] gap-x-4 max-w-xl text-[15px] leading-[1.9]">
+              {KALENDER.map((les) => (
+                <Fragment key={les.datum}>
+                  <dt className="text-foreground/80">{les.datum}</dt>
+                  <dd className="text-foreground/60">{les.noot ?? ""}</dd>
+                </Fragment>
               ))}
-            </div>
+            </dl>
             <p className="text-sm text-foreground/65 leading-[1.85] mt-5">
               Kun je een keer een les niet? Dan haal je de les in bij een volgend blok, of we
               kijken samen naar een passende oplossing.
