@@ -133,7 +133,7 @@ export default function Home() {
             <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground leading-[1.15] mb-6">
               De <em className="not-italic text-primary">Geboortereeks</em>
             </h2>
-            <p className="text-[15px] text-foreground/60 leading-[1.95] max-w-2xl mb-8">
+            <p className="text-[15px] text-foreground/60 leading-[1.7] max-w-2xl mb-5">
               Acht wekelijkse lessen zwangerschapsyoga en geboortevoorbereiding in een vaste
               groep van maximaal acht zwangeren, met kennis van een bekkenfysiotherapeut, een
               partnerles, een mamaspa-avond en mama-en-babyyoga cadeau als afsluiting. Je stapt
@@ -153,7 +153,7 @@ export default function Home() {
             1 — ZWANGERSCHAPSYOGA
             Grote foto boven, tekst eronder, geen kaders
         ══════════════════════════════════════════════════════════ */}
-        <section id="yoga" className="relative py-16 md:py-24">
+        <section id="yoga" className="relative py-10 md:py-14">
           {/* Subtiele achtergrond-overgang */}
           <div className="absolute inset-0 bg-gradient-to-b from-background via-secondary/20 to-background pointer-events-none" />
 
@@ -195,7 +195,7 @@ export default function Home() {
                   variants={fadeUp} initial="hidden" whileInView="show"
                   viewport={{ once: true, margin: "-60px" }} custom={0.1}
                 >
-                  <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground leading-[1.15] mb-8">
+                  <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground leading-[1.15] mb-5">
                     {teksten.aanbod_yoga_heading.split("\n").map((line, i, arr) => (
                       <span key={i}>{i === arr.length - 1
                         ? <em className="not-italic text-primary">{line}</em>
@@ -208,15 +208,15 @@ export default function Home() {
                   <div className="space-y-4 text-sm text-foreground/55">
                     <div className="flex items-start gap-3">
                       <Calendar className="w-4 h-4 shrink-0 text-primary mt-0.5" />
-                      <span className="leading-[1.8]">{teksten.aanbod_yoga_tijd}</span>
+                      <span className="leading-[1.65]">{teksten.aanbod_yoga_tijd}</span>
                     </div>
                     <div className="flex items-start gap-3">
                       <MapPin className="w-4 h-4 shrink-0 text-primary mt-0.5" />
-                      <span className="leading-[1.8]">{teksten.aanbod_yoga_locatie}</span>
+                      <span className="leading-[1.65]">{teksten.aanbod_yoga_locatie}</span>
                     </div>
                     <div className="flex items-start gap-3">
                       <Coffee className="w-4 h-4 shrink-0 text-primary mt-0.5" />
-                      <span className="leading-[1.8]">{teksten.aanbod_yoga_extra}</span>
+                      <span className="leading-[1.65]">{teksten.aanbod_yoga_extra}</span>
                     </div>
                   </div>
                 </motion.div>
@@ -226,8 +226,8 @@ export default function Home() {
                   viewport={{ once: true, margin: "-60px" }} custom={0.2}
                   className="mt-10 md:mt-0 md:pt-2"
                 >
-                  <p className="text-[15px] text-foreground/60 leading-[1.95] mb-4">{teksten.aanbod_yoga_tekst1}</p>
-                  <p className="text-[15px] text-foreground/60 leading-[1.95] mb-10">{teksten.aanbod_yoga_tekst2}</p>
+                  <p className="text-[15px] text-foreground/60 leading-[1.7] mb-4">{teksten.aanbod_yoga_tekst1}</p>
+                  <p className="text-[15px] text-foreground/60 leading-[1.7] mb-6">{teksten.aanbod_yoga_tekst2}</p>
 
                   <div className="flex flex-col gap-3">
                     <button
@@ -257,7 +257,7 @@ export default function Home() {
             2 — MAMA CIRCLE
             Omgekeerde volgorde: tekst breed, geen foto (sfeer door achtergrond)
         ══════════════════════════════════════════════════════════ */}
-        <section id="circle" className="relative px-7 md:px-14 lg:px-20 xl:px-28 py-20 md:py-32">
+        <section id="circle" className="relative px-7 md:px-14 lg:px-20 xl:px-28 py-12 md:py-16">
           <div className="absolute inset-0 bg-gradient-to-b from-background via-secondary/30 to-background pointer-events-none" />
 
           <div className="relative">
@@ -276,10 +276,10 @@ export default function Home() {
                 variants={fadeUp} initial="hidden" whileInView="show"
                 viewport={{ once: true, margin: "-80px" }} custom={0.1}
               >
-                <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground leading-[1.15] mb-10">
+                <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground leading-[1.15] mb-6">
                   {teksten.aanbod_circle_titel}
                 </h2>
-                <p className="text-[15px] text-foreground/60 leading-[1.95]">
+                <p className="text-[15px] text-foreground/60 leading-[1.7]">
                   {teksten.aanbod_circle_tekst}
                 </p>
               </motion.div>
@@ -287,11 +287,11 @@ export default function Home() {
               <motion.div
                 variants={fadeUp} initial="hidden" whileInView="show"
                 viewport={{ once: true, margin: "-80px" }} custom={0.2}
-                className="md:pt-24 mt-10 md:mt-0"
+                className="md:pt-12 mt-10 md:mt-0"
               >
                 {/* Eigen foto tonen zodra geüpload — anders geen placeholder */}
                 {photosReady && teksten.foto_circle && (
-                  <div className="overflow-hidden rounded-2xl mb-8" style={{ aspectRatio: RATIO_MAP[teksten.foto_circle_hoogte] ?? "4/3" }}>
+                  <div className="overflow-hidden rounded-2xl mb-5" style={{ aspectRatio: RATIO_MAP[teksten.foto_circle_hoogte] ?? "4/3" }}>
                     <img
                       src={teksten.foto_circle}
                       alt="Mama Circle Studio Luna"
@@ -320,7 +320,7 @@ export default function Home() {
             2b — DYNAMISCHE EXTRA AANBOD SECTIES (beheerd via admin)
         ══════════════════════════════════════════════════════════ */}
         {extraTypes.map((type) => (
-          <section key={type.id} id={toSlug(type.naam)} className="relative px-7 md:px-14 lg:px-20 xl:px-28 py-20 md:py-28">
+          <section key={type.id} id={toSlug(type.naam)} className="relative px-7 md:px-14 lg:px-20 xl:px-28 py-12 md:py-16">
             <div className="absolute inset-0 bg-gradient-to-b from-background via-secondary/25 to-background pointer-events-none" />
             <div className="relative">
               <motion.p
@@ -335,7 +335,7 @@ export default function Home() {
               <motion.h2
                 variants={fadeUp} initial="hidden" whileInView="show"
                 viewport={{ once: true, margin: "-60px" }} custom={0.08}
-                className="font-display text-3xl md:text-4xl font-medium text-foreground leading-[1.15] mb-8"
+                className="font-display text-3xl md:text-4xl font-medium text-foreground leading-[1.15] mb-5"
               >
                 {type.naam}
               </motion.h2>
@@ -345,7 +345,7 @@ export default function Home() {
                   variants={fadeUp} initial="hidden" whileInView="show"
                   viewport={{ once: true, margin: "-60px" }} custom={0.12}
                 >
-                  <p className="text-[15px] text-foreground/60 leading-[1.95] mb-8 whitespace-pre-line">{type.beschrijving}</p>
+                  <p className="text-[15px] text-foreground/60 leading-[1.7] mb-5 whitespace-pre-line">{type.beschrijving}</p>
                   <button
                     onClick={() => setIsInterestOpen(true)}
                     className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-7 py-3.5 rounded-2xl font-semibold text-sm hover:bg-primary/88 shadow-soft group"
@@ -364,13 +364,13 @@ export default function Home() {
                     {type.tijd && (
                       <div className="flex items-start gap-3">
                         <Calendar className="w-4 h-4 shrink-0 text-primary mt-0.5" />
-                        <span className="leading-[1.8]">{type.tijd}</span>
+                        <span className="leading-[1.65]">{type.tijd}</span>
                       </div>
                     )}
                     {type.locatie && (
                       <div className="flex items-start gap-3">
                         <MapPin className="w-4 h-4 shrink-0 text-primary mt-0.5" />
-                        <span className="leading-[1.8]">{type.locatie}</span>
+                        <span className="leading-[1.65]">{type.locatie}</span>
                       </div>
                     )}
                   </motion.div>
@@ -384,7 +384,7 @@ export default function Home() {
             3 — BEVALLINGS SPECIALS (tijdelijk uit, zie TOON_SPECIALS)
         ══════════════════════════════════════════════════════════ */}
         {TOON_SPECIALS && (
-        <section className="px-7 md:px-14 lg:px-20 xl:px-28 py-16 md:py-24">
+        <section className="px-7 md:px-14 lg:px-20 xl:px-28 py-10 md:py-14">
           <motion.div
             variants={fadeUp} initial="hidden" whileInView="show"
             viewport={{ once: true, margin: "-80px" }} custom={0}
@@ -393,13 +393,13 @@ export default function Home() {
               <span className="inline-block w-8 h-px bg-primary/40" />
               Binnenkort
             </p>
-            <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground leading-[1.15] mb-14">
+            <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground leading-[1.15] mb-5">
               {teksten.aanbod_specials_heading}
             </h2>
           </motion.div>
 
           {/* Prijslijst — minimaal, gescheiden door dunne lijn */}
-          <div className="space-y-0 mb-14">
+          <div className="space-y-0 mb-5">
             {teksten.aanbod_specials_items.split("\n").filter(Boolean).map((regel, i) => {
               const [title, sub, price] = regel.split("|").map((s) => s.trim());
               return (
@@ -443,7 +443,7 @@ export default function Home() {
             viewport={{ once: true, margin: "-60px" }} custom={0.4}
             className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6"
           >
-            <p className="text-sm text-foreground/45 max-w-sm leading-[1.85]">
+            <p className="text-sm text-foreground/45 max-w-sm leading-[1.7]">
               {teksten.aanbod_verzekering_tekst}
             </p>
             <button

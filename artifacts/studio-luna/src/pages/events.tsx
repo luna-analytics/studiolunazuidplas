@@ -26,7 +26,7 @@ export default function Events() {
           <h1 className="font-display text-4xl md:text-5xl font-medium text-foreground leading-[1.1]">
             Events
           </h1>
-          <p className="text-[15px] text-foreground/75 leading-[1.9] mt-4 max-w-xl">
+          <p className="text-[15px] text-foreground/75 leading-[1.7] mt-4 max-w-xl">
             Naast de wekelijkse lessen organiseert Studio Luna ook workshops en events. Soms
             vanuit Studio Luna, en soms vanuit een samenwerking met andere inspirerende vrouwen.
             Deze events zijn voor zwangeren, moeders en ondernemende vrouwen die verdieping,
@@ -46,7 +46,7 @@ export default function Events() {
             <h2 className="font-display text-2xl md:text-3xl font-medium text-foreground leading-[1.15] mb-4">
               De eerste data volgen binnenkort
             </h2>
-            <p className="text-[15px] text-foreground/75 leading-[1.95] mb-6">
+            <p className="text-[15px] text-foreground/75 leading-[1.7] mb-6">
               Ik ben de eerste events aan het plannen. Zodra er een datum vaststaat, komt die hier
               te staan met de plek, de prijs en voor wie het is, en kun je je aanmelden. Wil je het
               horen op het moment dat dat gebeurt, stuur me dan een berichtje, dan zet ik je op de
@@ -67,7 +67,7 @@ export default function Events() {
             <h2 className="font-display text-2xl md:text-3xl font-medium text-foreground leading-[1.15] mb-4">
               Wil je iets samen doen?
             </h2>
-            <p className="text-[15px] text-foreground/75 leading-[1.95] mb-6">
+            <p className="text-[15px] text-foreground/75 leading-[1.7] mb-6">
               Ben je zorgverlener of ondernemer in Zuidplas en past jouw werk bij zwangeren en
               moeders, dan kom ik graag met je in contact.
             </p>

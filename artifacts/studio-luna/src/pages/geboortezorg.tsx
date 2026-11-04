@@ -236,7 +236,7 @@ export default function Geboortezorg() {
               <h1 className="font-display text-4xl md:text-5xl font-medium text-foreground leading-[1.1]">
                 Geboortezorg in Zuidplas
               </h1>
-              <p className="text-[15px] text-foreground/75 leading-[1.9] mt-4 max-w-xl">
+              <p className="text-[15px] text-foreground/75 leading-[1.7] mt-4 max-w-xl">
                 Vind zorg en ondersteuning tijdens je zwangerschap, rond de geboorte en daarna.
               </p>
 
@@ -269,7 +269,7 @@ export default function Geboortezorg() {
           <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground leading-[1.15]">
             Alle geboortezorg op een rij
           </h2>
-          <p className="text-[15px] text-foreground/75 leading-[1.9] mt-3 max-w-2xl">
+          <p className="text-[15px] text-foreground/75 leading-[1.7] mt-3 max-w-2xl">
             Waar ben je naar op zoek? Kies een soort zorg, dan zie je wie er in de regio werkt.
             Het aantal ernaast laat zien hoeveel aanbieders dat er op dit moment zijn.
           </p>
@@ -375,9 +375,9 @@ export default function Geboortezorg() {
                         </span>
                       )}
                     </div>
-                    <p className="text-[15px] text-foreground/80 leading-[1.9] mt-1.5">{a.beschrijving}</p>
+                    <p className="text-[15px] text-foreground/80 leading-[1.7] mt-1.5">{a.beschrijving}</p>
                     {a.voordeel && (
-                      <p className="text-sm text-primary/90 leading-[1.85] mt-2">
+                      <p className="text-sm text-primary/90 leading-[1.7] mt-2">
                         Voordeel: {a.voordeel}
                       </p>
                     )}
@@ -403,7 +403,7 @@ export default function Geboortezorg() {
 
             {/* Feedback: direct doorgeven, zonder te hoeven mailen */}
             <div className="mt-10 max-w-xl">
-              <p className="text-sm text-foreground/60 leading-[1.85]">
+              <p className="text-sm text-foreground/60 leading-[1.7]">
                 Deze kaart wordt met zorg bijgehouden, maar aanbod verandert.{" "}
                 <button
                   onClick={() => setFeedbackOpen((v) => !v)}
@@ -416,7 +416,7 @@ export default function Geboortezorg() {
 
               {feedbackOpen && (
                 fbStatus === "klaar" ? (
-                  <p className="text-[15px] text-foreground/80 leading-[1.9] mt-5">
+                  <p className="text-[15px] text-foreground/80 leading-[1.7] mt-5">
                     Dankjewel voor je bericht. Het wordt meegenomen bij de volgende update van
                     de kaart.
                   </p>
@@ -478,7 +478,7 @@ export default function Geboortezorg() {
             <h2 className="font-display text-2xl font-medium text-foreground leading-[1.2]">
               Liever per dorp kijken?
             </h2>
-            <p className="text-[15px] text-foreground/80 leading-[1.9] mt-3">
+            <p className="text-[15px] text-foreground/80 leading-[1.7] mt-3">
               De meeste aanbieders hierboven werken in heel Zuidplas, dus je hoeft je niet te
               beperken tot je eigen dorp. Wil je toch zien wie er bij jou in de buurt zit, dan
               heeft elke plaats een eigen pagina, met daarbij wie er vanuit de regio werkt.
@@ -494,12 +494,12 @@ export default function Geboortezorg() {
         </section>
 
         {/* ── VOOR ZORGVERLENERS — bewust klein, de kaart is er voor zwangeren ── */}
-        <section id="voor-zorgverleners" className="px-7 md:px-14 lg:px-20 xl:px-28 py-10 md:py-12 scroll-mt-24">
+        <section id="voor-zorgverleners" className="px-7 md:px-14 lg:px-20 xl:px-28 py-8 md:py-10 scroll-mt-24">
           <div className="max-w-xl border-t border-border/25 pt-8">
             <h2 className="font-display text-2xl font-medium text-foreground mb-3">
               Voor zorgverleners
             </h2>
-            <p className="text-[15px] text-foreground/80 leading-[1.9]">
+            <p className="text-[15px] text-foreground/80 leading-[1.7]">
               Werk je in de geboortezorg in Zuidplas en sta je er nog niet bij? Je kunt je
               gratis aanmelden.{" "}
               <button
@@ -513,7 +513,7 @@ export default function Geboortezorg() {
 
             {zvOpen && (
               zvStatus === "klaar" ? (
-                <p className="text-[15px] text-foreground/80 leading-[1.9] mt-5">
+                <p className="text-[15px] text-foreground/80 leading-[1.7] mt-5">
                   Dankjewel voor je aanmelding! Ik bekijk je gegevens en je hoort van mij zodra
                   je vermelding op de kaart staat.
                 </p>
@@ -608,7 +608,7 @@ export default function Geboortezorg() {
                 <AccordionTrigger className="text-left text-[15px] font-semibold text-foreground/80 hover:no-underline">
                   {v.vraag}
                 </AccordionTrigger>
-                <AccordionContent forceMount className="text-[15px] text-foreground/80 leading-[1.85]">
+                <AccordionContent forceMount className="text-[15px] text-foreground/80 leading-[1.7]">
                   {v.antwoord}
                 </AccordionContent>
               </AccordionItem>

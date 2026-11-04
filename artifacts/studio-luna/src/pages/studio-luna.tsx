@@ -101,7 +101,7 @@ export default function StudioLuna() {
 
       {/* ── HERO — kop op de lichte achtergrond, daaronder de foto van rand tot rand ── */}
       <div className="w-full max-w-7xl mx-auto">
-        <div className="px-7 md:px-14 lg:px-20 xl:px-28 pt-12 pb-10 md:pt-20 md:pb-14">
+        <div className="px-7 md:px-14 lg:px-20 xl:px-28 pt-12 pb-10 md:pt-12 md:pb-14">
           {/* Breder dan een tekstkolom: op een groot scherm hoort de kop de ruimte
               te vullen in plaats van links in een hoek te blijven hangen. */}
           <div className="md:max-w-3xl lg:max-w-4xl">
@@ -132,7 +132,7 @@ export default function StudioLuna() {
                 de regio" stond hierboven en is op haar verzoek weg (27 oktober): hij
                 zei niets wat de kop niet al zegt en hield deze uitnodiging klein. De
                 plaatsnaam staat nog in de paginatitel, het adres en de voettekst. */}
-            <p className="mt-8 text-[15px] text-foreground/80 leading-[1.8] max-w-xl">
+            <p className="mt-8 text-[15px] text-foreground/80 leading-[1.65] max-w-xl">
               Ben je een zorgverlener of vrouwelijke ondernemer en wil je graag samenwerken met
               Studio Luna? Stuur me dan een{" "}
               <a
@@ -156,7 +156,7 @@ export default function StudioLuna() {
       <div className="w-full max-w-7xl mx-auto relative overflow-x-hidden">
 
         {/* ── GEBOORTEREEKS AANKONDIGING ── */}
-        <section className="px-7 md:px-14 lg:px-20 xl:px-28 pt-14 md:pt-20">
+        <section className="px-7 md:px-14 lg:px-20 xl:px-28 pt-14 md:pt-12">
           <motion.div
             variants={fadeUp} initial="hidden" whileInView="show"
             viewport={{ once: true, margin: "-40px" }} custom={0}
@@ -166,18 +166,18 @@ export default function StudioLuna() {
               De volgende Geboortereeks start <em className="not-italic text-primary">13 januari</em>
             </h2>
             <div>
-              <p className="text-[15px] text-foreground/80 leading-[1.95] mb-8">
+              <p className="text-[15px] text-foreground/80 leading-[1.7] mb-5">
                 De reeks die op 29 september is begonnen loopt nu, dus daar kun je niet meer
                 bij instappen. Voor de nieuwe groep kun je je wel aanmelden: die start op
                 woensdag 13 januari en loopt acht woensdagavonden tot en met 3 maart.
               </p>
-              <p className="text-[15px] text-foreground/80 leading-[1.95] mb-8">
+              <p className="text-[15px] text-foreground/80 leading-[1.7] mb-5">
                 Acht weken zwangerschapsyoga en geboortevoorbereiding in een vaste groep,
                 inclusief een partnerles. Een aantal weken na de laatste bevalling is er de
                 ruimte om samen te komen voor het uitwisselen van verhalen en mama-en-babyyoga;
                 deze postpartumles is inbegrepen in de reeks.
               </p>
-              <p className="text-[15px] text-foreground/80 leading-[1.9] mb-8">
+              <p className="text-[15px] text-foreground/80 leading-[1.7] mb-5">
                 De reeks kost €195. Veel zorgverzekeraars vergoeden een zwangerschapscursus
                 geheel of gedeeltelijk vanuit de aanvullende verzekering.
               </p>
@@ -193,7 +193,7 @@ export default function StudioLuna() {
 
         {/* ── HAAR ZIN — komt woord voor woord samen terwijl je scrolt. Haar eigen
              zin (ook op haar folder); hooguit één keer per pagina. ── */}
-        <section className="px-7 md:px-14 lg:px-20 xl:px-28 py-24 md:py-36">
+        <section className="px-7 md:px-14 lg:px-20 xl:px-28 py-8 md:py-10">
           <ScrollZin
             tekst="Elke keer als er een kind wordt geboren, wordt er ook een moeder geboren."
             className="font-display text-[2.1rem] md:text-5xl lg:text-6xl font-medium text-foreground leading-[1.2] text-center max-w-4xl mx-auto"
@@ -201,7 +201,7 @@ export default function StudioLuna() {
         </section>
 
         {/* ── MISSIE — editorial: label + grote heading + asymmetrisch ── */}
-        <section className="relative px-7 md:px-14 lg:px-20 xl:px-28 py-20 md:py-24">
+        <section className="relative px-7 md:px-14 lg:px-20 xl:px-28 py-12 md:py-16">
 
           <div className="relative">
             <motion.div
@@ -217,14 +217,14 @@ export default function StudioLuna() {
                 variants={fadeUp} initial="hidden" whileInView="show"
                 viewport={{ once: true, margin: "-80px" }} custom={0.1}
               >
-                <h2 className="font-display text-4xl md:text-5xl font-medium text-foreground leading-[1.1] mb-10">
+                <h2 className="font-display text-4xl md:text-5xl font-medium text-foreground leading-[1.1] mb-6">
                   {teksten.home_missie_heading.split("\n").map((line, i, arr) => (
                     <span key={i}>{line}{i < arr.length - 1 && <br />}</span>
                   ))}
                 </h2>
                 <ul className="space-y-5">
                   {teksten.home_missie_bullets.split("\n").filter(Boolean).map((item, i) => (
-                    <li key={i} className="flex items-start gap-4 text-[15px] text-foreground/80 leading-[1.9]">
+                    <li key={i} className="flex items-start gap-4 text-[15px] text-foreground/80 leading-[1.7]">
                       <span className="mt-[11px] w-1 h-1 rounded-full bg-primary/70 shrink-0" />
                       {item}
                     </li>
@@ -236,9 +236,9 @@ export default function StudioLuna() {
               <motion.div
                 variants={fadeUp} initial="hidden" whileInView="show"
                 viewport={{ once: true, margin: "-80px" }} custom={0.2}
-                className="mt-10 md:mt-0 md:pt-20"
+                className="mt-10 md:mt-0 md:pt-12"
               >
-                <p className="text-[15px] text-foreground/75 leading-[1.95]">
+                <p className="text-[15px] text-foreground/75 leading-[1.7]">
                   {teksten.home_missie_tekst}
                 </p>
                 <p className="mt-8 font-display text-xl text-primary">
@@ -252,13 +252,13 @@ export default function StudioLuna() {
 
         {/* ── WAT BIEDT STUDIO LUNA — geen kaart, vrij zwevend. Kop links, lijst rechts,
              zodat de breedte gevuld wordt in plaats van dat er rechts een gat valt. ── */}
-        <section className="px-7 md:px-14 lg:px-20 xl:px-28 py-16 md:py-24">
+        <section className="px-7 md:px-14 lg:px-20 xl:px-28 py-10 md:py-14">
           <div className="md:grid md:grid-cols-[1fr_1.5fr] md:gap-14 lg:gap-20 md:items-start">
             <motion.div
               variants={fadeUp} initial="hidden" whileInView="show"
               viewport={{ once: true, margin: "-80px" }} custom={0}
             >
-              <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground mb-10 md:mb-0 leading-[1.15]">
+              <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground mb-6 md:mb-0 leading-[1.15]">
                 {teksten.home_aanbod_heading.split("\n").map((line, i, arr) => (
                   <span key={i}>{line}{i < arr.length - 1 && <br className="hidden md:block" />}</span>
                 ))}
@@ -273,7 +273,7 @@ export default function StudioLuna() {
                   viewport={{ once: true, margin: "-60px" }} custom={i * 0.07}
                   className="py-5 border-b border-border/15"
                 >
-                  <p className="text-[15px] text-foreground/80 leading-[1.9]">{tekst}</p>
+                  <p className="text-[15px] text-foreground/80 leading-[1.7]">{tekst}</p>
                 </motion.div>
               ))}
 
@@ -305,7 +305,7 @@ export default function StudioLuna() {
         {/* ── OVER MIJ — kort blok met gezicht en link naar het volledige verhaal.
              Krijgt bewust meer lucht dan de blokken eromheen: ongelijke witruimte
              geeft de pagina ritme. ── */}
-        <section className="px-7 md:px-14 lg:px-20 xl:px-28 py-16 md:py-24">
+        <section className="px-7 md:px-14 lg:px-20 xl:px-28 py-10 md:py-14">
           <div className="md:grid md:grid-cols-[minmax(0,28rem)_1fr] md:gap-14 lg:gap-20 md:items-center">
             <motion.div
               variants={fadeUp} initial="hidden" whileInView="show"
@@ -316,7 +316,7 @@ export default function StudioLuna() {
                 <img
                   src={IMAGES.overMij}
                   alt="Marjolein, oprichter van Studio Luna"
-                  className="w-full max-w-[28rem] aspect-[2/3] object-cover mb-8 md:mb-0"
+                  className="w-full max-w-[28rem] aspect-[2/3] object-cover mb-5 md:mb-0"
                   loading="lazy"
                 />
               </Meebewegen>
@@ -330,7 +330,7 @@ export default function StudioLuna() {
                   Hoi, ik ben Marjolein.
                 </h2>
               </Meebewegen>
-              <p className="text-[15px] text-foreground/80 leading-[1.9] md:max-w-xl">
+              <p className="text-[15px] text-foreground/80 leading-[1.7] md:max-w-xl">
                 Moeder, gepromoveerd onderzoeker en yogadocente. Bij Studio Luna combineer ik gevoel en wetenschap:
                 je bereidt je sterk en met vertrouwen voor op je bevalling, en je leert andere moeders uit Zuidplas kennen.
               </p>
@@ -362,9 +362,9 @@ export default function StudioLuna() {
       {reviewsConfig && (reviewsConfig.visible || user?.isAdmin) && reviewsConfig.items.length > 0 && (
       <div className="w-full bg-muted">
         <div className="w-full max-w-7xl mx-auto">
-          <section className="px-7 md:px-14 lg:px-20 xl:px-28 py-16 md:py-24">
+          <section className="px-7 md:px-14 lg:px-20 xl:px-28 py-10 md:py-14">
             {!reviewsConfig.visible && user?.isAdmin && (
-              <p className="text-xs text-center text-amber-700/80 bg-amber-50 border border-amber-200 rounded-2xl px-4 py-2 mb-8">
+              <p className="text-xs text-center text-amber-700/80 bg-amber-50 border border-amber-200 rounded-2xl px-4 py-2 mb-5">
                 Reviews staan uit — alleen zichtbaar voor jou als admin
               </p>
             )}
@@ -372,7 +372,7 @@ export default function StudioLuna() {
             <motion.div
               variants={fadeUp} initial="hidden" whileInView="show"
               viewport={{ once: true, margin: "-60px" }} custom={0}
-              className="mb-10 md:mb-0"
+              className="mb-6 md:mb-0"
             >
               <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground leading-[1.15]">
                 Wat vrouwen zeggen
@@ -400,7 +400,7 @@ export default function StudioLuna() {
                 </motion.div>
               ))}
             </div>
-            <p className="text-sm text-foreground/65 leading-[1.9] mt-8">
+            <p className="text-sm text-foreground/65 leading-[1.7] mt-8">
               Zelf een ervaring met Studio Luna?{" "}
               <a
                 href="https://maps.google.com/?cid=994021316573595651"
@@ -422,12 +422,12 @@ export default function StudioLuna() {
 
         {/* ── FAQ — veelgestelde vragen. Staat dicht op de zandbaan erboven,
              zodat niet elk blok evenveel ruimte krijgt. ── */}
-        <section className="px-7 md:px-14 lg:px-20 xl:px-28 py-14 md:py-20">
+        <section className="px-7 md:px-14 lg:px-20 xl:px-28 py-8 md:py-10">
           <div className="md:grid md:grid-cols-[1fr_1.5fr] md:gap-14 lg:gap-20 md:items-start">
           <motion.div
             variants={fadeUp} initial="hidden" whileInView="show"
             viewport={{ once: true, margin: "-60px" }} custom={0}
-            className="mb-8 md:mb-0"
+            className="mb-5 md:mb-0"
           >
             <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground leading-[1.15]">
               Goed om te weten
@@ -443,7 +443,7 @@ export default function StudioLuna() {
                   <AccordionTrigger className="text-left text-[15px] font-semibold text-foreground/80 hover:no-underline">
                     {item.vraag}
                   </AccordionTrigger>
-                  <AccordionContent forceMount className="text-[15px] text-foreground/80 leading-[1.85]">
+                  <AccordionContent forceMount className="text-[15px] text-foreground/80 leading-[1.7]">
                     {item.antwoord}
                   </AccordionContent>
                 </AccordionItem>
@@ -464,7 +464,7 @@ export default function StudioLuna() {
             Komt er een liggende foto uit een volgende shoot, dan kan de band terug. */}
 
         {/* ── ZORGKAART TEASER ── */}
-        <section className="px-7 md:px-14 lg:px-20 xl:px-28 py-16 md:py-24">
+        <section className="px-7 md:px-14 lg:px-20 xl:px-28 py-10 md:py-14">
           <motion.div
             variants={fadeUp} initial="hidden" whileInView="show"
             viewport={{ once: true, margin: "-60px" }} custom={0}
@@ -474,7 +474,7 @@ export default function StudioLuna() {
               <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground leading-[1.15] mb-6">
                 Alles over geboortezorg<br className="hidden md:block" /> in de regio Zuidplas
               </h2>
-              <p className="text-[15px] text-foreground/80 leading-[1.95]">
+              <p className="text-[15px] text-foreground/80 leading-[1.7]">
                 Van verloskundige en kraamzorg tot bekkenfysiotherapie, lactatiekundigen en sporten
                 met je baby: op onze zorgkaart vind je alle zorg en ondersteuning uit Nieuwerkerk
                 aan den IJssel, Zevenhuizen, Moordrecht, Moerkapelle en omgeving op één plek.
@@ -492,7 +492,7 @@ export default function StudioLuna() {
         </section>
 
         {/* ── LOCATIE & CONTACT — plain tekst, geen kaarten ── */}
-        <section className="relative px-7 md:px-14 lg:px-20 xl:px-28 py-16 md:py-24 mb-4">
+        <section className="relative px-7 md:px-14 lg:px-20 xl:px-28 py-10 md:py-14 mb-4">
 
           <div className="relative md:grid md:grid-cols-2 md:gap-24">
 
@@ -501,9 +501,9 @@ export default function StudioLuna() {
               viewport={{ once: true, margin: "-80px" }} custom={0}
             >
               <h2 className="font-display text-2xl font-medium text-foreground mb-5">Locatie</h2>
-              <p className="text-[15px] font-semibold text-foreground/85 leading-[1.9] mb-2">{teksten.home_locatie_naam}</p>
+              <p className="text-[15px] font-semibold text-foreground/85 leading-[1.7] mb-2">{teksten.home_locatie_naam}</p>
               {teksten.home_locatie_adres.split("\n").map((regel, i) => (
-                <p key={i} className="text-[15px] text-foreground/75 leading-[1.9] mb-2">{regel}</p>
+                <p key={i} className="text-[15px] text-foreground/75 leading-[1.7] mb-2">{regel}</p>
               ))}
               {/* Alleen tonen zodra er een echt adres met huisnummer staat */}
               {/\d/.test(teksten.home_locatie_adres) && (

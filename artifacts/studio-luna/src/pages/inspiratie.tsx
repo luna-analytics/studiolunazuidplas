@@ -90,7 +90,7 @@ export default function Inspiratie() {
         {/* KOP: gewoon op de achtergrond, zonder gekleurd vlak */}
         <div className="px-7 md:px-14 lg:px-20 xl:px-28 pt-14 md:pt-12 pb-10">
           <h1 className="font-display text-4xl md:text-5xl font-medium text-foreground leading-[1.1]">Blog</h1>
-          <p className="text-[15px] text-foreground/75 leading-[1.9] mt-4 max-w-xl">
+          <p className="text-[15px] text-foreground/75 leading-[1.7] mt-4 max-w-xl">
             Ik neem je mee in mijn zoektocht over alles rondom zwangerschap, postpartum en het moederschap, waar ik gevoel en wetenschap allebei een plek geef.
           </p>
         </div>
@@ -121,7 +121,7 @@ export default function Inspiratie() {
                 <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground leading-[1.15] mt-2 group-hover:text-primary transition-colors">
                   {featured.title}
                 </h2>
-                <p className="text-[15px] text-foreground/80 leading-[1.9] mt-3">{excerpt(featured.body)}</p>
+                <p className="text-[15px] text-foreground/80 leading-[1.7] mt-3">{excerpt(featured.body)}</p>
               </Link>
             </article>
           )}
@@ -145,7 +145,7 @@ export default function Inspiratie() {
                       <h3 className="font-display text-xl md:text-2xl font-medium text-foreground leading-snug mt-1.5 group-hover:text-primary transition-colors">
                         {post.title}
                       </h3>
-                      <p className="text-[15px] text-foreground/75 leading-[1.8] mt-2 hidden md:block">
+                      <p className="text-[15px] text-foreground/75 leading-[1.65] mt-2 hidden md:block">
                         {excerpt(post.body, 160)}
                       </p>
                     </div>

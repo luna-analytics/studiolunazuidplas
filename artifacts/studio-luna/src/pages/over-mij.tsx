@@ -91,7 +91,7 @@ export default function OverMij() {
               <motion.div
                 variants={fadeUp} initial="hidden" whileInView="show"
                 viewport={{ once: true, margin: "-60px" }} custom={0.15}
-                className="md:pt-20 mt-8 md:mt-0"
+                className="md:pt-12 mt-8 md:mt-0"
               >
                 {data.over_mij_quote?.trim() && (
                   <blockquote className="font-display text-2xl md:text-3xl font-medium text-foreground leading-[1.3] mb-6">
@@ -116,7 +116,7 @@ export default function OverMij() {
               <motion.div
                 variants={fadeUp} initial="hidden" whileInView="show"
                 viewport={{ once: true, margin: "-80px" }} custom={0}
-                className="mb-8 md:mb-0"
+                className="mb-5 md:mb-0"
               >
                 <h2 className="font-display text-2xl md:text-3xl font-medium text-foreground leading-[1.2]">
                   Mijn verhaal
@@ -129,7 +129,7 @@ export default function OverMij() {
                 className="space-y-6"
               >
                 {alineas.map((alinea, i) => (
-                  <p key={i} className="text-[15px] text-foreground/80 leading-[1.95]">
+                  <p key={i} className="text-[15px] text-foreground/80 leading-[1.7]">
                     {alinea}
                   </p>
                 ))}
@@ -140,7 +140,7 @@ export default function OverMij() {
         )}
 
         {/* ── CONTACT STRIP ── */}
-        <section className="relative px-7 md:px-14 lg:px-20 xl:px-28 py-16 md:py-24 mb-4">
+        <section className="relative px-7 md:px-14 lg:px-20 xl:px-28 py-10 md:py-14 mb-4">
           <motion.div
             variants={fadeUp} initial="hidden" whileInView="show"
             viewport={{ once: true, margin: "-80px" }} custom={0}

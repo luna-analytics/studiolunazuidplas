@@ -44,7 +44,7 @@ export default function GeboortezorgPlaats() {
           <h1 className="font-display text-4xl md:text-5xl font-medium text-foreground leading-[1.1]">
             Zwanger in {plaats.naam}
           </h1>
-          <p className="text-[15px] text-foreground/75 leading-[1.9] mt-5 max-w-2xl">
+          <p className="text-[15px] text-foreground/75 leading-[1.7] mt-5 max-w-2xl">
             Alles wat je nodig hebt rondom je zwangerschap, je bevalling en de eerste tijd daarna,
             voor zover het in {plaats.naam} zit of hier werkt. {aantal.hier} aanbieders geven
             {" "}{plaats.naam} zelf op als plaats; {aantal.breed} andere werken vanuit een breder
@@ -62,18 +62,18 @@ export default function GeboortezorgPlaats() {
             <h2 className="font-display text-2xl md:text-3xl font-medium text-foreground leading-[1.2]">
               {categorie.titel} in {plaats.korteNaam}
             </h2>
-            <p className="text-[15px] text-foreground/70 leading-[1.9] mt-3 max-w-2xl">{categorie.intro}</p>
+            <p className="text-[15px] text-foreground/70 leading-[1.7] mt-3 max-w-2xl">{categorie.intro}</p>
 
             {hier.length > 0 && (
               <div className="mt-6 max-w-3xl">
                 {hier.map((a) => (
-                  <div key={a.naam} className="py-4 border-b border-border/15">
+                  <div key={a.naam} className="py-2.5 border-b border-border/15">
                     <p className="font-semibold text-foreground">
                       {a.naam}
                       {isNieuw(a.toegevoegd) && <span className="ml-2 text-[11px] uppercase tracking-widest text-primary/70">nieuw</span>}
                     </p>
                     <p className="text-[14px] text-foreground/60 mt-0.5">{a.plaats}</p>
-                    <p className="text-[15px] text-foreground/80 leading-[1.85] mt-1.5">{a.beschrijving}</p>
+                    <p className="text-[15px] text-foreground/80 leading-[1.7] mt-1.5">{a.beschrijving}</p>
                     {a.voordeel && <p className="text-[14px] text-primary/80 mt-1.5">{a.voordeel}</p>}
                     <a href={a.website} target="_blank" rel="noopener noreferrer" className="inline-block mt-2 text-sm font-semibold text-primary border-b border-primary/30 pb-0.5">
                       Website
@@ -89,10 +89,10 @@ export default function GeboortezorgPlaats() {
                   Werkt vanuit een breder gebied
                 </h3>
                 {breed.map((a) => (
-                  <div key={a.naam} className="py-4 border-b border-border/15">
+                  <div key={a.naam} className="py-2.5 border-b border-border/15">
                     <p className="font-semibold text-foreground">{a.naam}</p>
                     <p className="text-[14px] text-foreground/60 mt-0.5">{a.plaats}</p>
-                    <p className="text-[15px] text-foreground/80 leading-[1.85] mt-1.5">{a.beschrijving}</p>
+                    <p className="text-[15px] text-foreground/80 leading-[1.7] mt-1.5">{a.beschrijving}</p>
                     <a href={a.website} target="_blank" rel="noopener noreferrer" className="inline-block mt-2 text-sm font-semibold text-primary border-b border-primary/30 pb-0.5">
                       Website
                     </a>
@@ -107,7 +107,7 @@ export default function GeboortezorgPlaats() {
           <h2 className="font-display text-2xl md:text-3xl font-medium text-foreground leading-[1.2]">
             Zwangerschapsyoga in {plaats.korteNaam}
           </h2>
-          <p className="text-[15px] text-foreground/75 leading-[1.9] mt-4 max-w-2xl">
+          <p className="text-[15px] text-foreground/75 leading-[1.7] mt-4 max-w-2xl">
             Studio Luna geeft de Geboortereeks in Nieuwerkerk aan den IJssel: acht wekelijkse lessen
             zwangerschapsyoga en geboortevoorbereiding in een vaste groep, met daarna
             mama-en-babyyoga. De groep is er voor zwangeren uit de hele gemeente Zuidplas, dus ook

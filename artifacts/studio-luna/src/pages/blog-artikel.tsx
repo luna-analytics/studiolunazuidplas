@@ -106,9 +106,9 @@ export default function BlogArtikel() {
     return (
       <div className="min-h-screen bg-background pb-28 md:pb-16 md:pt-16 flex justify-center">
         <div className="w-full max-w-2xl px-6 md:px-12 pt-14">
-          <div className="h-6 w-24 bg-secondary rounded-xl animate-pulse mb-8" />
+          <div className="h-6 w-24 bg-secondary rounded-xl animate-pulse mb-5" />
           <div className="h-10 w-3/4 bg-secondary rounded-xl animate-pulse mb-4" />
-          <div className="h-64 w-full bg-secondary rounded-3xl animate-pulse mb-8" />
+          <div className="h-64 w-full bg-secondary rounded-3xl animate-pulse mb-5" />
           <div className="space-y-3">
             {[1, 2, 3, 4].map((i) => <div key={i} className="h-4 bg-secondary rounded-lg animate-pulse" style={{ width: `${85 - i * 7}%` }} />)}
           </div>
@@ -147,13 +147,13 @@ export default function BlogArtikel() {
 
         {/* Cover foto */}
         {post.coverImage && (
-          <div className="mx-6 md:mx-12 overflow-hidden mb-8" style={{ aspectRatio: "16/9" }}>
+          <div className="mx-6 md:mx-12 overflow-hidden mb-5" style={{ aspectRatio: "16/9" }}>
             <img src={post.coverImage} alt={post.title} className="w-full h-full object-cover" loading="lazy" />
           </div>
         )}
 
         {/* Header: categorie + titel + datum */}
-        <div className="px-6 md:px-12 mb-8">
+        <div className="px-6 md:px-12 mb-5">
           <p className="text-sm text-primary mb-2">{post.category}</p>
           <h1 className="font-display text-3xl md:text-4xl font-medium text-foreground leading-tight mb-3">
             {post.title}
@@ -162,7 +162,7 @@ export default function BlogArtikel() {
         </div>
 
         {/* Scheidingslijn */}
-        <div className="mx-6 md:mx-12 h-px bg-border/30 mb-8" />
+        <div className="mx-6 md:mx-12 h-px bg-border/30 mb-5" />
 
         {/* Artikel tekst */}
         <div className="px-6 md:px-12 pb-12">
@@ -170,7 +170,7 @@ export default function BlogArtikel() {
             {isHtml(post.body)
               ? <div dangerouslySetInnerHTML={{ __html: post.body }} />
               : paragraphs.map((para, i) => (
-                  <p key={i} className="text-[15px] text-foreground/80 leading-[1.85] font-light">
+                  <p key={i} className="text-[15px] text-foreground/80 leading-[1.7] font-light">
                     {para}
                   </p>
                 ))
@@ -199,7 +199,7 @@ export default function BlogArtikel() {
 
             {/* Bestaande reacties */}
             {comments.length > 0 && (
-              <div className="mb-10 border-t border-border/25">
+              <div className="mb-6 border-t border-border/25">
                 {comments.map((comment) => (
                   <div key={comment.id} className="py-5 border-b border-border/25">
                     <div>

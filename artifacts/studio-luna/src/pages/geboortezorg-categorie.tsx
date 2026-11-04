@@ -55,12 +55,12 @@ export default function GeboortezorgCategorie() {
             {cat.titel} in Zuidplas
           </h1>
           {opening && (
-            <p className="text-[17px] text-foreground/85 leading-[1.8] mt-5 max-w-2xl">
+            <p className="text-[17px] text-foreground/85 leading-[1.65] mt-5 max-w-2xl">
               {opening.zin.replace("{aantal}", String(aanbieders.length))}
             </p>
           )}
           {!opening?.vervangtIntro && (
-            <p className={`text-[15px] text-foreground/75 leading-[1.9] max-w-2xl ${opening ? "mt-3" : "mt-5"}`}>{cat.intro}</p>
+            <p className={`text-[15px] text-foreground/75 leading-[1.7] max-w-2xl ${opening ? "mt-3" : "mt-5"}`}>{cat.intro}</p>
           )}
           <p className="text-xs text-foreground/55 mt-3">Bijgewerkt in {LAATST_BIJGEWERKT.tekst}</p>
           <Link
@@ -99,9 +99,9 @@ export default function GeboortezorgCategorie() {
                     </span>
                   )}
                 </div>
-                <p className="text-[15px] text-foreground/80 leading-[1.9] mt-1.5">{a.beschrijving}</p>
+                <p className="text-[15px] text-foreground/80 leading-[1.7] mt-1.5">{a.beschrijving}</p>
                 {a.voordeel && (
-                  <p className="text-sm text-primary/90 leading-[1.85] mt-2">Voordeel: {a.voordeel}</p>
+                  <p className="text-sm text-primary/90 leading-[1.7] mt-2">Voordeel: {a.voordeel}</p>
                 )}
                 <p className="mt-1">
                   <a
@@ -149,7 +149,7 @@ export default function GeboortezorgCategorie() {
               </section>
             )}
 
-            <p className="text-sm text-foreground/60 leading-[1.85] mt-8">
+            <p className="text-sm text-foreground/60 leading-[1.7] mt-8">
               Klopt er iets niet of mis je iemand? Geef het door via{" "}
               <Link href="/geboortezorg-zuidplas" className="text-primary font-semibold hover:text-primary/75">
                 de zorgkaart

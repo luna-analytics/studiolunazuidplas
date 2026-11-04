@@ -211,31 +211,31 @@ export default function Geboortereeks() {
         </motion.div>
 
         {/* ── INTRO ── */}
-        <section className="relative px-7 md:px-14 lg:px-20 xl:px-28 py-10 md:py-12">
+        <section className="relative px-7 md:px-14 lg:px-20 xl:px-28 py-8 md:py-10">
           <div className="relative md:grid md:grid-cols-[1.2fr_1fr] md:gap-16 md:items-start">
             <motion.div
               variants={fadeUp} initial="hidden" whileInView="show"
               viewport={{ once: true, margin: "-60px" }} custom={0}
             >
-              <p className="text-[15px] text-foreground/80 leading-[1.95] mb-4">
+              <p className="text-[15px] text-foreground/80 leading-[1.7] mb-4">
                 In de Geboortereeks bereid je je volledig voor op je bevalling, met aandacht voor
                 ontspanning en een gezond lichaam tijdens je zwangerschap en daarna. Daarom werk
                 ik voor deze reeks samen met meerdere experts. Het is dus meer dan
                 zwangerschapsyoga: in acht weken krijg je in een kleine vaste groep kennis van
                 alle kanten, beweging en ontspanning.
               </p>
-              <p className="text-[15px] text-foreground/80 leading-[1.95] mb-4">
+              <p className="text-[15px] text-foreground/80 leading-[1.7] mb-4">
                 In de yoga lessen combineren we beweging, ontspanning en ademwerk met
                 voorbereiding op de bevalling. Eén les staat helemaal in het teken van de
                 bevalling en hoe yoga je helpt bij de voorbereiding, en in één les komen de
                 partners mee, zodat zij zien hoe ze je kunnen ondersteunen.
               </p>
-              <p className="text-[15px] text-foreground/80 leading-[1.95] mb-4">
+              <p className="text-[15px] text-foreground/80 leading-[1.7] mb-4">
                 Tamar Riani geeft een gastles over lichaamsbewustzijn, houding &amp; balans. Ook
                 komt er een bekkenfysiotherapeut langs, die je alles vertelt over je bekken en je
                 bekkenbodem en waar je tijdens de zwangerschap en na de bevalling op kunt letten.
               </p>
-              <p id="mama-en-babyyoga" className="text-[15px] text-foreground/80 leading-[1.95] scroll-mt-28">
+              <p id="mama-en-babyyoga" className="text-[15px] text-foreground/80 leading-[1.7] scroll-mt-28">
                 Een paar maanden later, als alle kindjes geboren zijn, sluiten we samen af met een
                 mama-en-babyles om bij elkaar in te checken, ervaringen te delen en weer te bewegen.
               </p>
@@ -250,13 +250,13 @@ export default function Geboortereeks() {
               <h2 className="font-display text-2xl font-medium text-foreground mb-3">Praktisch</h2>
               <div>
                 {PRAKTISCH.map((r) => (
-                  <div key={r.label} className="py-3 border-b border-border/15 text-sm leading-[1.8]">
+                  <div key={r.label} className="py-2 border-b border-border/15 text-sm leading-[1.65]">
                     <span className="font-semibold text-foreground/75">{r.label}</span>
                     <span className="text-foreground/75"> · {r.waarde}</span>
                   </div>
                 ))}
               </div>
-              <p className="text-xs text-foreground/60 leading-[1.8] mt-4">
+              <p className="text-xs text-foreground/60 leading-[1.65] mt-4">
                 Veel aanvullende verzekeringen vergoeden een zwangerschapscursus geheel of
                 gedeeltelijk; hoe dat werkt lees je bij de veelgestelde vragen onderaan.
               </p>
@@ -277,7 +277,7 @@ export default function Geboortereeks() {
               </h2>
               <div className="max-w-sm">
                 {AVOND.map((stap) => (
-                  <p key={stap} className="py-3 border-b border-border/15 text-[15px] text-foreground/80">
+                  <p key={stap} className="py-2 border-b border-border/15 text-[15px] text-foreground/80">
                     {stap}
                   </p>
                 ))}
@@ -288,7 +288,7 @@ export default function Geboortereeks() {
               <h2 className="font-display text-2xl md:text-3xl font-medium text-foreground leading-[1.15] mb-5">
                 Wanneer begin je?
               </h2>
-              <p className="text-[15px] text-foreground/80 leading-[1.95]">
+              <p className="text-[15px] text-foreground/80 leading-[1.7]">
                 Bij de start ben je ongeveer tussen de 20 en 28 weken zwanger. Zo eindig je de
                 reeks rond de 28 tot 36 weken, met de bevalling in zicht. Val je daarbuiten maar
                 wil je toch graag meedoen, stuur me dan even een berichtje.
@@ -321,7 +321,7 @@ export default function Geboortereeks() {
                   : `Nog ${8 - aanmeldingen} van de acht plekken vrij.`}
               </p>
             )}
-            <p className="text-[15px] text-foreground/80 leading-[1.9] mb-7">
+            <p className="text-[15px] text-foreground/80 leading-[1.7] mb-7">
               Er is plek voor maximaal acht zwangeren. Je
               kunt meedoen als je bij de start ongeveer tussen de 20 en 28 weken zwanger bent. Meld je
               aan met je naam en e-mailadres; daarna stuur ik je persoonlijk het
@@ -329,7 +329,7 @@ export default function Geboortereeks() {
             </p>
 
             {status === "klaar" ? (
-              <p className="text-[15px] text-foreground/80 leading-[1.9] rounded-[6px] bg-primary/8 border border-primary/15 px-5 py-4">
+              <p className="text-[15px] text-foreground/80 leading-[1.7] rounded-[6px] bg-primary/8 border border-primary/15 px-5 py-4">
                 Dankjewel voor je aanmelding! Er staat een bevestiging in je mail, en daarna
                 ontvang je van mij persoonlijk het intakeformulier en de factuur; dan is je
                 plek definitief.
@@ -369,7 +369,7 @@ export default function Geboortereeks() {
             )}
 
             <div className="mt-8 pt-7 border-t border-border/20">
-              <p className="text-[15px] text-foreground/80 leading-[1.9] mb-4">
+              <p className="text-[15px] text-foreground/80 leading-[1.7] mb-4">
                 Heb je vragen of wil je even telefonisch kennismaken? Stuur dan even een
                 berichtje, dan neem ik contact met je op.
               </p>
@@ -379,7 +379,7 @@ export default function Geboortereeks() {
               >
                 Stuur een berichtje
               </button>
-              <p className="text-sm text-foreground/65 leading-[1.9] mt-5">
+              <p className="text-sm text-foreground/65 leading-[1.7] mt-5">
                 Liever direct appen? Dat kan ook via{" "}
                 <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="text-primary font-semibold hover:text-primary/75">
                   WhatsApp
@@ -395,14 +395,14 @@ export default function Geboortereeks() {
         </section>
 
         {/* ── WAT ZIT ERIN ── */}
-        <section className="relative px-7 md:px-14 lg:px-20 xl:px-28 py-10 md:py-12">
+        <section className="relative px-7 md:px-14 lg:px-20 xl:px-28 py-8 md:py-10">
           <div className="relative md:grid md:grid-cols-[1.4fr_1fr] md:gap-14 md:items-start">
             <div className="max-w-3xl">
               <motion.div
                 variants={fadeUp} initial="hidden" whileInView="show"
                 viewport={{ once: true, margin: "-60px" }} custom={0}
               >
-                <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground mb-8 leading-[1.15]">
+                <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground mb-5 leading-[1.15]">
                   Een complete geboortevoorbereiding
                 </h2>
               </motion.div>
@@ -413,7 +413,7 @@ export default function Geboortereeks() {
                     key={i}
                     variants={fadeUp} initial="hidden" whileInView="show"
                     viewport={{ once: true, margin: "-40px" }} custom={Math.min(i * 0.05, 0.2)}
-                    className="text-[15px] text-foreground/80 leading-[1.9] py-4 border-b border-border/15"
+                    className="text-[15px] text-foreground/80 leading-[1.7] py-2.5 border-b border-border/15"
                   >
                     {tekst}
                   </motion.p>
@@ -429,7 +429,7 @@ export default function Geboortereeks() {
                 style={{ aspectRatio: "4/5" }}
                 loading="lazy"
               />
-              <figcaption className="text-[13px] text-foreground/60 leading-[1.8] mt-3">
+              <figcaption className="text-[13px] text-foreground/60 leading-[1.65] mt-3">
                 In de partnerles leert je geboortepartner ademtechnieken, massage en
                 bevalhoudingen waarmee die jou tijdens de bevalling echt kan ondersteunen.
               </figcaption>
@@ -438,21 +438,21 @@ export default function Geboortereeks() {
         </section>
 
         {/* ── WEEKOVERZICHT ── */}
-        <section className="px-7 md:px-14 lg:px-20 xl:px-28 py-10 md:py-12">
+        <section className="px-7 md:px-14 lg:px-20 xl:px-28 py-8 md:py-10">
           <div className="max-w-3xl">
             <motion.div
               variants={fadeUp} initial="hidden" whileInView="show"
               viewport={{ once: true, margin: "-60px" }} custom={0}
             >
-              <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground mb-8 leading-[1.15]">
+              <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground mb-5 leading-[1.15]">
                 Acht lessen, één reis
               </h2>
             </motion.div>
 
-            <p className="text-[15px] text-foreground/80 leading-[1.9] mb-3">
+            <p className="text-[15px] text-foreground/80 leading-[1.7] mb-3">
               Elke woensdag van 19:00 tot 20:15 uur.
             </p>
-            <dl className="grid grid-cols-[7rem_1fr] gap-x-4 max-w-xl text-[15px] leading-[1.9]">
+            <dl className="grid grid-cols-[7rem_1fr] gap-x-4 max-w-xl text-[15px] leading-[1.7]">
               {KALENDER.map((les) => (
                 <Fragment key={les.datum}>
                   <dt className="text-foreground/80">{les.datum}</dt>
@@ -460,7 +460,7 @@ export default function Geboortereeks() {
                 </Fragment>
               ))}
             </dl>
-            <p className="text-sm text-foreground/65 leading-[1.85] mt-5">
+            <p className="text-sm text-foreground/65 leading-[1.7] mt-5">
               Kun je een keer een les niet? Dan haal je de les in bij een volgend blok, of we
               kijken samen naar een passende oplossing.
             </p>
@@ -468,7 +468,7 @@ export default function Geboortereeks() {
         </section>
 
         {/* ── WIE GEEFT DE LESSEN ── */}
-        <section className="relative px-7 md:px-14 lg:px-20 xl:px-28 py-10 md:py-12">
+        <section className="relative px-7 md:px-14 lg:px-20 xl:px-28 py-8 md:py-10">
           <motion.div
             variants={fadeUp} initial="hidden" whileInView="show"
             viewport={{ once: true, margin: "-60px" }} custom={0}
@@ -477,7 +477,7 @@ export default function Geboortereeks() {
             <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground leading-[1.15] mb-6">
               Hoi, ik ben Marjolein
             </h2>
-            <p className="text-[15px] text-foreground/80 leading-[1.95]">
+            <p className="text-[15px] text-foreground/80 leading-[1.7]">
               Moeder, gepromoveerd onderzoeker en yogadocente. Ik geef de yogalessen van de
               Geboortereeks zelf en werk voor deze reeks samen met meerdere experts: Tamar
               Riani geeft een gastles over lichaamsbewustzijn, houding &amp; balans, en er komt
@@ -504,11 +504,11 @@ export default function Geboortereeks() {
         </section>
 
         {/* ── FAQ ── */}
-        <section className="px-7 md:px-14 lg:px-20 xl:px-28 py-10 md:py-12">
+        <section className="px-7 md:px-14 lg:px-20 xl:px-28 py-8 md:py-10">
           <motion.div
             variants={fadeUp} initial="hidden" whileInView="show"
             viewport={{ once: true, margin: "-60px" }} custom={0}
-            className="mb-8"
+            className="mb-5"
           >
             <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground leading-[1.15]">
               Goed om te weten
@@ -525,7 +525,7 @@ export default function Geboortereeks() {
                   <AccordionTrigger className="text-left text-[15px] font-semibold text-foreground/80 hover:no-underline">
                     {item.vraag}
                   </AccordionTrigger>
-                  <AccordionContent forceMount className="text-[15px] text-foreground/80 leading-[1.85]">
+                  <AccordionContent forceMount className="text-[15px] text-foreground/80 leading-[1.7]">
                     {item.antwoord}
                   </AccordionContent>
                 </AccordionItem>
