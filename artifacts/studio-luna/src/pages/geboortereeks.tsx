@@ -218,20 +218,26 @@ export default function Geboortereeks() {
               viewport={{ once: true, margin: "-60px" }} custom={0}
             >
               <p className="text-[15px] text-foreground/80 leading-[1.95] mb-4">
-                In de Geboortereeks bereid je je in een kleine vaste groep voor op je bevalling.
-                Elke week combineren we yoga en ademwerk met één concreet onderdeel van de
-                bevalling, van het opvangen van weeën tot bevalhoudingen en het gebruik van
-                klank. Er zit een volledige bevallingsles in, een partnerles en een mamaspa-avond
-                die helemaal om ontspanning draait.
+                In de Geboortereeks bereid je je volledig voor op je bevalling, met aandacht voor
+                ontspanning en een gezond lichaam tijdens je zwangerschap en daarna. Daarom werk
+                ik voor deze reeks samen met meerdere experts. Het is dus meer dan
+                zwangerschapsyoga: in acht weken krijg je in een kleine vaste groep kennis van
+                alle kanten, beweging en ontspanning.
               </p>
               <p className="text-[15px] text-foreground/80 leading-[1.95] mb-4">
-                Wat deze reeks bijzonder maakt: een bekkenfysiotherapeut geeft één van de
-                lessen samen met mij en neemt je mee in alles over je bekken en bekkenbodem.
+                In de yoga lessen combineren we beweging, ontspanning en ademwerk met
+                voorbereiding op de bevalling. Eén les staat helemaal in het teken van de
+                bevalling en hoe yoga je helpt bij de voorbereiding, en in één les komen de
+                partners mee, zodat zij zien hoe ze je kunnen ondersteunen.
+              </p>
+              <p className="text-[15px] text-foreground/80 leading-[1.95] mb-4">
+                Tamar Riani geeft een gastles over lichaamsbewustzijn, houding &amp; balans. Ook
+                komt er een bekkenfysiotherapeut langs, die je alles vertelt over je bekken en je
+                bekkenbodem en waar je tijdens de zwangerschap en na de bevalling op kunt letten.
               </p>
               <p id="mama-en-babyyoga" className="text-[15px] text-foreground/80 leading-[1.95] scroll-mt-28">
-                En als alle kindjes geboren zijn, komt de groep nog één keer samen voor
-                mama-en-babyyoga; deze postpartumles is mijn cadeautje aan jullie. Zo begint je
-                moederschap met een groep vrouwen die je echt hebt leren kennen.
+                Een paar maanden later, als alle kindjes geboren zijn, sluiten we samen af met een
+                mama-en-babyles om bij elkaar in te checken, ervaringen te delen en weer te bewegen.
               </p>
 
             </motion.div>
