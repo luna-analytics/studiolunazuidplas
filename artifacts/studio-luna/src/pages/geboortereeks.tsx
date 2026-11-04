@@ -62,7 +62,7 @@ const AVOND = [
 const INBEGREPEN = [
   "Acht wekelijkse lessen van 75 minuten op de woensdagavond, plus mama-en-babyyoga cadeau zodra alle kindjes geboren zijn",
   "Een vaste groep van maximaal acht zwangeren, zodat je elkaar echt leert kennen",
-  "Een les over je bekken en bekkenbodem die een bekkenfysiotherapeut samen met mij geeft",
+  "Twee gastlessen: Tamar Riani over lichaamsbewustzijn, houding & balans, en een bekkenfysiotherapeut over je bekken en je bekkenbodem",
   "Een complete bevallingsles en een partnerles waarin je geboortepartner tools krijgt om jou te ondersteunen",
   "Een mamaspa-avond met zelfmassage en restorative yoga die helemaal om ontspanning en herstel draait",
   "Elke week een oefening in de WhatsApp-groep, een goodiebag en tijd voor verbinding met andere mama's",
@@ -87,11 +87,11 @@ const FAQ_ITEMS = [
   },
   {
     vraag: "Is mijn partner er ook bij?",
-    antwoord: "Ja, les 7 op dinsdag 10 november is de partnerles. Je geboortepartner leert daar ademtechnieken, massage en bevalhoudingen waarmee die jou tijdens de bevalling echt kan ondersteunen.",
+    antwoord: "Ja, les 7 op woensdag 24 februari is de partnerles. Je geboortepartner leert daar ademtechnieken, massage en bevalhoudingen waarmee die jou tijdens de bevalling echt kan ondersteunen.",
   },
   {
     vraag: "Waar en hoe laat zijn de lessen?",
-    antwoord: "De lessen zijn in Waldorfhaus de Perenboom aan het Raadhuisplein 28 in Nieuwerkerk aan den IJssel, elke dinsdag van 19:00 tot 20:15 uur.",
+    antwoord: "De lessen zijn in Waldorfhaus de Perenboom aan het Raadhuisplein 28 in Nieuwerkerk aan den IJssel, elke woensdag van 19:00 tot 20:15 uur.",
   },
   {
     vraag: "Wat is de mama-en-babyles?",
@@ -152,7 +152,7 @@ export default function Geboortereeks() {
         "@context": "https://schema.org",
         "@type": "Course",
         name: "Studio Luna Geboortereeks",
-        description: "Acht wekelijkse lessen zwangerschapsyoga en geboortevoorbereiding plus mama-en-babyyoga na afloop, met een les samen met een bekkenfysiotherapeut, een partnerles en een mamaspa-avond.",
+        description: "Acht wekelijkse lessen zwangerschapsyoga en geboortevoorbereiding plus mama-en-babyyoga na afloop, met twee gastlessen, een partnerles en een mamaspa-avond.",
         provider: { "@type": "LocalBusiness", name: "Studio Luna", url: "https://www.studiolunazuidplas.nl/" },
         hasCourseInstance: {
           "@type": "CourseInstance",
@@ -482,9 +482,10 @@ export default function Geboortereeks() {
               Hoi, ik ben Marjolein
             </h2>
             <p className="text-[15px] text-foreground/80 leading-[1.95]">
-              Moeder, gepromoveerd onderzoeker en yogadocente. Ik geef alle lessen van de
-              Geboortereeks zelf; de les over je bekken en bekkenbodem geef ik samen met
-              een bekkenfysiotherapeut. Bij Studio Luna combineer ik gevoel en wetenschap: je
+              Moeder, gepromoveerd onderzoeker en yogadocente. Ik geef de yogalessen van de
+              Geboortereeks zelf en werk voor deze reeks samen met meerdere experts: Tamar
+              Riani geeft een gastles over lichaamsbewustzijn, houding &amp; balans, en er komt
+              een bekkenfysiotherapeut langs. Bij Studio Luna combineer ik gevoel en wetenschap: je
               bereidt je sterk en met vertrouwen voor op je bevalling, en je leert andere
               moeders uit Zuidplas kennen.
             </p>
