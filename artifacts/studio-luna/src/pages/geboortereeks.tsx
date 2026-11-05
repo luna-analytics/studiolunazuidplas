@@ -318,7 +318,7 @@ export default function Geboortereeks() {
               <p className="text-sm font-semibold text-primary mb-3">
                 {aanmeldingen >= 8
                   ? "Alle acht plekken hebben een aanmelding."
-                  : `Nog ${8 - aanmeldingen} van de acht plekken vrij.`}
+                  : `Nog ${["", "één", "twee", "drie", "vier", "vijf", "zes", "zeven"][8 - aanmeldingen]} van de acht plekken vrij.`}
               </p>
             )}
             <p className="text-[15px] text-foreground/80 leading-[1.7] mb-7">
