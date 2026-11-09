@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { usePageMeta } from "@/lib/seo";
 import { IMAGES } from "@/lib/images";
+import { REEKS, dagMaand } from "../../../api-server/src/lib/reeks";
 
 // Geen inloopanimaties meer: de inhoud staat er gewoon.
 const fadeUp = {
@@ -15,15 +16,10 @@ const fadeUp = {
   show: { opacity: 1, y: 0 },
 };
 
-const KALENDER = [
-  { datum: "13 januari" },
-  { datum: "20 januari" },
-  { datum: "27 januari" },
-  { datum: "3 februari" },
-  { datum: "10 februari", noot: "Gastles van een bekkenfysiotherapeut" },
-  { datum: "17 februari" },
-  { datum: "24 februari", noot: "Partnerles" },
-  { datum: "3 maart" },
+// De lesdata komen uit dezelfde lijst als de bevestigingsmail (reeks.ts in de
+// API), zodat site en mail nooit meer uit elkaar lopen.
+const KALENDER: { datum: string; noot?: string }[] = [
+  ...REEKS.lessen.map((les) => ({ datum: dagMaand(les.iso), noot: les.noot })),
   { datum: "datum volgt", noot: "Mama-en-babyyoga cadeau, zodra alle kindjes geboren zijn" },
 ];
 

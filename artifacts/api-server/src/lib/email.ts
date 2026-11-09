@@ -3,6 +3,7 @@ import { getEmailSettings } from "./email-settings.js";
 import { readClassTypes } from "./class-types.js";
 import { readTarieven } from "./tarieven.js";
 import { logMailFailure } from "./mail-log.js";
+import { REEKS, REEKS_START, dagMaand, reeksBegonnen } from "./reeks.js";
 
 // Bewust lui opgebouwd. new Resend(undefined) gooit direct een fout, en op
 // moduleniveau zou een ontbrekende sleutel daarmee de complete API neerhalen
@@ -27,7 +28,7 @@ const ADMIN_TO = process.env.ADMIN_EMAIL ?? "info@studiolunazuidplas.nl";
 // nog onderweg is komt nooit aan. Zo zijn in september berichten van de site
 // blijven liggen terwijl ze wel in de database stonden.
 async function verzend(
-  opts: { to: string; subject: string; html: string },
+  opts: { to: string; subject: string; html: string; bcc?: string },
   context: string,
 ): Promise<boolean> {
   if (!process.env.RESEND_API_KEY) {
@@ -72,22 +73,29 @@ function paymentNote(isProefles: boolean, isLosseLes: boolean): string {
   return "1 les wordt afgeschreven van jouw rittenkaart";
 }
 
+// Licht en rustig, in de lijn van de website (november 2026): crème, inkt en
+// salie, Alegreya met Georgia als terugval, geen donkere vlakken en geen
+// hoofdletters. Lettertypes worden niet van Google geladen.
+const SERIF = "Alegreya, Georgia, 'Times New Roman', serif";
+const SANS = "'Alegreya Sans', Helvetica, Arial, sans-serif";
+const HAARLIJN = "border-top:1px solid #E5DCD2;";
+
 const HEADER = (subtitle: string) => `
   <tr>
-    <td style="background-color:#3A4F41; padding:40px 40px 30px; text-align:center;">
-      <h1 style="margin:0; font-family:'Playfair Display', Georgia, serif; font-size:30px; color:#F8F7F5; font-weight:normal; letter-spacing:2px; text-transform:uppercase;">Studio Luna</h1>
-      <p style="margin:10px 0 0; font-size:12px; color:#E6DDD2; letter-spacing:3px; text-transform:uppercase; font-weight:400;">${subtitle}</p>
+    <td style="padding:36px 40px 22px;">
+      <p style="margin:0; font-family:${SERIF}; font-size:26px; line-height:1.2; color:#3B4F41;">Studio Luna</p>
+      <p style="margin:6px 0 0; font-family:${SANS}; font-size:14px; color:#7E9285;">${subtitle}</p>
     </td>
   </tr>
-  <tr><td style="background-color:#E6DDD2; height:4px;"></td></tr>
+  <tr><td style="padding:0 40px;"><div style="${HAARLIJN} font-size:0; line-height:0;">&nbsp;</div></td></tr>
 `;
 
 const FOOTER = `
+  <tr><td style="padding:0 40px;"><div style="${HAARLIJN} font-size:0; line-height:0;">&nbsp;</div></td></tr>
   <tr>
-    <td style="background-color:#3A4F41; padding:35px 40px; text-align:center;">
-      <p style="margin:0 0 8px; font-size:13px; color:#E6DDD2;">Vragen? Stuur een berichtje via WhatsApp:</p>
-      <p style="margin:0 0 15px; font-size:15px; color:#F8F7F5; font-weight:600; letter-spacing:1px;">+31 6 43735343</p>
-      <p style="margin:0; font-size:11px; color:#8FA89B; letter-spacing:1px;">@studiolunazuidplas &nbsp; | &nbsp; info@studiolunazuidplas.nl</p>
+    <td style="padding:22px 40px 36px; font-family:${SANS}; font-size:14px; line-height:1.7; color:#4F6D62;">
+      <p style="margin:0;">Vragen? Stuur een berichtje via WhatsApp: <a href="https://wa.me/31643735343" style="color:#4F6D62; white-space:nowrap;">+31 6 43735343</a></p>
+      <p style="margin:0; color:#7E9285;"><a href="mailto:info@studiolunazuidplas.nl" style="color:#7E9285;">info@studiolunazuidplas.nl</a> &middot; <a href="https://www.studiolunazuidplas.nl" style="color:#7E9285;">studiolunazuidplas.nl</a> &middot; @studiolunazuidplas</p>
     </td>
   </tr>
 `;
@@ -98,16 +106,17 @@ const WRAPPER = (inner: string) => `
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  <meta name="color-scheme" content="light only">
+  <meta name="supported-color-schemes" content="light">
+  <style>:root { color-scheme: light only; supported-color-schemes: light; }</style>
 </head>
-<body style="margin:0; padding:0; background-color:#F8F7F5; font-family:'Lato', Helvetica, Arial, sans-serif; color:#3A4F41;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#F8F7F5; padding:40px 10px;">
+<body style="margin:0; padding:0; background-color:#F9F8F6; font-family:${SANS}; color:#3B4F41;">
+  <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background-color:#F9F8F6; padding:24px 8px;">
     <tr>
       <td align="center">
-        <table width="100%" cellpadding="0" cellspacing="0" style="max-width:520px; background-color:#ffffff; border-radius:12px; overflow:hidden; box-shadow:0 4px 15px rgba(58,79,65,0.08);">
+        <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="max-width:540px; background-color:#F9F8F6;">
           ${inner}
         </table>
-        <p style="margin-top:25px; font-size:11px; color:#8FA89B; text-align:center; text-transform:uppercase; letter-spacing:2px;">It takes a village</p>
       </td>
     </tr>
   </table>
@@ -149,10 +158,10 @@ export async function sendReservationConfirmation(params: {
     ${HEADER(perType?.ondertitel || settings.emailOndertitel)}
     <tr>
       <td style="padding:40px 45px;">
-        <h2 style="margin:0 0 15px; font-family:'Playfair Display', serif; font-size:22px; color:#3A4F41; font-weight:normal;">Lieve ${toName},</h2>
+        <h2 style="margin:0 0 15px; font-family:${SERIF}; font-size:22px; color:#3A4F41; font-weight:normal;">Lieve ${toName},</h2>
         <p style="margin:0 0 30px; font-size:15px; line-height:1.7; color:#3A4F41; font-weight:300;">${intro.replace(/\n/g, "<br/>")}</p>
 
-        <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#F8F7F5; border-radius:8px; margin-bottom:25px;">
+        <table width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid #E5DCD2; border-bottom:1px solid #E5DCD2; margin-bottom:25px;">
           <tr><td style="padding:25px;">
             <p style="margin:0 0 12px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:2px; color:#8FA89B;">Jouw moment</p>
             <table width="100%" cellpadding="0" cellspacing="0">
@@ -207,10 +216,10 @@ export async function sendReminderEmail(params: {
     ${HEADER(perType?.ondertitel || settings.emailOndertitel)}
     <tr>
       <td style="padding:40px 45px;">
-        <h2 style="margin:0 0 15px; font-family:'Playfair Display', serif; font-size:22px; color:#3A4F41; font-weight:normal;">Lieve ${toName},</h2>
+        <h2 style="margin:0 0 15px; font-family:${SERIF}; font-size:22px; color:#3A4F41; font-weight:normal;">Lieve ${toName},</h2>
         <p style="margin:0 0 25px; font-size:15px; line-height:1.7; color:#3A4F41; font-weight:300;">${intro.replace(/\n/g, "<br/>")}</p>
 
-        <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#F8F7F5; border-radius:8px; margin-bottom:25px;">
+        <table width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid #E5DCD2; border-bottom:1px solid #E5DCD2; margin-bottom:25px;">
           <tr><td style="padding:25px;">
             <p style="margin:0 0 12px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:2px; color:#8FA89B;">Jouw moment</p>
             <table width="100%" cellpadding="0" cellspacing="0">
@@ -239,31 +248,49 @@ export async function sendReminderEmail(params: {
 // Zonder deze mail hoorde een aanmelder pas iets wanneer Marjolein zelf
 // mailde; wie een dag niets hoort gaat twijfelen. De tekst spiegelt de
 // succesmelding op de reekspagina en belooft niets nieuws.
-export async function sendReeksAanmeldingBevestiging(params: { toEmail: string; toName: string }) {
-  const { toEmail, toName } = params;
-
-  const inner = `
+//
+// De startdatum komt uit reeks.ts, net als de kalender op de site. Is die
+// reeks al begonnen, dan noemt de mail geen datum (liever geen datum dan een
+// verkeerde) en verschijnt er een rode waarschuwing in de admin.
+// Marjolein krijgt van elke bevestiging een kopie (bcc), zodat ze precies
+// ziet wat de aanmelder kreeg.
+export function reeksBevestigingHtml(toName: string): string {
+  const startZin = reeksBegonnen()
+    ? ""
+    : ` De reeks start op ${REEKS.dag} ${dagMaand(REEKS_START)} bij ${REEKS.plaats}, elke ${REEKS.dag} van ${REEKS.tijd}.`;
+  const p = `margin:0 0 16px; font-family:${SANS}; font-size:16px; line-height:1.7; color:#3B4F41;`;
+  return WRAPPER(`
     ${HEADER("Aanmelding ontvangen")}
     <tr>
-      <td style="padding:40px 45px;">
-        <h2 style="margin:0 0 15px; font-family:'Playfair Display', serif; font-size:22px; color:#3A4F41; font-weight:normal;">Lieve ${toName},</h2>
-        <p style="margin:0 0 16px; font-size:15px; line-height:1.8; color:#3A4F41; font-weight:300;">
-          Je aanmelding voor de Geboortereeks is binnen, dankjewel! De reeks start op
-          dinsdag 29 september in Nieuwerkerk aan den IJssel, elke dinsdag van 19:00 tot 20:15 uur.
-        </p>
-        <p style="margin:0 0 16px; font-size:15px; line-height:1.8; color:#3A4F41; font-weight:300;">
-          Marjolein stuurt je persoonlijk het intakeformulier en de factuur per mail;
-          daarna is je plek definitief. Je hoeft nu verder niets te doen.
-        </p>
+      <td style="padding:28px 40px 12px;">
+        <p style="margin:0 0 16px; font-family:${SERIF}; font-size:22px; color:#3B4F41;">Lieve ${toName},</p>
+        <p style="${p}">Je aanmelding voor de Geboortereeks is binnen, dankjewel!${startZin}</p>
+        <p style="${p}">Marjolein stuurt je persoonlijk het intakeformulier en de factuur per mail;
+          daarna is je plek definitief. Je hoeft nu verder niets te doen.</p>
       </td>
     </tr>
     ${FOOTER}
-  `;
+  `);
+}
 
+export async function sendReeksAanmeldingBevestiging(params: { toEmail: string; toName: string }) {
+  const { toEmail, toName } = params;
+  if (reeksBegonnen()) {
+    await logMailFailure(
+      "aanmeldbevestiging Geboortereeks",
+      toEmail,
+      `De reeks in reeks.ts is op ${dagMaand(REEKS_START)} al begonnen; de bevestiging is zonder startdatum verstuurd. Zet de nieuwe reeks in reeks.ts.`,
+    );
+  }
   await verzend(
-    { to: toEmail, subject: "Je aanmelding voor de Geboortereeks is binnen", html: WRAPPER(inner) },
+    { to: toEmail, bcc: ADMIN_TO, subject: "Je aanmelding voor de Geboortereeks is binnen", html: reeksBevestigingHtml(toName) },
     "aanmeldbevestiging Geboortereeks",
   );
+}
+
+/** Voor de melding aan Marjolein: om welke reeks het gaat. */
+export function reeksOmschrijving(): string {
+  return `start ${REEKS.dag} ${dagMaand(REEKS_START)}`;
 }
 
 // ─── ADMIN NOTIFICATIE (bij nieuwe reservering / boeking / aanvraag) ─────────
@@ -282,9 +309,9 @@ export async function sendAdminNotification(params: {
     ${HEADER(label)}
     <tr>
       <td style="padding:40px 45px;">
-        <h2 style="margin:0 0 20px; font-family:'Playfair Display', serif; font-size:22px; color:#3A4F41; font-weight:normal;">${kop}</h2>
+        <h2 style="margin:0 0 20px; font-family:${SERIF}; font-size:22px; color:#3A4F41; font-weight:normal;">${kop}</h2>
 
-        <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#F8F7F5; border-radius:8px; margin-bottom:20px;">
+        <table width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid #E5DCD2; border-bottom:1px solid #E5DCD2; margin-bottom:20px;">
           <tr><td style="padding:22px 25px;">
             <p style="margin:0 0 10px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:2px; color:#8FA89B;">Klant</p>
             <p style="margin:0 0 4px; font-size:16px; color:#3A4F41; font-weight:600;">${name}</p>
@@ -292,7 +319,7 @@ export async function sendAdminNotification(params: {
           </td></tr>
         </table>
 
-        <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#F8F7F5; border-radius:8px; margin-bottom:25px;">
+        <table width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid #E5DCD2; border-bottom:1px solid #E5DCD2; margin-bottom:25px;">
           <tr><td style="padding:22px 25px;">
             <p style="margin:0 0 10px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:2px; color:#8FA89B;">Details</p>
             <p style="margin:0; font-size:14px; line-height:1.8; color:#3A4F41;">${details.replace(/\n/g, "<br/>")}</p>
@@ -337,7 +364,7 @@ export async function sendCustomEmail(params: {
     ${HEADER(ondertitel || settings.emailOndertitel)}
     <tr>
       <td style="padding:40px 45px;">
-        <h2 style="margin:0 0 24px; font-family:'Playfair Display', serif; font-size:22px; color:#3A4F41; font-weight:normal;">Lieve ${toName},</h2>
+        <h2 style="margin:0 0 24px; font-family:${SERIF}; font-size:22px; color:#3A4F41; font-weight:normal;">Lieve ${toName},</h2>
         ${bodyHtml}
       </td>
     </tr>
@@ -377,19 +404,13 @@ export async function sendBookingConfirmation(params: {
     : "";
 
   const inner = `
-    <tr>
-      <td style="background-color:#3A4F41; padding:40px 40px 30px; text-align:center;">
-        <h1 style="margin:0; font-family:'Playfair Display', Georgia, serif; font-size:30px; color:#F8F7F5; font-weight:normal; letter-spacing:2px; text-transform:uppercase;">Studio Luna</h1>
-        <p style="margin:10px 0 0; font-size:12px; color:#E6DDD2; letter-spacing:3px; text-transform:uppercase; font-weight:400;">Reservering bevestigd</p>
-      </td>
-    </tr>
-    <tr><td style="background-color:#E6DDD2; height:4px;"></td></tr>
+    ${HEADER("Reservering bevestigd")}
     <tr>
       <td style="padding:40px 45px;">
-        <h2 style="margin:0 0 15px; font-family:'Playfair Display', serif; font-size:22px; color:#3A4F41; font-weight:normal;">Lieve ${toName},</h2>
+        <h2 style="margin:0 0 15px; font-family:${SERIF}; font-size:22px; color:#3A4F41; font-weight:normal;">Lieve ${toName},</h2>
         <p style="margin:0 0 30px; font-size:15px; line-height:1.7; color:#3A4F41; font-weight:300;">${intro.replace(/\n/g, "<br/>")}</p>
 
-        <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#F8F7F5; border-radius:8px; margin-bottom:25px;">
+        <table width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid #E5DCD2; border-bottom:1px solid #E5DCD2; margin-bottom:25px;">
           <tr><td style="padding:25px;">
             <p style="margin:0 0 12px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:2px; color:#8FA89B;">Jouw moment</p>
             <table width="100%" cellpadding="0" cellspacing="0">

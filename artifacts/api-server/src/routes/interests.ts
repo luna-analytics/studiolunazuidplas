@@ -2,7 +2,7 @@ import { Router } from "express";
 import { db, studioSettings } from "@workspace/db";
 import { eq } from "drizzle-orm";
 import { requireAdmin } from "../middlewares/auth.js";
-import { sendAdminNotification, sendReeksAanmeldingBevestiging } from "../lib/email.js";
+import { sendAdminNotification, sendReeksAanmeldingBevestiging, reeksOmschrijving } from "../lib/email.js";
 import { readMailFailures, clearMailFailures } from "../lib/mail-log.js";
 
 // Interesselijst en zorgkaart-feedback, allebei opgeslagen in studio_settings
@@ -95,7 +95,8 @@ router.get("/admin/geboortereeks-aanmeldingen", requireAdmin, async (_req: any, 
 });
 
 // Openbare teller voor de reekspagina: hoeveel aanmeldingen er zijn op de
-// acht plekken. Alleen het aantal, nooit namen of adressen.
+// plekken. Alleen het aantal, nooit namen of adressen. De site toont sinds
+// 9 november 2026 geen teller meer (groepsgrootte ligt niet vast).
 router.get("/geboortereeks-plekken", async (_req, res) => {
   const list = await readList<Aanmelding>("geboortereeks_aanmeldingen");
   res.json({ aanmeldingen: list.length, plekken: 8 });
@@ -119,7 +120,7 @@ router.post("/geboortereeks-aanmelding", async (req, res) => {
     type: "aanvraag",
     name: naam.trim(),
     email,
-    details: "Aanmelding Geboortereeks (start 29 september). Stuur het intakeformulier en de factuur per mail.",
+    details: `Aanmelding Geboortereeks (${reeksOmschrijving()}). Stuur het intakeformulier en de factuur per mail. De aanmelder kreeg automatisch een bevestiging; je kopie daarvan zit in een aparte mail.`,
   }).catch(() => {});
   // De aanmelder krijgt direct een bevestiging, zodat ze weet dat het gelukt
   // is en wat er nu gebeurt; de aanmelding zelf is dan al veilig opgeslagen.
