@@ -1,4 +1,4 @@
-import { Fragment, useState, useEffect } from "react";
+import { Fragment, useState } from "react";
 import { Link } from "wouter";
 import { BottomNav } from "@/components/bottom-nav";
 import { SeoFooter } from "@/components/seo-footer";
@@ -29,7 +29,7 @@ const KALENDER = [
 
 const PRAKTISCH = [
   { label: "Start", waarde: "woensdag 13 januari, daarna elke week op woensdag van 19:00 tot 20:15 uur" },
-  { label: "Groep", waarde: "maximaal 8 zwangeren, een vaste groep" },
+  { label: "Groep", waarde: "kleinschalig, een vaste groep" },
   { label: "Voor wie", waarde: "bij de start ben je ongeveer tussen de 20 en 28 weken zwanger" },
   { label: "Locatie", waarde: "Waldorfhaus de Perenboom, Raadhuisplein 28 in Nieuwerkerk aan den IJssel" },
   { label: "Inclusief", waarde: "goodiebag, reader en mama-en-babyyoga na afloop" },
@@ -61,7 +61,7 @@ const AVOND = [
 
 const INBEGREPEN = [
   "Acht wekelijkse lessen van 75 minuten op de woensdagavond, plus mama-en-babyyoga cadeau zodra alle kindjes geboren zijn",
-  "Een vaste groep van maximaal acht zwangeren, zodat je elkaar echt leert kennen",
+  "Een kleinschalige, vaste groep, zodat je elkaar echt leert kennen",
   "Twee gastlessen: Tamar Riani over lichaamsbewustzijn, houding & balans, en een bekkenfysiotherapeut over je bekken en je bekkenbodem",
   "Een complete bevallingsles en een partnerles waarin je geboortepartner tools krijgt om jou te ondersteunen",
   "Een mamaspa-avond met zelfmassage en restorative yoga die helemaal om ontspanning en herstel draait",
@@ -110,16 +110,8 @@ export default function Geboortereeks() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "bezig" | "klaar" | "fout">("idle");
   const [foutmelding, setFoutmelding] = useState("");
-  // Eerlijke plekkenteller: het aantal aanmeldingen komt van de server,
-  // zodat er nooit een verzonnen schaarste op de pagina staat.
-  const [aanmeldingen, setAanmeldingen] = useState<number | null>(null);
-
-  useEffect(() => {
-    fetch(`${import.meta.env.BASE_URL}api/geboortereeks-plekken`)
-      .then((r) => (r.ok ? r.json() : null))
-      .then((d) => { if (d && typeof d.aanmeldingen === "number") setAanmeldingen(d.aanmeldingen); })
-      .catch(() => {});
-  }, []);
+  // Geen plekkenteller meer (haar keuze 9 november 2026): de groepsgrootte ligt
+  // niet vast, de pagina zegt alleen dat de groep kleinschalig is.
 
   const meldAan = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -314,15 +306,8 @@ export default function Geboortereeks() {
             <h2 className="font-display text-2xl md:text-3xl font-medium text-foreground leading-[1.15] mb-5">
               Wil je erbij zijn op 13 januari?
             </h2>
-            {aanmeldingen !== null && aanmeldingen > 0 && (
-              <p className="text-sm font-semibold text-primary mb-3">
-                {aanmeldingen >= 8
-                  ? "Alle acht plekken hebben een aanmelding."
-                  : `Nog ${["", "één", "twee", "drie", "vier", "vijf", "zes", "zeven"][8 - aanmeldingen]} van de acht plekken vrij.`}
-              </p>
-            )}
             <p className="text-[15px] text-foreground/80 leading-[1.7] mb-7">
-              Er is plek voor maximaal acht zwangeren. Je
+              De groep is kleinschalig. Je
               kunt meedoen als je bij de start ongeveer tussen de 20 en 28 weken zwanger bent. Meld je
               aan met je naam en e-mailadres; daarna stuur ik je persoonlijk het
               intakeformulier en de factuur per mail, en is je plekje gereserveerd.

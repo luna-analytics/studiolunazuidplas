@@ -134,8 +134,8 @@ export default function Home() {
               De <em className="not-italic text-primary">Geboortereeks</em>
             </h2>
             <p className="text-[15px] text-foreground/60 leading-[1.7] max-w-2xl mb-5">
-              Acht wekelijkse lessen zwangerschapsyoga en geboortevoorbereiding in een vaste
-              groep van maximaal acht zwangeren, met kennis van een bekkenfysiotherapeut, een
+              Acht wekelijkse lessen zwangerschapsyoga en geboortevoorbereiding in een kleinschalige,
+              vaste groep, met kennis van een bekkenfysiotherapeut, een
               partnerles, een mamaspa-avond en mama-en-babyyoga cadeau als afsluiting. Je stapt
               in wanneer je bij de start ongeveer tussen de 20 en 28 weken zwanger bent.
             </p>

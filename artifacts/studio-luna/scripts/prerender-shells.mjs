@@ -205,7 +205,7 @@ const ROUTES = [
     ],
     inhoud:
       `<h1>De Geboortereeks</h1>` +
-      `<p>8-weekse zwangerschapsyoga- en geboortevoorbereidingsreeks in Nieuwerkerk aan den IJssel. Start woensdag 13 januari 2027, elke woensdag van 19:00 tot 20:15 uur, maximaal acht zwangeren. €195 voor de hele reeks.</p>` +
+      `<p>8-weekse zwangerschapsyoga- en geboortevoorbereidingsreeks in Nieuwerkerk aan den IJssel. Start woensdag 13 januari 2027, elke woensdag van 19:00 tot 20:15 uur, in een kleinschalige groep. €195 voor de hele reeks.</p>` +
       `<h2>Wat zit erin</h2><ul>` + inbegrepen.map((t) => `<li>${tekstVeilig(t)}</li>`).join("") + `</ul>` +
       faqHtml(reeksFaq),
   },
