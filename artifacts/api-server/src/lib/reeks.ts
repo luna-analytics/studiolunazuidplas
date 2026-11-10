@@ -9,6 +9,13 @@
 //
 // Nieuwe reeks? Pas alleen deze lijst aan, en daarna wat de build meldt.
 
+export type Les = {
+  iso: string;
+  noot?: string;
+  /** Een gastles: naam met link naar de eigen website, eventueel met vak. */
+  gast?: { naam: string; href: string; rol?: string };
+};
+
 export const REEKS = {
   dag: "woensdag",
   tijd: "19:00 tot 20:15 uur",
@@ -16,13 +23,13 @@ export const REEKS = {
   lessen: [
     { iso: "2027-01-13" },
     { iso: "2027-01-20" },
-    { iso: "2027-01-27" },
+    { iso: "2027-01-27", gast: { naam: "Tamar Riani", href: "https://www.tamarriani.nl" } },
     { iso: "2027-02-03" },
-    { iso: "2027-02-10", noot: "Gastles van een bekkenfysiotherapeut" },
+    { iso: "2027-02-10", gast: { naam: "Mélanie de Groot", rol: "bekkenfysiotherapeut", href: "https://yilafysio.nl/" } },
     { iso: "2027-02-17" },
     { iso: "2027-02-24", noot: "Partnerles" },
     { iso: "2027-03-03" },
-  ] as { iso: string; noot?: string }[],
+  ] as Les[],
 };
 
 const MAANDEN = ["januari", "februari", "maart", "april", "mei", "juni", "juli",

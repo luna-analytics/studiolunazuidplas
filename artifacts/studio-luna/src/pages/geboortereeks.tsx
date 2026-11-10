@@ -8,7 +8,7 @@ import { motion } from "framer-motion";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { usePageMeta } from "@/lib/seo";
 import { IMAGES } from "@/lib/images";
-import { REEKS, dagMaand } from "../../../api-server/src/lib/reeks";
+import { REEKS, dagMaand, type Les } from "../../../api-server/src/lib/reeks";
 
 // Geen inloopanimaties meer: de inhoud staat er gewoon.
 const fadeUp = {
@@ -18,8 +18,8 @@ const fadeUp = {
 
 // De lesdata komen uit dezelfde lijst als de bevestigingsmail (reeks.ts in de
 // API), zodat site en mail nooit meer uit elkaar lopen.
-const KALENDER: { datum: string; noot?: string }[] = [
-  ...REEKS.lessen.map((les) => ({ datum: dagMaand(les.iso), noot: les.noot })),
+const KALENDER: { datum: string; noot?: string; gast?: Les["gast"] }[] = [
+  ...REEKS.lessen.map((les) => ({ datum: dagMaand(les.iso), noot: les.noot, gast: les.gast })),
   { datum: "datum volgt", noot: "Mama-en-babyyoga cadeau, zodra alle kindjes geboren zijn" },
 ];
 
@@ -83,7 +83,7 @@ const FAQ_ITEMS = [
   },
   {
     vraag: "Is mijn partner er ook bij?",
-    antwoord: "Ja, les 7 op woensdag 24 februari is de partnerles. Je geboortepartner leert daar ademtechnieken, massage en bevalhoudingen waarmee die jou tijdens de bevalling echt kan ondersteunen.",
+    antwoord: "Ja, les 7 op woensdag 24 februari is de partnerles. Je geboortepartner leert daar ademtechnieken, massage en bevalhoudingen om je tijdens de bevalling echt te ondersteunen.",
   },
   {
     vraag: "Waar en hoe laat zijn de lessen?",
@@ -412,7 +412,7 @@ export default function Geboortereeks() {
               />
               <figcaption className="text-[13px] text-foreground/60 leading-[1.65] mt-3">
                 In de partnerles leert je geboortepartner ademtechnieken, massage en
-                bevalhoudingen waarmee die jou tijdens de bevalling echt kan ondersteunen.
+                bevalhoudingen om je tijdens de bevalling echt te ondersteunen.
               </figcaption>
             </figure>
           </div>
@@ -437,7 +437,18 @@ export default function Geboortereeks() {
               {KALENDER.map((les) => (
                 <Fragment key={les.datum}>
                   <dt className="text-foreground/80">{les.datum}</dt>
-                  <dd className="text-foreground/60">{les.noot ?? ""}</dd>
+                  <dd className="text-foreground/60">
+                    {les.gast ? (
+                      <>
+                        Gastles van{" "}
+                        <a href={les.gast.href} target="_blank" rel="noopener noreferrer"
+                          className="underline underline-offset-4 decoration-foreground/30 hover:text-foreground">
+                          {les.gast.naam}
+                        </a>
+                        {les.gast.rol ? `, ${les.gast.rol}` : ""}
+                      </>
+                    ) : (les.noot ?? "")}
+                  </dd>
                 </Fragment>
               ))}
             </dl>
