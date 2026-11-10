@@ -12,6 +12,30 @@
       "permanent": true
     },
     {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "moederschapsgids.nl" }],
+      "destination": "https://www.studiolunazuidplas.nl/geboortezorg-zuidplas",
+      "permanent": false
+    },
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "www.moederschapsgids.nl" }],
+      "destination": "https://www.studiolunazuidplas.nl/geboortezorg-zuidplas",
+      "permanent": false
+    },
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "moederschapswijzer.nl" }],
+      "destination": "https://www.studiolunazuidplas.nl/geboortezorg-zuidplas",
+      "permanent": false
+    },
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "www.moederschapswijzer.nl" }],
+      "destination": "https://www.studiolunazuidplas.nl/geboortezorg-zuidplas",
+      "permanent": false
+    },
+    {
       "source": "/zorgkaart",
       "destination": "/geboortezorg-zuidplas",
       "permanent": true
