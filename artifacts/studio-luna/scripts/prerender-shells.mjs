@@ -438,7 +438,7 @@ const llms =
   `- [Aanbod en tarieven](${BASIS}/aanbod): alles van Studio Luna met de prijzen
 ` +
   `- [Zwangerschapsmassage](${BASIS}/zwangerschapsmassage): Lomi Lomi Hapai, full body ontspanningsmassage van 75 minuten, tijdens de hele zwangerschap\n` +
-  `- [Postpartummassage](${BASIS}/postpartummassage): dezelfde massage na de bevalling, vlak erna en ook maanden later\n` +
+  `- [Postpartummassage](${BASIS}/postpartummassage): Lomi Lomi Hapai, full body ontspanningsmassage van 75 minuten, vlak na de bevalling en ook maanden later\n` +
   `- [Over Marjolein](${BASIS}/over-mij): moeder, gepromoveerd onderzoeker en yogadocente\n` +
   `- [Events](${BASIS}/events): workshops en events naast de wekelijkse lessen, voor zwangeren, moeders en ondernemende vrouwen in Zuidplas\n` +
   `- [Blog](${BASIS}/blog): artikelen over zwangerschap, geboortevoorbereiding en moederschap in Zuidplas\n`;
