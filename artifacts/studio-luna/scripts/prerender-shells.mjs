@@ -254,7 +254,7 @@ const ROUTES = [
       inhoud:
         `<h1>${m.titel}</h1>` +
         `<p>Lomi Lomi Hapai is een full body ontspanningsmassage. Lomi lomi is een eeuwenoude massagevorm uit Hawaï, met wortels in de Polynesische massagetradities.</p>` +
-        `<p>${tekstVeilig(beschrijving)} Introductieprijs €75, daarna €85; aan huis €15 extra. Je vraagt een afspraak aan met de dagdelen die je uitkomen.</p>`,
+        `<p>${tekstVeilig(beschrijving)} Introductieprijs €75, daarna €85; aan huis €100. Je vraagt een afspraak aan met de dagdelen die je uitkomen.</p>`,
     };
   }),
   {
@@ -270,7 +270,7 @@ const ROUTES = [
       `<h2>Na de bevalling</h2><ul>` +
       `<li><a href="/postpartummassage">Postpartummassage</a>: Lomi Lomi Hapai, 75 minuten, €85 (nu €75 introductieprijs).</li>` +
       `<li>Mama-en-babyyoga: inbegrepen bij de Geboortereeks.</li></ul>` +
-      `<h2>Aan huis</h2><p>Massage of privéles bij je thuis, bijvoorbeeld in de kraamperiode: €15 extra.</p>`,
+      `<h2>Aan huis</h2><p>Zwangerschapsmassage of postpartummassage aan huis, bijvoorbeeld in de kraamperiode: €100.</p>`,
   },
   {
     pad: "over-mij",

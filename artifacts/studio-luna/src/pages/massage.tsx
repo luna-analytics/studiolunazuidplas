@@ -6,7 +6,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { usePageMeta } from "@/lib/seo";
 import { IMAGES } from "@/lib/images";
 import {
-  MASSAGE, MASSAGE_DAGEN, MASSAGE_DAGDELEN, AAN_HUIS_TOESLAG, type MassageVoor, type MassagePlek,
+  MASSAGE, MASSAGE_DAGEN, MASSAGE_DAGDELEN, type MassageVoor, type MassagePlek,
 } from "../../../api-server/src/lib/massage";
 
 // Twee pagina's, één massage (haar keuze 18 november 2026): Lomi Lomi Hapai
@@ -145,6 +145,7 @@ function MassagePagina({ voor }: { voor: MassageVoor }) {
         offers: [
           { "@type": "Offer", name: `${MASSAGE.naam}, ${MASSAGE.duur}, introductieprijs`, price: `${MASSAGE.introductieprijs}.00`, priceCurrency: "EUR" },
           { "@type": "Offer", name: `${MASSAGE.naam}, ${MASSAGE.duur}`, price: `${MASSAGE.prijs}.00`, priceCurrency: "EUR" },
+          { "@type": "Offer", name: `${MASSAGE.naam}, ${MASSAGE.duur}, aan huis`, price: `${MASSAGE.aanHuisPrijs}.00`, priceCurrency: "EUR" },
         ],
       },
       {
@@ -168,7 +169,7 @@ function MassagePagina({ voor }: { voor: MassageVoor }) {
       waarde: (
         <>
           <span className="font-semibold text-foreground">€{MASSAGE.introductieprijs}</span> introductieprijs,
-          daarna €{MASSAGE.prijs}; aan huis €{AAN_HUIS_TOESLAG} extra
+          daarna €{MASSAGE.prijs}; aan huis €{MASSAGE.aanHuisPrijs}
         </>
       ),
     },
@@ -196,7 +197,7 @@ function MassagePagina({ voor }: { voor: MassageVoor }) {
               {MASSAGE.naam} · {MASSAGE.duur}
             </p>
             <p className="text-[15px] text-foreground/80 mt-4">
-              €{MASSAGE.introductieprijs} introductieprijs, daarna €{MASSAGE.prijs} · aan huis €{AAN_HUIS_TOESLAG} extra
+              €{MASSAGE.introductieprijs} introductieprijs, daarna €{MASSAGE.prijs} · aan huis €{MASSAGE.aanHuisPrijs}
             </p>
             <p className="text-sm text-foreground/65 mt-2">
               <Link href={t.ander.pad} className="text-primary border-b border-primary/30 pb-0.5 hover:border-primary">
@@ -331,7 +332,7 @@ function MassagePagina({ voor }: { voor: MassageVoor }) {
                         type="radio" name="plek" checked={plek === "thuis"} onChange={() => setPlek("thuis")}
                         className="mt-1.5 accent-[hsl(var(--primary))]"
                       />
-                      <span>Bij mij thuis (€{AAN_HUIS_TOESLAG} extra)</span>
+                      <span>Bij mij thuis (€{MASSAGE.aanHuisPrijs})</span>
                     </label>
                   </div>
                   {plek === "thuis" && (

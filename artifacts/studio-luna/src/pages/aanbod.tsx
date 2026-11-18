@@ -5,7 +5,7 @@ import { SeoFooter } from "@/components/seo-footer";
 import { KennismakingModal } from "@/components/kennismaking-modal";
 import { usePageMeta } from "@/lib/seo";
 import { REEKS, REEKS_START, dagMaand } from "../../../api-server/src/lib/reeks";
-import { MASSAGE, AAN_HUIS_TOESLAG } from "../../../api-server/src/lib/massage";
+import { MASSAGE } from "../../../api-server/src/lib/massage";
 
 // Alles wat Studio Luna aanbiedt op één pagina, met de prijzen (haar vraag van
 // 18 november 2026). Prijzen en data komen uit reeks.ts en massage.ts, zodat
@@ -77,9 +77,9 @@ const GROEPEN: { titel: string; onderdelen: Onderdeel[] }[] = [
     titel: "Aan huis",
     onderdelen: [
       {
-        naam: "Massage of privéles bij jou thuis",
-        prijs: <>€{AAN_HUIS_TOESLAG} extra</>,
-        tekst: "Liever thuis, bijvoorbeeld in de kraamperiode? Dan kom ik naar je toe.",
+        naam: "Zwangerschapsmassage of postpartummassage aan huis",
+        prijs: <>€{MASSAGE.aanHuisPrijs}</>,
+        tekst: "Liever thuis, bijvoorbeeld in de kraamperiode? Dan kom ik met de massage naar je toe.",
       },
     ],
   },

@@ -4,17 +4,16 @@
 //
 // Haar keuzes van 18 november 2026: alleen Lomi Lomi Hapai, 75 minuten, €85
 // met €75 als introductieprijs; zwanger vanaf 12 weken, na de bevalling vanaf
-// ongeveer twee weken; dezelfde massage op twee pagina's. Aan huis eerst €95,
-// later die dag €15 extra voor alles aan huis (massage en privéles).
-
-/** Toeslag voor een massage of privéles bij iemand thuis. */
-export const AAN_HUIS_TOESLAG = 15;
+// ongeveer twee weken; dezelfde massage op twee pagina's. Aan huis €100 (haar
+// keuze, na eerst €95): alleen voor de massage, en als één prijs genoemd in
+// plaats van een toeslag.
 
 export const MASSAGE = {
   naam: "Lomi Lomi Hapai",
   duur: "75 minuten",
   prijs: 85,
   introductieprijs: 75,
+  aanHuisPrijs: 100,
   praktijk: {
     naam: "Remindyourlife",
     adres: "'s-Gravenweg 266 in Nieuwerkerk aan den IJssel",
