@@ -74,6 +74,15 @@ export const IMAGES = {
    *  geboortepartner rug aan rug op de grond. */
   partnerles: img("partnerles.webp"),
 
+  /** Massagepagina's, uit haar shoot (map kleur), door haar vrijgegeven op
+   *  18 november: armen om zichzelf met de ogen dicht (54) en lavendel in de
+   *  hand (35, haar keuze voor de massage) bij zwangerschapsmassage; hand op
+   *  de schouder (55) en liggend in het gras (98) bij postpartummassage. */
+  massageZwanger: img("massage-zwanger.webp"),
+  massageLavendel: img("massage-lavendel.webp"),
+  massagePostpartum: img("massage-postpartum.webp"),
+  massageLiggend: img("massage-liggend.webp"),
+
   /** Logo bovenin de Aanbod-header */
   logo: img("studio-luna-logo.png"),
 };

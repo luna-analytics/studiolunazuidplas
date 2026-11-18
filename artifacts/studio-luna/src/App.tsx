@@ -21,6 +21,7 @@ import Inspiratie from "./pages/inspiratie";
 import BlogArtikel from "./pages/blog-artikel";
 import OverMij from "./pages/over-mij";
 import Events from "./pages/events";
+import { Zwangerschapsmassage, Postpartummassage } from "./pages/massage";
 
 const Admin = lazy(() => import("./pages/admin"));
 const WachtwoordReset = lazy(() => import("./pages/wachtwoord-reset").then((m) => ({ default: m.WachtwoordReset })));
@@ -84,6 +85,8 @@ function Router() {
         <Route path="/aanbod" component={() => { const [,nav] = useLocation(); useEffect(() => { nav("/geboortereeks", { replace: true }); }, [nav]); return null; }} />
         <Route path="/geboortereeks" component={Geboortereeks} />
         <Route path="/events" component={Events} />
+        <Route path="/zwangerschapsmassage" component={Zwangerschapsmassage} />
+        <Route path="/postpartummassage" component={Postpartummassage} />
         <Route path="/geboortezorg-zuidplas" component={Geboortezorg} />
         <Route path="/geboortezorg-zuidplas/:categorie" component={GeboortezorgCategorie} />
         {/* Vier vaste adressen in plaats van een patroon: de router van wouter

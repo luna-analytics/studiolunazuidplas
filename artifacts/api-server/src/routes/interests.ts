@@ -2,7 +2,8 @@ import { Router } from "express";
 import { db, studioSettings } from "@workspace/db";
 import { eq } from "drizzle-orm";
 import { requireAdmin } from "../middlewares/auth.js";
-import { sendAdminNotification, sendReeksAanmeldingBevestiging, reeksOmschrijving } from "../lib/email.js";
+import { sendAdminNotification, sendReeksAanmeldingBevestiging, reeksOmschrijving, sendMassageAanvraagBevestiging } from "../lib/email.js";
+import { MASSAGE, dagdeelNaam, dagdelenTekst } from "../lib/massage.js";
 import { readMailFailures, clearMailFailures } from "../lib/mail-log.js";
 
 // Interesselijst en zorgkaart-feedback, allebei opgeslagen in studio_settings
@@ -26,6 +27,10 @@ type Feedback = { bericht: string; email: string; timestamp: string };
 type Aanmelding = { naam: string; email: string; timestamp: string };
 type ZorgverlenerAanmelding = { praktijk: string; website: string; bericht: string; email: string; timestamp: string };
 type Kennismaking = { naam: string; email: string; telefoon: string; bericht: string; timestamp: string };
+type MassageAanvraag = {
+  naam: string; email: string; telefoon: string; voor: "zwanger" | "postpartum";
+  plek: "praktijk" | "thuis"; woonplaats: string; dagdelen: string[]; bericht: string; timestamp: string;
+};
 
 async function readList<T>(key: string): Promise<T[]> {
   const result = await db.select().from(studioSettings).where(eq(studioSettings.key, key)).limit(1);
@@ -218,6 +223,75 @@ router.post("/kennismaking", async (req, res) => {
     details: `Telefoon: ${tel || "niet opgegeven"}
 
 ${bericht.trim()}`,
+  }).catch(() => {});
+  return res.json({ message: "Ontvangen" });
+});
+
+// Massageaanvragen vanaf /zwangerschapsmassage en /postpartummassage. De
+// aanvrager geeft dagdelen op die haar uitkomen; Marjolein komt daarna zelf met
+// voorstellen. Geen online agenda en geen betaling. Bewust geen vragen over
+// gezondheid in het formulier: die bespreekt ze bij het maken van de afspraak.
+router.get("/admin/massage-aanvragen", requireAdmin, async (_req: any, res: any) => {
+  res.json(await readList<MassageAanvraag>("massage_aanvragen"));
+});
+
+router.post("/massage-aanvraag", async (req, res) => {
+  const { naam, email, telefoon, voor, plek, woonplaats, dagdelen, bericht } = req.body as {
+    naam?: string; email?: string; telefoon?: string; voor?: string; plek?: string;
+    woonplaats?: string; dagdelen?: unknown; bericht?: string;
+  };
+  if (!naam || !naam.trim() || naam.length > 120) {
+    return res.status(400).json({ error: "Vul je naam in" });
+  }
+  if (!email || !EMAIL_RE.test(email)) {
+    return res.status(400).json({ error: "Ongeldig e-mailadres" });
+  }
+  if (voor !== "zwanger" && voor !== "postpartum") {
+    return res.status(400).json({ error: "Onbekend soort massage" });
+  }
+  if (plek !== "praktijk" && plek !== "thuis") {
+    return res.status(400).json({ error: "Kies waar je de massage wilt" });
+  }
+  const woon = (woonplaats ?? "").trim().slice(0, 80);
+  if (plek === "thuis" && !woon) {
+    return res.status(400).json({ error: "Vul je woonplaats in voor een massage aan huis" });
+  }
+  const codes = Array.isArray(dagdelen)
+    ? [...new Set(dagdelen.filter((d): d is string => typeof d === "string" && dagdeelNaam(d) !== null))]
+    : [];
+  if (codes.length === 0) {
+    return res.status(400).json({ error: "Kies minstens één dagdeel dat je uitkomt" });
+  }
+  if ((bericht ?? "").length > 1000) {
+    return res.status(400).json({ error: "Schrijf een bericht van maximaal 1000 tekens" });
+  }
+  const tel = (telefoon ?? "").trim().slice(0, 40);
+  const tekst = (bericht ?? "").trim();
+  const dagdelenLeesbaar = dagdelenTekst(codes);
+  const plekLeesbaar = plek === "praktijk"
+    ? `een massage bij ${MASSAGE.praktijk.naam}, ${MASSAGE.praktijk.adres}`
+    : `een massage bij je thuis in ${woon}`;
+
+  const list = await readList<MassageAanvraag>("massage_aanvragen");
+  list.push({
+    naam: naam.trim(), email, telefoon: tel, voor, plek, woonplaats: woon,
+    dagdelen: codes, bericht: tekst, timestamp: new Date().toISOString(),
+  });
+  await saveList("massage_aanvragen", list);
+  await sendAdminNotification({
+    type: "aanvraag",
+    name: `Massage: ${naam.trim()}`,
+    email,
+    details:
+      `Aanvraag ${voor === "zwanger" ? "zwangerschapsmassage" : "postpartummassage"} (${MASSAGE.naam})\n` +
+      `Waar: ${plek === "praktijk" ? MASSAGE.praktijk.naam : `aan huis in ${woon}`}\n` +
+      `Komt uit: ${dagdelenLeesbaar}\n` +
+      `Telefoon: ${tel || "niet opgegeven"}` +
+      (tekst ? `\n\n${tekst}` : "") +
+      `\n\nDe aanvrager kreeg automatisch een bevestiging; je kopie daarvan zit in een aparte mail.`,
+  }).catch(() => {});
+  await sendMassageAanvraagBevestiging({
+    toEmail: email, toName: naam.trim(), dagdelen: dagdelenLeesbaar, plek: plekLeesbaar,
   }).catch(() => {});
   return res.json({ message: "Ontvangen" });
 });

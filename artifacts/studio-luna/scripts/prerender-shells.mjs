@@ -237,6 +237,26 @@ const ROUTES = [
       }),
     ],
   },
+  // De massagepagina's (sinds 18 november 2026). Naam, prijzen en plekken
+  // staan in api-server/src/lib/massage.ts; pas ze hier mee aan als ze
+  // veranderen.
+  ...[
+    { pad: "zwangerschapsmassage", titel: "Zwangerschapsmassage", vanaf: "vanaf 12 weken zwangerschap",
+      title: "Zwangerschapsmassage in Nieuwerkerk aan den IJssel | Studio Luna" },
+    { pad: "postpartummassage", titel: "Postpartummassage", vanaf: "vanaf ongeveer twee weken na de bevalling",
+      title: "Massage na de bevalling in Nieuwerkerk aan den IJssel | Studio Luna" },
+  ].map((m) => {
+    const beschrijving = `Lomi Lomi Hapai, een full body ontspanningsmassage van 75 minuten, ${m.vanaf}. Bij Remindyourlife in Nieuwerkerk aan den IJssel of bij je thuis in Zuidplas.`;
+    return {
+      pad: m.pad,
+      title: m.title,
+      beschrijving,
+      inhoud:
+        `<h1>${m.titel}</h1>` +
+        `<p>Lomi Lomi Hapai is een full body ontspanningsmassage. Lomi lomi is een eeuwenoude massagevorm uit Hawaï, met wortels in de Polynesische massagetradities.</p>` +
+        `<p>${tekstVeilig(beschrijving)} Introductieprijs €75, daarna €85; aan huis €95. Je vraagt een afspraak aan met de dagdelen die je uitkomen.</p>`,
+    };
+  }),
   {
     pad: "over-mij",
     title: "Over Marjolein, zwangerschapsyoga docente in Nieuwerkerk aan den IJssel",
@@ -400,6 +420,8 @@ const llms =
   PLAATSEN.map((p) => `- [Zwanger in ${p.naam}](${BASIS}/zwanger-in-${p.slug})`).join("\n") +
   `\n\n## Studio Luna\n\n` +
   `- [De Geboortereeks](${BASIS}/geboortereeks): 8-weekse zwangerschapsyoga- en geboortevoorbereidingsreeks in Nieuwerkerk aan den IJssel\n` +
+  `- [Zwangerschapsmassage](${BASIS}/zwangerschapsmassage): Lomi Lomi Hapai, full body ontspanningsmassage van 75 minuten, vanaf 12 weken zwangerschap\n` +
+  `- [Postpartummassage](${BASIS}/postpartummassage): dezelfde massage na de bevalling, vanaf ongeveer twee weken\n` +
   `- [Over Marjolein](${BASIS}/over-mij): moeder, gepromoveerd onderzoeker en yogadocente\n` +
   `- [Events](${BASIS}/events): workshops en events naast de wekelijkse lessen, voor zwangeren, moeders en ondernemende vrouwen in Zuidplas\n` +
   `- [Blog](${BASIS}/blog): artikelen over zwangerschap, geboortevoorbereiding en moederschap in Zuidplas\n`;

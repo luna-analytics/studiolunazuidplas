@@ -4,6 +4,7 @@ import { readClassTypes } from "./class-types.js";
 import { readTarieven } from "./tarieven.js";
 import { logMailFailure } from "./mail-log.js";
 import { REEKS, REEKS_START, dagMaand, reeksBegonnen } from "./reeks.js";
+import { MASSAGE } from "./massage.js";
 
 // Bewust lui opgebouwd. new Resend(undefined) gooit direct een fout, en op
 // moduleniveau zou een ontbrekende sleutel daarmee de complete API neerhalen
@@ -291,6 +292,45 @@ export async function sendReeksAanmeldingBevestiging(params: { toEmail: string; 
 /** Voor de melding aan Marjolein: om welke reeks het gaat. */
 export function reeksOmschrijving(): string {
   return `start ${REEKS.dag} ${dagMaand(REEKS_START)}`;
+}
+
+// ─── MASSAGEAANVRAAG ─────────────────────────────────────────────────────────
+// Wie op een massagepagina een afspraak aanvraagt, krijgt direct deze mail met
+// de dagdelen die ze opgaf. Marjolein krijgt er een kopie van (bcc) en komt
+// daarna zelf met voorstellen; er wordt online niets vastgelegd of betaald.
+const ontsmetHtml = (s: string) =>
+  s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+
+export function massageBevestigingHtml(toName: string, dagdelen: string, plek: string): string {
+  const p = `margin:0 0 16px; font-family:${SANS}; font-size:16px; line-height:1.7; color:#3B4F41;`;
+  return WRAPPER(`
+    ${HEADER("Aanvraag ontvangen")}
+    <tr>
+      <td style="padding:28px 40px 12px;">
+        <p style="margin:0 0 16px; font-family:${SERIF}; font-size:22px; color:#3B4F41;">Lieve ${ontsmetHtml(toName)},</p>
+        <p style="${p}">Je aanvraag voor een ${MASSAGE.naam}-massage is binnen, dankjewel!</p>
+        <p style="${p}">Je gaf aan dat deze dagdelen je goed uitkomen: ${ontsmetHtml(dagdelen)}. Je koos voor ${ontsmetHtml(plek)}.</p>
+        <p style="${p}">Marjolein neemt contact met je op met een paar momenten waarop het kan;
+          daarna staat je afspraak vast. Je hoeft nu verder niets te doen.</p>
+      </td>
+    </tr>
+    ${FOOTER}
+  `);
+}
+
+export async function sendMassageAanvraagBevestiging(params: {
+  toEmail: string; toName: string; dagdelen: string; plek: string;
+}) {
+  const { toEmail, toName, dagdelen, plek } = params;
+  await verzend(
+    {
+      to: toEmail,
+      bcc: ADMIN_TO,
+      subject: "Je aanvraag voor een massage is binnen",
+      html: massageBevestigingHtml(toName, dagdelen, plek),
+    },
+    "bevestiging massageaanvraag",
+  );
 }
 
 // ─── ADMIN NOTIFICATIE (bij nieuwe reservering / boeking / aanvraag) ─────────

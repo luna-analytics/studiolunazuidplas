@@ -3,6 +3,7 @@ import { useAuth, getToken } from "@/hooks/use-auth";
 import { useLocation } from "wouter";
 import { BottomNav } from "@/components/bottom-nav";
 import { BlogEditor } from "@/components/blog-editor";
+import { dagdelenTekst } from "../../../api-server/src/lib/massage";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Plus, Trash2, PlusCircle, MinusCircle, ChevronDown, ChevronUp, X,
@@ -3238,6 +3239,10 @@ type ZorgkaartItem =
   | ({ soort: "tip" } & ZorgkaartFeedback)
   | ({ soort: "aanmelding" } & ZorgverlenerAanmelding);
 type Kennismaking = { naam: string; email: string; telefoon: string; bericht: string; timestamp: string };
+type MassageAanvraag = {
+  naam: string; email: string; telefoon: string; voor: "zwanger" | "postpartum";
+  plek: "praktijk" | "thuis"; woonplaats: string; dagdelen: string[]; bericht: string; timestamp: string;
+};
 
 const datumKort = (iso: string) =>
   new Date(iso).toLocaleDateString("nl-NL", { day: "numeric", month: "short", year: "numeric" });
@@ -3346,6 +3351,7 @@ function AanmeldingenTab() {
   const [feedback, setFeedback] = useState<ZorgkaartFeedback[]>([]);
   const [zorgverleners, setZorgverleners] = useState<ZorgverlenerAanmelding[]>([]);
   const [kennismakingen, setKennismakingen] = useState<Kennismaking[]>([]);
+  const [massages, setMassages] = useState<MassageAanvraag[]>([]);
   const [mail, setMail] = useState<MailStatus | null>(null);
 
   const laad = async () => {
@@ -3354,14 +3360,16 @@ function AanmeldingenTab() {
       const res = await apiFetch(pad);
       return res.ok ? await res.json() : [];
     };
-    const [a, i, f, z, k] = await Promise.all([
+    const [a, i, f, z, k, m] = await Promise.all([
       haal<ReeksAanmelding>("/admin/geboortereeks-aanmeldingen"),
       haal<Interesse>("/admin/interests"),
       haal<ZorgkaartFeedback>("/admin/zorgkaart-feedback"),
       haal<ZorgverlenerAanmelding>("/admin/zorgverlener-aanmeldingen"),
       haal<Kennismaking>("/admin/kennismakingen"),
+      haal<MassageAanvraag>("/admin/massage-aanvragen"),
     ]);
     setAanmeldingen(a); setInteresse(i); setFeedback(f); setZorgverleners(z); setKennismakingen(k);
+    setMassages([...m].sort((x, y) => y.timestamp.localeCompare(x.timestamp)));
     const resMail = await apiFetch("/admin/mail-status");
     setMail(resMail.ok ? await resMail.json() : null);
     setLaden(false);
@@ -3474,6 +3482,33 @@ function AanmeldingenTab() {
               {zorgkaartKlaar.map((z) => <ZorgkaartRegel key={z.soort + z.timestamp} item={z} onWissel={wisselAfgehandeld} />)}
             </div>
           </details>
+        )}
+      </Lijstblok>
+
+      <Lijstblok titel="Massageaanvragen" aantal={massages.length}>
+        {massages.length === 0 ? (
+          <LegeLijst tekst="Nog geen massageaanvragen. Je krijgt er ook een mail van." />
+        ) : (
+          <div className="space-y-3">
+            {massages.map((m, i) => (
+              <div key={i} className="bg-card border border-border/30 rounded-3xl px-5 py-4">
+                <p className="font-semibold text-foreground text-sm mb-1.5">
+                  {m.naam} · {m.voor === "zwanger" ? "zwanger" : "na de bevalling"} · {m.plek === "praktijk" ? "Remindyourlife" : `aan huis in ${m.woonplaats}`}
+                </p>
+                <p className="text-sm text-foreground/80 leading-[1.8]">Komt uit: {dagdelenTekst(m.dagdelen)}</p>
+                {m.bericht && <p className="text-sm text-foreground/80 leading-[1.8] whitespace-pre-wrap mt-1">{m.bericht}</p>}
+                <div className="flex items-center justify-between gap-3 mt-3">
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <a href={`mailto:${m.email}`} className="text-xs text-primary hover:underline">{m.email}</a>
+                    {m.telefoon && (
+                      <a href={`tel:${m.telefoon.replace(/\s/g, "")}`} className="text-xs text-primary hover:underline">{m.telefoon}</a>
+                    )}
+                  </div>
+                  <p className="text-xs text-foreground/35 shrink-0">{datumKort(m.timestamp)}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         )}
       </Lijstblok>
 
