@@ -167,6 +167,14 @@ const kaartJsonLd = ({ naam, url, beschrijving, aanbieders, deelVanKaart }) => (
 });
 const uniekeAanbieders = [...new Map(categorieen.flatMap((c) => c.aanbieders).map((a) => [a.naam, a])).values()];
 
+// Deelafbeeldingen per pagina, gemaakt in de huisstijl met haar eigen foto's.
+const OG_AFBEELDING = {
+  geboortereeks: "geboortereeks.jpg",
+  zwangerschapsmassage: "zwangerschapsmassage.jpg",
+  postpartummassage: "postpartummassage.jpg",
+  aanbod: "aanbod.jpg",
+};
+
 // ── Routes ──────────────────────────────────────────────────────────────────
 const ROUTES = [
   {
@@ -384,6 +392,13 @@ for (const route of ROUTES) {
   html = html.replace(/(<meta name="description" content=")[^"]*(")/, `$1${ontsmet(route.beschrijving)}$2`);
   html = html.replace(/(<meta property="og:title" content=")[^"]*(")/, `$1${ontsmet(route.title)}$2`);
   html = html.replace(/(<meta property="og:description" content=")[^"]*(")/, `$1${ontsmet(route.beschrijving)}$2`);
+  // Eigen deelafbeelding (public/og/) voor de pagina's die er een hebben; de
+  // rest houdt de algemene uit index.html. De oude opengraph.jpg was een
+  // schermafbeelding van augustus waarop de herofoto nog niet geladen was, en
+  // die kwam in WhatsApp als grijs-zwart vlak door (18 november 2026).
+  if (OG_AFBEELDING[route.pad]) {
+    html = html.replace(/(<meta property="og:image" content=")[^"]*(")/, `$1${BASIS}/og/${OG_AFBEELDING[route.pad]}$2`);
+  }
   html = html.replace(/(<meta property="og:url" content=")[^"]*(")/, `$1${url}$2`);
   const extraJsonLd = (route.jsonLd ?? [])
     .map((data) => `  <script type="application/ld+json" data-shell-jsonld>${JSON.stringify(data)}</script>\n`)
