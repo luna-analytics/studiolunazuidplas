@@ -79,7 +79,8 @@ const GROEPEN: { titel: string; sub?: string; onderdelen: Onderdeel[] }[] = [
     onderdelen: [
       {
         naam: "Behandeling aan huis",
-        prijs: <>€{MASSAGE.aanHuisBehandelingPrijs}<span className="block text-[13px] text-foreground/60 font-normal">binnenkort beschikbaar</span></>,
+        // Prijs nog even weg: ze denkt er nog over na (18 november).
+        prijs: <>binnenkort</>,
         tekst: "Een behandeling bij jou thuis, bijvoorbeeld in de kraamperiode.",
       },
     ],

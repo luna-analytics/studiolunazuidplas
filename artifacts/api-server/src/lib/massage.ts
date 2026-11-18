@@ -20,8 +20,6 @@ export const MASSAGE = {
   // op 18 november haar keuze: de hele zwangerschap en de hele tijd erna.
   wanneerZwanger: "tijdens de hele zwangerschap",
   wanneerPostpartum: "vlak na de bevalling en ook maanden later",
-  /** Behandeling aan huis: haar voorstel van 18 november, binnenkort beschikbaar. */
-  aanHuisBehandelingPrijs: 115,
 };
 
 export type MassageVoor = "zwanger" | "postpartum";
