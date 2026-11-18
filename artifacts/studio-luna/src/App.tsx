@@ -90,7 +90,7 @@ function Router() {
         <Route path="/postpartummassage" component={Postpartummassage} />
         <Route path="/geboortezorg-zuidplas" component={Geboortezorg} />
         <Route path="/geboortezorg-zuidplas/:categorie" component={GeboortezorgCategorie} />
-        {/* Vier vaste adressen in plaats van een patroon: de router van wouter
+        {/* Vaste adressen (een per plaats in PLAATSEN) in plaats van een patroon: de router van wouter
             herkent een parameter alleen als die een heel pad-deel is, dus
             "/zwanger-in-:plaats" kwam nooit uit en gaf een 404. */}
         {PLAATSEN.map((p) => (

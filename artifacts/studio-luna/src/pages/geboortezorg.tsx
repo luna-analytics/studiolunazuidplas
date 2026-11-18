@@ -476,11 +476,11 @@ export default function Geboortezorg() {
         <section className="px-7 md:px-14 lg:px-20 xl:px-28 pt-10 md:pt-12">
           <div className="max-w-2xl border-t border-border/25 pt-8">
             <h2 className="font-display text-2xl font-medium text-foreground leading-[1.2]">
-              Liever per dorp kijken?
+              Liever per plaats kijken?
             </h2>
             <p className="text-[15px] text-foreground/80 leading-[1.7] mt-3">
               De meeste aanbieders hierboven werken in heel Zuidplas, dus je hoeft je niet te
-              beperken tot je eigen dorp. Wil je toch zien wie er bij jou in de buurt zit, dan
+              beperken tot je eigen plaats. Wil je toch zien wie er bij jou in de buurt zit, dan
               heeft elke plaats een eigen pagina, met daarbij wie er vanuit de regio werkt.
             </p>
             <div className="flex flex-wrap gap-x-7 gap-y-3 mt-4">

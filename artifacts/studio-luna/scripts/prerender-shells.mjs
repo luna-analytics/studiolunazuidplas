@@ -183,14 +183,18 @@ const PLAATSEN = [
   { slug: "zevenhuizen", naam: "Zevenhuizen" },
   { slug: "moordrecht", naam: "Moordrecht" },
   { slug: "moerkapelle", naam: "Moerkapelle" },
+  // Buiten de gemeente, op haar besluit van 18 november 2026; eigen yogazin.
+  { slug: "capelle-aan-den-ijssel", naam: "Capelle aan den IJssel", buitenZuidplas: true,
+    yogaZin: "De groep is er ook voor zwangeren uit Capelle aan den IJssel en Rotterdam-Nesselande; Nieuwerkerk aan den IJssel ligt er direct naast." },
 ];
 const BREED = /regio|regionale|landelijk|werkgebied/i;
 const noemtPlaats = (tekst, naam) => tekst.toLowerCase().includes(naam.toLowerCase());
-const noemtZuidplas = (tekst) => PLAATSEN.some((p) => noemtPlaats(tekst, p.naam));
+const noemtZuidplas = (tekst) => PLAATSEN.filter((p) => !p.buitenZuidplas).some((p) => noemtPlaats(tekst, p.naam));
 const breedWerkgebied = (tekst) => BREED.test(tekst) && !noemtZuidplas(tekst);
 
-const voorPlaats = (naam) =>
-  categorieen
+const voorPlaats = (naam) => {
+  const buiten = PLAATSEN.find((p) => p.naam === naam)?.buitenZuidplas === true;
+  return categorieen
     .map((c) => ({
       titel: c.titel,
       intro: c.intro,
@@ -198,10 +202,11 @@ const voorPlaats = (naam) =>
       breed: c.aanbieders.filter(
         (a) =>
           !noemtPlaats(a.plaats, naam) &&
-          (breedWerkgebied(a.plaats) || a.werkgebied.some((p) => noemtPlaats(p, naam))),
+          ((breedWerkgebied(a.plaats) && !(buiten && /zuidplas/i.test(a.plaats))) || a.werkgebied.some((p) => noemtPlaats(p, naam))),
       ),
     }))
     .filter((r) => r.hier.length + r.breed.length > 0);
+};
 
 // ── Gestructureerde gegevens voor de kaart ─────────────────────────────────
 // De kaart als verzamelpagina met de aanbieders als lijst, zodat zoekmachines
@@ -234,6 +239,21 @@ const OG_AFBEELDING = {
   zwangerschapsmassage: "zwangerschapsmassage.jpg",
   postpartummassage: "postpartummassage.jpg",
   aanbod: "aanbod.jpg",
+};
+
+// De persoon achter Studio Luna, met haar volledige naam (haar keuze van 18
+// november 2026). Dezelfde feiten als op de pagina Over mij.
+const PERSOON = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Marjolein van der Vlegel",
+  givenName: "Marjolein",
+  jobTitle: "Zwangerschapsyogadocente en masseur",
+  description: "Moeder, gepromoveerd onderzoeker en yogadocente. Geeft de Geboortereeks, zwangerschapsyoga en geboortevoorbereiding, en zwangerschaps- en postpartummassage (Lomi Lomi Hapai) in Nieuwerkerk aan den IJssel.",
+  url: `${BASIS}/over-mij`,
+  worksFor: { "@type": "LocalBusiness", name: "Studio Luna Zuidplas", url: `${BASIS}/` },
+  knowsAbout: ["zwangerschapsyoga", "geboortevoorbereiding", "zwangerschapsmassage", "postpartummassage"],
+  sameAs: ["https://www.instagram.com/studiolunazuidplas"],
 };
 
 // ── Routes ──────────────────────────────────────────────────────────────────
@@ -286,7 +306,7 @@ const ROUTES = [
     beschrijving: "De Geboortezorgkaart Zuidplas: verloskundigen, kraamzorg, echo's, bekkenfysiotherapie, doula's, lactatiekundigen, cursussen en zwanger sporten in Nieuwerkerk aan den IJssel, Zevenhuizen, Moordrecht en Moerkapelle.",
     inhoud:
       `<h1>Geboortezorg in Zuidplas</h1>` +
-      `<p>Zwanger of net bevallen in Nieuwerkerk aan den IJssel, Zevenhuizen, Moordrecht of Moerkapelle? Op deze pagina staat alle zorg en ondersteuning uit de regio op één plek: ${totaalAanbieders} aanbieders in ${categorieen.length} categorieën. Studio Luna houdt deze kaart bij.</p>` +
+      `<p>Zwanger of net bevallen in Nieuwerkerk aan den IJssel, Zevenhuizen, Moordrecht, Moerkapelle of Capelle aan den IJssel? Op deze pagina staat alle zorg en ondersteuning uit de regio op één plek: ${totaalAanbieders} aanbieders in ${categorieen.length} categorieën. Studio Luna houdt deze kaart bij.</p>` +
       `<ul>` + categorieen.map((c) => `<li><a href="/geboortezorg-zuidplas/${c.id}">${tekstVeilig(c.titel)}</a> (${c.aanbieders.length} ${c.aanbieders.length === 1 ? "aanbieder" : "aanbieders"})</li>`).join("") + `</ul>` +
       `<h2>Waar woon je?</h2>` +
       `<ul>` + PLAATSEN.map((p) => `<li><a href="/zwanger-in-${p.slug}">Zwanger in ${tekstVeilig(p.naam)}</a></li>`).join("") + `</ul>` +
@@ -378,6 +398,7 @@ const ROUTES = [
   },
   {
     pad: "over-mij",
+    jsonLd: [PERSOON],
     title: "Over Marjolein, zwangerschapsyoga docente in Nieuwerkerk aan den IJssel",
     beschrijving: "Maak kennis met Marjolein: moeder, gepromoveerd onderzoeker en yogadocente. Zij geeft de Geboortereeks van Studio Luna in Nieuwerkerk aan den IJssel, gemeente Zuidplas.",
     inhoud:
@@ -429,7 +450,7 @@ for (const cat of categorieen) {
   });
 }
 
-// De vier plaatspagina's: per dorp de aanbieders die dat dorp zelf noemen, en
+// De plaatspagina's: per plaats de aanbieders die dat dorp zelf noemen, en
 // daaronder wie er vanuit een breder gebied werkt, met het werkgebied erbij.
 for (const plaats of PLAATSEN) {
   const rijen = voorPlaats(plaats.naam);
@@ -451,7 +472,7 @@ for (const plaats of PLAATSEN) {
           : "")
       ).join("") +
       `<h2>Zwangerschapsyoga in ${tekstVeilig(plaats.naam)}</h2>` +
-      `<p>Studio Luna geeft <a href="/geboortereeks">de Geboortereeks</a> in Nieuwerkerk aan den IJssel: acht wekelijkse lessen zwangerschapsyoga en geboortevoorbereiding in een vaste groep, met daarna mama-en-babyyoga. De groep is er voor zwangeren uit de hele gemeente Zuidplas, dus ook als je in ${tekstVeilig(plaats.naam)} woont. Terug naar <a href="/geboortezorg-zuidplas">de hele Geboortezorgkaart Zuidplas</a>.</p>`,
+      `<p>Studio Luna geeft <a href="/geboortereeks">de Geboortereeks</a> in Nieuwerkerk aan den IJssel: acht wekelijkse lessen zwangerschapsyoga en geboortevoorbereiding in een vaste groep, met daarna mama-en-babyyoga. ${tekstVeilig(plaats.yogaZin ?? `De groep is er voor zwangeren uit de hele gemeente Zuidplas, dus ook als je in ${plaats.naam} woont.`)} Terug naar <a href="/geboortezorg-zuidplas">de hele Geboortezorgkaart Zuidplas</a>.</p>`,
   });
 }
 
@@ -470,7 +491,7 @@ for (const b of blogs) {
       headline: b.titel,
       ...(b.datum ? { datePublished: b.datum } : {}),
       ...(b.categorie ? { articleSection: b.categorie } : {}),
-      author: { "@type": "Person", name: "Marjolein", url: `${BASIS}/over-mij` },
+      author: { "@type": "Person", name: "Marjolein van der Vlegel", url: `${BASIS}/over-mij` },
       publisher: { "@type": "Organization", name: "Studio Luna Zuidplas", url: `${BASIS}/` },
       mainEntityOfPage: `${BASIS}/blog/${b.slug}`,
     }],
@@ -546,7 +567,7 @@ const llms =
   `# Studio Luna\n\n` +
   `> Studio Luna biedt de Geboortereeks, acht wekelijkse lessen zwangerschapsyoga en geboortevoorbereiding in Nieuwerkerk aan den IJssel, en houdt de Geboortezorgkaart Zuidplas bij met alle geboortezorg in de regio.\n\n` +
   `## Geboortezorgkaart Zuidplas\n\n` +
-  `Zwanger of net bevallen in Nieuwerkerk aan den IJssel, Zevenhuizen, Moordrecht of Moerkapelle? Op de kaart staat alle zorg en ondersteuning uit de regio op één plek: ${totaalAanbieders} aanbieders in ${categorieen.length} categorieën.\n\n` +
+  `Zwanger of net bevallen in Nieuwerkerk aan den IJssel, Zevenhuizen, Moordrecht, Moerkapelle of Capelle aan den IJssel? Op de kaart staat alle zorg en ondersteuning uit de regio op één plek: ${totaalAanbieders} aanbieders in ${categorieen.length} categorieën.\n\n` +
   `- [Geboortezorg in Zuidplas](${BASIS}/geboortezorg-zuidplas): de hele kaart\n` +
   categorieen.map((c) => `- [${c.titel} in Zuidplas](${BASIS}/geboortezorg-zuidplas/${c.id}): ${c.intro}`).join("\n") +
   `\n\n## Per plaats\n\n` +

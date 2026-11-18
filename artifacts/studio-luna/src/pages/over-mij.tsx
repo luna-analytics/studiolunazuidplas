@@ -31,6 +31,19 @@ export default function OverMij() {
   usePageMeta({
     title: "Over Marjolein, zwangerschapsyoga docente in Nieuwerkerk aan den IJssel | Studio Luna",
     description: "Maak kennis met Marjolein: moeder, gepromoveerd onderzoeker en yogadocente. Zij geeft de Geboortereeks van Studio Luna in Nieuwerkerk aan den IJssel, gemeente Zuidplas.",
+    // Dezelfde Person-markering als in de kale schil (prerender-shells.mjs).
+    jsonLd: [{
+      "@context": "https://schema.org",
+      "@type": "Person",
+      name: "Marjolein van der Vlegel",
+      givenName: "Marjolein",
+      jobTitle: "Zwangerschapsyogadocente en masseur",
+      description: "Moeder, gepromoveerd onderzoeker en yogadocente. Geeft de Geboortereeks, zwangerschapsyoga en geboortevoorbereiding, en zwangerschaps- en postpartummassage (Lomi Lomi Hapai) in Nieuwerkerk aan den IJssel.",
+      url: "https://www.studiolunazuidplas.nl/over-mij",
+      worksFor: { "@type": "LocalBusiness", name: "Studio Luna Zuidplas", url: "https://www.studiolunazuidplas.nl/" },
+      knowsAbout: ["zwangerschapsyoga", "geboortevoorbereiding", "zwangerschapsmassage", "postpartummassage"],
+      sameAs: ["https://www.instagram.com/studiolunazuidplas"],
+    }],
   });
 
   useEffect(() => {

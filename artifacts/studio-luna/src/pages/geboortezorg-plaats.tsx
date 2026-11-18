@@ -110,8 +110,8 @@ export default function GeboortezorgPlaats() {
           <p className="text-[15px] text-foreground/75 leading-[1.7] mt-4 max-w-2xl">
             Studio Luna geeft de Geboortereeks in Nieuwerkerk aan den IJssel: acht wekelijkse lessen
             zwangerschapsyoga en geboortevoorbereiding in een vaste groep, met daarna
-            mama-en-babyyoga. De groep is er voor zwangeren uit de hele gemeente Zuidplas, dus ook
-            als je in {plaats.naam} woont.
+            mama-en-babyyoga.{" "}
+            {plaats.yogaZin ?? `De groep is er voor zwangeren uit de hele gemeente Zuidplas, dus ook als je in ${plaats.naam} woont.`}
           </p>
           <Link href="/geboortereeks" className="inline-block mt-5 text-sm font-semibold text-primary border-b border-primary/30 pb-0.5">
             Bekijk de Geboortereeks
@@ -120,7 +120,7 @@ export default function GeboortezorgPlaats() {
 
         <section className="px-7 md:px-14 lg:px-20 xl:px-28 py-10 border-t border-border/15">
           <h2 className="font-display text-2xl font-medium text-foreground mb-4">
-            De andere plaatsen in Zuidplas
+            De andere plaatsen op de kaart
           </h2>
           <div className="flex flex-wrap gap-x-8 gap-y-3">
             {PLAATSEN.filter((p) => p.slug !== plaats.slug).map((p) => (

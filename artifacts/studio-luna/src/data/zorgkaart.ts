@@ -77,7 +77,7 @@ export type ZorgCategorie = {
 
 /** Werk deze bij wanneer de kaart inhoudelijk verandert; hij staat zichtbaar
  *  op de pagina en in de structured data. */
-export const LAATST_BIJGEWERKT = { tekst: "oktober 2026", iso: "2026-10-05" };
+export const LAATST_BIJGEWERKT = { tekst: "november 2026", iso: "2026-11-18" };
 
 export const ZORGKAART: ZorgCategorie[] = [
   {
@@ -126,6 +126,7 @@ export const ZORGKAART: ZorgCategorie[] = [
         plaats: "Rotterdam (Prins Alexander)",
         website: "https://verloskundigepraktijktolmiea.nl/",
         beschrijving: "Verloskundigenpraktijk aan het Jacob van Campenplein in Rotterdam die volgens de eigen site ook zwangeren uit Capelle aan den IJssel, Nieuwerkerk aan den IJssel en Zevenhuizen begeleidt bij controles, echo's en de bevalling.",
+        werkgebied: ["Capelle aan den IJssel"],
         tags: ["op-locatie"],
       },
       {
@@ -182,7 +183,7 @@ export const ZORGKAART: ZorgCategorie[] = [
       },
       {
         naam: "EchoKeten",
-        plaats: "Nieuwerkerk aan den IJssel (ook Capelle, Krimpen en Rotterdam)",
+        plaats: "Nieuwerkerk aan den IJssel (ook Capelle aan den IJssel, Krimpen aan den IJssel en Rotterdam)",
         website: "https://echoketen.nl/",
         beschrijving: "Echobureau voor screeningsecho's (13 en 20 wekenecho), opgericht door samenwerkende verloskundigenpraktijken, met het hoofdadres aan het Raadhuisplein in Nieuwerkerk aan den IJssel en locaties in Capelle aan den IJssel, Krimpen aan den IJssel en Rotterdam.",
         tags: ["op-locatie"],
@@ -256,6 +257,7 @@ export const ZORGKAART: ZorgCategorie[] = [
         plaats: "regio Rotterdam-Rijnmond (werkgebied o.a. Nieuwerkerk aan den IJssel en Zevenhuizen)",
         website: "https://www.kraamzorganothermiracle.com/",
         beschrijving: "Zelfstandige kraamzorgpraktijk in de regio Rijnmond waarvan de werkgebiedlijst op de eigen site onder meer Nieuwerkerk aan den IJssel, Zevenhuizen en Capelle aan den IJssel noemt.",
+        werkgebied: ["Capelle aan den IJssel"],
         tags: ["aan-huis", "1-op-1"],
       },
       {
@@ -277,8 +279,8 @@ export const ZORGKAART: ZorgCategorie[] = [
         naam: "Studio Luna Zuidplas",
         plaats: "Nieuwerkerk aan den IJssel, voor de hele gemeente Zuidplas",
         website: "https://www.studiolunazuidplas.nl/geboortereeks",
-        beschrijving: "Zwangerschapsyoga en geboortevoorbereiding in een vaste kleine groep; de Geboortereeks van acht wekelijkse lessen, met mama-en-babyyoga na afloop, start op woensdag 13 januari. De lessen zijn in Nieuwerkerk aan den IJssel en de groep is er voor zwangeren uit Nieuwerkerk, Zevenhuizen, Moordrecht en Moerkapelle.",
-        werkgebied: ["Zevenhuizen", "Moordrecht", "Moerkapelle"],
+        beschrijving: "Zwangerschapsyoga en geboortevoorbereiding in een vaste kleine groep; de Geboortereeks van acht wekelijkse lessen, met mama-en-babyyoga na afloop, start op woensdag 13 januari. De lessen zijn in Nieuwerkerk aan den IJssel en de groep is er voor zwangeren uit Nieuwerkerk, Zevenhuizen, Moordrecht, Moerkapelle en Capelle aan den IJssel.",
+        werkgebied: ["Zevenhuizen", "Moordrecht", "Moerkapelle", "Capelle aan den IJssel"],
         tags: ["op-locatie", "groepslessen", "partner-welkom"],
       },
       {
@@ -286,6 +288,7 @@ export const ZORGKAART: ZorgCategorie[] = [
         plaats: "landelijk, met cursuslocatie bij Een Goed Begin in Nieuwerkerk aan den IJssel",
         website: "https://www.muchamama.nl/",
         beschrijving: "HypnoBirthing cursussen die onder meer worden gegeven op de cursuslocatie van verloskundigenpraktijk Een Goed Begin in Nieuwerkerk aan den IJssel en in het IJsselland Ziekenhuis in Capelle aan den IJssel, in groepsvorm of privé aan huis.",
+        werkgebied: ["Capelle aan den IJssel"],
         tags: ["op-locatie", "aan-huis", "online", "groepslessen", "1-op-1", "partner-welkom", "avond-weekend", "vergoeding"],
       },
       {
@@ -301,6 +304,39 @@ export const ZORGKAART: ZorgCategorie[] = [
         website: "https://www.samenbevallen.nl/locaties/samen-bevallen-gouda",
         beschrijving: "Zwangerschapscursus Samen Bevallen in Gouda voor aanstaande ouders, met een complete cursus, een minicursus, privélessen en een herhaalcursus.",
         tags: ["op-locatie", "groepslessen", "1-op-1", "partner-welkom"],
+      },
+      // Toegevoegd 18 november 2026 na controle op de eigen websites.
+      {
+        naam: "Spirit for Two",
+        plaats: "Rotterdam-Nesselande, of bij je thuis",
+        website: "https://www.spiritfortwo.nl/bevalcoaching",
+        beschrijving: "Bevalcoaching van twee uur voor jou en je geboortepartner, bij je thuis of in Rotterdam-Nesselande, door de fysiotherapeut en ZwangerFit-trainer die ook de Zwanger/Mamafit-lessen in Nieuwerkerk aan den IJssel geeft.",
+        tags: ["aan-huis", "1-op-1", "partner-welkom"],
+        toegevoegd: "2026-11-18",
+      },
+      {
+        naam: "PowerMama Zuidplas",
+        plaats: "Zevenhuizen",
+        website: "https://powermamamoerkapelle.nl/lesaanbod/powermama-bevalt-cursus",
+        beschrijving: "Eendaagse bevalcursus voor zwangeren en hun partner (PowerMama Bevalt) in Zevenhuizen, gegeven door een pre- en postnatale trainer naast de wekelijkse PowerMama-trainingen; startdata op aanvraag.",
+        tags: ["op-locatie", "groepslessen", "partner-welkom", "vergoeding"],
+        toegevoegd: "2026-11-18",
+      },
+      {
+        naam: "Mi Esencia Yoga Mindfulness",
+        plaats: "Gouda",
+        website: "https://www.mi-esencia.nl/aanbod/yoga/zwangerschapsyoga/",
+        beschrijving: "Zwangerschapsyoga in cursusvorm van twaalf lessen op woensdagavond in Gouda, met twee facultatieve partnerlessen en een afsluitende bijeenkomst met de baby's; instromen kan vanaf week 16 en de cursus start drie keer per jaar.",
+        tags: ["op-locatie", "groepslessen", "partner-welkom", "avond-weekend"],
+        toegevoegd: "2026-11-18",
+      },
+      {
+        naam: "In2Yoga",
+        plaats: "Krimpen aan den IJssel",
+        website: "https://in2yoga.nl/zwangerschapsyoga-cursus/",
+        beschrijving: "Wekelijkse zwangerschapsyoga op maandagavond in Krimpen aan den IJssel, te volgen vanaf veertien weken zwangerschap tot aan de bevalling, met elke twee à drie maanden een partnerles.",
+        tags: ["op-locatie", "groepslessen", "partner-welkom", "avond-weekend", "vergoeding"],
+        toegevoegd: "2026-11-18",
       },
     ],
   },
@@ -379,6 +415,7 @@ export const ZORGKAART: ZorgCategorie[] = [
         plaats: "Nieuwerkerk aan den IJssel",
         website: "https://www.doula-karin.nl",
         beschrijving: "Doula en postpartum doula in Nieuwerkerk aan den IJssel met als werkgebied Zuidplas, Capelle aan den IJssel, Rotterdam, Gouda, Moerkapelle, Zevenhuizen en Moordrecht.",
+        werkgebied: ["Capelle aan den IJssel"],
         tags: ["1-op-1", "aan-huis", "partner-welkom", "vergoeding"],
       },
       {
@@ -443,6 +480,7 @@ export const ZORGKAART: ZorgCategorie[] = [
         plaats: "Rotterdam (aan huis in o.a. Nieuwerkerk aan den IJssel)",
         website: "https://www.nultienborstvoeding.nl/",
         beschrijving: "Lactatiekundige praktijk (IBCLC) van Caroline Kruger die aan huis borstvoedingsconsulten geeft in de regio Rotterdam, waaronder Nieuwerkerk aan den IJssel en Capelle aan den IJssel, met daarnaast digitale consulten op afstand.",
+        werkgebied: ["Capelle aan den IJssel"],
         tags: ["aan-huis", "online"],
       },
       {
@@ -744,8 +782,16 @@ export const ZORGKAART: ZorgCategorie[] = [
     id: "zwangerschapsmassage",
     titel: "Zwangerschapsmassage",
     intro: "Een massage die is afgestemd op je zwangerschap kan verlichting geven bij spanning en drukte. Zeg er altijd even bij hoe ver je bent, dan stemt de behandelaar de massage daarop af.",
-    zoektermen: "zwangerschapsmassage massage wellness ontspanning",
+    zoektermen: "zwangerschapsmassage massage wellness ontspanning postpartummassage lomi lomi",
     aanbieders: [
+      {
+        naam: "Studio Luna Zuidplas",
+        plaats: "Nieuwerkerk aan den IJssel, bij Remindyourlife",
+        website: "https://www.studiolunazuidplas.nl/zwangerschapsmassage",
+        beschrijving: "Zwangerschaps- en postpartummassage (Lomi Lomi Hapai, 75 minuten, op je zij) bij Remindyourlife in Nieuwerkerk aan den IJssel, tijdens de hele zwangerschap en na de bevalling.",
+        tags: ["op-locatie", "1-op-1"],
+        toegevoegd: "2026-11-18",
+      },
       {
         naam: "Wellnessmassage Nieuwerkerk",
         plaats: "Nieuwerkerk aan den IJssel",
@@ -935,8 +981,10 @@ export function verwanteCategorieen(id: string): { fase: string; categorieen: Zo
   };
 }
 
-/* ── Plaatsen in de gemeente Zuidplas ──────────────────────────────────────
- * Voor de vier plaatspagina's (/zwanger-in-...). Een aanbieder komt op de
+/* ── Plaatsen op de kaart ──────────────────────────────────────────────────
+ * Voor de plaatspagina's (/zwanger-in-...): de vier dorpen van Zuidplas en,
+ * sinds 18 november 2026 op haar besluit, Capelle aan den IJssel (met
+ * Rotterdam-Nesselande ernaast), dat buiten de gemeente ligt. Een aanbieder komt op de
  * pagina van een plaats als de eigen plaatsomschrijving die plaats noemt.
  * Daarnaast is er een tweede groep: aanbieders die een breder werkgebied
  * opgeven zonder een specifieke Zuidplas-plaats te noemen. Bij die groep
@@ -945,13 +993,25 @@ export function verwanteCategorieen(id: string): { fase: string; categorieen: Zo
  * opschrijft.
  */
 
-export type Plaats = { slug: string; naam: string; korteNaam: string };
+export type Plaats = {
+  slug: string;
+  naam: string;
+  korteNaam: string;
+  /** Ligt buiten de gemeente Zuidplas; dan gelden de Zuidplas-zinnen niet. */
+  buitenZuidplas?: boolean;
+  /** Eigen zin bij Zwangerschapsyoga, door haar goedgekeurd (18 november 2026). */
+  yogaZin?: string;
+};
 
 export const PLAATSEN: Plaats[] = [
   { slug: "nieuwerkerk-aan-den-ijssel", naam: "Nieuwerkerk aan den IJssel", korteNaam: "Nieuwerkerk" },
   { slug: "zevenhuizen", naam: "Zevenhuizen", korteNaam: "Zevenhuizen" },
   { slug: "moordrecht", naam: "Moordrecht", korteNaam: "Moordrecht" },
   { slug: "moerkapelle", naam: "Moerkapelle", korteNaam: "Moerkapelle" },
+  {
+    slug: "capelle-aan-den-ijssel", naam: "Capelle aan den IJssel", korteNaam: "Capelle", buitenZuidplas: true,
+    yogaZin: "De groep is er ook voor zwangeren uit Capelle aan den IJssel en Rotterdam-Nesselande; Nieuwerkerk aan den IJssel ligt er direct naast.",
+  },
 ];
 
 const BREED = /regio|regionale|landelijk|werkgebied/i;
@@ -963,7 +1023,7 @@ export function noemtPlaats(plaatsTekst: string, plaatsNaam: string): boolean {
 
 /** Noemt deze plaatsomschrijving een van de vier Zuidplas-plaatsen? */
 export function noemtEenZuidplasPlaats(plaatsTekst: string): boolean {
-  return PLAATSEN.some((p) => noemtPlaats(plaatsTekst, p.naam));
+  return PLAATSEN.filter((p) => !p.buitenZuidplas).some((p) => noemtPlaats(plaatsTekst, p.naam));
 }
 
 /** Geeft een breder werkgebied op zonder een specifieke plaats te noemen. */
@@ -979,13 +1039,16 @@ export type PlaatsCategorie = {
 
 /** De hele zorgkaart, gefilterd op een plaats en gegroepeerd per categorie. */
 export function zorgkaartVoorPlaats(plaatsNaam: string): PlaatsCategorie[] {
+  // Voor een plaats buiten Zuidplas telt een aanbieder die zelf "heel Zuidplas"
+  // als werkgebied opgeeft niet als breder gebied: dat zegt niets over Capelle.
+  const buiten = PLAATSEN.find((p) => p.naam === plaatsNaam)?.buitenZuidplas === true;
   return ZORGKAART.map((categorie) => ({
     categorie,
     hier: categorie.aanbieders.filter((a) => noemtPlaats(a.plaats, plaatsNaam)),
     breed: categorie.aanbieders.filter(
       (a) =>
         !noemtPlaats(a.plaats, plaatsNaam) &&
-        (heeftBreedWerkgebied(a.plaats) ||
+        ((heeftBreedWerkgebied(a.plaats) && !(buiten && /zuidplas/i.test(a.plaats))) ||
           (a.werkgebied ?? []).some((p) => noemtPlaats(p, plaatsNaam))),
     ),
   })).filter((r) => r.hier.length + r.breed.length > 0);

@@ -61,13 +61,18 @@ export const OPENINGSZINNEN: Record<string, Openingszin> = {
     ],
   },
   "yoga-cursussen": {
-    zin: "In Nieuwerkerk aan den IJssel noemt de Geboortezorgkaart Zuidplas drie cursussen om je op de bevalling voor te bereiden: de Geboortereeks van Studio Luna, HypnoBirthing van Mucha Mama en Vol Vertrouwen Bevallen. Samen Bevallen Gouda geeft cursussen in Gouda.",
+    // Nieuwe versie goedgekeurd op 18 november 2026, met vier aanbieders erbij.
+    zin: "In Nieuwerkerk aan den IJssel noemt de Geboortezorgkaart Zuidplas vier manieren om je op de bevalling voor te bereiden: de Geboortereeks van Studio Luna, HypnoBirthing van Mucha Mama, Vol Vertrouwen Bevallen en de bevalcoaching van Spirit for Two. In Zevenhuizen geeft PowerMama Zuidplas een bevalcursus met partner. Zwangerschapsyoga in de buurt vind je verder bij Mi Esencia in Gouda en In2Yoga in Krimpen aan den IJssel, en Samen Bevallen Gouda geeft cursussen in Gouda.",
     faq: [],
     gecontroleerdMet: [
       "Studio Luna Zuidplas",
       "Mucha Mama HypnoBirthing",
       "Vol Vertrouwen Bevallen",
       "Samen Bevallen Gouda",
+      "Spirit for Two",
+      "PowerMama Zuidplas",
+      "Mi Esencia Yoga Mindfulness",
+      "In2Yoga",
     ],
   },
   "bekkenfysiotherapie": {
@@ -182,9 +187,11 @@ export const OPENINGSZINNEN: Record<string, Openingszin> = {
     ],
   },
   "zwangerschapsmassage": {
-    zin: "Een zwangerschapsmassage in Zuidplas kan bij Wellnessmassage Nieuwerkerk en bij Spirit for Two, allebei in Nieuwerkerk aan den IJssel. De Geboortezorgkaart Zuidplas noemt daarnaast QoQo Massage in Capelle aan den IJssel en Praktijk Proximaal in Gouda.",
+    // Nieuwe versie goedgekeurd op 18 november 2026, met Studio Luna erbij.
+    zin: "Een zwangerschapsmassage in Zuidplas kan bij Studio Luna, Wellnessmassage Nieuwerkerk en Spirit for Two, alle drie in Nieuwerkerk aan den IJssel. De Geboortezorgkaart Zuidplas noemt daarnaast QoQo Massage in Capelle aan den IJssel en Praktijk Proximaal in Gouda.",
     faq: [],
     gecontroleerdMet: [
+      "Studio Luna Zuidplas",
       "Wellnessmassage Nieuwerkerk",
       "Spirit for Two",
       "QoQo Massage Capelle",
