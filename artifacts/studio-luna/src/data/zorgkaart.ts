@@ -277,7 +277,7 @@ export const ZORGKAART: ZorgCategorie[] = [
         naam: "Studio Luna Zuidplas",
         plaats: "Nieuwerkerk aan den IJssel, voor de hele gemeente Zuidplas",
         website: "https://www.studiolunazuidplas.nl/geboortereeks",
-        beschrijving: "Zwangerschapsyoga en geboortevoorbereiding in een vaste kleine groep; de Geboortereeks van acht wekelijkse lessen, met mama-en-babyyoga na afloop, start op dinsdag 29 september. De lessen zijn in Nieuwerkerk aan den IJssel en de groep is er voor zwangeren uit Nieuwerkerk, Zevenhuizen, Moordrecht en Moerkapelle.",
+        beschrijving: "Zwangerschapsyoga en geboortevoorbereiding in een vaste kleine groep; de Geboortereeks van acht wekelijkse lessen, met mama-en-babyyoga na afloop, start op woensdag 13 januari. De lessen zijn in Nieuwerkerk aan den IJssel en de groep is er voor zwangeren uit Nieuwerkerk, Zevenhuizen, Moordrecht en Moerkapelle.",
         werkgebied: ["Zevenhuizen", "Moordrecht", "Moerkapelle"],
         tags: ["op-locatie", "groepslessen", "partner-welkom"],
       },

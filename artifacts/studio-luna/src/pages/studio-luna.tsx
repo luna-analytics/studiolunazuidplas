@@ -167,8 +167,7 @@ export default function StudioLuna() {
             </h2>
             <div>
               <p className="text-[15px] text-foreground/80 leading-[1.7] mb-5">
-                De reeks die op 29 september is begonnen loopt nu, dus daar kun je niet meer
-                bij instappen. Voor de nieuwe groep kun je je wel aanmelden: die start op
+                Je kunt je nu aanmelden voor de nieuwe groep: die start op
                 woensdag 13 januari en loopt acht woensdagavonden tot en met 3 maart.
               </p>
               <p className="text-[15px] text-foreground/80 leading-[1.7] mb-5">

@@ -21,9 +21,7 @@ const MAANDEN = ["januari", "februari", "maart", "april", "mei", "juni", "juli",
 // Datums die niet over de reeks gaan of bewust blijven staan. "tot" is de
 // laatste dag waarop de datum nog mag; daarna stopt de build weer, zodat een
 // verouderde zin niet ongemerkt blijft staan.
-const TOEGESTAAN = [
-  { datum: "29 september", tot: "2026-11-17", reden: "de lopende reeks die op 29 september begon, tot de laatste les" },
-];
+const TOEGESTAAN = [];
 
 const reeksBron = readFileSync(join(HIER, "../api-server/src/lib/reeks.ts"), "utf8");
 const lesdata = [...reeksBron.matchAll(/iso: "(\d{4})-(\d{2})-(\d{2})"/g)]

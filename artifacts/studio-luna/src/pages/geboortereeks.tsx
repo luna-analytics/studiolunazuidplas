@@ -23,12 +23,24 @@ const KALENDER: { datum: string; noot?: string; gast?: Les["gast"] }[] = [
   { datum: "datum volgt", noot: "Mama-en-babyyoga cadeau, zodra alle kindjes geboren zijn" },
 ];
 
+// Naam van een gastdocent met een link naar de eigen website, uit reeks.ts.
+function Gast({ naam }: { naam: string }) {
+  const gast = REEKS.lessen.find((les) => les.gast?.naam === naam)?.gast;
+  if (!gast) return <>{naam}</>;
+  return (
+    <a href={gast.href} target="_blank" rel="noopener noreferrer"
+      className="underline underline-offset-4 decoration-foreground/30 hover:text-foreground">
+      {gast.naam}
+    </a>
+  );
+}
+
 const PRAKTISCH = [
   { label: "Start", waarde: "woensdag 13 januari, daarna elke week op woensdag van 19:00 tot 20:15 uur" },
   { label: "Groep", waarde: "kleinschalig, een vaste groep" },
   { label: "Voor wie", waarde: "bij de start ben je ongeveer tussen de 20 en 28 weken zwanger" },
   { label: "Locatie", waarde: "Waldorfhaus de Perenboom, Raadhuisplein 28 in Nieuwerkerk aan den IJssel" },
-  { label: "Inclusief", waarde: "goodiebag, reader en mama-en-babyyoga na afloop" },
+  { label: "Inclusief", waarde: "goodiebag en mama-en-babyyoga na afloop" },
   {
     label: "Prijs",
     waarde: (
@@ -58,10 +70,13 @@ const AVOND = [
 const INBEGREPEN = [
   "Acht wekelijkse lessen van 75 minuten op de woensdagavond, plus mama-en-babyyoga cadeau zodra alle kindjes geboren zijn",
   "Een kleinschalige, vaste groep, zodat je elkaar echt leert kennen",
-  "Twee gastlessen: Tamar Riani over lichaamsbewustzijn, houding & balans, en een bekkenfysiotherapeut over je bekken en je bekkenbodem",
+  <>
+    Twee gastlessen: <Gast naam="Tamar Riani" /> over lichaamsbewustzijn, houding &amp; balans,
+    en bekkenfysiotherapeut <Gast naam="Mélanie de Groot" /> over je bekken en je bekkenbodem
+  </>,
   "Een complete bevallingsles en een partnerles waarin je geboortepartner tools krijgt om jou te ondersteunen",
   "Een mamaspa-avond met zelfmassage en restorative yoga die helemaal om ontspanning en herstel draait",
-  "Elke week een oefening in de WhatsApp-groep, een goodiebag en tijd voor verbinding met andere mama's",
+  "Een goodiebag en tijd voor verbinding met andere mama's",
 ];
 
 const FAQ_ITEMS = [
@@ -219,8 +234,9 @@ export default function Geboortereeks() {
                 partners mee, zodat zij zien hoe ze je kunnen ondersteunen.
               </p>
               <p className="text-[15px] text-foreground/80 leading-[1.7] mb-4">
-                Tamar Riani geeft een gastles over lichaamsbewustzijn, houding &amp; balans. Ook
-                komt er een bekkenfysiotherapeut langs, die je alles vertelt over je bekken en je
+                <Gast naam="Tamar Riani" /> geeft een gastles over lichaamsbewustzijn, houding &amp;
+                balans. Ook komt bekkenfysiotherapeut <Gast naam="Mélanie de Groot" /> langs, die
+                je alles vertelt over je bekken en je
                 bekkenbodem en waar je tijdens de zwangerschap en na de bevalling op kunt letten.
               </p>
               <p id="mama-en-babyyoga" className="text-[15px] text-foreground/80 leading-[1.7] scroll-mt-28">
@@ -471,9 +487,9 @@ export default function Geboortereeks() {
             </h2>
             <p className="text-[15px] text-foreground/80 leading-[1.7]">
               Moeder, gepromoveerd onderzoeker en yogadocente. Ik geef de yogalessen van de
-              Geboortereeks zelf en werk voor deze reeks samen met meerdere experts: Tamar
-              Riani geeft een gastles over lichaamsbewustzijn, houding &amp; balans, en er komt
-              een bekkenfysiotherapeut langs. Bij Studio Luna combineer ik gevoel en wetenschap: je
+              Geboortereeks zelf en werk voor deze reeks samen met meerdere experts: <Gast naam="Tamar Riani" /> geeft
+              een gastles over lichaamsbewustzijn, houding &amp; balans, en bekkenfysiotherapeut{" "}
+              <Gast naam="Mélanie de Groot" /> komt langs. Bij Studio Luna combineer ik gevoel en wetenschap: je
               bereidt je sterk en met vertrouwen voor op je bevalling, en je leert andere
               moeders uit Zuidplas kennen.
             </p>
