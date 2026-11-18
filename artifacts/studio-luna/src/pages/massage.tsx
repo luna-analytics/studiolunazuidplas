@@ -6,7 +6,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { usePageMeta } from "@/lib/seo";
 import { IMAGES } from "@/lib/images";
 import {
-  MASSAGE, MASSAGE_DAGEN, MASSAGE_DAGDELEN, type MassageVoor, type MassagePlek,
+  MASSAGE, MASSAGE_DAGEN, MASSAGE_DAGDELEN, AAN_HUIS_TOESLAG, type MassageVoor, type MassagePlek,
 } from "../../../api-server/src/lib/massage";
 
 // Twee pagina's, één massage (haar keuze 18 november 2026): Lomi Lomi Hapai
@@ -68,7 +68,7 @@ const TEKST = {
     fotoAlt: "Marjolein met haar armen om zichzelf en haar ogen dicht",
     foto2: IMAGES.massageLavendel,
     foto2Alt: "Een takje lavendel tussen de vingers",
-    ander: { pad: "/postpartummassage", tekst: "Ben je al bevallen? Dezelfde massage kan ook na de bevalling" },
+    ander: { pad: "/postpartummassage", kort: "Na de bevalling: postpartummassage", tekst: "Ben je al bevallen? Dezelfde massage kan ook na de bevalling" },
   },
   postpartum: {
     pad: "/postpartummassage",
@@ -80,7 +80,7 @@ const TEKST = {
     fotoAlt: "Marjolein legt een hand op haar schouder",
     foto2: IMAGES.massageLiggend,
     foto2Alt: "Marjolein ligt ontspannen in het hoge gras",
-    ander: { pad: "/zwangerschapsmassage", tekst: "Ben je nog zwanger? Dezelfde massage kan ook tijdens je zwangerschap" },
+    ander: { pad: "/zwangerschapsmassage", kort: "Nog zwanger: zwangerschapsmassage", tekst: "Ben je nog zwanger? Dezelfde massage kan ook tijdens je zwangerschap" },
   },
 } as const;
 
@@ -144,7 +144,7 @@ function MassagePagina({ voor }: { voor: MassageVoor }) {
         areaServed: "Zuidplas",
         offers: [
           { "@type": "Offer", name: `${MASSAGE.naam}, ${MASSAGE.duur}, introductieprijs`, price: `${MASSAGE.introductieprijs}.00`, priceCurrency: "EUR" },
-          { "@type": "Offer", name: `${MASSAGE.naam}, ${MASSAGE.duur}, aan huis`, price: `${MASSAGE.aanHuisPrijs}.00`, priceCurrency: "EUR" },
+          { "@type": "Offer", name: `${MASSAGE.naam}, ${MASSAGE.duur}`, price: `${MASSAGE.prijs}.00`, priceCurrency: "EUR" },
         ],
       },
       {
@@ -162,13 +162,13 @@ function MassagePagina({ voor }: { voor: MassageVoor }) {
   const praktisch = [
     { label: "Massage", waarde: `${MASSAGE.naam}, full body, ${MASSAGE.duur}` },
     { label: "Voor wie", waarde: t.voorWie },
-    { label: "Waar", waarde: `bij ${MASSAGE.praktijk.naam}, ${MASSAGE.praktijk.adres}, of bij jou thuis` },
+    { label: "Waar", waarde: `bij ${MASSAGE.praktijk.naam}, ${MASSAGE.praktijk.adres}, of bij jou thuis${voor === "postpartum" ? ", bijvoorbeeld in de kraamperiode" : ""}` },
     {
       label: "Prijs",
       waarde: (
         <>
           <span className="font-semibold text-foreground">€{MASSAGE.introductieprijs}</span> introductieprijs,
-          daarna €{MASSAGE.prijs}; aan huis €{MASSAGE.aanHuisPrijs}
+          daarna €{MASSAGE.prijs}; aan huis €{AAN_HUIS_TOESLAG} extra
         </>
       ),
     },
@@ -196,7 +196,16 @@ function MassagePagina({ voor }: { voor: MassageVoor }) {
               {MASSAGE.naam} · {MASSAGE.duur}
             </p>
             <p className="text-[15px] text-foreground/80 mt-4">
-              €{MASSAGE.introductieprijs} introductieprijs, daarna €{MASSAGE.prijs} · aan huis €{MASSAGE.aanHuisPrijs}
+              €{MASSAGE.introductieprijs} introductieprijs, daarna €{MASSAGE.prijs} · aan huis €{AAN_HUIS_TOESLAG} extra
+            </p>
+            <p className="text-sm text-foreground/65 mt-2">
+              <Link href={t.ander.pad} className="text-primary border-b border-primary/30 pb-0.5 hover:border-primary">
+                {t.ander.kort}
+              </Link>
+              {" · "}
+              <Link href="/aanbod" className="text-primary border-b border-primary/30 pb-0.5 hover:border-primary">
+                Alle aanbod en tarieven
+              </Link>
             </p>
             <a
               href="#afspraak"
@@ -322,7 +331,7 @@ function MassagePagina({ voor }: { voor: MassageVoor }) {
                         type="radio" name="plek" checked={plek === "thuis"} onChange={() => setPlek("thuis")}
                         className="mt-1.5 accent-[hsl(var(--primary))]"
                       />
-                      <span>Bij mij thuis (€{MASSAGE.aanHuisPrijs})</span>
+                      <span>Bij mij thuis (€{AAN_HUIS_TOESLAG} extra)</span>
                     </label>
                   </div>
                   {plek === "thuis" && (

@@ -22,6 +22,7 @@ import BlogArtikel from "./pages/blog-artikel";
 import OverMij from "./pages/over-mij";
 import Events from "./pages/events";
 import { Zwangerschapsmassage, Postpartummassage } from "./pages/massage";
+import Aanbod from "./pages/aanbod";
 
 const Admin = lazy(() => import("./pages/admin"));
 const WachtwoordReset = lazy(() => import("./pages/wachtwoord-reset").then((m) => ({ default: m.WachtwoordReset })));
@@ -82,7 +83,7 @@ function Router() {
       <Suspense fallback={null}>
       <Switch>
         <Route path="/" component={StudioLuna} />
-        <Route path="/aanbod" component={() => { const [,nav] = useLocation(); useEffect(() => { nav("/geboortereeks", { replace: true }); }, [nav]); return null; }} />
+        <Route path="/aanbod" component={Aanbod} />
         <Route path="/geboortereeks" component={Geboortereeks} />
         <Route path="/events" component={Events} />
         <Route path="/zwangerschapsmassage" component={Zwangerschapsmassage} />
@@ -97,7 +98,7 @@ function Router() {
         ))}
         <Route path="/geboortezorg" component={() => { const [,nav] = useLocation(); useEffect(() => { nav("/geboortezorg-zuidplas", { replace: true }); }, [nav]); return null; }} />
         <Route path="/rooster" component={() => { const [,nav] = useLocation(); useEffect(() => { nav("/geboortereeks", { replace: true }); }, [nav]); return null; }} />
-        <Route path="/tarieven" component={() => { const [,nav] = useLocation(); useEffect(() => { nav("/geboortereeks", { replace: true }); }, [nav]); return null; }} />
+        <Route path="/tarieven" component={() => { const [,nav] = useLocation(); useEffect(() => { nav("/aanbod", { replace: true }); }, [nav]); return null; }} />
         <Route path="/bookings" component={() => { const [,nav] = useLocation(); useEffect(() => { nav("/geboortereeks", { replace: true }); }, [nav]); return null; }} />
         <Route path="/profile" component={() => { const [,nav] = useLocation(); useEffect(() => { nav("/geboortereeks", { replace: true }); }, [nav]); return null; }} />
         <Route path="/betaling/:rest*" component={() => { const [,nav] = useLocation(); useEffect(() => { nav("/geboortereeks", { replace: true }); }, [nav]); return null; }} />

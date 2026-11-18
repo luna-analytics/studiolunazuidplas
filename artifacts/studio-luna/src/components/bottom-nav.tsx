@@ -28,6 +28,7 @@ const GROEPEN: Groep[] = [
     label: "Zwanger",
     onderdelen: [
       { label: "Zwangerschapsyoga", noot: "De Geboortereeks van acht weken", href: "/geboortereeks" },
+      { label: "Privéles", noot: "Yoga en geboortevoorbereiding op maat", href: "/aanbod#priveles" },
       { label: "Zwangerschapsmassage", noot: "Lomi Lomi Hapai, 75 minuten", href: "/zwangerschapsmassage" },
     ],
   },
@@ -54,8 +55,12 @@ const GROEPEN: Groep[] = [
 const IN_OPBOUW_TEKST = "Studio Luna is het aanbod aan het uitbouwen, en langzaamaan komen er steeds meer activiteiten.";
 const OP_DE_HOOGTE_MAIL = "mailto:info@studiolunazuidplas.nl?subject=Houd%20me%20op%20de%20hoogte%20van%20het%20nieuwe%20aanbod";
 
-// Losse items: Zorgkaart staat in het midden, Blog en Over mij rechts.
-const ZORGKAART = { href: "/geboortezorg-zuidplas", label: "Zorgkaart" };
+// Losse items: Aanbod en tarieven (sinds 18 november 2026) en Zorgkaart staan
+// in het midden, Blog en Over mij rechts.
+const LOS = [
+  { href: "/aanbod", label: "Aanbod en tarieven" },
+  { href: "/geboortezorg-zuidplas", label: "Zorgkaart" },
+];
 const RECHTS = [
   { href: "/blog", label: "Blog" },
   { href: "/over-mij", label: "Over mij" },
@@ -286,12 +291,14 @@ export function BottomNav() {
                   </li>
                 );
               })}
-              <li>
-                <Link href={ZORGKAART.href} className={linkKlasse(hoortBij(location, ZORGKAART.href))}
-                  aria-current={hoortBij(location, ZORGKAART.href) ? "page" : undefined}>
-                  {ZORGKAART.label}
-                </Link>
-              </li>
+              {LOS.map((item) => (
+                <li key={item.href}>
+                  <Link href={item.href} className={linkKlasse(hoortBij(location, item.href))}
+                    aria-current={hoortBij(location, item.href) ? "page" : undefined}>
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </nav>
           <div className="flex items-center gap-1 shrink-0">
@@ -451,7 +458,9 @@ export function BottomNav() {
                     </ul>
                   </div>
                 ))}
-                <MobielLink href={ZORGKAART.href} label={ZORGKAART.label} actief={hoortBij(location, ZORGKAART.href)} />
+                {LOS.map((item) => (
+                  <MobielLink key={item.href} href={item.href} label={item.label} actief={hoortBij(location, item.href)} />
+                ))}
                 {RECHTS.map((item) => (
                   <MobielLink key={item.href} href={item.href} label={item.label} actief={hoortBij(location, item.href)} />
                 ))}

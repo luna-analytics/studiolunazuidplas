@@ -254,9 +254,24 @@ const ROUTES = [
       inhoud:
         `<h1>${m.titel}</h1>` +
         `<p>Lomi Lomi Hapai is een full body ontspanningsmassage. Lomi lomi is een eeuwenoude massagevorm uit Hawaï, met wortels in de Polynesische massagetradities.</p>` +
-        `<p>${tekstVeilig(beschrijving)} Introductieprijs €75, daarna €85; aan huis €95. Je vraagt een afspraak aan met de dagdelen die je uitkomen.</p>`,
+        `<p>${tekstVeilig(beschrijving)} Introductieprijs €75, daarna €85; aan huis €15 extra. Je vraagt een afspraak aan met de dagdelen die je uitkomen.</p>`,
     };
   }),
+  {
+    pad: "aanbod",
+    title: "Aanbod en tarieven | Studio Luna, Nieuwerkerk aan den IJssel",
+    beschrijving: "Alles van Studio Luna met de prijzen: de Geboortereeks (€195), privéles zwangerschapsyoga en geboortevoorbereiding, zwangerschapsmassage en postpartummassage (€85), ook aan huis in Zuidplas.",
+    inhoud:
+      `<h1>Aanbod en tarieven</h1>` +
+      `<h2>Zwanger</h2><ul>` +
+      `<li><a href="/geboortereeks">De Geboortereeks</a>: acht wekelijkse lessen zwangerschapsyoga en geboortevoorbereiding in een kleinschalige, vaste groep, €195.</li>` +
+      `<li>Privéles zwangerschapsyoga en/of geboortevoorbereiding: op maat, één of meerdere lessen, met of zonder partner, prijs in overleg.</li>` +
+      `<li><a href="/zwangerschapsmassage">Zwangerschapsmassage</a>: Lomi Lomi Hapai, 75 minuten, €85 (nu €75 introductieprijs).</li></ul>` +
+      `<h2>Na de bevalling</h2><ul>` +
+      `<li><a href="/postpartummassage">Postpartummassage</a>: Lomi Lomi Hapai, 75 minuten, €85 (nu €75 introductieprijs).</li>` +
+      `<li>Mama-en-babyyoga: inbegrepen bij de Geboortereeks.</li></ul>` +
+      `<h2>Aan huis</h2><p>Massage of privéles bij je thuis, bijvoorbeeld in de kraamperiode: €15 extra.</p>`,
+  },
   {
     pad: "over-mij",
     title: "Over Marjolein, zwangerschapsyoga docente in Nieuwerkerk aan den IJssel",
@@ -420,6 +435,8 @@ const llms =
   PLAATSEN.map((p) => `- [Zwanger in ${p.naam}](${BASIS}/zwanger-in-${p.slug})`).join("\n") +
   `\n\n## Studio Luna\n\n` +
   `- [De Geboortereeks](${BASIS}/geboortereeks): 8-weekse zwangerschapsyoga- en geboortevoorbereidingsreeks in Nieuwerkerk aan den IJssel\n` +
+  `- [Aanbod en tarieven](${BASIS}/aanbod): alles van Studio Luna met de prijzen
+` +
   `- [Zwangerschapsmassage](${BASIS}/zwangerschapsmassage): Lomi Lomi Hapai, full body ontspanningsmassage van 75 minuten, vanaf 12 weken zwangerschap\n` +
   `- [Postpartummassage](${BASIS}/postpartummassage): dezelfde massage na de bevalling, vanaf ongeveer twee weken\n` +
   `- [Over Marjolein](${BASIS}/over-mij): moeder, gepromoveerd onderzoeker en yogadocente\n` +
