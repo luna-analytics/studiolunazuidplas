@@ -241,9 +241,9 @@ const ROUTES = [
   // staan in api-server/src/lib/massage.ts; pas ze hier mee aan als ze
   // veranderen.
   ...[
-    { pad: "zwangerschapsmassage", titel: "Zwangerschapsmassage", vanaf: "vanaf 12 weken zwangerschap",
+    { pad: "zwangerschapsmassage", titel: "Zwangerschapsmassage", vanaf: "tijdens de hele zwangerschap",
       title: "Zwangerschapsmassage in Nieuwerkerk aan den IJssel | Studio Luna" },
-    { pad: "postpartummassage", titel: "Postpartummassage", vanaf: "vanaf ongeveer twee weken na de bevalling",
+    { pad: "postpartummassage", titel: "Postpartummassage", vanaf: "vlak na de bevalling en ook maanden later",
       title: "Massage na de bevalling in Nieuwerkerk aan den IJssel | Studio Luna" },
   ].map((m) => {
     const beschrijving = `Lomi Lomi Hapai, een full body ontspanningsmassage van 75 minuten, ${m.vanaf}. Bij Remindyourlife in Nieuwerkerk aan den IJssel of bij je thuis in Zuidplas.`;
@@ -437,8 +437,8 @@ const llms =
   `- [De Geboortereeks](${BASIS}/geboortereeks): 8-weekse zwangerschapsyoga- en geboortevoorbereidingsreeks in Nieuwerkerk aan den IJssel\n` +
   `- [Aanbod en tarieven](${BASIS}/aanbod): alles van Studio Luna met de prijzen
 ` +
-  `- [Zwangerschapsmassage](${BASIS}/zwangerschapsmassage): Lomi Lomi Hapai, full body ontspanningsmassage van 75 minuten, vanaf 12 weken zwangerschap\n` +
-  `- [Postpartummassage](${BASIS}/postpartummassage): dezelfde massage na de bevalling, vanaf ongeveer twee weken\n` +
+  `- [Zwangerschapsmassage](${BASIS}/zwangerschapsmassage): Lomi Lomi Hapai, full body ontspanningsmassage van 75 minuten, tijdens de hele zwangerschap\n` +
+  `- [Postpartummassage](${BASIS}/postpartummassage): dezelfde massage na de bevalling, vlak erna en ook maanden later\n` +
   `- [Over Marjolein](${BASIS}/over-mij): moeder, gepromoveerd onderzoeker en yogadocente\n` +
   `- [Events](${BASIS}/events): workshops en events naast de wekelijkse lessen, voor zwangeren, moeders en ondernemende vrouwen in Zuidplas\n` +
   `- [Blog](${BASIS}/blog): artikelen over zwangerschap, geboortevoorbereiding en moederschap in Zuidplas\n`;

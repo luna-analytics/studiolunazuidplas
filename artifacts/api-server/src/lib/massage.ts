@@ -3,8 +3,7 @@
 // allemaal hieruit, net zoals de reeks uit reeks.ts komt.
 //
 // Haar keuzes van 18 november 2026: alleen Lomi Lomi Hapai, 75 minuten, €85
-// met €75 als introductieprijs; zwanger vanaf 12 weken, na de bevalling vanaf
-// ongeveer twee weken; dezelfde massage op twee pagina's. Aan huis €100 (haar
+// met €75 als introductieprijs; dezelfde massage op twee pagina's. Aan huis €100 (haar
 // keuze, na eerst €95): alleen voor de massage, en als één prijs genoemd in
 // plaats van een toeslag.
 
@@ -18,8 +17,10 @@ export const MASSAGE = {
     naam: "Remindyourlife",
     adres: "'s-Gravenweg 266 in Nieuwerkerk aan den IJssel",
   },
-  vanafZwanger: "vanaf 12 weken zwangerschap",
-  vanafPostpartum: "vanaf ongeveer twee weken na de bevalling",
+  // Eerst vanaf 12 weken zwanger en ongeveer twee weken na de bevalling; later
+  // op 18 november haar keuze: de hele zwangerschap en de hele tijd erna.
+  wanneerZwanger: "tijdens de hele zwangerschap",
+  wanneerPostpartum: "vlak na de bevalling en ook maanden later",
 };
 
 export type MassageVoor = "zwanger" | "postpartum";

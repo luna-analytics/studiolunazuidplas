@@ -16,6 +16,14 @@ import {
 //
 // De openingszin over Lomi Lomi Hapai is van Marjolein zelf (18 november).
 
+// Haar tekst over waarom ze masseert (18 november 2026), uit een concept dat
+// ze aanpaste: de alinea over haar eigen zwangerschap ging eruit, want de
+// aandacht hoort niet op haar te liggen. Hoe ze ligt staat al bij "Hoe de
+// massage gaat", dus dat staat hier niet nog een keer.
+const WAAROM = [
+  "Met Studio Luna wil ik een community creëren waarin we als vrouwen voor elkaar zorgen. It takes a village, en daar hoort voor mij ook bij dat er af en toe voor jóu gezorgd wordt. Met deze ontspanningsmassage geef ik je een moment van rust. Niet voor niets betekent Hāpai in het Hawaïaans zwanger, maar ook dragen en ondersteunen: jij draagt de hele dag, en nu word je even gedragen. Deze 75 minuten zijn helemaal voor jou.",
+];
+
 const HAAR_ZIN =
   "Lomi Lomi Hapai is een full body ontspanningsmassage. Lomi lomi is een eeuwenoude massagevorm uit Hawaï, met wortels in de Polynesische massagetradities.";
 
@@ -28,8 +36,8 @@ const VERLOOP = [
 
 const FAQ = (voor: MassageVoor) => [
   {
-    vraag: "Vanaf wanneer kan ik een massage krijgen?",
-    antwoord: `In de zwangerschap ${MASSAGE.vanafZwanger}, en na de bevalling ${MASSAGE.vanafPostpartum}. Ben je bevallen met een keizersnede, stuur me dan even een berichtje, dan kijken we samen wat prettig is.`,
+    vraag: "Wanneer kan ik een massage krijgen?",
+    antwoord: `De massage kan ${MASSAGE.wanneerZwanger}, en na de bevalling ${MASSAGE.wanneerPostpartum}. Ben je bevallen met een keizersnede, stuur me dan even een berichtje, dan kijken we samen wat prettig is.`,
   },
   {
     vraag: "Waarom op mijn zij?",
@@ -60,8 +68,8 @@ const TEKST = {
     pad: "/zwangerschapsmassage",
     titel: "Zwangerschapsmassage",
     meta: "Zwangerschapsmassage in Nieuwerkerk aan den IJssel | Studio Luna",
-    beschrijving: `Lomi Lomi Hapai, een full body ontspanningsmassage van 75 minuten voor zwangeren, ${MASSAGE.vanafZwanger}. Bij ${MASSAGE.praktijk.naam} in Nieuwerkerk aan den IJssel of bij je thuis in Zuidplas.`,
-    voorWie: MASSAGE.vanafZwanger,
+    beschrijving: `Lomi Lomi Hapai, een full body ontspanningsmassage van 75 minuten voor zwangeren, ${MASSAGE.wanneerZwanger}. Bij ${MASSAGE.praktijk.naam} in Nieuwerkerk aan den IJssel of bij je thuis in Zuidplas.`,
+    voorWie: `zwangeren, ${MASSAGE.wanneerZwanger}`,
     foto: IMAGES.massageZwanger,
     fotoAlt: "Marjolein met haar armen om zichzelf en haar ogen dicht",
     foto2: IMAGES.massageLavendel,
@@ -72,8 +80,8 @@ const TEKST = {
     pad: "/postpartummassage",
     titel: "Postpartummassage",
     meta: "Massage na de bevalling in Nieuwerkerk aan den IJssel | Studio Luna",
-    beschrijving: `Lomi Lomi Hapai, een full body ontspanningsmassage van 75 minuten na de bevalling, ${MASSAGE.vanafPostpartum}. Bij ${MASSAGE.praktijk.naam} in Nieuwerkerk aan den IJssel of bij je thuis in Zuidplas.`,
-    voorWie: MASSAGE.vanafPostpartum,
+    beschrijving: `Lomi Lomi Hapai, een full body ontspanningsmassage van 75 minuten na de bevalling, ${MASSAGE.wanneerPostpartum}. Bij ${MASSAGE.praktijk.naam} in Nieuwerkerk aan den IJssel of bij je thuis in Zuidplas.`,
+    voorWie: `moeders, ${MASSAGE.wanneerPostpartum}`,
     foto: IMAGES.massagePostpartum,
     fotoAlt: "Marjolein legt een hand op haar schouder",
     foto2: IMAGES.massageLiggend,
@@ -225,11 +233,17 @@ function MassagePagina({ voor }: { voor: MassageVoor }) {
         <section className="px-7 md:px-14 lg:px-20 xl:px-28 py-8 md:py-10">
           <div className="md:grid md:grid-cols-[1.2fr_1fr] md:gap-16 md:items-start">
             <div>
+              <h2 className="font-display text-2xl md:text-3xl font-medium text-foreground leading-[1.15] mb-4">
+                Even voor jou gezorgd
+              </h2>
+              {WAAROM.map((alinea) => (
+                <p key={alinea.slice(0, 20)} className="text-[15px] text-foreground/80 leading-[1.7] mb-4">{alinea}</p>
+              ))}
               <p className="text-[15px] text-foreground/80 leading-[1.7] mb-4">{HAAR_ZIN}</p>
               <p className="text-[15px] text-foreground/80 leading-[1.7] mb-4">
                 {voor === "zwanger"
-                  ? `Je kunt de massage krijgen ${MASSAGE.vanafZwanger}, en ook na de bevalling.`
-                  : `Je kunt de massage krijgen ${MASSAGE.vanafPostpartum}, en ook al tijdens je zwangerschap.`}
+                  ? `Je kunt de massage krijgen ${MASSAGE.wanneerZwanger}, en ook na de bevalling.`
+                  : `Je kunt de massage krijgen ${MASSAGE.wanneerPostpartum}, en ook al tijdens je zwangerschap.`}
               </p>
               <Link
                 href={t.ander.pad}
