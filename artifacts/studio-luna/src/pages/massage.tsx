@@ -19,13 +19,11 @@ import {
 const HAAR_ZIN =
   "Lomi Lomi Hapai is een full body ontspanningsmassage. Lomi lomi is een eeuwenoude massagevorm uit Hawaï, met wortels in de Polynesische massagetradities.";
 
-const VERLOOP = (voor: MassageVoor) => [
-  voor === "zwanger"
-    ? "Even bijpraten over hoe ver je bent en hoe je je voelt"
-    : "Even bijpraten over je bevalling en hoe de eerste weken gaan",
+// Alleen deze twee regels, haar keuze van 18 november: bijpraten vooraf en
+// het glas water na afloop vond ze overbodig.
+const VERLOOP = [
   "Je ligt op je zij, met kussens onder je hoofd en tussen je knieën en armen, onder een grote doek",
   "Een massage met warme olie over je hele lichaam, eerst op de ene zij en daarna op de andere",
-  "Rustig weer overeind komen, met een glas water",
 ];
 
 const FAQ = (voor: MassageVoor) => [
@@ -263,7 +261,7 @@ function MassagePagina({ voor }: { voor: MassageVoor }) {
                 Hoe de massage gaat
               </h2>
               <div className="max-w-2xl">
-                {VERLOOP(voor).map((stap) => (
+                {VERLOOP.map((stap) => (
                   <p key={stap} className="py-2 border-b border-border/15 text-[15px] text-foreground/80">
                     {stap}
                   </p>
