@@ -278,7 +278,8 @@ const ROUTES = [
       `<h2>Voor mama's, postpartum en daarna</h2><ul>` +
       `<li><a href="/postpartummassage">Postpartummassage</a>: Lomi Lomi Hapai, 75 minuten, €85 (nu €75 introductieprijs).</li>` +
       `<li>Mama-en-babyyoga: inbegrepen bij de Geboortereeks.</li></ul>` +
-      `<h2>Aan huis</h2><p>Behandeling aan huis, bijvoorbeeld in de kraamperiode: €115, binnenkort beschikbaar.</p>`,
+      `<h2>Aan huis</h2><p>Behandeling aan huis, bijvoorbeeld in de kraamperiode: €115, binnenkort beschikbaar.</p>` +
+      `<h2>Pakket op maat</h2><p>Een pakket naar jouw wens, bijvoorbeeld twee zwangerschapsmassages en één postpartummassage, of privéles en massage samen. Prijs in overleg; ook een mooi cadeau.</p>`,
   },
   {
     pad: "over-mij",

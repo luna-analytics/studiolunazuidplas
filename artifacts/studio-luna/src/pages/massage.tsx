@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "wouter";
 import { BottomNav } from "@/components/bottom-nav";
+import { KennismakingModal } from "@/components/kennismaking-modal";
 import { SeoFooter } from "@/components/seo-footer";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { usePageMeta } from "@/lib/seo";
@@ -101,6 +102,7 @@ function MassagePagina({ voor }: { voor: MassageVoor }) {
   const [dagdelen, setDagdelen] = useState<string[]>([]);
   const [bericht, setBericht] = useState("");
   const [status, setStatus] = useState<"idle" | "bezig" | "klaar" | "fout">("idle");
+  const [isBerichtOpen, setIsBerichtOpen] = useState(false);
   const [foutmelding, setFoutmelding] = useState("");
 
   const wissel = (code: string) =>
@@ -249,6 +251,20 @@ function MassagePagina({ voor }: { voor: MassageVoor }) {
               >
                 {t.ander.tekst}
               </Link>
+              {/* Pakketten stelt ze per persoon samen (haar idee, 18 november). */}
+              <p className="text-[15px] text-foreground/80 leading-[1.7] mt-6">
+                Wil je een pakket, bijvoorbeeld twee zwangerschapsmassages en één postpartummassage, of een combinatie van privéles zwangerschapsyoga of geboortevoorbereiding en massage? Stuur me een berichtje met je wens, dan stellen we samen een passend pakket op. Een pakket is ook een supermooi cadeau.
+              </p>
+              <p className="text-sm text-foreground/65 leading-[1.7] mt-3">
+                <button
+                  onClick={() => setIsBerichtOpen(true)}
+                  className="font-semibold text-primary border-b border-primary/35 pb-0.5 hover:border-primary"
+                >
+                  Stuur een berichtje
+                </button>
+                {" "}over een pakket, of bekijk{" "}
+                <Link href="/aanbod" className="font-semibold text-primary hover:text-primary/75">al het aanbod</Link>.
+              </p>
             </div>
 
             <div className="mt-10 md:mt-0">
@@ -387,6 +403,7 @@ function MassagePagina({ voor }: { voor: MassageVoor }) {
           </div>
         </section>
 
+        <KennismakingModal isOpen={isBerichtOpen} onClose={() => setIsBerichtOpen(false)} />
         <SeoFooter />
         <BottomNav />
       </div>

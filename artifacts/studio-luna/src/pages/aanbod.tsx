@@ -13,7 +13,7 @@ import { MASSAGE } from "../../../api-server/src/lib/massage";
 // privéles is van Marjolein zelf.
 
 const WHATSAPP_URL =
-  "https://wa.me/31643735343?text=" + encodeURIComponent("Hoi! Ik heb een vraag over een privéles.");
+  "https://wa.me/31643735343?text=" + encodeURIComponent("Hoi! Ik heb een vraag over het aanbod van Studio Luna.");
 
 type Onderdeel = {
   id?: string;
@@ -81,6 +81,19 @@ const GROEPEN: { titel: string; sub?: string; onderdelen: Onderdeel[] }[] = [
         naam: "Behandeling aan huis",
         prijs: <>€{MASSAGE.aanHuisBehandelingPrijs}<span className="block text-[13px] text-foreground/60 font-normal">binnenkort beschikbaar</span></>,
         tekst: "Een behandeling bij jou thuis, bijvoorbeeld in de kraamperiode.",
+      },
+    ],
+  },
+  {
+    // Haar idee van 18 november 2026: pakketten stelt ze per persoon samen.
+    titel: "Pakket op maat",
+    onderdelen: [
+      {
+        id: "pakket",
+        naam: "Een pakket naar jouw wens",
+        prijs: <>in overleg</>,
+        tekst: "Wil je een pakket, bijvoorbeeld twee zwangerschapsmassages en één postpartummassage, of een combinatie van privéles zwangerschapsyoga of geboortevoorbereiding en massage? Stuur me een berichtje met je wens, dan stellen we samen een passend pakket op. Een pakket is ook een supermooi cadeau.",
+        bericht: true,
       },
     ],
   },
