@@ -18,6 +18,61 @@ const ontsmet = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"
 const tekstVeilig = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 const kort = (s, max = 158) => (s.length <= max ? s : s.slice(0, max - 1).replace(/\s+\S*$/, "") + "…");
 
+// ── Live teksten ophalen ────────────────────────────────────────────────────
+// De biografie en de blogartikelen staan in de database. Bij het bouwen halen
+// we ze van de live site, zodat ook crawlers zonder JavaScript (de meeste
+// AI-zoekmachines) de volledige tekst zien. Lukt dat niet (geen netwerk, site
+// plat), dan valt de build terug op korte vaste teksten en meldt dat.
+async function haalLive(pad) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 15000);
+  try {
+    const r = await fetch(`${BASIS}${pad}`, { signal: ctrl.signal, headers: { accept: "application/json" } });
+    if (!r.ok) throw new Error(`status ${r.status}`);
+    return await r.json();
+  } catch (e) {
+    console.warn(`Let op: ${pad} niet opgehaald (${e.message}); de schil krijgt de korte vaste tekst.`);
+    return null;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+const liveBlog = await haalLive("/api/blog");
+const liveTeksten = await haalLive("/api/pagina-teksten");
+const schoonHtml = (h) => String(h).replace(/<script[\s\S]*?<\/script>/gi, "").replace(/\son\w+="[^"]*"/gi, "");
+const alineas = (t) => String(t).split(/\n\s*\n/).map((a) => a.trim()).filter(Boolean)
+  .map((a) => `<p>${tekstVeilig(a).replace(/\n/g, "<br>")}</p>`).join("");
+const samenvatting = (html, max = 200) => kort(String(html).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim(), max);
+
+// De blogartikelen uit de live API; zonder netwerk de vaste lijst zonder tekst.
+const BLOGS_VAST = [
+  { slug: "in-gesprek-met-tamara-tunderman", titel: "In gesprek met: Tamara Tunderman" },
+  { slug: "alles-over-dysforisch-toeschietreflex-d-tsr-je-bent-niet-alleen", titel: "Alles over Dysforisch Toeschietreflex (D-TSR): Je bent niet alleen!" },
+  { slug: "adem-als-kompas-deel-1", titel: "Adem als Kompas: De complete gids voor rust, ruimte en verbinding tijdens je zwangerschap DEEL 1" },
+  { slug: "gevoel-en-wetenschap-waarom-ik-deze-blog-begin", titel: "Gevoel & Wetenschap: Waarom ik deze blog begin" },
+];
+const blogs = Array.isArray(liveBlog) && liveBlog.length
+  ? liveBlog
+      .filter((b) => b.published !== false && b.slug && b.title)
+      .sort((a, b) => String(b.publishedAt || b.createdAt || "").localeCompare(String(a.publishedAt || a.createdAt || "")))
+      .map((b) => ({ slug: b.slug, titel: b.title, body: b.body || "", categorie: b.category || "", datum: String(b.publishedAt || b.createdAt || "").slice(0, 10) }))
+  : BLOGS_VAST.map((b) => ({ ...b, body: "", categorie: "", datum: "" }));
+
+// De massageteksten komen uit dezelfde bron als de pagina zelf.
+const massageTeksten = JSON.parse(readFileSync(join(src, "data", "massage-teksten.json"), "utf8"));
+const massageBron = readFileSync(join(src, "..", "..", "api-server", "src", "lib", "massage.ts"), "utf8");
+const massageVeld = (naam) => (massageBron.match(new RegExp(`${naam}: "([^"]+)"`)) || [])[1] || "";
+const massageGetal = (naam) => (massageBron.match(new RegExp(`${naam}: (\\d+)`)) || [])[1] || "";
+const MASSAGE = {
+  naam: massageVeld("naam"), duur: massageVeld("duur"), prijs: massageGetal("prijs"), intro: massageGetal("introductieprijs"),
+  praktijk: (massageBron.match(/praktijk: \{\s*naam: "([^"]+)",\s*adres: "([^"]+)"/) || []).slice(1),
+  wanneerZwanger: massageVeld("wanneerZwanger"), wanneerPostpartum: massageVeld("wanneerPostpartum"),
+};
+if (!MASSAGE.naam || !MASSAGE.prijs || !MASSAGE.praktijk.length) {
+  console.error("De massagegegevens zijn niet uit api-server/src/lib/massage.ts te lezen; klopt de opmaak nog?");
+  process.exit(1);
+}
+
 // ── Bronnen uitlezen ────────────────────────────────────────────────────────
 const zorgkaartBron = readFileSync(join(src, "data", "zorgkaart.ts"), "utf8");
 const reeksBron = readFileSync(join(src, "pages", "geboortereeks.tsx"), "utf8");
@@ -59,13 +114,19 @@ const openingVoor = (cat) => openingszinnen[cat.id]?.zin.replace("{aantal}", Str
 const leesFaq = (bron) =>
   [...bron.matchAll(/vraag: "([^"]+)",\s*\n\s*antwoord: "([^"]+)"/g)].map(([, vraag, antwoord]) => ({ vraag, antwoord }));
 const reeksFaq = leesFaq(reeksBron);
+const reeksTs = readFileSync(join(src, "..", "..", "api-server", "src", "lib", "reeks.ts"), "utf8");
+const gasten = [...reeksTs.matchAll(/gast: \{ naam: "([^"]+)"(?:, rol: "([^"]+)")?/g)]
+  .map(([, naam, rol]) => (rol ? `${rol} ${naam}` : naam)).join(" en ") || "gastdocenten";
 const homeFaq = leesFaq(homeBron);
 const zorgkaartFaq = leesFaq(zorgkaartPaginaBron);
 
 const inbegrepen = (() => {
   const m = reeksBron.match(/const INBEGREPEN = \[([\s\S]*?)\];/);
   if (!m) return [];
-  return [...m[1].matchAll(/"([^"]+)"/g)].map(([, t]) => t);
+  // Een onderdeel is een losse tekst op eigen regel, of een JSX-fragment met
+  // de gastdocenten als <Gast naam="..." />; dat fragment wordt platte tekst.
+  return [...m[1].matchAll(/^\s{2}(?:"([^"]+)",|<>([\s\S]*?)<\/>,)/gm)].map(([, tekst, jsx]) =>
+    tekst ?? jsx.replace(/<Gast naam="([^"]+)" \/>/g, "$1").replace(/<[^>]+>/g, "").replace(/&amp;/g, "&").replace(/\s+/g, " ").trim());
 })();
 
 const faqJsonLd = (items) => ({
@@ -213,6 +274,8 @@ const ROUTES = [
     ],
     inhoud:
       `<h1>De Geboortereeks</h1>` +
+      // De docent staat voor crawlers nergens bij naam; de gastdocenten wel.
+      `<p>De lessen worden gegeven door Marjolein: moeder, gepromoveerd onderzoeker en yogadocente, met een opleiding zwangerschapsyoga. Gastlessen van ${gasten}.</p>` +
       `<p>8-weekse zwangerschapsyoga- en geboortevoorbereidingsreeks in Nieuwerkerk aan den IJssel. Start woensdag 13 januari 2027, elke woensdag van 19:00 tot 20:15 uur, in een kleinschalige groep. €195 voor de hele reeks.</p>` +
       `<h2>Wat zit erin</h2><ul>` + inbegrepen.map((t) => `<li>${tekstVeilig(t)}</li>`).join("") + `</ul>` +
       faqHtml(reeksFaq),
@@ -245,24 +308,56 @@ const ROUTES = [
       }),
     ],
   },
-  // De massagepagina's (sinds 18 november 2026). Naam, prijzen en plekken
-  // staan in api-server/src/lib/massage.ts; pas ze hier mee aan als ze
-  // veranderen.
+  // De massagepagina's: dezelfde teksten als de pagina zelf (massage-teksten.json
+  // en massage.ts), zodat een crawler zonder JavaScript alles leest wat een
+  // bezoekster ziet, inclusief de veelgestelde vragen.
   ...[
-    { pad: "zwangerschapsmassage", titel: "Zwangerschapsmassage", vanaf: "tijdens de hele zwangerschap",
+    { pad: "zwangerschapsmassage", titel: "Zwangerschapsmassage", voor: "zwanger", wanneer: MASSAGE.wanneerZwanger,
+      ook: "en ook na de bevalling", ander: { pad: "/postpartummassage", tekst: "Ben je al bevallen? De massage kan ook na de bevalling" },
       title: "Zwangerschapsmassage in Nieuwerkerk aan den IJssel | Studio Luna" },
-    { pad: "postpartummassage", titel: "Postpartummassage", vanaf: "vlak na de bevalling en ook maanden later",
+    { pad: "postpartummassage", titel: "Postpartummassage", voor: "postpartum", wanneer: MASSAGE.wanneerPostpartum,
+      ook: "en ook al tijdens je zwangerschap", ander: { pad: "/zwangerschapsmassage", tekst: "Ben je nog zwanger? De massage kan ook tijdens je zwangerschap" },
       title: "Massage na de bevalling in Nieuwerkerk aan den IJssel | Studio Luna" },
   ].map((m) => {
-    const beschrijving = `Lomi Lomi Hapai, een full body ontspanningsmassage van 75 minuten, ${m.vanaf}. Bij Remindyourlife in Nieuwerkerk aan den IJssel.`;
+    const beschrijving = `${MASSAGE.naam}, een full body ontspanningsmassage van ${MASSAGE.duur}, ${m.wanneer}. Bij ${MASSAGE.praktijk[0]} in Nieuwerkerk aan den IJssel.`;
+    const faq = [
+      { vraag: "Wanneer kan ik een massage krijgen?", antwoord: `De massage kan ${MASSAGE.wanneerZwanger}, en na de bevalling ${MASSAGE.wanneerPostpartum}. ${massageTeksten.faqWanneerSlot}` },
+      ...massageTeksten.faq.map((f) => ({ vraag: f.vraag, antwoord: f.antwoord ?? f[m.voor] ?? "" })),
+    ];
     return {
       pad: m.pad,
       title: m.title,
       beschrijving,
+      jsonLd: [
+        {
+          "@context": "https://schema.org",
+          "@type": "Service",
+          name: `${m.titel}: ${MASSAGE.naam}`,
+          description: beschrijving,
+          provider: { "@type": "LocalBusiness", name: "Studio Luna Zuidplas", url: `${BASIS}/` },
+          areaServed: ["Zuidplas", "Capelle aan den IJssel"],
+          offers: [
+            { "@type": "Offer", name: `${MASSAGE.naam}, ${MASSAGE.duur}, introductieprijs`, price: `${MASSAGE.intro}.00`, priceCurrency: "EUR" },
+            { "@type": "Offer", name: `${MASSAGE.naam}, ${MASSAGE.duur}`, price: `${MASSAGE.prijs}.00`, priceCurrency: "EUR" },
+          ],
+        },
+        faqJsonLd(faq),
+      ],
       inhoud:
         `<h1>${m.titel}</h1>` +
-        `<p>Lomi Lomi Hapai is een full body ontspanningsmassage. Lomi lomi is een eeuwenoude massagevorm uit Hawaï, met wortels in de Polynesische massagetradities.</p>` +
-        `<p>${tekstVeilig(beschrijving)} Introductieprijs €75, daarna €85. Je vraagt een afspraak aan met de dagdelen die je uitkomen.</p>`,
+        `<p>${MASSAGE.naam}, ${MASSAGE.duur}. €${MASSAGE.intro} introductieprijs, daarna €${MASSAGE.prijs}. <a href="${m.ander.pad}">${m.ander.tekst}</a>. <a href="/aanbod">Alle aanbod en tarieven</a>.</p>` +
+        `<h2>${tekstVeilig(massageTeksten.kop)}</h2>` +
+        `<p>${tekstVeilig(massageTeksten.waarom)}</p><p>${tekstVeilig(massageTeksten.watIsHet)}</p><p>${tekstVeilig(massageTeksten.hoeHetGaat)}</p>` +
+        `<p>Je kunt de massage krijgen ${tekstVeilig(m.wanneer)}, ${m.ook}.</p>` +
+        `<p>${tekstVeilig(massageTeksten.pakket)}</p>` +
+        `<h2>Praktisch</h2><ul>` +
+        `<li>Massage: ${MASSAGE.naam}, full body, ${MASSAGE.duur}</li>` +
+        `<li>Voor wie: ${m.voor === "zwanger" ? "zwangeren" : "moeders"}, ${tekstVeilig(m.wanneer)}</li>` +
+        `<li>Waar: bij ${tekstVeilig(MASSAGE.praktijk[0])}, ${tekstVeilig(MASSAGE.praktijk[1])}</li>` +
+        `<li>Prijs: €${MASSAGE.intro} introductieprijs, daarna €${MASSAGE.prijs}</li>` +
+        `<li>Afspraak: via het formulier op deze pagina</li></ul>` +
+        `<h2>Een afspraak aanvragen</h2><p>${tekstVeilig(massageTeksten.afspraakUitleg)}</p>` +
+        faqHtml(faq),
     };
   }),
   {
@@ -285,7 +380,11 @@ const ROUTES = [
     pad: "over-mij",
     title: "Over Marjolein, zwangerschapsyoga docente in Nieuwerkerk aan den IJssel",
     beschrijving: "Maak kennis met Marjolein: moeder, gepromoveerd onderzoeker en yogadocente. Zij geeft de Geboortereeks van Studio Luna in Nieuwerkerk aan den IJssel, gemeente Zuidplas.",
-    inhoud: `<h1>Over Marjolein</h1><p>Moeder, gepromoveerd onderzoeker en yogadocente. Zij geeft de Geboortereeks van Studio Luna in Nieuwerkerk aan den IJssel, gemeente Zuidplas.</p>`,
+    inhoud:
+      `<h1>Over Marjolein</h1><p>Zwangerschapsyogadocente en oprichter van Studio Luna in Nieuwerkerk aan den IJssel.</p>` +
+      (liveTeksten && liveTeksten.over_mij_tekst
+        ? alineas(liveTeksten.over_mij_tekst)
+        : `<p>Moeder, gepromoveerd onderzoeker en yogadocente. Zij geeft de Geboortereeks van Studio Luna in Nieuwerkerk aan den IJssel, gemeente Zuidplas.</p>`),
   },
   {
     pad: "events",
@@ -297,7 +396,10 @@ const ROUTES = [
     pad: "blog",
     title: "Blog over zwangerschap en moederschap in Zuidplas | Studio Luna",
     beschrijving: "Artikelen van Studio Luna over zwangerschap, geboortevoorbereiding en moederschap, voor zwangeren en moeders in Nieuwerkerk aan den IJssel en de rest van Zuidplas.",
-    inhoud: `<h1>Blog van Studio Luna</h1><p>Artikelen over zwangerschap, geboortevoorbereiding en moederschap in Zuidplas.</p>`,
+    inhoud:
+      `<h1>Blog van Studio Luna</h1><p>Artikelen over zwangerschap, geboortevoorbereiding en moederschap in Zuidplas.</p><ul>` +
+      blogs.map((b) => `<li><a href="/blog/${b.slug}">${tekstVeilig(b.titel)}</a>${b.datum ? ` (${b.datum})` : ""}${b.body ? `: ${tekstVeilig(samenvatting(b.body, 160))}` : ""}</li>`).join("") +
+      `</ul>`,
   },
 ];
 
@@ -353,29 +455,29 @@ for (const plaats of PLAATSEN) {
   });
 }
 
-// De vier blogartikelen: eigen schil zodat elk artikel een eigen titel en
-// canonical heeft in plaats van die van de homepage. De lijst is klein en
-// verandert zelden; nieuw artikel erbij betekent hier een regel toevoegen.
-const BLOGS = [
-  { slug: "in-gesprek-met-tamara-tunderman", titel: "In gesprek met: Tamara Tunderman" },
-  { slug: "alles-over-dysforisch-toeschietreflex-d-tsr-je-bent-niet-alleen", titel: "Alles over Dysforisch Toeschietreflex (D-TSR): Je bent niet alleen!" },
-  { slug: "adem-als-kompas-deel-1", titel: "Adem als Kompas: De complete gids voor rust, ruimte en verbinding tijdens je zwangerschap DEEL 1" },
-  { slug: "gevoel-en-wetenschap-waarom-ik-deze-blog-begin", titel: "Gevoel & Wetenschap: Waarom ik deze blog begin" },
-];
-for (const b of BLOGS) {
+// De blogartikelen: eigen schil met de volledige tekst uit de live API, zodat
+// elk artikel een eigen titel en canonical heeft en ook zonder JavaScript
+// leesbaar is. Een nieuw artikel in /admin komt bij de volgende build vanzelf
+// mee, ook in de sitemap.
+for (const b of blogs) {
   ROUTES.push({
     pad: `blog/${b.slug}`,
     title: kort(`${b.titel} | Blog Studio Luna`, 65),
-    beschrijving: kort(`${b.titel}. Een artikel uit het blog van Studio Luna over zwangerschap en moederschap in Zuidplas.`),
+    beschrijving: b.body ? samenvatting(b.body, 158) : kort(`${b.titel}. Een artikel uit het blog van Studio Luna over zwangerschap en moederschap in Zuidplas.`),
     jsonLd: [{
       "@context": "https://schema.org",
       "@type": "Article",
       headline: b.titel,
-      author: { "@type": "Person", name: "Marjolein" },
-      publisher: { "@type": "Organization", name: "Studio Luna", url: `${BASIS}/` },
+      ...(b.datum ? { datePublished: b.datum } : {}),
+      ...(b.categorie ? { articleSection: b.categorie } : {}),
+      author: { "@type": "Person", name: "Marjolein", url: `${BASIS}/over-mij` },
+      publisher: { "@type": "Organization", name: "Studio Luna Zuidplas", url: `${BASIS}/` },
       mainEntityOfPage: `${BASIS}/blog/${b.slug}`,
     }],
-    inhoud: `<h1>${tekstVeilig(b.titel)}</h1><p>Een artikel uit <a href="/blog">het blog van Studio Luna</a>.</p>`,
+    inhoud:
+      `<h1>${tekstVeilig(b.titel)}</h1>` +
+      (b.body ? schoonHtml(b.body) : `<p>Een artikel uit <a href="/blog">het blog van Studio Luna</a>.</p>`) +
+      `<p><a href="/blog">Meer artikelen uit het blog van Studio Luna</a></p>`,
   });
 }
 

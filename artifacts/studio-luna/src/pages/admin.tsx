@@ -3242,6 +3242,7 @@ type Kennismaking = { naam: string; email: string; telefoon: string; bericht: st
 type MassageAanvraag = {
   naam: string; email: string; telefoon: string; voor: "zwanger" | "postpartum";
   plek: "praktijk" | "thuis"; woonplaats: string; dagdelen: string[]; bericht: string; timestamp: string;
+  gevonden?: string;
 };
 
 const datumKort = (iso: string) =>
@@ -3496,6 +3497,7 @@ function AanmeldingenTab() {
                   {m.naam} · {m.voor === "zwanger" ? "zwanger" : "na de bevalling"} · {m.plek === "praktijk" ? "Remindyourlife" : `aan huis in ${m.woonplaats}`}
                 </p>
                 <p className="text-sm text-foreground/80 leading-[1.8]">Komt uit: {dagdelenTekst(m.dagdelen)}</p>
+                {m.gevonden && <p className="text-sm text-foreground/80 leading-[1.8]">Gevonden via: {m.gevonden}</p>}
                 {m.bericht && <p className="text-sm text-foreground/80 leading-[1.8] whitespace-pre-wrap mt-1">{m.bericht}</p>}
                 <div className="flex items-center justify-between gap-3 mt-3">
                   <div className="flex items-center gap-3 flex-wrap">

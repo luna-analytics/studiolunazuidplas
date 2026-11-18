@@ -30,6 +30,8 @@ type Kennismaking = { naam: string; email: string; telefoon: string; bericht: st
 type MassageAanvraag = {
   naam: string; email: string; telefoon: string; voor: "zwanger" | "postpartum";
   plek: "praktijk" | "thuis"; woonplaats: string; dagdelen: string[]; bericht: string; timestamp: string;
+  /** Hoe ze Studio Luna vond (sinds 18 november 2026, niet verplicht). */
+  gevonden?: string;
 };
 
 async function readList<T>(key: string): Promise<T[]> {
@@ -236,9 +238,9 @@ router.get("/admin/massage-aanvragen", requireAdmin, async (_req: any, res: any)
 });
 
 router.post("/massage-aanvraag", async (req, res) => {
-  const { naam, email, telefoon, voor, plek, woonplaats, dagdelen, bericht } = req.body as {
+  const { naam, email, telefoon, voor, plek, woonplaats, dagdelen, bericht, gevonden } = req.body as {
     naam?: string; email?: string; telefoon?: string; voor?: string; plek?: string;
-    woonplaats?: string; dagdelen?: unknown; bericht?: string;
+    woonplaats?: string; dagdelen?: unknown; bericht?: string; gevonden?: unknown;
   };
   if (!naam || !naam.trim() || naam.length > 120) {
     return res.status(400).json({ error: "Vul je naam in" });
@@ -267,6 +269,7 @@ router.post("/massage-aanvraag", async (req, res) => {
   }
   const tel = (telefoon ?? "").trim().slice(0, 40);
   const tekst = (bericht ?? "").trim();
+  const gevondenVia = typeof gevonden === "string" ? gevonden.trim().slice(0, 80) : "";
   const dagdelenLeesbaar = dagdelenTekst(codes);
   const plekLeesbaar = plek === "praktijk"
     ? `een massage bij ${MASSAGE.praktijk.naam}, ${MASSAGE.praktijk.adres}`
@@ -275,7 +278,7 @@ router.post("/massage-aanvraag", async (req, res) => {
   const list = await readList<MassageAanvraag>("massage_aanvragen");
   list.push({
     naam: naam.trim(), email, telefoon: tel, voor, plek, woonplaats: woon,
-    dagdelen: codes, bericht: tekst, timestamp: new Date().toISOString(),
+    dagdelen: codes, bericht: tekst, gevonden: gevondenVia, timestamp: new Date().toISOString(),
   });
   await saveList("massage_aanvragen", list);
   await sendAdminNotification({
@@ -286,6 +289,7 @@ router.post("/massage-aanvraag", async (req, res) => {
       `Aanvraag ${voor === "zwanger" ? "zwangerschapsmassage" : "postpartummassage"} (${MASSAGE.naam})\n` +
       `Waar: ${plek === "praktijk" ? MASSAGE.praktijk.naam : `aan huis in ${woon}`}\n` +
       `Komt uit: ${dagdelenLeesbaar}\n` +
+      `Gevonden via: ${gevondenVia || "niet opgegeven"}\n` +
       `Telefoon: ${tel || "niet opgegeven"}` +
       (tekst ? `\n\n${tekst}` : "") +
       `\n\nDe aanvrager kreeg automatisch een bevestiging; je kopie daarvan zit in een aparte mail.`,

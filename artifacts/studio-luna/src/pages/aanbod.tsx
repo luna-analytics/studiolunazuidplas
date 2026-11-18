@@ -6,6 +6,7 @@ import { KennismakingModal } from "@/components/kennismaking-modal";
 import { usePageMeta } from "@/lib/seo";
 import { REEKS, REEKS_START, dagMaand } from "../../../api-server/src/lib/reeks";
 import { MASSAGE } from "../../../api-server/src/lib/massage";
+import massageTeksten from "@/data/massage-teksten.json";
 
 // Alles wat Studio Luna aanbiedt op één pagina, met de prijzen (haar vraag van
 // 18 november 2026). Prijzen en data komen uit reeks.ts en massage.ts, zodat
@@ -93,7 +94,7 @@ const GROEPEN: { titel: string; sub?: string; onderdelen: Onderdeel[] }[] = [
         id: "pakket",
         naam: "Een pakket naar jouw wens",
         prijs: <>in overleg</>,
-        tekst: "Wil je een pakket, bijvoorbeeld twee zwangerschapsmassages en één postpartummassage, of een combinatie van privéles zwangerschapsyoga of geboortevoorbereiding en massage? Stuur me een berichtje met je wens, dan stellen we samen een passend pakket op. Een losse massage of een pakket is ook een supermooi cadeau voor een (toekomstige) mama.",
+        tekst: massageTeksten.pakket,
         bericht: true,
       },
     ],

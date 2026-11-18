@@ -9,6 +9,7 @@ import { IMAGES } from "@/lib/images";
 import {
   MASSAGE, MASSAGE_DAGEN, MASSAGE_DAGDELEN, type MassageVoor,
 } from "../../../api-server/src/lib/massage";
+import teksten from "@/data/massage-teksten.json";
 
 // Twee pagina's, één massage (haar keuze 18 november 2026): Lomi Lomi Hapai
 // voor zwangeren op /zwangerschapsmassage en na de bevalling op
@@ -17,50 +18,19 @@ import {
 //
 // De openingszin over Lomi Lomi Hapai is van Marjolein zelf (18 november).
 
-// Haar tekst over waarom ze masseert (18 november 2026), uit een concept dat
-// ze aanpaste: de alinea over haar eigen zwangerschap ging eruit, want de
-// aandacht hoort niet op haar te liggen. Hoe ze ligt staat al bij "Hoe de
-// massage gaat", dus dat staat hier niet nog een keer.
-const WAAROM = [
-  "Met Studio Luna wil ik een community creëren in de regio Zuidplas, waarin we als vrouwen voor elkaar kunnen zorgen. It takes a village, en daar hoort voor mij ook bij dat er af en toe voor jóu gezorgd wordt. Met deze massage krijg je een moment van rust en ontspanning. Niet voor niets betekent Hāpai in het Hawaïaans zwanger, maar ook dragen en ondersteunen: jij draagt de hele dag, en nu word je even gedragen. Deze 75 minuten zijn helemaal voor jou.",
-];
-
-const HAAR_ZIN =
-  "Lomi Lomi Hapai is een full body ontspanningsmassage. Lomi lomi is een eeuwenoude massagevorm uit Hawaï, met wortels in de Polynesische massagetradities.";
-
-// Hoe de massage gaat, in één alinea in de intro. Eerst een eigen blok met
-// vier regels; ze hield er twee over (bijpraten en het glas water vond ze
-// overbodig) en dat blok oogde daarna leeg naast de foto (18 november).
-const VERLOOP =
-  "Je ligt op je zij, met kussens onder je hoofd en tussen je knieën en armen, onder een grote doek. Je krijgt een massage met warme olie over je hele lichaam, eerst op de ene zij en daarna op de andere.";
-
+// Alle teksten van deze pagina staan in src/data/massage-teksten.json, zodat
+// de kale versie voor crawlers (scripts/prerender-shells.mjs) dezelfde bron
+// leest. Alleen de vraag "wanneer" wordt hier samengesteld uit massage.ts.
+type FaqBron = { vraag: string; antwoord?: string; zwanger?: string; postpartum?: string };
 const FAQ = (voor: MassageVoor) => [
   {
     vraag: "Wanneer kan ik een massage krijgen?",
-    antwoord: `De massage kan ${MASSAGE.wanneerZwanger}, en na de bevalling ${MASSAGE.wanneerPostpartum}. Ben je bevallen met een keizersnede, stuur me dan even een berichtje, dan kijken we samen wat prettig is.`,
+    antwoord: `De massage kan ${MASSAGE.wanneerZwanger}, en na de bevalling ${MASSAGE.wanneerPostpartum}. ${teksten.faqWanneerSlot}`,
   },
-  {
-    vraag: "Waarom op mijn zij?",
-    antwoord: voor === "zwanger"
-      ? "Met een groeiende buik is lang op je rug liggen niet prettig, en op je buik kan niet. Op je zij, goed ondersteund door kussens, lig je comfortabel en kan ik overal bij."
-      : "Na de bevalling zijn je buik en borsten vaak nog gevoelig. Op je zij, goed ondersteund door kussens, lig je comfortabel en kan ik overal bij.",
-  },
-  {
-    vraag: "Wat moet ik meenemen?",
-    antwoord: "Niets. Kussens, doeken en olie zijn er. Doe makkelijke kleding aan; tijdens de massage houd je je onderbroek aan en lig je onder een doek.",
-  },
-  {
-    vraag: "Wanneer liever niet?",
-    antwoord: "Heb je bloedverlies, koorts of buikpijn, of heeft je verloskundige je gevraagd het rustig aan te doen, overleg dan eerst met je verloskundige of een massage nu verstandig is.",
-  },
-  {
-    vraag: "Vergoedt mijn zorgverzekeraar de massage?",
-    antwoord: "Een ontspanningsmassage wordt meestal niet vergoed door de zorgverzekeraar.",
-  },
-  {
-    vraag: "Hoe maak ik een afspraak?",
-    antwoord: "Vul het formulier op deze pagina in en kruis de dagdelen aan die je goed uitkomen. Ik neem dan contact met je op met een paar momenten waarop het kan, en dan staat je afspraak vast.",
-  },
+  ...(teksten.faq as FaqBron[]).map((f) => ({
+    vraag: f.vraag,
+    antwoord: f.antwoord ?? (voor === "zwanger" ? f.zwanger : f.postpartum) ?? "",
+  })),
 ];
 
 const TEKST = {
@@ -101,6 +71,7 @@ function MassagePagina({ voor }: { voor: MassageVoor }) {
   const [telefoon, setTelefoon] = useState("");
   const [dagdelen, setDagdelen] = useState<string[]>([]);
   const [bericht, setBericht] = useState("");
+  const [gevonden, setGevonden] = useState("");
   const [status, setStatus] = useState<"idle" | "bezig" | "klaar" | "fout">("idle");
   const [isBerichtOpen, setIsBerichtOpen] = useState(false);
   const [foutmelding, setFoutmelding] = useState("");
@@ -122,7 +93,7 @@ function MassagePagina({ voor }: { voor: MassageVoor }) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         // Aan huis is er (nog) niet: de massage is altijd in de praktijk.
-        body: JSON.stringify({ naam, email, telefoon, voor, plek: "praktijk", dagdelen, bericht }),
+        body: JSON.stringify({ naam, email, telefoon, voor, plek: "praktijk", dagdelen, bericht, gevonden }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -233,13 +204,11 @@ function MassagePagina({ voor }: { voor: MassageVoor }) {
           <div className="md:grid md:grid-cols-[1.2fr_1fr] md:gap-16 md:items-start">
             <div>
               <h2 className="font-display text-2xl md:text-3xl font-medium text-foreground leading-[1.15] mb-4">
-                Even voor jou gezorgd
+                {teksten.kop}
               </h2>
-              {WAAROM.map((alinea) => (
-                <p key={alinea.slice(0, 20)} className="text-[15px] text-foreground/80 leading-[1.7] mb-4">{alinea}</p>
-              ))}
-              <p className="text-[15px] text-foreground/80 leading-[1.7] mb-4">{HAAR_ZIN}</p>
-              <p className="text-[15px] text-foreground/80 leading-[1.7] mb-4">{VERLOOP}</p>
+              <p className="text-[15px] text-foreground/80 leading-[1.7] mb-4">{teksten.waarom}</p>
+              <p className="text-[15px] text-foreground/80 leading-[1.7] mb-4">{teksten.watIsHet}</p>
+              <p className="text-[15px] text-foreground/80 leading-[1.7] mb-4">{teksten.hoeHetGaat}</p>
               <p className="text-[15px] text-foreground/80 leading-[1.7] mb-4">
                 {voor === "zwanger"
                   ? `Je kunt de massage krijgen ${MASSAGE.wanneerZwanger}, en ook na de bevalling.`
@@ -252,9 +221,7 @@ function MassagePagina({ voor }: { voor: MassageVoor }) {
                 {t.ander.tekst}
               </Link>
               {/* Pakketten stelt ze per persoon samen (haar idee, 18 november). */}
-              <p className="text-[15px] text-foreground/80 leading-[1.7] mt-6">
-                Wil je een pakket, bijvoorbeeld twee zwangerschapsmassages en één postpartummassage, of een combinatie van privéles zwangerschapsyoga of geboortevoorbereiding en massage? Stuur me een berichtje met je wens, dan stellen we samen een passend pakket op. Een losse massage of een pakket is ook een supermooi cadeau voor een (toekomstige) mama.
-              </p>
+              <p className="text-[15px] text-foreground/80 leading-[1.7] mt-6">{teksten.pakket}</p>
               <p className="text-sm text-foreground/65 leading-[1.7] mt-3">
                 <button
                   onClick={() => setIsBerichtOpen(true)}
@@ -288,10 +255,7 @@ function MassagePagina({ voor }: { voor: MassageVoor }) {
             <h2 className="font-display text-2xl md:text-3xl font-medium text-foreground leading-[1.15] mb-5">
               Een afspraak aanvragen
             </h2>
-            <p className="text-[15px] text-foreground/80 leading-[1.7] mb-7">
-              Kruis de dagdelen aan die je goed uitkomen. Ik neem daarna contact met je op met een
-              paar momenten waarop het kan, en dan staat je afspraak vast.
-            </p>
+            <p className="text-[15px] text-foreground/80 leading-[1.7] mb-7">{teksten.afspraakUitleg}</p>
 
             {status === "klaar" ? (
               <p className="text-[15px] text-foreground/80 leading-[1.7] rounded-[6px] bg-primary/8 border border-primary/15 px-5 py-4">
@@ -353,6 +317,19 @@ function MassagePagina({ voor }: { voor: MassageVoor }) {
                     </tbody>
                   </table>
                 </fieldset>
+
+                {/* Zo ziet ze wie via Een Goed Begin komt (de korting van 18 november)
+                    en welk kanaal werkt; niet verplicht. */}
+                <label className="block">
+                  <span className="text-sm font-semibold text-foreground/80">Hoe heb je me gevonden? (niet verplicht)</span>
+                  <select
+                    value={gevonden} onChange={(e) => setGevonden(e.target.value)}
+                    className={`mt-2 block w-full sm:w-96 ${invoer}`}
+                  >
+                    <option value="">Kies een optie</option>
+                    {teksten.gevondenOpties.map((o) => <option key={o} value={o}>{o}</option>)}
+                  </select>
+                </label>
 
                 <textarea
                   value={bericht} onChange={(e) => setBericht(e.target.value)}

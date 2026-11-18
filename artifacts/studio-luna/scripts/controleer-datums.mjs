@@ -50,9 +50,11 @@ function bestanden(map, ext) {
   });
 }
 
-// De admin-bundel slaan we over: die tekst ziet alleen Marjolein zelf.
+// De admin-bundel slaan we over: die tekst ziet alleen Marjolein zelf. De
+// blogschillen ook: dat zijn haar artikelen met eigen datums, geen reeksinfo.
 const teLezen = [
-  ...bestanden(join(HIER, "dist/public"), [".html", ".js", ".txt", ".xml"]).filter((p) => !/[\\/]admin-[^\\/]*\.js$/.test(p)),
+  ...bestanden(join(HIER, "dist/public"), [".html", ".js", ".txt", ".xml"])
+    .filter((p) => !/[\\/]admin-[^\\/]*\.js$/.test(p) && !/[\\/]blog[\\/]/.test(p)),
   ...bestanden(join(HIER, "../api-server/dist"), [".cjs", ".js", ".mjs"]),
 ];
 if (!teLezen.some((p) => p.includes("api-server"))) {

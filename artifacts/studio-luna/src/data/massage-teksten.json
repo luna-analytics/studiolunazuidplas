@@ -1,0 +1,41 @@
+{
+  "_opmerking": "Haar teksten voor de massagepagina's (18 november 2026). Eén bron: de pagina (src/pages/massage.tsx, src/pages/aanbod.tsx) en de kale versie voor crawlers (scripts/prerender-shells.mjs) lezen allebei hieruit. Prijzen, plek en wanneer staan in api-server/src/lib/massage.ts.",
+  "kop": "Even voor jou gezorgd",
+  "waarom": "Met Studio Luna wil ik een community creëren in de regio Zuidplas, waarin we als vrouwen voor elkaar kunnen zorgen. It takes a village, en daar hoort voor mij ook bij dat er af en toe voor jóu gezorgd wordt. Met deze massage krijg je een moment van rust en ontspanning. Niet voor niets betekent Hāpai in het Hawaïaans zwanger, maar ook dragen en ondersteunen: jij draagt de hele dag, en nu word je even gedragen. Deze 75 minuten zijn helemaal voor jou.",
+  "watIsHet": "Lomi Lomi Hapai is een full body ontspanningsmassage. Lomi lomi is een eeuwenoude massagevorm uit Hawaï, met wortels in de Polynesische massagetradities.",
+  "hoeHetGaat": "Je ligt op je zij, met kussens onder je hoofd en tussen je knieën en armen, onder een grote doek. Je krijgt een massage met warme olie over je hele lichaam, eerst op de ene zij en daarna op de andere.",
+  "pakket": "Wil je een pakket, bijvoorbeeld twee zwangerschapsmassages en één postpartummassage, of een combinatie van privéles zwangerschapsyoga of geboortevoorbereiding en massage? Stuur me een berichtje met je wens, dan stellen we samen een passend pakket op. Een losse massage of een pakket is ook een supermooi cadeau voor een (toekomstige) mama.",
+  "afspraakUitleg": "Kruis de dagdelen aan die je goed uitkomen. Ik neem daarna contact met je op met een paar momenten waarop het kan, en dan staat je afspraak vast.",
+  "faqWanneerSlot": "Ben je bevallen met een keizersnede, stuur me dan even een berichtje, dan kijken we samen wat prettig is.",
+  "faq": [
+    {
+      "vraag": "Waarom op mijn zij?",
+      "zwanger": "Met een groeiende buik is lang op je rug liggen niet prettig, en op je buik kan niet. Op je zij, goed ondersteund door kussens, lig je comfortabel en kan ik overal bij.",
+      "postpartum": "Na de bevalling zijn je buik en borsten vaak nog gevoelig. Op je zij, goed ondersteund door kussens, lig je comfortabel en kan ik overal bij."
+    },
+    {
+      "vraag": "Wat moet ik meenemen?",
+      "antwoord": "Niets. Kussens, doeken en olie zijn er. Doe makkelijke kleding aan; tijdens de massage houd je je onderbroek aan en lig je onder een doek."
+    },
+    {
+      "vraag": "Wanneer liever niet?",
+      "antwoord": "Heb je bloedverlies, koorts of buikpijn, of heeft je verloskundige je gevraagd het rustig aan te doen, overleg dan eerst met je verloskundige of een massage nu verstandig is."
+    },
+    {
+      "vraag": "Vergoedt mijn zorgverzekeraar de massage?",
+      "antwoord": "Een ontspanningsmassage wordt meestal niet vergoed door de zorgverzekeraar."
+    },
+    {
+      "vraag": "Hoe maak ik een afspraak?",
+      "antwoord": "Vul het formulier op deze pagina in en kruis de dagdelen aan die je goed uitkomen. Ik neem dan contact met je op met een paar momenten waarop het kan, en dan staat je afspraak vast."
+    }
+  ],
+  "gevondenOpties": [
+    "Via verloskundigenpraktijk Een Goed Begin",
+    "Via Instagram",
+    "Via Google",
+    "Via een vriendin of bekende",
+    "Via de Geboortereeks",
+    "Anders"
+  ]
+}
