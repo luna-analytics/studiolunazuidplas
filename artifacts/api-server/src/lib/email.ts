@@ -354,15 +354,15 @@ export async function sendAdminNotification(params: {
         <table width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid #E5DCD2; border-bottom:1px solid #E5DCD2; margin-bottom:20px;">
           <tr><td style="padding:22px 25px;">
             <p style="margin:0 0 10px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:2px; color:#8FA89B;">Klant</p>
-            <p style="margin:0 0 4px; font-size:16px; color:#3A4F41; font-weight:600;">${name}</p>
-            <p style="margin:0; font-size:14px; color:#8FA89B;">${email}</p>
+            <p style="margin:0 0 4px; font-size:16px; color:#3A4F41; font-weight:600;">${ontsmetHtml(name)}</p>
+            <p style="margin:0; font-size:14px; color:#8FA89B;">${ontsmetHtml(email)}</p>
           </td></tr>
         </table>
 
         <table width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid #E5DCD2; border-bottom:1px solid #E5DCD2; margin-bottom:25px;">
           <tr><td style="padding:22px 25px;">
             <p style="margin:0 0 10px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:2px; color:#8FA89B;">Details</p>
-            <p style="margin:0; font-size:14px; line-height:1.8; color:#3A4F41;">${details.replace(/\n/g, "<br/>")}</p>
+            <p style="margin:0; font-size:14px; line-height:1.8; color:#3A4F41;">${ontsmetHtml(details).replace(/\n/g, "<br/>")}</p>
           </td></tr>
         </table>
 
