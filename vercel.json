@@ -60,6 +60,12 @@
       "permanent": false
     },
     {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "studiolunazuidplas.vercel.app" }],
+      "destination": "https://www.studiolunazuidplas.nl/:path*",
+      "permanent": true
+    },
+    {
       "source": "/zorgkaart",
       "destination": "/geboortezorg-zuidplas",
       "permanent": true

@@ -41,15 +41,9 @@ const GROEPEN: Groep[] = [
       { label: "Behandeling aan huis" },
     ],
   },
-  {
-    id: "events",
-    label: "Events",
-    onderdelen: [
-      { label: "Alle events", href: "/events" },
-      { label: "Bijeenkomsten voor zwangeren en moeders" },
-      { label: "Workshops van experts" },
-    ],
-  },
+  // De groep Events (Alle events, bijeenkomsten, workshops) staat sinds 18
+  // november 2026 niet meer in het menu: haar besluit, de agendapagina komt
+  // pas terug als er een datum op staat. De pagina /events bestaat nog.
 ];
 
 // Haar eigen woorden (26 oktober), onder elke groep met iets in opbouw.
@@ -72,7 +66,7 @@ const RECHTS = [
 const BALK = [
   { href: "/", kort: "Studio Luna" },
   { href: "/geboortereeks", kort: "Yoga" },
-  { href: "/events", kort: "Events" },
+  { href: "/zwangerschapsmassage", kort: "Massage" },
   { href: "/geboortezorg-zuidplas", kort: "Zorgkaart" },
 ];
 
@@ -82,6 +76,10 @@ function hoortBij(location: string, href: string) {
   if (href === "/") return location === "/";
   if (href === "/geboortezorg-zuidplas") {
     return location.startsWith("/geboortezorg-zuidplas") || location.startsWith("/zwanger-in-");
+  }
+  // De tab Massage hoort bij allebei de massagepagina's.
+  if (href === "/zwangerschapsmassage") {
+    return location.startsWith("/zwangerschapsmassage") || location.startsWith("/postpartummassage");
   }
   return location === href || location.startsWith(href + "/");
 }

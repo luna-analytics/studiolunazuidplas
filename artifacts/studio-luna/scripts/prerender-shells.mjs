@@ -180,7 +180,7 @@ const ROUTES = [
   {
     pad: "",
     title: "Studio Luna | Zwangerschapsyoga in Zuidplas, Nieuwerkerk aan den IJssel",
-    beschrijving: "Studio Luna geeft de Geboortereeks, zwangerschapsyoga en geboortevoorbereiding in Nieuwerkerk aan den IJssel, voor zwangeren uit heel Zuidplas: Zevenhuizen, Moordrecht en Moerkapelle. Plus de Geboortezorgkaart met alle geboortezorg in de regio.",
+    beschrijving: "Zwangerschapsyoga, geboortevoorbereiding en massage in Nieuwerkerk aan den IJssel, voor zwangeren uit heel Zuidplas. Met de Geboortezorgkaart Zuidplas.",
     jsonLd: [faqJsonLd(homeFaq)],
     // De herofoto vast laten voorladen zodat hij er staat zodra de app rendert.
     preload: "/images/buiten-hero.webp",
@@ -192,8 +192,8 @@ const ROUTES = [
   },
   {
     pad: "geboortereeks",
-    title: "Zwangerschapscursus in Zuidplas: de Geboortereeks | Studio Luna",
-    beschrijving: "Acht wekelijkse lessen zwangerschapsyoga en geboortevoorbereiding in Nieuwerkerk aan den IJssel, voor zwangeren uit heel Zuidplas: Zevenhuizen, Moordrecht en Moerkapelle. Start woensdag 13 januari 2027, €195.",
+    title: "Zwangerschapsyoga in Nieuwerkerk aan den IJssel: de Geboortereeks | Studio Luna",
+    beschrijving: "Acht wekelijkse lessen zwangerschapsyoga en geboortevoorbereiding in Nieuwerkerk aan den IJssel, kleinschalige vaste groep. Start woensdag 13 januari, €195.",
     jsonLd: [
       {
         "@context": "https://schema.org",
@@ -290,7 +290,7 @@ const ROUTES = [
   {
     pad: "events",
     title: "Events voor zwangeren en moeders in Zuidplas | Studio Luna",
-    beschrijving: "Naast de wekelijkse lessen organiseert Studio Luna in Nieuwerkerk aan den IJssel ook workshops en events, soms vanuit Studio Luna en soms vanuit een samenwerking met andere inspirerende vrouwen, voor zwangeren, moeders en ondernemende vrouwen uit heel Zuidplas.",
+    beschrijving: "Workshops en events voor zwangeren en moeders in Nieuwerkerk aan den IJssel en heel Zuidplas. De eerste data volgen; laat je mailadres achter.",
     inhoud: `<h1>Events van Studio Luna</h1><p>Naast de wekelijkse lessen organiseert Studio Luna ook workshops en events, soms vanuit Studio Luna en soms vanuit een samenwerking met andere inspirerende vrouwen. Deze events zijn voor zwangeren, moeders en ondernemende vrouwen die verdieping, inspiratie en verbinding zoeken, in Nieuwerkerk aan den IJssel en heel Zuidplas. De eerste data volgen binnenkort.</p>`,
   },
   {

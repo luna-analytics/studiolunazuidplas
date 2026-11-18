@@ -19,7 +19,9 @@ const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 const DEFAULT_TEKSTEN = {
   cta_url: "/geboortereeks",
   cta_label: "Bekijk de Geboortereeks",
-  home_hero: "Zwangerschapsyoga, workshops en events\nvoor zwangeren en moeders in Zuidplas.",
+  // Haar kop van 18 november 2026; de live tekst staat in de database en is
+  // door haar via /admin gelijkgezet.
+  home_hero: "Zwangerschapsyoga, geboortevoorbereiding en massage\nvoor zwangeren en moeders in Nieuwerkerk aan den IJssel en heel Zuidplas.",
   home_missie_heading: "Je hoeft het\nniet alleen te doen.",
   home_missie_tekst: "Studio Luna is een plek waar vrouwen uit Nieuwerkerk aan den IJssel en omgeving op adem komen, sterker worden en andere moeders vinden, van zwangerschap tot ver daarna. Naast de wekelijkse lessen organiseer ik events, soms samen met iemand die ergens meer van weet dan ik en soms iets van mezelf. Ben je zwanger, net bevallen of allang moeder, dan ben je welkom.",
   home_missie_bullets: "Een plek om te landen, voor en na je bevalling.\nEen plek om fysiek sterk, gezond en in balans te blijven.\nEen plek om vertrouwen te vinden in je veranderende lichaam.\nEen plek waar je andere moeders uit Zuidplas tegenkomt.\nEen plek waar naast de lessen ook events zijn.",
@@ -128,20 +130,10 @@ export default function StudioLuna() {
                 Ontdek de zorgkaart
               </button>
             </div>
-            {/* Haar tekst, 27 oktober. De regel "Lessen, events en de zorgkaart voor
-                de regio" stond hierboven en is op haar verzoek weg (27 oktober): hij
-                zei niets wat de kop niet al zegt en hield deze uitnodiging klein. De
-                plaatsnaam staat nog in de paginatitel, het adres en de voettekst. */}
-            <p className="mt-8 text-[15px] text-foreground/80 leading-[1.65] max-w-xl">
-              Ben je een zorgverlener of vrouwelijke ondernemer en wil je graag samenwerken met
-              Studio Luna? Stuur me dan een{" "}
-              <a
-                href="mailto:info@studiolunazuidplas.nl?subject=Samenwerken%20met%20Studio%20Luna"
-                className="text-foreground border-b border-foreground/35 hover:border-foreground"
-              >
-                berichtje
-              </a>.
-            </p>
+            {/* De uitnodiging aan zorgverleners en ondernemers (haar tekst, 27
+                oktober) stond hier onder de knoppen; sinds 18 november staat hij bij
+                het zorgkaartblok, zodat de opening over zwangeren gaat en de foto op
+                mobiel niet onder de vouw valt. */}
           </div>
         </div>
       </div>
@@ -486,6 +478,17 @@ export default function StudioLuna() {
               >
                 Ontdek de zorgkaart
               </button>
+              {/* Haar tekst van 27 oktober, verhuisd vanaf de opening (18 november). */}
+              <p className="mt-6 text-sm text-foreground/70 leading-[1.65] max-w-md">
+                Ben je een zorgverlener of vrouwelijke ondernemer en wil je graag samenwerken met
+                Studio Luna? Stuur me dan een{" "}
+                <a
+                  href="mailto:info@studiolunazuidplas.nl?subject=Samenwerken%20met%20Studio%20Luna"
+                  className="text-foreground border-b border-foreground/35 hover:border-foreground"
+                >
+                  berichtje
+                </a>.
+              </p>
             </div>
           </motion.div>
         </section>

@@ -32,12 +32,15 @@ function zetOgMeta(property: string, content: string) {
  * en (optioneel) JSON-LD structured data. De JSON-LD wordt bij het verlaten van
  * de pagina weer opgeruimd; de canonical wordt al per route gezet in App.tsx.
  */
-export function usePageMeta(opts: { title: string; description?: string; jsonLd?: object[] }) {
-  const { title, description, jsonLd } = opts;
+export function usePageMeta(opts: { title: string; description?: string; jsonLd?: object[]; robots?: string }) {
+  const { title, description, jsonLd, robots } = opts;
 
   useEffect(() => {
     document.title = title;
     zetOgMeta("og:title", title);
+    // Alleen de niet-gevonden-pagina zet noindex; elke andere pagina zet de
+    // regel weer terug, anders blijft noindex hangen na het wegklikken.
+    zetNamedMeta("robots", robots ?? "index, follow");
     const pad = window.location.pathname.replace(/\/$/, "");
     zetOgMeta("og:url", `${CANONICAL_BASE}${pad || "/"}`);
     if (description) {

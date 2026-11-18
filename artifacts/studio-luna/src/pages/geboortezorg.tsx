@@ -250,7 +250,7 @@ export default function Geboortezorg() {
             <Meebewegen afstand={18} className="mt-9 md:mt-0 ml-auto md:ml-0 w-48 sm:w-60 md:w-64 lg:w-80">
               <div className="relative aspect-[4/5] w-full overflow-hidden" style={{ borderRadius: BLOB }}>
                 <div className="absolute inset-0">
-                  <WisselFoto fotos={[IMAGES.zorgkaart, IMAGES.zorgkaartTuin]} alt="" hoogte="100%" positie="center" interval={7000} />
+                  <WisselFoto fotos={[IMAGES.zorgkaart, IMAGES.zorgkaartTuin]} alt="Marjolein met haar handen op haar buik" hoogte="100%" positie="center" interval={7000} />
                 </div>
               </div>
             </Meebewegen>
@@ -325,7 +325,7 @@ export default function Geboortezorg() {
                 <Meebewegen afstand={26} className="hidden md:block mb-12">
                   <img
                     src={IMAGES.zorgkaartHanden}
-                    alt=""
+                    alt="Handen om een kind op schoot"
                     loading="lazy"
                     className="w-full max-w-[26rem] aspect-[4/5] object-cover"
                   />
@@ -335,7 +335,7 @@ export default function Geboortezorg() {
                 <Meebewegen afstand={-18} className="mb-12">
                   <img
                     src={IMAGES.zorgkaartMoeder}
-                    alt=""
+                    alt="Marjolein met haar kind op de arm in de tuin"
                     loading="lazy"
                     className="w-full max-w-[26rem] aspect-[4/5] object-cover"
                   />
@@ -588,7 +588,7 @@ export default function Geboortezorg() {
         <Meebewegen afstand={30} className="hidden lg:block w-56 xl:w-72 mt-16 mr-20 xl:mr-28">
           <img
             src={IMAGES.zorgkaartKruiden}
-            alt=""
+            alt="Lavendel in de hand"
             loading="lazy"
             className="w-full aspect-[4/5] object-cover"
             style={{ borderRadius: BLOB_ANDERS }}
