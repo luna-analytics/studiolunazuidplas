@@ -27,12 +27,11 @@ const WAAROM = [
 const HAAR_ZIN =
   "Lomi Lomi Hapai is een full body ontspanningsmassage. Lomi lomi is een eeuwenoude massagevorm uit Hawaï, met wortels in de Polynesische massagetradities.";
 
-// Alleen deze twee regels, haar keuze van 18 november: bijpraten vooraf en
-// het glas water na afloop vond ze overbodig.
-const VERLOOP = [
-  "Je ligt op je zij, met kussens onder je hoofd en tussen je knieën en armen, onder een grote doek",
-  "Een massage met warme olie over je hele lichaam, eerst op de ene zij en daarna op de andere",
-];
+// Hoe de massage gaat, in één alinea in de intro. Eerst een eigen blok met
+// vier regels; ze hield er twee over (bijpraten en het glas water vond ze
+// overbodig) en dat blok oogde daarna leeg naast de foto (18 november).
+const VERLOOP =
+  "Je ligt op je zij, met kussens onder je hoofd en tussen je knieën en armen, onder een grote doek. Je krijgt een massage met warme olie over je hele lichaam, eerst op de ene zij en daarna op de andere.";
 
 const FAQ = (voor: MassageVoor) => [
   {
@@ -238,6 +237,7 @@ function MassagePagina({ voor }: { voor: MassageVoor }) {
                 <p key={alinea.slice(0, 20)} className="text-[15px] text-foreground/80 leading-[1.7] mb-4">{alinea}</p>
               ))}
               <p className="text-[15px] text-foreground/80 leading-[1.7] mb-4">{HAAR_ZIN}</p>
+              <p className="text-[15px] text-foreground/80 leading-[1.7] mb-4">{VERLOOP}</p>
               <p className="text-[15px] text-foreground/80 leading-[1.7] mb-4">
                 {voor === "zwanger"
                   ? `Je kunt de massage krijgen ${MASSAGE.wanneerZwanger}, en ook na de bevalling.`
@@ -265,33 +265,9 @@ function MassagePagina({ voor }: { voor: MassageVoor }) {
           </div>
         </section>
 
-        {/* ── HOE HET GAAT ── */}
-        <section className="px-7 md:px-14 lg:px-20 xl:px-28 py-8 md:py-10">
-          <div className="md:grid md:grid-cols-[1.4fr_1fr] md:gap-14 md:items-start">
-            <div>
-              <h2 className="font-display text-2xl md:text-3xl font-medium text-foreground leading-[1.15] mb-5">
-                Hoe de massage gaat
-              </h2>
-              <div className="max-w-2xl">
-                {VERLOOP.map((stap) => (
-                  <p key={stap} className="py-2 border-b border-border/15 text-[15px] text-foreground/80">
-                    {stap}
-                  </p>
-                ))}
-              </div>
-            </div>
-            <img
-              src={t.foto2}
-              alt={t.foto2Alt}
-              className="w-full max-w-[300px] object-cover mt-8 md:mt-0"
-              style={{ aspectRatio: "2/3" }}
-              loading="lazy"
-            />
-          </div>
-        </section>
-
         {/* ── AFSPRAAK AANVRAGEN ── */}
         <section id="afspraak" className="px-7 md:px-14 lg:px-20 xl:px-28 py-8 md:py-10 scroll-mt-24">
+          <div className="md:grid md:grid-cols-[1.4fr_1fr] md:gap-14 md:items-start">
           <div className="max-w-2xl">
             <h2 className="font-display text-2xl md:text-3xl font-medium text-foreground leading-[1.15] mb-5">
               Een afspraak aanvragen
@@ -379,6 +355,14 @@ function MassagePagina({ voor }: { voor: MassageVoor }) {
                 {status === "fout" && <p className="text-xs text-red-600">{foutmelding}</p>}
               </form>
             )}
+          </div>
+            <img
+              src={t.foto2}
+              alt={t.foto2Alt}
+              className="w-full max-w-[300px] object-cover mt-10 md:mt-16"
+              style={{ aspectRatio: "2/3" }}
+              loading="lazy"
+            />
           </div>
         </section>
 
