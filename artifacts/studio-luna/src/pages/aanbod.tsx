@@ -63,7 +63,7 @@ const GROEPEN: { titel: string; sub?: string; onderdelen: Onderdeel[] }[] = [
       {
         naam: "Postpartummassage",
         prijs: massagePrijs,
-        tekst: `Dezelfde ${MASSAGE.naam}-massage van ${MASSAGE.duur}, ${MASSAGE.wanneerPostpartum}.`,
+        tekst: `${MASSAGE.naam}, een full body ontspanningsmassage van ${MASSAGE.duur}, ${MASSAGE.wanneerPostpartum}.`,
         link: { href: "/postpartummassage", tekst: "Over de postpartummassage" },
       },
       {

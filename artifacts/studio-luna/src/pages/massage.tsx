@@ -74,7 +74,7 @@ const TEKST = {
     fotoAlt: "Marjolein met haar armen om zichzelf en haar ogen dicht",
     foto2: IMAGES.massageLavendel,
     foto2Alt: "Een takje lavendel tussen de vingers",
-    ander: { pad: "/postpartummassage", kort: "Na de bevalling: postpartummassage", tekst: "Ben je al bevallen? Dezelfde massage kan ook na de bevalling" },
+    ander: { pad: "/postpartummassage", kort: "Na de bevalling: postpartummassage", tekst: "Ben je al bevallen? De massage kan ook na de bevalling" },
   },
   postpartum: {
     pad: "/postpartummassage",
@@ -86,7 +86,7 @@ const TEKST = {
     fotoAlt: "Marjolein legt een hand op haar schouder",
     foto2: IMAGES.massageLiggend,
     foto2Alt: "Marjolein ligt ontspannen in het hoge gras",
-    ander: { pad: "/zwangerschapsmassage", kort: "Nog zwanger: zwangerschapsmassage", tekst: "Ben je nog zwanger? Dezelfde massage kan ook tijdens je zwangerschap" },
+    ander: { pad: "/zwangerschapsmassage", kort: "Nog zwanger: zwangerschapsmassage", tekst: "Ben je nog zwanger? De massage kan ook tijdens je zwangerschap" },
   },
 } as const;
 
