@@ -246,7 +246,7 @@ const ROUTES = [
     { pad: "postpartummassage", titel: "Postpartummassage", vanaf: "vlak na de bevalling en ook maanden later",
       title: "Massage na de bevalling in Nieuwerkerk aan den IJssel | Studio Luna" },
   ].map((m) => {
-    const beschrijving = `Lomi Lomi Hapai, een full body ontspanningsmassage van 75 minuten, ${m.vanaf}. Bij Remindyourlife in Nieuwerkerk aan den IJssel of bij je thuis in Zuidplas.`;
+    const beschrijving = `Lomi Lomi Hapai, een full body ontspanningsmassage van 75 minuten, ${m.vanaf}. Bij Remindyourlife in Nieuwerkerk aan den IJssel.`;
     return {
       pad: m.pad,
       title: m.title,
@@ -254,23 +254,23 @@ const ROUTES = [
       inhoud:
         `<h1>${m.titel}</h1>` +
         `<p>Lomi Lomi Hapai is een full body ontspanningsmassage. Lomi lomi is een eeuwenoude massagevorm uit Hawaï, met wortels in de Polynesische massagetradities.</p>` +
-        `<p>${tekstVeilig(beschrijving)} Introductieprijs €75, daarna €85; aan huis €100. Je vraagt een afspraak aan met de dagdelen die je uitkomen.</p>`,
+        `<p>${tekstVeilig(beschrijving)} Introductieprijs €75, daarna €85. Je vraagt een afspraak aan met de dagdelen die je uitkomen.</p>`,
     };
   }),
   {
     pad: "aanbod",
     title: "Aanbod en tarieven | Studio Luna, Nieuwerkerk aan den IJssel",
-    beschrijving: "Alles van Studio Luna met de prijzen: de Geboortereeks (€195), privéles zwangerschapsyoga en geboortevoorbereiding, zwangerschapsmassage en postpartummassage (€85), ook aan huis in Zuidplas.",
+    beschrijving: "Alles van Studio Luna met de prijzen: de Geboortereeks (€195), privéles zwangerschapsyoga en geboortevoorbereiding, zwangerschapsmassage en postpartummassage (€85) in Nieuwerkerk aan den IJssel.",
     inhoud:
       `<h1>Aanbod en tarieven</h1>` +
       `<h2>Zwanger</h2><ul>` +
       `<li><a href="/geboortereeks">De Geboortereeks</a>: acht wekelijkse lessen zwangerschapsyoga en geboortevoorbereiding in een kleinschalige, vaste groep, €195.</li>` +
       `<li>Privéles zwangerschapsyoga en/of geboortevoorbereiding: op maat, één of meerdere lessen, met of zonder partner, prijs in overleg.</li>` +
       `<li><a href="/zwangerschapsmassage">Zwangerschapsmassage</a>: Lomi Lomi Hapai, 75 minuten, €85 (nu €75 introductieprijs).</li></ul>` +
-      `<h2>Na de bevalling</h2><ul>` +
+      `<h2>Voor mama's, postpartum en daarna</h2><ul>` +
       `<li><a href="/postpartummassage">Postpartummassage</a>: Lomi Lomi Hapai, 75 minuten, €85 (nu €75 introductieprijs).</li>` +
       `<li>Mama-en-babyyoga: inbegrepen bij de Geboortereeks.</li></ul>` +
-      `<h2>Aan huis</h2><p>Zwangerschapsmassage of postpartummassage aan huis, bijvoorbeeld in de kraamperiode: €100.</p>`,
+      `<h2>Aan huis</h2><p>Behandeling aan huis, bijvoorbeeld in de kraamperiode: €115, binnenkort beschikbaar.</p>`,
   },
   {
     pad: "over-mij",

@@ -6,7 +6,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { usePageMeta } from "@/lib/seo";
 import { IMAGES } from "@/lib/images";
 import {
-  MASSAGE, MASSAGE_DAGEN, MASSAGE_DAGDELEN, type MassageVoor, type MassagePlek,
+  MASSAGE, MASSAGE_DAGEN, MASSAGE_DAGDELEN, type MassageVoor,
 } from "../../../api-server/src/lib/massage";
 
 // Twee pagina's, één massage (haar keuze 18 november 2026): Lomi Lomi Hapai
@@ -68,7 +68,7 @@ const TEKST = {
     pad: "/zwangerschapsmassage",
     titel: "Zwangerschapsmassage",
     meta: "Zwangerschapsmassage in Nieuwerkerk aan den IJssel | Studio Luna",
-    beschrijving: `Lomi Lomi Hapai, een full body ontspanningsmassage van 75 minuten voor zwangeren, ${MASSAGE.wanneerZwanger}. Bij ${MASSAGE.praktijk.naam} in Nieuwerkerk aan den IJssel of bij je thuis in Zuidplas.`,
+    beschrijving: `Lomi Lomi Hapai, een full body ontspanningsmassage van 75 minuten voor zwangeren, ${MASSAGE.wanneerZwanger}. Bij ${MASSAGE.praktijk.naam} in Nieuwerkerk aan den IJssel.`,
     voorWie: `zwangeren, ${MASSAGE.wanneerZwanger}`,
     foto: IMAGES.massageZwanger,
     fotoAlt: "Marjolein met haar armen om zichzelf en haar ogen dicht",
@@ -80,7 +80,7 @@ const TEKST = {
     pad: "/postpartummassage",
     titel: "Postpartummassage",
     meta: "Massage na de bevalling in Nieuwerkerk aan den IJssel | Studio Luna",
-    beschrijving: `Lomi Lomi Hapai, een full body ontspanningsmassage van 75 minuten na de bevalling, ${MASSAGE.wanneerPostpartum}. Bij ${MASSAGE.praktijk.naam} in Nieuwerkerk aan den IJssel of bij je thuis in Zuidplas.`,
+    beschrijving: `Lomi Lomi Hapai, een full body ontspanningsmassage van 75 minuten na de bevalling, ${MASSAGE.wanneerPostpartum}. Bij ${MASSAGE.praktijk.naam} in Nieuwerkerk aan den IJssel.`,
     voorWie: `moeders, ${MASSAGE.wanneerPostpartum}`,
     foto: IMAGES.massagePostpartum,
     fotoAlt: "Marjolein legt een hand op haar schouder",
@@ -99,8 +99,6 @@ function MassagePagina({ voor }: { voor: MassageVoor }) {
   const [naam, setNaam] = useState("");
   const [email, setEmail] = useState("");
   const [telefoon, setTelefoon] = useState("");
-  const [plek, setPlek] = useState<MassagePlek>("praktijk");
-  const [woonplaats, setWoonplaats] = useState("");
   const [dagdelen, setDagdelen] = useState<string[]>([]);
   const [bericht, setBericht] = useState("");
   const [status, setStatus] = useState<"idle" | "bezig" | "klaar" | "fout">("idle");
@@ -122,7 +120,8 @@ function MassagePagina({ voor }: { voor: MassageVoor }) {
       const res = await fetch(`${import.meta.env.BASE_URL}api/massage-aanvraag`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ naam, email, telefoon, voor, plek, woonplaats, dagdelen, bericht }),
+        // Aan huis is er (nog) niet: de massage is altijd in de praktijk.
+        body: JSON.stringify({ naam, email, telefoon, voor, plek: "praktijk", dagdelen, bericht }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -151,7 +150,6 @@ function MassagePagina({ voor }: { voor: MassageVoor }) {
         offers: [
           { "@type": "Offer", name: `${MASSAGE.naam}, ${MASSAGE.duur}, introductieprijs`, price: `${MASSAGE.introductieprijs}.00`, priceCurrency: "EUR" },
           { "@type": "Offer", name: `${MASSAGE.naam}, ${MASSAGE.duur}`, price: `${MASSAGE.prijs}.00`, priceCurrency: "EUR" },
-          { "@type": "Offer", name: `${MASSAGE.naam}, ${MASSAGE.duur}, aan huis`, price: `${MASSAGE.aanHuisPrijs}.00`, priceCurrency: "EUR" },
         ],
       },
       {
@@ -169,13 +167,13 @@ function MassagePagina({ voor }: { voor: MassageVoor }) {
   const praktisch = [
     { label: "Massage", waarde: `${MASSAGE.naam}, full body, ${MASSAGE.duur}` },
     { label: "Voor wie", waarde: t.voorWie },
-    { label: "Waar", waarde: `bij ${MASSAGE.praktijk.naam}, ${MASSAGE.praktijk.adres}, of bij jou thuis${voor === "postpartum" ? ", bijvoorbeeld in de kraamperiode" : ""}` },
+    { label: "Waar", waarde: `bij ${MASSAGE.praktijk.naam}, ${MASSAGE.praktijk.adres}` },
     {
       label: "Prijs",
       waarde: (
         <>
           <span className="font-semibold text-foreground">€{MASSAGE.introductieprijs}</span> introductieprijs,
-          daarna €{MASSAGE.prijs}; aan huis €{MASSAGE.aanHuisPrijs}
+          daarna €{MASSAGE.prijs}
         </>
       ),
     },
@@ -203,7 +201,7 @@ function MassagePagina({ voor }: { voor: MassageVoor }) {
               {MASSAGE.naam} · {MASSAGE.duur}
             </p>
             <p className="text-[15px] text-foreground/80 mt-4">
-              €{MASSAGE.introductieprijs} introductieprijs, daarna €{MASSAGE.prijs} · aan huis €{MASSAGE.aanHuisPrijs}
+              €{MASSAGE.introductieprijs} introductieprijs, daarna €{MASSAGE.prijs}
             </p>
             <p className="text-sm text-foreground/65 mt-2">
               <Link href={t.ander.pad} className="text-primary border-b border-primary/30 pb-0.5 hover:border-primary">
@@ -328,33 +326,6 @@ function MassagePagina({ voor }: { voor: MassageVoor }) {
                   maxLength={40}
                   className={`w-full ${invoer}`}
                 />
-
-                <fieldset>
-                  <legend className="text-sm font-semibold text-foreground/80 mb-2">Waar wil je de massage?</legend>
-                  <div className="space-y-2 text-[15px] text-foreground/80">
-                    <label className="flex items-start gap-3">
-                      <input
-                        type="radio" name="plek" checked={plek === "praktijk"} onChange={() => setPlek("praktijk")}
-                        className="mt-1.5 accent-[hsl(var(--primary))]"
-                      />
-                      <span>Bij {MASSAGE.praktijk.naam}, {MASSAGE.praktijk.adres} (€{MASSAGE.introductieprijs} introductieprijs)</span>
-                    </label>
-                    <label className="flex items-start gap-3">
-                      <input
-                        type="radio" name="plek" checked={plek === "thuis"} onChange={() => setPlek("thuis")}
-                        className="mt-1.5 accent-[hsl(var(--primary))]"
-                      />
-                      <span>Bij mij thuis (€{MASSAGE.aanHuisPrijs})</span>
-                    </label>
-                  </div>
-                  {plek === "thuis" && (
-                    <input
-                      type="text" value={woonplaats} onChange={(e) => setWoonplaats(e.target.value)}
-                      placeholder="Je woonplaats" aria-label="Je woonplaats" required maxLength={80}
-                      className={`mt-3 w-full sm:w-80 ${invoer}`}
-                    />
-                  )}
-                </fieldset>
 
                 <fieldset>
                   <legend className="text-sm font-semibold text-foreground/80 mb-2">Wanneer komt het je uit?</legend>

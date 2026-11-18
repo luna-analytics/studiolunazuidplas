@@ -31,7 +31,7 @@ const massagePrijs = (
   </>
 );
 
-const GROEPEN: { titel: string; onderdelen: Onderdeel[] }[] = [
+const GROEPEN: { titel: string; sub?: string; onderdelen: Onderdeel[] }[] = [
   {
     titel: "Zwanger",
     onderdelen: [
@@ -57,7 +57,8 @@ const GROEPEN: { titel: string; onderdelen: Onderdeel[] }[] = [
     ],
   },
   {
-    titel: "Na de bevalling",
+    titel: "Voor mama's",
+    sub: "Postpartum en daarna",
     onderdelen: [
       {
         naam: "Postpartummassage",
@@ -77,9 +78,9 @@ const GROEPEN: { titel: string; onderdelen: Onderdeel[] }[] = [
     titel: "Aan huis",
     onderdelen: [
       {
-        naam: "Zwangerschapsmassage of postpartummassage aan huis",
-        prijs: <>€{MASSAGE.aanHuisPrijs}</>,
-        tekst: "Liever thuis, bijvoorbeeld in de kraamperiode? Dan kom ik met de massage naar je toe.",
+        naam: "Behandeling aan huis",
+        prijs: <>€{MASSAGE.aanHuisBehandelingPrijs}<span className="block text-[13px] text-foreground/60 font-normal">binnenkort beschikbaar</span></>,
+        tekst: "Een behandeling bij jou thuis, bijvoorbeeld in de kraamperiode.",
       },
     ],
   },
@@ -90,7 +91,7 @@ export default function Aanbod() {
 
   usePageMeta({
     title: "Aanbod en tarieven | Studio Luna, Nieuwerkerk aan den IJssel",
-    description: `Alles van Studio Luna met de prijzen: de Geboortereeks (€195), privéles zwangerschapsyoga en geboortevoorbereiding, zwangerschapsmassage en postpartummassage (€${MASSAGE.prijs}), ook aan huis in Zuidplas.`,
+    description: `Alles van Studio Luna met de prijzen: de Geboortereeks (€195), privéles zwangerschapsyoga en geboortevoorbereiding, zwangerschapsmassage en postpartummassage (€${MASSAGE.prijs}) in Nieuwerkerk aan den IJssel.`,
   });
 
   return (
@@ -112,6 +113,7 @@ export default function Aanbod() {
               <h2 className="font-display text-2xl md:text-3xl font-medium text-foreground leading-[1.15] mb-2">
                 {groep.titel}
               </h2>
+              {groep.sub && <p className="text-foreground/60 text-[15px] -mt-1 mb-2">{groep.sub}</p>}
               {groep.onderdelen.map((o) => (
                 <div key={o.naam} id={o.id} className="py-5 border-b border-border/20 scroll-mt-28">
                   <div className="flex items-baseline justify-between gap-6">

@@ -3,16 +3,15 @@
 // allemaal hieruit, net zoals de reeks uit reeks.ts komt.
 //
 // Haar keuzes van 18 november 2026: alleen Lomi Lomi Hapai, 75 minuten, €85
-// met €75 als introductieprijs; dezelfde massage op twee pagina's. Aan huis €100 (haar
-// keuze, na eerst €95): alleen voor de massage, en als één prijs genoemd in
-// plaats van een toeslag.
+// met €75 als introductieprijs; dezelfde massage op twee pagina's. Aan huis is er voorlopig
+// niet bij (haar keuze, na eerst €95 en €100): dat komt later als aparte
+// behandeling aan huis, op de aanbodpagina als "binnenkort beschikbaar".
 
 export const MASSAGE = {
   naam: "Lomi Lomi Hapai",
   duur: "75 minuten",
   prijs: 85,
   introductieprijs: 75,
-  aanHuisPrijs: 100,
   praktijk: {
     naam: "Remindyourlife",
     adres: "'s-Gravenweg 266 in Nieuwerkerk aan den IJssel",
@@ -21,6 +20,8 @@ export const MASSAGE = {
   // op 18 november haar keuze: de hele zwangerschap en de hele tijd erna.
   wanneerZwanger: "tijdens de hele zwangerschap",
   wanneerPostpartum: "vlak na de bevalling en ook maanden later",
+  /** Behandeling aan huis: haar voorstel van 18 november, binnenkort beschikbaar. */
+  aanHuisBehandelingPrijs: 115,
 };
 
 export type MassageVoor = "zwanger" | "postpartum";
