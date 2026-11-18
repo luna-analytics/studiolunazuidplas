@@ -21,7 +21,7 @@ import {
 // aandacht hoort niet op haar te liggen. Hoe ze ligt staat al bij "Hoe de
 // massage gaat", dus dat staat hier niet nog een keer.
 const WAAROM = [
-  "Met Studio Luna wil ik een community creëren waarin we als vrouwen voor elkaar zorgen. It takes a village, en daar hoort voor mij ook bij dat er af en toe voor jóu gezorgd wordt. Met deze massage krijg je een moment van rust en ontspanning. Niet voor niets betekent Hāpai in het Hawaïaans zwanger, maar ook dragen en ondersteunen: jij draagt de hele dag, en nu word je even gedragen. Deze 75 minuten zijn helemaal voor jou.",
+  "Met Studio Luna wil ik een community creëren in de regio Zuidplas, waarin we als vrouwen voor elkaar kunnen zorgen. It takes a village, en daar hoort voor mij ook bij dat er af en toe voor jóu gezorgd wordt. Met deze massage krijg je een moment van rust en ontspanning. Niet voor niets betekent Hāpai in het Hawaïaans zwanger, maar ook dragen en ondersteunen: jij draagt de hele dag, en nu word je even gedragen. Deze 75 minuten zijn helemaal voor jou.",
 ];
 
 const HAAR_ZIN =
