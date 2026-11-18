@@ -253,7 +253,7 @@ function MassagePagina({ voor }: { voor: MassageVoor }) {
               </Link>
               {/* Pakketten stelt ze per persoon samen (haar idee, 18 november). */}
               <p className="text-[15px] text-foreground/80 leading-[1.7] mt-6">
-                Wil je een pakket, bijvoorbeeld twee zwangerschapsmassages en één postpartummassage, of een combinatie van privéles zwangerschapsyoga of geboortevoorbereiding en massage? Stuur me een berichtje met je wens, dan stellen we samen een passend pakket op. Een pakket is ook een supermooi cadeau.
+                Wil je een pakket, bijvoorbeeld twee zwangerschapsmassages en één postpartummassage, of een combinatie van privéles zwangerschapsyoga of geboortevoorbereiding en massage? Stuur me een berichtje met je wens, dan stellen we samen een passend pakket op. Een losse massage of een pakket is ook een supermooi cadeau voor een (toekomstige) mama.
               </p>
               <p className="text-sm text-foreground/65 leading-[1.7] mt-3">
                 <button
