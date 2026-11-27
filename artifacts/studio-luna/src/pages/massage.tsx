@@ -143,7 +143,7 @@ function MassagePagina({ voor }: { voor: MassageVoor }) {
             : []),
           { "@type": "Offer", name: `${MASSAGE.naam}, ${MASSAGE.duur}`, price: `${MASSAGE.prijs}.00`, priceCurrency: "EUR" },
           ...MASSAGE_PAKKETTEN.map((p) => ({
-            "@type": "Offer", name: `${MASSAGE.naam}, pakket van ${p.aantal} massages, ${p.geldig} geldig`, price: `${p.prijs}.00`, priceCurrency: "EUR",
+            "@type": "Offer", name: `${MASSAGE.naam}, pakket van ${p.aantal} massages, ${p.geldig} geldig, inclusief ${p.extra}`, price: `${p.prijs}.00`, priceCurrency: "EUR",
           })),
         ],
       },
@@ -169,7 +169,7 @@ function MassagePagina({ voor }: { voor: MassageVoor }) {
     },
     {
       label: "Pakketten",
-      waarde: `${MASSAGE_PAKKETTEN.map((p) => `${p.aantal} massages €${p.prijs} (${p.geldig} geldig)`).join(", ")}, ${PAKKET_MENGEN}`,
+      waarde: `${MASSAGE_PAKKETTEN.map((p) => `${p.aantal} massages €${p.prijs}, ${p.geldig} geldig, inclusief ${p.extra}`).join("; ")}; ${PAKKET_MENGEN}`,
     },
     {
       label: "Afspraak",
@@ -316,6 +316,7 @@ function MassagePagina({ voor }: { voor: MassageVoor }) {
                       ...MASSAGE_PAKKETTEN.map((p) => ({
                         code: p.code as string,
                         tekst: `${p.aantal} massages (€${p.prijs}, ${p.geldig} geldig)`,
+                        extra: `inclusief ${p.extra}`,
                       })),
                     ].map((o) => (
                       <label key={o.code} className="flex items-start gap-2.5 cursor-pointer">
@@ -324,7 +325,12 @@ function MassagePagina({ voor }: { voor: MassageVoor }) {
                           checked={keuze === o.code} onChange={() => setKeuze(o.code)}
                           className="mt-1.5 w-4 h-4 accent-[hsl(var(--primary))]"
                         />
-                        <span>{o.tekst}</span>
+                        <span>
+                          {o.tekst}
+                          {"extra" in o && o.extra && (
+                            <span className="block text-sm text-foreground/60">{o.extra}</span>
+                          )}
+                        </span>
                       </label>
                     ))}
                   </div>

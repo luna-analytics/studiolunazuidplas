@@ -71,8 +71,8 @@ const MASSAGE = {
 // Pakketten en introductieprijs (27 november 2026). De introductieprijs geldt
 // voor de eerste massage en komt alleen in de schil zolang hij loopt; na de
 // einddatum laat de datumbewaking de build stoppen tot massage.ts is opgeruimd.
-MASSAGE.pakketten = [...massageBron.matchAll(/aantal: (\d+), prijs: (\d+), geldig: "([^"]+)"/g)]
-  .map(([, aantal, prijs, geldig]) => ({ aantal, prijs, geldig }));
+MASSAGE.pakketten = [...massageBron.matchAll(/aantal: (\d+), prijs: (\d+), geldig: "([^"]+)", extra: "([^"]+)"/g)]
+  .map(([, aantal, prijs, geldig, extra]) => ({ aantal, prijs, geldig, extra }));
 MASSAGE.introTot = massageVeld("introductieTot");
 MASSAGE.introTotTekst = massageVeld("introductieTotTekst");
 MASSAGE.mengen = (massageBron.match(/PAKKET_MENGEN = "([^"]+)"/) || [])[1] || "";
@@ -379,7 +379,7 @@ const ROUTES = [
               : []),
             { "@type": "Offer", name: `${MASSAGE.naam}, ${MASSAGE.duur}`, price: `${MASSAGE.prijs}.00`, priceCurrency: "EUR" },
             ...MASSAGE.pakketten.map((p) => ({
-              "@type": "Offer", name: `${MASSAGE.naam}, pakket van ${p.aantal} massages, ${p.geldig} geldig`, price: `${p.prijs}.00`, priceCurrency: "EUR",
+              "@type": "Offer", name: `${MASSAGE.naam}, pakket van ${p.aantal} massages, ${p.geldig} geldig, inclusief ${p.extra}`, price: `${p.prijs}.00`, priceCurrency: "EUR",
             })),
           ],
         },
@@ -397,7 +397,7 @@ const ROUTES = [
         `<li>Voor wie: ${m.voor === "zwanger" ? "zwangeren" : "moeders"}, ${tekstVeilig(m.wanneer)}</li>` +
         `<li>Waar: bij ${tekstVeilig(MASSAGE.praktijk[0])}, ${tekstVeilig(MASSAGE.praktijk[1])}</li>` +
         `<li>Prijs: ${massagePrijsRegel}</li>` +
-        `<li>Pakketten: ${MASSAGE.pakketten.map((p) => `${p.aantal} massages €${p.prijs} (${p.geldig} geldig)`).join(", ")}, ${MASSAGE.mengen}</li>` +
+        `<li>Pakketten: ${MASSAGE.pakketten.map((p) => `${p.aantal} massages €${p.prijs}, ${p.geldig} geldig, inclusief ${tekstVeilig(p.extra)}`).join("; ")}; ${MASSAGE.mengen}</li>` +
         `<li>Afspraak: via het formulier op deze pagina</li></ul>` +
         `<h2>Een afspraak aanvragen</h2><p>${tekstVeilig(massageTeksten.afspraakUitleg)}</p>` +
         faqHtml(faq),
@@ -417,7 +417,7 @@ const ROUTES = [
       `<li><a href="/postpartummassage">Postpartummassage</a>: ${MASSAGE.naam}, ${MASSAGE.duur}, €${MASSAGE.prijs}${massageIntroLoopt ? ` (eerste massage €${MASSAGE.intro} tot en met ${MASSAGE.introTotTekst})` : ""}.</li>` +
       `<li>Mama-en-babyyoga: inbegrepen bij de Geboortereeks.</li></ul>` +
       `<h2>Massagepakketten</h2><ul>` +
-      MASSAGE.pakketten.map((p) => `<li>${p.aantal} massages: €${p.prijs}, ${MASSAGE.mengen}, ${p.geldig} geldig.</li>`).join("") +
+      MASSAGE.pakketten.map((p) => `<li>${p.aantal} massages: €${p.prijs}, ${MASSAGE.mengen}, ${p.geldig} geldig. Inclusief ${tekstVeilig(p.extra)}.</li>`).join("") +
       `</ul>` +
       `<h2>Aan huis</h2><p>Behandeling aan huis, bijvoorbeeld in de kraamperiode: binnenkort beschikbaar.</p>` +
       `<h2>Pakket op maat</h2><p>Een pakket naar jouw wens, bijvoorbeeld twee zwangerschapsmassages en één postpartummassage, of privéles en massage samen. Prijs in overleg. Een losse massage of een pakket is ook een supermooi cadeau voor een (toekomstige) mama.</p>`,

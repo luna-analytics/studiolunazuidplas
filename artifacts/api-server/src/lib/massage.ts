@@ -17,6 +17,8 @@
 //
 // Later dezelfde dag haar keuze na een vergelijking van 75/90/95/100/110:
 // los €95, pakketten €255 (3) en €400 (5); introductieprijs blijft €75.
+// Daarna haar cadeautjes per pakket: bij 3 massages Luna butter t.w.v. €10,
+// bij 5 massages een goodiebag t.w.v. €30 (waarden van haarzelf).
 
 export const MASSAGE = {
   naam: "Lomi Lomi Hapai",
@@ -36,8 +38,8 @@ export const MASSAGE = {
 };
 
 export const MASSAGE_PAKKETTEN = [
-  { code: "3", aantal: 3, prijs: 255, geldig: "6 maanden" },
-  { code: "5", aantal: 5, prijs: 400, geldig: "12 maanden" },
+  { code: "3", aantal: 3, prijs: 255, geldig: "6 maanden", extra: "Luna butter (100% biologische sheaboter) t.w.v. €10" },
+  { code: "5", aantal: 5, prijs: 400, geldig: "12 maanden", extra: "een goodiebag t.w.v. €30" },
 ] as const;
 export const PAKKET_MENGEN = "zwangerschaps- en postpartummassages door elkaar";
 
@@ -52,11 +54,11 @@ export const INTRODUCTIE_TEKST =
 /** Wat iemand in het formulier kiest: een losse massage of een pakket. */
 export type MassageKeuze = "los" | (typeof MASSAGE_PAKKETTEN)[number]["code"];
 
-/** "los" wordt "een losse massage", "3" wordt "een pakket van 3 massages (€240, 6 maanden geldig)". */
+/** "los" wordt "een losse massage", "3" wordt "een pakket van 3 massages (€255, 6 maanden geldig), inclusief ...". */
 export function keuzeTekst(code: string): string | null {
   if (code === "los") return "een losse massage";
   const p = MASSAGE_PAKKETTEN.find((x) => x.code === code);
-  return p ? `een pakket van ${p.aantal} massages (€${p.prijs}, ${p.geldig} geldig)` : null;
+  return p ? `een pakket van ${p.aantal} massages (€${p.prijs}, ${p.geldig} geldig), inclusief ${p.extra}` : null;
 }
 
 export type MassageVoor = "zwanger" | "postpartum";

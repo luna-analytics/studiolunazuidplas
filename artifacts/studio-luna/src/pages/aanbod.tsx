@@ -89,7 +89,7 @@ const GROEPEN: { titel: string; sub?: string; onderdelen: Onderdeel[] }[] = [
     onderdelen: MASSAGE_PAKKETTEN.map((p) => ({
       naam: `${p.aantal} massages`,
       prijs: <>€{p.prijs}</>,
-      tekst: `${MASSAGE.naam}, ${p.aantal} keer ${MASSAGE.duur}, ${PAKKET_MENGEN}. Het pakket is ${p.geldig} geldig.`,
+      tekst: `${MASSAGE.naam}, ${p.aantal} keer ${MASSAGE.duur}, ${PAKKET_MENGEN}. Het pakket is ${p.geldig} geldig. Inclusief ${p.extra}.`,
       link: { href: `/zwangerschapsmassage?pakket=${p.code}#afspraak`, tekst: "Vraag dit pakket aan" },
     })),
   },
