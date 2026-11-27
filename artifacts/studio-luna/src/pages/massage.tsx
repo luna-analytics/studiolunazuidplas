@@ -163,14 +163,16 @@ function MassagePagina({ voor }: { voor: MassageVoor }) {
     { label: "Massage", waarde: `${MASSAGE.naam}, full body, ${MASSAGE.duur}` },
     { label: "Voor wie", waarde: t.voorWie },
     { label: "Waar", waarde: `bij ${MASSAGE.praktijk.naam}, ${MASSAGE.praktijk.adres}` },
-    {
-      label: "Prijs",
-      waarde: prijsRegel(intro),
-    },
-    {
-      label: "Pakketten",
-      waarde: `${MASSAGE_PAKKETTEN.map((p) => `${p.aantal} massages €${p.prijs}, ${p.geldig} geldig, inclusief ${p.extra}`).join("; ")}; ${PAKKET_MENGEN}`,
-    },
+    // Elke prijs een eigen regel (haar feedback 27 november: "niet heel overzichtelijk").
+    { label: "Losse massage", waarde: `€${MASSAGE.prijs}` },
+    ...(intro
+      ? [{ label: "Introductieprijs", waarde: `€${MASSAGE.introductieprijs} voor je eerste massage, tot en met ${MASSAGE.introductieTotTekst}` }]
+      : []),
+    ...MASSAGE_PAKKETTEN.map((p) => ({
+      label: `${p.aantal} massages`,
+      waarde: `€${p.prijs}, ${p.geldig} geldig, inclusief ${p.extra}`,
+    })),
+    { label: "In een pakket", waarde: PAKKET_MENGEN },
     {
       label: "Afspraak",
       waarde: (

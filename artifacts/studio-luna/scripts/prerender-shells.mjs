@@ -396,8 +396,10 @@ const ROUTES = [
         `<li>Massage: ${MASSAGE.naam}, full body, ${MASSAGE.duur}</li>` +
         `<li>Voor wie: ${m.voor === "zwanger" ? "zwangeren" : "moeders"}, ${tekstVeilig(m.wanneer)}</li>` +
         `<li>Waar: bij ${tekstVeilig(MASSAGE.praktijk[0])}, ${tekstVeilig(MASSAGE.praktijk[1])}</li>` +
-        `<li>Prijs: ${massagePrijsRegel}</li>` +
-        `<li>Pakketten: ${MASSAGE.pakketten.map((p) => `${p.aantal} massages €${p.prijs}, ${p.geldig} geldig, inclusief ${tekstVeilig(p.extra)}`).join("; ")}; ${MASSAGE.mengen}</li>` +
+        `<li>Losse massage: €${MASSAGE.prijs}</li>` +
+        (massageIntroLoopt ? `<li>Introductieprijs: €${MASSAGE.intro} voor je eerste massage, tot en met ${MASSAGE.introTotTekst}</li>` : "") +
+        MASSAGE.pakketten.map((p) => `<li>${p.aantal} massages: €${p.prijs}, ${p.geldig} geldig, inclusief ${tekstVeilig(p.extra)}</li>`).join("") +
+        `<li>In een pakket: ${MASSAGE.mengen}</li>` +
         `<li>Afspraak: via het formulier op deze pagina</li></ul>` +
         `<h2>Een afspraak aanvragen</h2><p>${tekstVeilig(massageTeksten.afspraakUitleg)}</p>` +
         faqHtml(faq),
