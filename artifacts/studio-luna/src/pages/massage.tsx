@@ -160,10 +160,9 @@ function MassagePagina({ voor }: { voor: MassageVoor }) {
       ? [{ label: "Introductieprijs", waarde: `€${MASSAGE.introductieprijs} voor je eerste massage, tot en met ${MASSAGE.introductieTotTekst}` }]
       : []),
     ...MASSAGE_PAKKETTEN.map((p) => ({
-      label: `${p.aantal} massages`,
+      label: `Pakket ${p.aantal} massages`,
       waarde: `€${p.prijs}, ${p.geldig} geldig, inclusief ${p.extra}`,
     })),
-    { label: "In een pakket", waarde: PAKKET_MENGEN },
     {
       label: "Afspraak",
       waarde: (

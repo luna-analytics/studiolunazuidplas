@@ -394,8 +394,7 @@ const ROUTES = [
         `<li>Waar: bij ${tekstVeilig(MASSAGE.praktijk[0])}, ${tekstVeilig(MASSAGE.praktijk[1])}</li>` +
         `<li>Losse massage: €${MASSAGE.prijs}</li>` +
         (massageIntroLoopt ? `<li>Introductieprijs: €${MASSAGE.intro} voor je eerste massage, tot en met ${MASSAGE.introTotTekst}</li>` : "") +
-        MASSAGE.pakketten.map((p) => `<li>${p.aantal} massages: €${p.prijs}, ${p.geldig} geldig, inclusief ${tekstVeilig(p.extra)}</li>`).join("") +
-        `<li>In een pakket: ${MASSAGE.mengen}</li>` +
+        MASSAGE.pakketten.map((p) => `<li>Pakket ${p.aantal} massages: €${p.prijs}, ${p.geldig} geldig, inclusief ${tekstVeilig(p.extra)}</li>`).join("") +
         `<li>Afspraak: via het formulier op deze pagina</li></ul>` +
         `<h2>Een afspraak aanvragen</h2><p>${tekstVeilig(massageTeksten.afspraakUitleg)}</p>` +
         faqHtml(faq),

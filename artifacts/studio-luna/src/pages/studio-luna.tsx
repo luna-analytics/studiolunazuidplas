@@ -21,7 +21,7 @@ const DEFAULT_TEKSTEN = {
   cta_label: "Bekijk de Geboortereeks",
   // Haar kop van 18 november 2026; de live tekst staat in de database en is
   // door haar via /admin gelijkgezet.
-  home_hero: "Zwangerschapsyoga, geboortevoorbereiding en massage\nvoor zwangeren en moeders in Nieuwerkerk aan den IJssel en heel Zuidplas.",
+  home_hero: "Zwangerschapsyoga, geboortevoorbereiding en massage voor zwangeren en moeders in Nieuwerkerk aan den IJssel en heel Zuidplas.",
   home_missie_heading: "Je hoeft het\nniet alleen te doen.",
   home_missie_tekst: "Studio Luna is een plek waar vrouwen uit Nieuwerkerk aan den IJssel en omgeving op adem komen, sterker worden en andere moeders vinden, van zwangerschap tot ver daarna. Naast de wekelijkse lessen organiseer ik events, soms samen met iemand die ergens meer van weet dan ik en soms iets van mezelf. Ben je zwanger, net bevallen of allang moeder, dan ben je welkom.",
   home_missie_bullets: "Een plek om te landen, voor en na je bevalling.\nEen plek om fysiek sterk, gezond en in balans te blijven.\nEen plek om vertrouwen te vinden in je veranderende lichaam.\nEen plek waar je andere moeders uit Zuidplas tegenkomt.\nEen plek waar naast de lessen ook events zijn.",
@@ -122,6 +122,13 @@ export default function StudioLuna() {
                 className="inline-flex items-center bg-primary text-primary-foreground px-7 py-3.5 rounded-[6px] font-semibold text-sm hover:bg-primary/88"
               >
                 {teksten.cta_label}
+              </button>
+              {/* Haar wens van 27 november: massage ook vanaf de startpagina vindbaar. */}
+              <button
+                onClick={() => navigate("/aanbod")}
+                className="inline-flex items-center text-foreground/80 text-sm font-medium border-b border-foreground/35 pb-0.5 hover:text-foreground hover:border-foreground"
+              >
+                Aanbod en tarieven
               </button>
               <button
                 onClick={() => navigate("/geboortezorg-zuidplas")}
