@@ -23,6 +23,7 @@ import OverMij from "./pages/over-mij";
 import Events from "./pages/events";
 import { Zwangerschapsmassage, Postpartummassage } from "./pages/massage";
 import Aanbod from "./pages/aanbod";
+import Cadeaubon from "./pages/cadeaubon";
 
 const Admin = lazy(() => import("./pages/admin"));
 const WachtwoordReset = lazy(() => import("./pages/wachtwoord-reset").then((m) => ({ default: m.WachtwoordReset })));
@@ -84,6 +85,7 @@ function Router() {
       <Switch>
         <Route path="/" component={StudioLuna} />
         <Route path="/aanbod" component={Aanbod} />
+        <Route path="/cadeaubon" component={Cadeaubon} />
         <Route path="/geboortereeks" component={Geboortereeks} />
         <Route path="/events" component={Events} />
         <Route path="/zwangerschapsmassage" component={Zwangerschapsmassage} />

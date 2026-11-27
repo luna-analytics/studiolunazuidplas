@@ -76,8 +76,13 @@ MASSAGE.pakketten = [...massageBron.matchAll(/aantal: (\d+), prijs: (\d+), geldi
 MASSAGE.introTot = massageVeld("introductieTot");
 MASSAGE.introTotTekst = massageVeld("introductieTotTekst");
 MASSAGE.mengen = (massageBron.match(/PAKKET_MENGEN = "([^"]+)"/) || [])[1] || "";
+// Pakketvoorwaarden (als FAQ) en cadeaubon, ook uit massage.ts (27 november 2026).
+MASSAGE.voorwaarden = [...massageBron.matchAll(/vraag: "([^"]+)",\s*antwoord: "([^"]+)"/g)]
+  .map(([, vraag, antwoord]) => ({ vraag, antwoord }));
+MASSAGE.cadeaubonGeldig = (massageBron.match(/CADEAUBON = \{\s*geldig: "([^"]+)"/) || [])[1] || "";
+const cadeaubonOpties = [`1 massage (€${MASSAGE.prijs})`, ...MASSAGE.pakketten.map((p) => `${p.aantal} massages (€${p.prijs})`)].join(", ");
 const massageIntroLoopt = new Date().toLocaleDateString("sv-SE", { timeZone: "Europe/Amsterdam" }) <= MASSAGE.introTot;
-if (MASSAGE.pakketten.length !== 2 || !MASSAGE.introTot || !MASSAGE.mengen) {
+if (MASSAGE.pakketten.length !== 2 || !MASSAGE.introTot || !MASSAGE.mengen || MASSAGE.voorwaarden.length !== 2 || !MASSAGE.cadeaubonGeldig) {
   console.error("De massagepakketten of de introductiedatum zijn niet uit api-server/src/lib/massage.ts te lezen; klopt de opmaak nog?");
   process.exit(1);
 }
@@ -356,6 +361,7 @@ const ROUTES = [
     const faq = [
       { vraag: "Wanneer kan ik een massage krijgen?", antwoord: `De massage kan ${MASSAGE.wanneerZwanger}, en na de bevalling ${MASSAGE.wanneerPostpartum}. ${massageTeksten.faqWanneerSlot}` },
       ...massageTeksten.faq.map((f) => ({ vraag: f.vraag, antwoord: f.antwoord ?? f[m.voor] ?? "" })),
+      ...MASSAGE.voorwaarden,
     ];
     return {
       pad: m.pad,
@@ -383,7 +389,7 @@ const ROUTES = [
       ],
       inhoud:
         `<h1>${m.titel}</h1>` +
-        `<p>${MASSAGE.naam}, ${MASSAGE.duur}. <a href="${m.ander.pad}">${m.ander.tekst}</a>. <a href="/aanbod">Alle aanbod en tarieven</a>.</p>` +
+        `<p>${MASSAGE.naam}, ${MASSAGE.duur}. <a href="${m.ander.pad}">${m.ander.tekst}</a>. <a href="/aanbod">Alle aanbod en tarieven</a>. <a href="/cadeaubon">Geef een massage cadeau</a>.</p>` +
         `<h2>${tekstVeilig(massageTeksten.kop)}</h2>` +
         `<p>${tekstVeilig(massageTeksten.waarom)}</p><p>${tekstVeilig(massageTeksten.watIsHet)}</p><p>${tekstVeilig(massageTeksten.hoeHetGaat)}</p>` +
         `<p>Je kunt de massage krijgen ${tekstVeilig(m.wanneer)}, ${m.ook}.</p>` +
@@ -416,8 +422,22 @@ const ROUTES = [
       `<h2>Massagepakketten</h2><ul>` +
       MASSAGE.pakketten.map((p) => `<li>${p.aantal} massages: €${p.prijs}, ${MASSAGE.mengen}, ${p.geldig} geldig. Inclusief ${tekstVeilig(p.extra)}.</li>`).join("") +
       `</ul>` +
+      `<h2>Cadeaubon</h2><p><a href="/cadeaubon">Cadeaubon voor een massage</a>: ${cadeaubonOpties}, ${MASSAGE.cadeaubonGeldig} geldig.</p>` +
       `<h2>Aan huis</h2><p>Behandeling aan huis, bijvoorbeeld in de kraamperiode: binnenkort beschikbaar.</p>` +
       `<h2>Pakket op maat</h2><p>Een pakket naar jouw wens, prijs in overleg. ${tekstVeilig(massageTeksten.pakket)}</p>`,
+  },
+  {
+    pad: "cadeaubon",
+    title: "Cadeaubon voor een zwangerschaps- of postpartummassage | Studio Luna",
+    beschrijving: `Geef een ${MASSAGE.naam}-massage cadeau: een cadeaubon voor ${cadeaubonOpties}, ${MASSAGE.cadeaubonGeldig} geldig. Bij ${MASSAGE.praktijk[0]} in Nieuwerkerk aan den IJssel.`,
+    inhoud:
+      `<h1>Cadeaubon</h1>` +
+      `<p>Geef een ${MASSAGE.naam}-massage cadeau: een full body ontspanningsmassage van ${MASSAGE.duur}, tijdens de zwangerschap of na de bevalling, bij ${tekstVeilig(MASSAGE.praktijk[0])} in Nieuwerkerk aan den IJssel. <a href="/zwangerschapsmassage">Over de zwangerschapsmassage</a>. <a href="/postpartummassage">Over de postpartummassage</a>.</p>` +
+      `<h2>De cadeaubonnen</h2><ul>` +
+      `<li>1 massage: €${MASSAGE.prijs}</li>` +
+      MASSAGE.pakketten.map((p) => `<li>${p.aantal} massages: €${p.prijs}, inclusief ${tekstVeilig(p.extra)}</li>`).join("") +
+      `</ul>` +
+      `<h2>Zo werkt het</h2><p>Je vraagt de cadeaubon aan via het formulier op deze pagina en krijgt daarna een factuur per mail. Na betaling krijg je de cadeaubon per mail, om door te sturen of te printen. De bon is ${MASSAGE.cadeaubonGeldig} geldig, en wie hem krijgt maakt zelf een afspraak via de massagepagina.</p>`,
   },
   {
     pad: "over-mij",

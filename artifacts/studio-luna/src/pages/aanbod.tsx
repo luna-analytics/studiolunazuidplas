@@ -5,7 +5,7 @@ import { SeoFooter } from "@/components/seo-footer";
 import { KennismakingModal } from "@/components/kennismaking-modal";
 import { usePageMeta } from "@/lib/seo";
 import { REEKS, REEKS_START, dagMaand } from "../../../api-server/src/lib/reeks";
-import { MASSAGE, MASSAGE_PAKKETTEN, PAKKET_MENGEN, introductieLoopt } from "../../../api-server/src/lib/massage";
+import { MASSAGE, MASSAGE_PAKKETTEN, PAKKET_MENGEN, CADEAUBON, introductieLoopt } from "../../../api-server/src/lib/massage";
 import massageTeksten from "@/data/massage-teksten.json";
 
 // Alles wat Studio Luna aanbiedt op één pagina, met de prijzen (haar vraag van
@@ -92,6 +92,19 @@ const GROEPEN: { titel: string; sub?: string; onderdelen: Onderdeel[] }[] = [
       tekst: `${MASSAGE.naam}, ${p.aantal} keer ${MASSAGE.duur}, ${PAKKET_MENGEN}. Het pakket is ${p.geldig} geldig. Inclusief ${p.extra}.`,
       link: { href: `/zwangerschapsmassage?pakket=${p.code}#afspraak`, tekst: "Vraag dit pakket aan" },
     })),
+  },
+  {
+    // Cadeaubonnen (haar ja van 27 november 2026), met een eigen pagina.
+    titel: "Cadeaubon",
+    onderdelen: [
+      {
+        id: "cadeaubon",
+        naam: "Cadeaubon voor een massage",
+        prijs: <>vanaf €{CADEAUBON.opties[0].prijs}</>,
+        tekst: `Voor ${CADEAUBON.opties.map((o) => `${o.tekst} (€${o.prijs})`).join(", ")}, ${CADEAUBON.geldig} geldig.`,
+        link: { href: "/cadeaubon", tekst: "Geef een massage cadeau" },
+      },
+    ],
   },
   {
     titel: "Aan huis",

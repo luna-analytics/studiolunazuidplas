@@ -7,7 +7,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { usePageMeta } from "@/lib/seo";
 import { IMAGES } from "@/lib/images";
 import {
-  MASSAGE, MASSAGE_DAGEN, MASSAGE_DAGDELEN, MASSAGE_PAKKETTEN, PAKKET_MENGEN,
+  MASSAGE, MASSAGE_DAGEN, MASSAGE_DAGDELEN, MASSAGE_PAKKETTEN, PAKKET_MENGEN, PAKKET_VOORWAARDEN,
   introductieLoopt, keuzeTekst, type MassageVoor,
 } from "../../../api-server/src/lib/massage";
 import teksten from "@/data/massage-teksten.json";
@@ -32,6 +32,8 @@ const FAQ = (voor: MassageVoor) => [
     vraag: f.vraag,
     antwoord: f.antwoord ?? (voor === "zwanger" ? f.zwanger : f.postpartum) ?? "",
   })),
+  // Pakketvoorwaarden en cadeau (haar keuzes van 27 november 2026).
+  ...PAKKET_VOORWAARDEN,
 ];
 
 const TEKST = {
@@ -194,6 +196,10 @@ function MassagePagina({ voor }: { voor: MassageVoor }) {
               {" · "}
               <Link href="/aanbod" className="text-primary border-b border-primary/30 pb-0.5 hover:border-primary">
                 Alle aanbod en tarieven
+              </Link>
+              {" · "}
+              <Link href="/cadeaubon" className="text-primary border-b border-primary/30 pb-0.5 hover:border-primary">
+                Geef een massage cadeau
               </Link>
             </p>
             <a

@@ -2,8 +2,8 @@ import { Router } from "express";
 import { db, studioSettings } from "@workspace/db";
 import { eq } from "drizzle-orm";
 import { requireAdmin } from "../middlewares/auth.js";
-import { sendAdminNotification, sendReeksAanmeldingBevestiging, reeksOmschrijving, sendMassageAanvraagBevestiging } from "../lib/email.js";
-import { MASSAGE, dagdeelNaam, dagdelenTekst, keuzeTekst } from "../lib/massage.js";
+import { sendAdminNotification, sendReeksAanmeldingBevestiging, reeksOmschrijving, sendMassageAanvraagBevestiging, sendCadeaubonBevestiging } from "../lib/email.js";
+import { MASSAGE, CADEAUBON, dagdeelNaam, dagdelenTekst, keuzeTekst, cadeaubonTekst } from "../lib/massage.js";
 import { readMailFailures, clearMailFailures } from "../lib/mail-log.js";
 
 // Interesselijst en zorgkaart-feedback, allebei opgeslagen in studio_settings
@@ -34,6 +34,9 @@ type MassageAanvraag = {
   gevonden?: string;
   /** "los", "3" of "5" (sinds 27 november 2026; oudere aanvragen hebben dit niet). */
   keuze?: string;
+};
+type CadeaubonAanvraag = {
+  naam: string; email: string; telefoon: string; bon: string; voorWie: string; bericht: string; timestamp: string;
 };
 
 async function readList<T>(key: string): Promise<T[]> {
@@ -295,8 +298,7 @@ router.post("/massage-aanvraag", async (req, res) => {
     email,
     details:
       `Aanvraag ${voor === "zwanger" ? "zwangerschapsmassage" : "postpartummassage"} (${MASSAGE.naam})\n` +
-      `Keuze: ${keuzeLeesbaar}
-` +
+      `Keuze: ${keuzeLeesbaar}\n` +
       `Waar: ${plek === "praktijk" ? MASSAGE.praktijk.naam : `aan huis in ${woon}`}\n` +
       `Komt uit: ${dagdelenLeesbaar}\n` +
       `Gevonden via: ${gevondenVia || "niet opgegeven"}\n` +
@@ -306,6 +308,57 @@ router.post("/massage-aanvraag", async (req, res) => {
   }).catch(() => {});
   await sendMassageAanvraagBevestiging({
     toEmail: email, toName: naam.trim(), dagdelen: dagdelenLeesbaar, plek: plekLeesbaar, keuze: keuzeLeesbaar,
+  }).catch(() => {});
+  return res.json({ message: "Ontvangen" });
+});
+
+// Cadeaubonnen vanaf /cadeaubon (27 november 2026). Zij stuurt daarna zelf een
+// factuur en na betaling de bon; online wordt niets betaald.
+router.get("/admin/cadeaubon-aanvragen", requireAdmin, async (_req: any, res: any) => {
+  res.json(await readList<CadeaubonAanvraag>("cadeaubon_aanvragen"));
+});
+
+router.post("/cadeaubon-aanvraag", async (req, res) => {
+  const { naam, email, telefoon, bon, voorWie, bericht } = req.body as {
+    naam?: string; email?: string; telefoon?: string; bon?: unknown; voorWie?: string; bericht?: string;
+  };
+  if (!naam || !naam.trim() || naam.length > 120) {
+    return res.status(400).json({ error: "Vul je naam in" });
+  }
+  if (!email || !EMAIL_RE.test(email)) {
+    return res.status(400).json({ error: "Ongeldig e-mailadres" });
+  }
+  const bonCode = typeof bon === "string" ? bon : "";
+  const bonLeesbaar = cadeaubonTekst(bonCode);
+  if (!bonLeesbaar) {
+    return res.status(400).json({ error: "Kies een cadeaubon" });
+  }
+  if ((bericht ?? "").length > 1000) {
+    return res.status(400).json({ error: "Schrijf een bericht van maximaal 1000 tekens" });
+  }
+  const tel = (telefoon ?? "").trim().slice(0, 40);
+  const ontvanger = (voorWie ?? "").trim().slice(0, 120);
+  const tekst = (bericht ?? "").trim();
+
+  const list = await readList<CadeaubonAanvraag>("cadeaubon_aanvragen");
+  list.push({
+    naam: naam.trim(), email, telefoon: tel, bon: bonCode, voorWie: ontvanger, bericht: tekst,
+    timestamp: new Date().toISOString(),
+  });
+  await saveList("cadeaubon_aanvragen", list);
+  await sendAdminNotification({
+    type: "aanvraag",
+    name: `Cadeaubon: ${naam.trim()}`,
+    email,
+    details:
+      `Aanvraag ${bonLeesbaar}, ${CADEAUBON.geldig} geldig\n` +
+      `Voor: ${ontvanger || "niet opgegeven"}\n` +
+      `Telefoon: ${tel || "niet opgegeven"}` +
+      (tekst ? `\n\n${tekst}` : "") +
+      `\n\nStuur de koper een factuur en na betaling de cadeaubon. De koper kreeg automatisch een bevestiging; je kopie daarvan zit in een aparte mail.`,
+  }).catch(() => {});
+  await sendCadeaubonBevestiging({
+    toEmail: email, toName: naam.trim(), bon: bonLeesbaar, voorWie: ontvanger,
   }).catch(() => {});
   return res.json({ message: "Ontvangen" });
 });

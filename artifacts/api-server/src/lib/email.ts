@@ -4,7 +4,7 @@ import { readClassTypes } from "./class-types.js";
 import { readTarieven } from "./tarieven.js";
 import { logMailFailure } from "./mail-log.js";
 import { REEKS, REEKS_START, dagMaand, reeksBegonnen } from "./reeks.js";
-import { MASSAGE } from "./massage.js";
+import { MASSAGE, CADEAUBON } from "./massage.js";
 
 // Bewust lui opgebouwd. new Resend(undefined) gooit direct een fout, en op
 // moduleniveau zou een ontbrekende sleutel daarmee de complete API neerhalen
@@ -331,6 +331,41 @@ export async function sendMassageAanvraagBevestiging(params: {
       html: massageBevestigingHtml(toName, dagdelen, plek, keuze),
     },
     "bevestiging massageaanvraag",
+  );
+}
+
+// ─── CADEAUBON ───────────────────────────────────────────────────────────────
+// Haar werkwijze (27 november 2026): aanvraag via de site, zij stuurt een
+// factuur, na betaling mailt zij de bon. Online wordt niets betaald.
+export function cadeaubonBevestigingHtml(toName: string, bon: string, voorWie: string): string {
+  const p = `margin:0 0 16px; font-family:${SANS}; font-size:16px; line-height:1.7; color:#3B4F41;`;
+  return WRAPPER(`
+    ${HEADER("Aanvraag ontvangen")}
+    <tr>
+      <td style="padding:28px 40px 12px;">
+        <p style="margin:0 0 16px; font-family:${SERIF}; font-size:22px; color:#3B4F41;">Lieve ${ontsmetHtml(toName)},</p>
+        <p style="${p}">Je aanvraag voor ${ontsmetHtml(bon)}${voorWie ? ` voor ${ontsmetHtml(voorWie)}` : ""} is binnen, dankjewel!</p>
+        <p style="${p}">Marjolein stuurt je een factuur per mail. Zodra die betaald is, krijg je de
+          cadeaubon per mail, zodat je hem kunt doorsturen of printen.</p>
+        <p style="${p}">De cadeaubon is ${CADEAUBON.geldig} geldig.</p>
+      </td>
+    </tr>
+    ${FOOTER}
+  `);
+}
+
+export async function sendCadeaubonBevestiging(params: {
+  toEmail: string; toName: string; bon: string; voorWie: string;
+}) {
+  const { toEmail, toName, bon, voorWie } = params;
+  await verzend(
+    {
+      to: toEmail,
+      bcc: ADMIN_TO,
+      subject: "Je aanvraag voor een cadeaubon is binnen",
+      html: cadeaubonBevestigingHtml(toName, bon, voorWie),
+    },
+    "bevestiging cadeaubon",
   );
 }
 

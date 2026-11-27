@@ -3,7 +3,7 @@ import { useAuth, getToken } from "@/hooks/use-auth";
 import { useLocation } from "wouter";
 import { BottomNav } from "@/components/bottom-nav";
 import { BlogEditor } from "@/components/blog-editor";
-import { dagdelenTekst, keuzeTekst } from "../../../api-server/src/lib/massage";
+import { dagdelenTekst, keuzeTekst, cadeaubonTekst } from "../../../api-server/src/lib/massage";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Plus, Trash2, PlusCircle, MinusCircle, ChevronDown, ChevronUp, X,
@@ -3245,6 +3245,9 @@ type MassageAanvraag = {
   gevonden?: string;
   keuze?: string;
 };
+type CadeaubonAanvraag = {
+  naam: string; email: string; telefoon: string; bon: string; voorWie: string; bericht: string; timestamp: string;
+};
 
 const datumKort = (iso: string) =>
   new Date(iso).toLocaleDateString("nl-NL", { day: "numeric", month: "short", year: "numeric" });
@@ -3354,6 +3357,7 @@ function AanmeldingenTab() {
   const [zorgverleners, setZorgverleners] = useState<ZorgverlenerAanmelding[]>([]);
   const [kennismakingen, setKennismakingen] = useState<Kennismaking[]>([]);
   const [massages, setMassages] = useState<MassageAanvraag[]>([]);
+  const [cadeaubonnen, setCadeaubonnen] = useState<CadeaubonAanvraag[]>([]);
   const [mail, setMail] = useState<MailStatus | null>(null);
 
   const laad = async () => {
@@ -3362,16 +3366,18 @@ function AanmeldingenTab() {
       const res = await apiFetch(pad);
       return res.ok ? await res.json() : [];
     };
-    const [a, i, f, z, k, m] = await Promise.all([
+    const [a, i, f, z, k, m, c] = await Promise.all([
       haal<ReeksAanmelding>("/admin/geboortereeks-aanmeldingen"),
       haal<Interesse>("/admin/interests"),
       haal<ZorgkaartFeedback>("/admin/zorgkaart-feedback"),
       haal<ZorgverlenerAanmelding>("/admin/zorgverlener-aanmeldingen"),
       haal<Kennismaking>("/admin/kennismakingen"),
       haal<MassageAanvraag>("/admin/massage-aanvragen"),
+      haal<CadeaubonAanvraag>("/admin/cadeaubon-aanvragen"),
     ]);
     setAanmeldingen(a); setInteresse(i); setFeedback(f); setZorgverleners(z); setKennismakingen(k);
     setMassages([...m].sort((x, y) => y.timestamp.localeCompare(x.timestamp)));
+    setCadeaubonnen([...c].sort((x, y) => y.timestamp.localeCompare(x.timestamp)));
     const resMail = await apiFetch("/admin/mail-status");
     setMail(resMail.ok ? await resMail.json() : null);
     setLaden(false);
@@ -3509,6 +3515,34 @@ function AanmeldingenTab() {
                     )}
                   </div>
                   <p className="text-xs text-foreground/35 shrink-0">{datumKort(m.timestamp)}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </Lijstblok>
+
+      <Lijstblok titel="Cadeaubonnen" aantal={cadeaubonnen.length}>
+        {cadeaubonnen.length === 0 ? (
+          <LegeLijst tekst="Nog geen cadeaubonaanvragen. Je krijgt er ook een mail van." />
+        ) : (
+          <div className="space-y-3">
+            {cadeaubonnen.map((c, i) => (
+              <div key={i} className="bg-card border border-border/30 rounded-3xl px-5 py-4">
+                <p className="font-semibold text-foreground text-sm mb-1.5">
+                  {c.naam} · {cadeaubonTekst(c.bon) ?? c.bon}
+                </p>
+                <p className="text-sm text-foreground/80 leading-[1.8]">Voor: {c.voorWie || "niet opgegeven"}</p>
+                {c.bericht && <p className="text-sm text-foreground/80 leading-[1.8] whitespace-pre-wrap mt-1">{c.bericht}</p>}
+                <p className="text-sm text-foreground/60 leading-[1.8] mt-1">Stuur een factuur en na betaling de cadeaubon.</p>
+                <div className="flex items-center justify-between gap-3 mt-3">
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <a href={`mailto:${c.email}`} className="text-xs text-primary hover:underline">{c.email}</a>
+                    {c.telefoon && (
+                      <a href={`tel:${c.telefoon.replace(/\s/g, "")}`} className="text-xs text-primary hover:underline">{c.telefoon}</a>
+                    )}
+                  </div>
+                  <p className="text-xs text-foreground/35 shrink-0">{datumKort(c.timestamp)}</p>
                 </div>
               </div>
             ))}

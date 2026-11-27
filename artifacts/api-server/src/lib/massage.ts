@@ -19,14 +19,19 @@
 // los €95, pakketten €255 (3) en €400 (5); introductieprijs blijft €75.
 // Daarna haar cadeautjes per pakket: bij 3 massages Luna butter t.w.v. €10,
 // bij 5 massages een goodiebag t.w.v. €30 (waarden van haarzelf).
+// Na een adviesronde nog dezelfde dag haar ja op: goodiebag heet
+// verzorgingscadeau, introductieprijs loopt tot en met 31 januari 2027,
+// pakketvoorwaarden op de site (verlengen bij medische redenen, overdraagbaar),
+// en cadeaubonnen voor 1, 3 of 5 massages, 12 maanden geldig, betaling via
+// factuur per mail, altijd tegen de gewone prijs.
 
 export const MASSAGE = {
   naam: "Lomi Lomi Hapai",
   duur: "75 minuten",
   prijs: 95,
   introductieprijs: 75,
-  introductieTot: "2026-12-31",
-  introductieTotTekst: "31 december 2026",
+  introductieTot: "2027-01-31",
+  introductieTotTekst: "31 januari 2027",
   praktijk: {
     naam: "Remindyourlife",
     adres: "'s-Gravenweg 266 in Nieuwerkerk aan den IJssel",
@@ -39,9 +44,37 @@ export const MASSAGE = {
 
 export const MASSAGE_PAKKETTEN = [
   { code: "3", aantal: 3, prijs: 255, geldig: "6 maanden", extra: "Luna butter (100% biologische sheaboter) t.w.v. €10" },
-  { code: "5", aantal: 5, prijs: 400, geldig: "12 maanden", extra: "een goodiebag t.w.v. €30" },
+  { code: "5", aantal: 5, prijs: 400, geldig: "12 maanden", extra: "een verzorgingscadeau t.w.v. €30" },
 ] as const;
 export const PAKKET_MENGEN = "zwangerschaps- en postpartummassages door elkaar";
+
+/** De pakketvoorwaarden, zoals zij ze op 27 november 2026 koos; staan als
+ *  vragen in de FAQ van de massagepagina's (en in de schillen voor crawlers). */
+export const PAKKET_VOORWAARDEN = [
+  {
+    vraag: "Wat als ik om medische redenen even geen massage mag krijgen?",
+    antwoord: "Mag je om medische redenen even geen massage krijgen, bijvoorbeeld bij complicaties of bedrust, dan blijven de resterende massages van je pakket staan en schuift de geldigheid op, zodat je ze na de bevalling kunt gebruiken.",
+  },
+  {
+    vraag: "Kan ik een massage of pakket cadeau geven?",
+    antwoord: "Ja. Je kunt een cadeaubon geven voor 1, 3 of 5 massages, en een pakket dat je al hebt mag je ook overdragen aan iemand anders.",
+  },
+];
+
+/** Cadeaubonnen: dezelfde keuzes als het formulier, altijd tegen de gewone prijs. */
+export const CADEAUBON = {
+  geldig: "12 maanden",
+  opties: [
+    { code: "los", tekst: "1 massage", prijs: MASSAGE.prijs },
+    ...MASSAGE_PAKKETTEN.map((p) => ({ code: p.code as string, tekst: `${p.aantal} massages`, prijs: p.prijs as number })),
+  ],
+};
+
+/** "3" wordt "een cadeaubon voor 3 massages (€255)". */
+export function cadeaubonTekst(code: string): string | null {
+  const o = CADEAUBON.opties.find((x) => x.code === code);
+  return o ? `een cadeaubon voor ${o.tekst} (€${o.prijs})` : null;
+}
 
 /** Loopt de introductieprijs vandaag (Nederlandse tijd) nog? */
 export function introductieLoopt(nu: Date = new Date()): boolean {

@@ -25,7 +25,7 @@ const TOEGESTAAN = [
   // De introductieprijs van de massage loopt tot en met deze dag (massage.ts).
   // Daarna verdwijnt hij vanzelf van de pagina's; haal dan introductieTot en
   // introductieTotTekst uit massage.ts weg, anders stopt de build hier.
-  { datum: "31 december", tot: "2026-12-31", reden: "einde introductieprijs massage" },
+  { datum: "31 januari", tot: "2027-01-31", reden: "einde introductieprijs massage (verlengd op 27 november 2026)" },
 ];
 
 const reeksBron = readFileSync(join(HIER, "../api-server/src/lib/reeks.ts"), "utf8");
