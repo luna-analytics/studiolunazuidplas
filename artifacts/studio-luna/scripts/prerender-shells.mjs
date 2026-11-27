@@ -420,7 +420,7 @@ const ROUTES = [
       MASSAGE.pakketten.map((p) => `<li>${p.aantal} massages: €${p.prijs}, ${MASSAGE.mengen}, ${p.geldig} geldig. Inclusief ${tekstVeilig(p.extra)}.</li>`).join("") +
       `</ul>` +
       `<h2>Aan huis</h2><p>Behandeling aan huis, bijvoorbeeld in de kraamperiode: binnenkort beschikbaar.</p>` +
-      `<h2>Pakket op maat</h2><p>Een pakket naar jouw wens, bijvoorbeeld twee zwangerschapsmassages en één postpartummassage, of privéles en massage samen. Prijs in overleg. Een losse massage of een pakket is ook een supermooi cadeau voor een (toekomstige) mama.</p>`,
+      `<h2>Pakket op maat</h2><p>Een pakket naar jouw wens, prijs in overleg. ${tekstVeilig(massageTeksten.pakket)}</p>`,
   },
   {
     pad: "over-mij",
