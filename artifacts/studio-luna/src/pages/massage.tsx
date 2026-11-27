@@ -7,7 +7,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { usePageMeta } from "@/lib/seo";
 import { IMAGES } from "@/lib/images";
 import {
-  MASSAGE, MASSAGE_DAGEN, MASSAGE_DAGDELEN, MASSAGE_PAKKETTEN, PAKKET_MENGEN, INTRODUCTIE_TEKST,
+  MASSAGE, MASSAGE_DAGEN, MASSAGE_DAGDELEN, MASSAGE_PAKKETTEN, PAKKET_MENGEN,
   introductieLoopt, keuzeTekst, type MassageVoor,
 } from "../../../api-server/src/lib/massage";
 import teksten from "@/data/massage-teksten.json";
@@ -60,15 +60,6 @@ const TEKST = {
     ander: { pad: "/zwangerschapsmassage", kort: "Nog zwanger: zwangerschapsmassage", tekst: "Ben je nog zwanger? De massage kan ook tijdens je zwangerschap" },
   },
 } as const;
-
-const PAKKETTEN_KORT = MASSAGE_PAKKETTEN.map((p) => `${p.aantal} massages €${p.prijs}`).join(", ");
-
-/** De prijsregel bovenaan en in Praktisch; de introductieprijs valt na de einddatum vanzelf weg. */
-function prijsRegel(intro: boolean) {
-  return intro
-    ? `${INTRODUCTIE_TEKST}. Daarna €${MASSAGE.prijs} per massage, of een pakket: ${PAKKETTEN_KORT}.`
-    : `€${MASSAGE.prijs} per massage, of een pakket: ${PAKKETTEN_KORT}.`;
-}
 
 /** Een link als /zwangerschapsmassage?pakket=3#afspraak kiest het pakket alvast. */
 function beginKeuze(): string {
@@ -196,8 +187,8 @@ function MassagePagina({ voor }: { voor: MassageVoor }) {
             <p className="text-foreground/60 text-[15px] mt-3">
               {MASSAGE.naam} · {MASSAGE.duur}
             </p>
-            <p className="text-[15px] text-foreground/80 mt-4 max-w-xl">{prijsRegel(intro)}</p>
-            <p className="text-sm text-foreground/65 mt-2">
+            {/* Geen prijs in de kop (haar keuze 27 november): die staat in Praktisch. */}
+            <p className="text-sm text-foreground/65 mt-4">
               <Link href={t.ander.pad} className="text-primary border-b border-primary/30 pb-0.5 hover:border-primary">
                 {t.ander.kort}
               </Link>

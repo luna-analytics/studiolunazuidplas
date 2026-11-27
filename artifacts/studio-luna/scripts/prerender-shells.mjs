@@ -77,10 +77,6 @@ MASSAGE.introTot = massageVeld("introductieTot");
 MASSAGE.introTotTekst = massageVeld("introductieTotTekst");
 MASSAGE.mengen = (massageBron.match(/PAKKET_MENGEN = "([^"]+)"/) || [])[1] || "";
 const massageIntroLoopt = new Date().toLocaleDateString("sv-SE", { timeZone: "Europe/Amsterdam" }) <= MASSAGE.introTot;
-const massagePakkettenKort = MASSAGE.pakketten.map((p) => `${p.aantal} massages €${p.prijs}`).join(", ");
-const massagePrijsRegel = massageIntroLoopt
-  ? `€${MASSAGE.intro} introductieprijs voor je eerste massage, tot en met ${MASSAGE.introTotTekst}. Daarna €${MASSAGE.prijs} per massage, of een pakket: ${massagePakkettenKort}.`
-  : `€${MASSAGE.prijs} per massage, of een pakket: ${massagePakkettenKort}.`;
 if (MASSAGE.pakketten.length !== 2 || !MASSAGE.introTot || !MASSAGE.mengen) {
   console.error("De massagepakketten of de introductiedatum zijn niet uit api-server/src/lib/massage.ts te lezen; klopt de opmaak nog?");
   process.exit(1);
@@ -387,7 +383,7 @@ const ROUTES = [
       ],
       inhoud:
         `<h1>${m.titel}</h1>` +
-        `<p>${MASSAGE.naam}, ${MASSAGE.duur}. ${massagePrijsRegel} <a href="${m.ander.pad}">${m.ander.tekst}</a>. <a href="/aanbod">Alle aanbod en tarieven</a>.</p>` +
+        `<p>${MASSAGE.naam}, ${MASSAGE.duur}. <a href="${m.ander.pad}">${m.ander.tekst}</a>. <a href="/aanbod">Alle aanbod en tarieven</a>.</p>` +
         `<h2>${tekstVeilig(massageTeksten.kop)}</h2>` +
         `<p>${tekstVeilig(massageTeksten.waarom)}</p><p>${tekstVeilig(massageTeksten.watIsHet)}</p><p>${tekstVeilig(massageTeksten.hoeHetGaat)}</p>` +
         `<p>Je kunt de massage krijgen ${tekstVeilig(m.wanneer)}, ${m.ook}.</p>` +
