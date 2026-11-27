@@ -3,7 +3,7 @@ import { useAuth, getToken } from "@/hooks/use-auth";
 import { useLocation } from "wouter";
 import { BottomNav } from "@/components/bottom-nav";
 import { BlogEditor } from "@/components/blog-editor";
-import { dagdelenTekst } from "../../../api-server/src/lib/massage";
+import { dagdelenTekst, keuzeTekst } from "../../../api-server/src/lib/massage";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Plus, Trash2, PlusCircle, MinusCircle, ChevronDown, ChevronUp, X,
@@ -3243,6 +3243,7 @@ type MassageAanvraag = {
   naam: string; email: string; telefoon: string; voor: "zwanger" | "postpartum";
   plek: "praktijk" | "thuis"; woonplaats: string; dagdelen: string[]; bericht: string; timestamp: string;
   gevonden?: string;
+  keuze?: string;
 };
 
 const datumKort = (iso: string) =>
@@ -3496,6 +3497,7 @@ function AanmeldingenTab() {
                 <p className="font-semibold text-foreground text-sm mb-1.5">
                   {m.naam} · {m.voor === "zwanger" ? "zwanger" : "na de bevalling"} · {m.plek === "praktijk" ? "Remindyourlife" : `aan huis in ${m.woonplaats}`}
                 </p>
+                <p className="text-sm text-foreground/80 leading-[1.8]">Vraagt: {keuzeTekst(m.keuze ?? "los")}</p>
                 <p className="text-sm text-foreground/80 leading-[1.8]">Komt uit: {dagdelenTekst(m.dagdelen)}</p>
                 {m.gevonden && <p className="text-sm text-foreground/80 leading-[1.8]">Gevonden via: {m.gevonden}</p>}
                 {m.bericht && <p className="text-sm text-foreground/80 leading-[1.8] whitespace-pre-wrap mt-1">{m.bericht}</p>}

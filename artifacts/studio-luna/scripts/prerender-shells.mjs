@@ -68,6 +68,23 @@ const MASSAGE = {
   praktijk: (massageBron.match(/praktijk: \{\s*naam: "([^"]+)",\s*adres: "([^"]+)"/) || []).slice(1),
   wanneerZwanger: massageVeld("wanneerZwanger"), wanneerPostpartum: massageVeld("wanneerPostpartum"),
 };
+// Pakketten en introductieprijs (27 november 2026). De introductieprijs geldt
+// voor de eerste massage en komt alleen in de schil zolang hij loopt; na de
+// einddatum laat de datumbewaking de build stoppen tot massage.ts is opgeruimd.
+MASSAGE.pakketten = [...massageBron.matchAll(/aantal: (\d+), prijs: (\d+), geldig: "([^"]+)"/g)]
+  .map(([, aantal, prijs, geldig]) => ({ aantal, prijs, geldig }));
+MASSAGE.introTot = massageVeld("introductieTot");
+MASSAGE.introTotTekst = massageVeld("introductieTotTekst");
+MASSAGE.mengen = (massageBron.match(/PAKKET_MENGEN = "([^"]+)"/) || [])[1] || "";
+const massageIntroLoopt = new Date().toLocaleDateString("sv-SE", { timeZone: "Europe/Amsterdam" }) <= MASSAGE.introTot;
+const massagePakkettenKort = MASSAGE.pakketten.map((p) => `${p.aantal} massages €${p.prijs}`).join(", ");
+const massagePrijsRegel = massageIntroLoopt
+  ? `€${MASSAGE.intro} introductieprijs voor je eerste massage, tot en met ${MASSAGE.introTotTekst}. Daarna €${MASSAGE.prijs} per massage, of een pakket: ${massagePakkettenKort}.`
+  : `€${MASSAGE.prijs} per massage, of een pakket: ${massagePakkettenKort}.`;
+if (MASSAGE.pakketten.length !== 2 || !MASSAGE.introTot || !MASSAGE.mengen) {
+  console.error("De massagepakketten of de introductiedatum zijn niet uit api-server/src/lib/massage.ts te lezen; klopt de opmaak nog?");
+  process.exit(1);
+}
 if (!MASSAGE.naam || !MASSAGE.prijs || !MASSAGE.praktijk.length) {
   console.error("De massagegegevens zijn niet uit api-server/src/lib/massage.ts te lezen; klopt de opmaak nog?");
   process.exit(1);
@@ -357,15 +374,20 @@ const ROUTES = [
           provider: { "@type": "LocalBusiness", name: "Studio Luna Zuidplas", url: `${BASIS}/` },
           areaServed: ["Zuidplas", "Capelle aan den IJssel"],
           offers: [
-            { "@type": "Offer", name: `${MASSAGE.naam}, ${MASSAGE.duur}, introductieprijs`, price: `${MASSAGE.intro}.00`, priceCurrency: "EUR" },
+            ...(massageIntroLoopt
+              ? [{ "@type": "Offer", name: `${MASSAGE.naam}, ${MASSAGE.duur}, introductieprijs eerste massage`, price: `${MASSAGE.intro}.00`, priceCurrency: "EUR", priceValidUntil: MASSAGE.introTot }]
+              : []),
             { "@type": "Offer", name: `${MASSAGE.naam}, ${MASSAGE.duur}`, price: `${MASSAGE.prijs}.00`, priceCurrency: "EUR" },
+            ...MASSAGE.pakketten.map((p) => ({
+              "@type": "Offer", name: `${MASSAGE.naam}, pakket van ${p.aantal} massages, ${p.geldig} geldig`, price: `${p.prijs}.00`, priceCurrency: "EUR",
+            })),
           ],
         },
         faqJsonLd(faq),
       ],
       inhoud:
         `<h1>${m.titel}</h1>` +
-        `<p>${MASSAGE.naam}, ${MASSAGE.duur}. €${MASSAGE.intro} introductieprijs, daarna €${MASSAGE.prijs}. <a href="${m.ander.pad}">${m.ander.tekst}</a>. <a href="/aanbod">Alle aanbod en tarieven</a>.</p>` +
+        `<p>${MASSAGE.naam}, ${MASSAGE.duur}. ${massagePrijsRegel} <a href="${m.ander.pad}">${m.ander.tekst}</a>. <a href="/aanbod">Alle aanbod en tarieven</a>.</p>` +
         `<h2>${tekstVeilig(massageTeksten.kop)}</h2>` +
         `<p>${tekstVeilig(massageTeksten.waarom)}</p><p>${tekstVeilig(massageTeksten.watIsHet)}</p><p>${tekstVeilig(massageTeksten.hoeHetGaat)}</p>` +
         `<p>Je kunt de massage krijgen ${tekstVeilig(m.wanneer)}, ${m.ook}.</p>` +
@@ -374,7 +396,8 @@ const ROUTES = [
         `<li>Massage: ${MASSAGE.naam}, full body, ${MASSAGE.duur}</li>` +
         `<li>Voor wie: ${m.voor === "zwanger" ? "zwangeren" : "moeders"}, ${tekstVeilig(m.wanneer)}</li>` +
         `<li>Waar: bij ${tekstVeilig(MASSAGE.praktijk[0])}, ${tekstVeilig(MASSAGE.praktijk[1])}</li>` +
-        `<li>Prijs: €${MASSAGE.intro} introductieprijs, daarna €${MASSAGE.prijs}</li>` +
+        `<li>Prijs: ${massagePrijsRegel}</li>` +
+        `<li>Pakketten: ${MASSAGE.pakketten.map((p) => `${p.aantal} massages €${p.prijs} (${p.geldig} geldig)`).join(", ")}, ${MASSAGE.mengen}</li>` +
         `<li>Afspraak: via het formulier op deze pagina</li></ul>` +
         `<h2>Een afspraak aanvragen</h2><p>${tekstVeilig(massageTeksten.afspraakUitleg)}</p>` +
         faqHtml(faq),
@@ -383,16 +406,19 @@ const ROUTES = [
   {
     pad: "aanbod",
     title: "Aanbod en tarieven | Studio Luna, Nieuwerkerk aan den IJssel",
-    beschrijving: "Alles van Studio Luna met de prijzen: de Geboortereeks (€195), privéles zwangerschapsyoga en geboortevoorbereiding, zwangerschapsmassage en postpartummassage (€85) in Nieuwerkerk aan den IJssel.",
+    beschrijving: `Alles van Studio Luna met de prijzen: de Geboortereeks (€195), privéles zwangerschapsyoga en geboortevoorbereiding, zwangerschapsmassage en postpartummassage (€${MASSAGE.prijs}, pakketten vanaf €${MASSAGE.pakketten[0].prijs}) in Nieuwerkerk aan den IJssel.`,
     inhoud:
       `<h1>Aanbod en tarieven</h1>` +
       `<h2>Zwanger</h2><ul>` +
       `<li><a href="/geboortereeks">De Geboortereeks</a>: acht wekelijkse lessen zwangerschapsyoga en geboortevoorbereiding in een kleinschalige, vaste groep, €195.</li>` +
       `<li>Privéles zwangerschapsyoga en/of geboortevoorbereiding: op maat, één of meerdere lessen, met of zonder partner, prijs in overleg.</li>` +
-      `<li><a href="/zwangerschapsmassage">Zwangerschapsmassage</a>: Lomi Lomi Hapai, 75 minuten, €85 (nu €75 introductieprijs).</li></ul>` +
+      `<li><a href="/zwangerschapsmassage">Zwangerschapsmassage</a>: ${MASSAGE.naam}, ${MASSAGE.duur}, €${MASSAGE.prijs}${massageIntroLoopt ? ` (eerste massage €${MASSAGE.intro} tot en met ${MASSAGE.introTotTekst})` : ""}.</li></ul>` +
       `<h2>Voor mama's, postpartum en daarna</h2><ul>` +
-      `<li><a href="/postpartummassage">Postpartummassage</a>: Lomi Lomi Hapai, 75 minuten, €85 (nu €75 introductieprijs).</li>` +
+      `<li><a href="/postpartummassage">Postpartummassage</a>: ${MASSAGE.naam}, ${MASSAGE.duur}, €${MASSAGE.prijs}${massageIntroLoopt ? ` (eerste massage €${MASSAGE.intro} tot en met ${MASSAGE.introTotTekst})` : ""}.</li>` +
       `<li>Mama-en-babyyoga: inbegrepen bij de Geboortereeks.</li></ul>` +
+      `<h2>Massagepakketten</h2><ul>` +
+      MASSAGE.pakketten.map((p) => `<li>${p.aantal} massages: €${p.prijs}, ${MASSAGE.mengen}, ${p.geldig} geldig.</li>`).join("") +
+      `</ul>` +
       `<h2>Aan huis</h2><p>Behandeling aan huis, bijvoorbeeld in de kraamperiode: binnenkort beschikbaar.</p>` +
       `<h2>Pakket op maat</h2><p>Een pakket naar jouw wens, bijvoorbeeld twee zwangerschapsmassages en één postpartummassage, of privéles en massage samen. Prijs in overleg. Een losse massage of een pakket is ook een supermooi cadeau voor een (toekomstige) mama.</p>`,
   },

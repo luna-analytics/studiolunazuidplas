@@ -7,7 +7,8 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { usePageMeta } from "@/lib/seo";
 import { IMAGES } from "@/lib/images";
 import {
-  MASSAGE, MASSAGE_DAGEN, MASSAGE_DAGDELEN, type MassageVoor,
+  MASSAGE, MASSAGE_DAGEN, MASSAGE_DAGDELEN, MASSAGE_PAKKETTEN, PAKKET_MENGEN, INTRODUCTIE_TEKST,
+  introductieLoopt, keuzeTekst, type MassageVoor,
 } from "../../../api-server/src/lib/massage";
 import teksten from "@/data/massage-teksten.json";
 
@@ -60,6 +61,21 @@ const TEKST = {
   },
 } as const;
 
+const PAKKETTEN_KORT = MASSAGE_PAKKETTEN.map((p) => `${p.aantal} massages €${p.prijs}`).join(", ");
+
+/** De prijsregel bovenaan en in Praktisch; de introductieprijs valt na de einddatum vanzelf weg. */
+function prijsRegel(intro: boolean) {
+  return intro
+    ? `${INTRODUCTIE_TEKST}. Daarna €${MASSAGE.prijs} per massage, of een pakket: ${PAKKETTEN_KORT}.`
+    : `€${MASSAGE.prijs} per massage, of een pakket: ${PAKKETTEN_KORT}.`;
+}
+
+/** Een link als /zwangerschapsmassage?pakket=3#afspraak kiest het pakket alvast. */
+function beginKeuze(): string {
+  const gevraagd = new URLSearchParams(window.location.search).get("pakket") ?? "";
+  return keuzeTekst(gevraagd) && gevraagd !== "los" ? gevraagd : "los";
+}
+
 const invoer =
   "px-4 py-3 rounded-[6px] border border-border/40 bg-card text-[15px] text-foreground placeholder:text-foreground/55";
 
@@ -72,6 +88,8 @@ function MassagePagina({ voor }: { voor: MassageVoor }) {
   const [dagdelen, setDagdelen] = useState<string[]>([]);
   const [bericht, setBericht] = useState("");
   const [gevonden, setGevonden] = useState("");
+  const [keuze, setKeuze] = useState(beginKeuze);
+  const intro = introductieLoopt();
   const [status, setStatus] = useState<"idle" | "bezig" | "klaar" | "fout">("idle");
   const [isBerichtOpen, setIsBerichtOpen] = useState(false);
   const [foutmelding, setFoutmelding] = useState("");
@@ -93,7 +111,7 @@ function MassagePagina({ voor }: { voor: MassageVoor }) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         // Aan huis is er (nog) niet: de massage is altijd in de praktijk.
-        body: JSON.stringify({ naam, email, telefoon, voor, plek: "praktijk", dagdelen, bericht, gevonden }),
+        body: JSON.stringify({ naam, email, telefoon, voor, plek: "praktijk", dagdelen, bericht, gevonden, keuze }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -120,8 +138,13 @@ function MassagePagina({ voor }: { voor: MassageVoor }) {
         provider: { "@type": "LocalBusiness", name: "Studio Luna", url: "https://www.studiolunazuidplas.nl/" },
         areaServed: "Zuidplas",
         offers: [
-          { "@type": "Offer", name: `${MASSAGE.naam}, ${MASSAGE.duur}, introductieprijs`, price: `${MASSAGE.introductieprijs}.00`, priceCurrency: "EUR" },
+          ...(intro
+            ? [{ "@type": "Offer", name: `${MASSAGE.naam}, ${MASSAGE.duur}, introductieprijs eerste massage`, price: `${MASSAGE.introductieprijs}.00`, priceCurrency: "EUR", priceValidUntil: MASSAGE.introductieTot }]
+            : []),
           { "@type": "Offer", name: `${MASSAGE.naam}, ${MASSAGE.duur}`, price: `${MASSAGE.prijs}.00`, priceCurrency: "EUR" },
+          ...MASSAGE_PAKKETTEN.map((p) => ({
+            "@type": "Offer", name: `${MASSAGE.naam}, pakket van ${p.aantal} massages, ${p.geldig} geldig`, price: `${p.prijs}.00`, priceCurrency: "EUR",
+          })),
         ],
       },
       {
@@ -142,12 +165,11 @@ function MassagePagina({ voor }: { voor: MassageVoor }) {
     { label: "Waar", waarde: `bij ${MASSAGE.praktijk.naam}, ${MASSAGE.praktijk.adres}` },
     {
       label: "Prijs",
-      waarde: (
-        <>
-          <span className="font-semibold text-foreground">€{MASSAGE.introductieprijs}</span> introductieprijs,
-          daarna €{MASSAGE.prijs}
-        </>
-      ),
+      waarde: prijsRegel(intro),
+    },
+    {
+      label: "Pakketten",
+      waarde: `${MASSAGE_PAKKETTEN.map((p) => `${p.aantal} massages €${p.prijs} (${p.geldig} geldig)`).join(", ")}, ${PAKKET_MENGEN}`,
     },
     {
       label: "Afspraak",
@@ -172,9 +194,7 @@ function MassagePagina({ voor }: { voor: MassageVoor }) {
             <p className="text-foreground/60 text-[15px] mt-3">
               {MASSAGE.naam} · {MASSAGE.duur}
             </p>
-            <p className="text-[15px] text-foreground/80 mt-4">
-              €{MASSAGE.introductieprijs} introductieprijs, daarna €{MASSAGE.prijs}
-            </p>
+            <p className="text-[15px] text-foreground/80 mt-4 max-w-xl">{prijsRegel(intro)}</p>
             <p className="text-sm text-foreground/65 mt-2">
               <Link href={t.ander.pad} className="text-primary border-b border-primary/30 pb-0.5 hover:border-primary">
                 {t.ander.kort}
@@ -282,6 +302,34 @@ function MassagePagina({ voor }: { voor: MassageVoor }) {
                   maxLength={40}
                   className={`w-full ${invoer}`}
                 />
+
+                <fieldset>
+                  <legend className="text-sm font-semibold text-foreground/80 mb-2">Wat wil je aanvragen?</legend>
+                  <div className="space-y-1.5 text-[15px] text-foreground/80">
+                    {[
+                      {
+                        code: "los",
+                        tekst: intro
+                          ? `Een losse massage (€${MASSAGE.prijs}, je eerste massage €${MASSAGE.introductieprijs} tot en met ${MASSAGE.introductieTotTekst})`
+                          : `Een losse massage (€${MASSAGE.prijs})`,
+                      },
+                      ...MASSAGE_PAKKETTEN.map((p) => ({
+                        code: p.code as string,
+                        tekst: `${p.aantal} massages (€${p.prijs}, ${p.geldig} geldig)`,
+                      })),
+                    ].map((o) => (
+                      <label key={o.code} className="flex items-start gap-2.5 cursor-pointer">
+                        <input
+                          type="radio" name="keuze" value={o.code}
+                          checked={keuze === o.code} onChange={() => setKeuze(o.code)}
+                          className="mt-1.5 w-4 h-4 accent-[hsl(var(--primary))]"
+                        />
+                        <span>{o.tekst}</span>
+                      </label>
+                    ))}
+                  </div>
+                  <p className="text-sm text-foreground/60 mt-2">Een pakket mag je vullen met {PAKKET_MENGEN}.</p>
+                </fieldset>
 
                 <fieldset>
                   <legend className="text-sm font-semibold text-foreground/80 mb-2">Wanneer komt het je uit?</legend>

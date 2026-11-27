@@ -3,7 +3,7 @@ import { db, studioSettings } from "@workspace/db";
 import { eq } from "drizzle-orm";
 import { requireAdmin } from "../middlewares/auth.js";
 import { sendAdminNotification, sendReeksAanmeldingBevestiging, reeksOmschrijving, sendMassageAanvraagBevestiging } from "../lib/email.js";
-import { MASSAGE, dagdeelNaam, dagdelenTekst } from "../lib/massage.js";
+import { MASSAGE, dagdeelNaam, dagdelenTekst, keuzeTekst } from "../lib/massage.js";
 import { readMailFailures, clearMailFailures } from "../lib/mail-log.js";
 
 // Interesselijst en zorgkaart-feedback, allebei opgeslagen in studio_settings
@@ -32,6 +32,8 @@ type MassageAanvraag = {
   plek: "praktijk" | "thuis"; woonplaats: string; dagdelen: string[]; bericht: string; timestamp: string;
   /** Hoe ze Studio Luna vond (sinds 18 november 2026, niet verplicht). */
   gevonden?: string;
+  /** "los", "3" of "5" (sinds 27 november 2026; oudere aanvragen hebben dit niet). */
+  keuze?: string;
 };
 
 async function readList<T>(key: string): Promise<T[]> {
@@ -238,9 +240,9 @@ router.get("/admin/massage-aanvragen", requireAdmin, async (_req: any, res: any)
 });
 
 router.post("/massage-aanvraag", async (req, res) => {
-  const { naam, email, telefoon, voor, plek, woonplaats, dagdelen, bericht, gevonden } = req.body as {
+  const { naam, email, telefoon, voor, plek, woonplaats, dagdelen, bericht, gevonden, keuze } = req.body as {
     naam?: string; email?: string; telefoon?: string; voor?: string; plek?: string;
-    woonplaats?: string; dagdelen?: unknown; bericht?: string; gevonden?: unknown;
+    woonplaats?: string; dagdelen?: unknown; bericht?: string; gevonden?: unknown; keuze?: unknown;
   };
   if (!naam || !naam.trim() || naam.length > 120) {
     return res.status(400).json({ error: "Vul je naam in" });
@@ -250,6 +252,12 @@ router.post("/massage-aanvraag", async (req, res) => {
   }
   if (voor !== "zwanger" && voor !== "postpartum") {
     return res.status(400).json({ error: "Onbekend soort massage" });
+  }
+  // Een pagina van voor 27 november stuurt geen keuze mee: dat is een losse massage.
+  const keuzeCode = keuze === undefined ? "los" : String(keuze);
+  const keuzeLeesbaar = keuzeTekst(keuzeCode);
+  if (!keuzeLeesbaar) {
+    return res.status(400).json({ error: "Kies een losse massage of een pakket" });
   }
   if (plek !== "praktijk" && plek !== "thuis") {
     return res.status(400).json({ error: "Kies waar je de massage wilt" });
@@ -272,13 +280,13 @@ router.post("/massage-aanvraag", async (req, res) => {
   const gevondenVia = typeof gevonden === "string" ? gevonden.trim().slice(0, 80) : "";
   const dagdelenLeesbaar = dagdelenTekst(codes);
   const plekLeesbaar = plek === "praktijk"
-    ? `een massage bij ${MASSAGE.praktijk.naam}, ${MASSAGE.praktijk.adres}`
-    : `een massage bij je thuis in ${woon}`;
+    ? `bij ${MASSAGE.praktijk.naam}, ${MASSAGE.praktijk.adres}`
+    : `bij je thuis in ${woon}`;
 
   const list = await readList<MassageAanvraag>("massage_aanvragen");
   list.push({
     naam: naam.trim(), email, telefoon: tel, voor, plek, woonplaats: woon,
-    dagdelen: codes, bericht: tekst, gevonden: gevondenVia, timestamp: new Date().toISOString(),
+    dagdelen: codes, bericht: tekst, gevonden: gevondenVia, keuze: keuzeCode, timestamp: new Date().toISOString(),
   });
   await saveList("massage_aanvragen", list);
   await sendAdminNotification({
@@ -287,6 +295,8 @@ router.post("/massage-aanvraag", async (req, res) => {
     email,
     details:
       `Aanvraag ${voor === "zwanger" ? "zwangerschapsmassage" : "postpartummassage"} (${MASSAGE.naam})\n` +
+      `Keuze: ${keuzeLeesbaar}
+` +
       `Waar: ${plek === "praktijk" ? MASSAGE.praktijk.naam : `aan huis in ${woon}`}\n` +
       `Komt uit: ${dagdelenLeesbaar}\n` +
       `Gevonden via: ${gevondenVia || "niet opgegeven"}\n` +
@@ -295,7 +305,7 @@ router.post("/massage-aanvraag", async (req, res) => {
       `\n\nDe aanvrager kreeg automatisch een bevestiging; je kopie daarvan zit in een aparte mail.`,
   }).catch(() => {});
   await sendMassageAanvraagBevestiging({
-    toEmail: email, toName: naam.trim(), dagdelen: dagdelenLeesbaar, plek: plekLeesbaar,
+    toEmail: email, toName: naam.trim(), dagdelen: dagdelenLeesbaar, plek: plekLeesbaar, keuze: keuzeLeesbaar,
   }).catch(() => {});
   return res.json({ message: "Ontvangen" });
 });

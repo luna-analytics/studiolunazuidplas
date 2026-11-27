@@ -21,7 +21,12 @@ const MAANDEN = ["januari", "februari", "maart", "april", "mei", "juni", "juli",
 // Datums die niet over de reeks gaan of bewust blijven staan. "tot" is de
 // laatste dag waarop de datum nog mag; daarna stopt de build weer, zodat een
 // verouderde zin niet ongemerkt blijft staan.
-const TOEGESTAAN = [];
+const TOEGESTAAN = [
+  // De introductieprijs van de massage loopt tot en met deze dag (massage.ts).
+  // Daarna verdwijnt hij vanzelf van de pagina's; haal dan introductieTot en
+  // introductieTotTekst uit massage.ts weg, anders stopt de build hier.
+  { datum: "31 december", tot: "2026-12-31", reden: "einde introductieprijs massage" },
+];
 
 const reeksBron = readFileSync(join(HIER, "../api-server/src/lib/reeks.ts"), "utf8");
 const lesdata = [...reeksBron.matchAll(/iso: "(\d{4})-(\d{2})-(\d{2})"/g)]

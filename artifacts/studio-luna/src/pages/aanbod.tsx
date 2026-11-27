@@ -5,7 +5,7 @@ import { SeoFooter } from "@/components/seo-footer";
 import { KennismakingModal } from "@/components/kennismaking-modal";
 import { usePageMeta } from "@/lib/seo";
 import { REEKS, REEKS_START, dagMaand } from "../../../api-server/src/lib/reeks";
-import { MASSAGE } from "../../../api-server/src/lib/massage";
+import { MASSAGE, MASSAGE_PAKKETTEN, PAKKET_MENGEN, introductieLoopt } from "../../../api-server/src/lib/massage";
 import massageTeksten from "@/data/massage-teksten.json";
 
 // Alles wat Studio Luna aanbiedt op één pagina, met de prijzen (haar vraag van
@@ -25,10 +25,18 @@ type Onderdeel = {
   bericht?: boolean;
 };
 
+// De introductieprijs geldt voor je eerste massage en valt na de einddatum
+// vanzelf weg (haar keuze van 27 november 2026).
 const massagePrijs = (
   <>
     €{MASSAGE.prijs}
-    <span className="block text-[13px] text-foreground/60 font-normal">nu €{MASSAGE.introductieprijs} introductieprijs</span>
+    {introductieLoopt() && (
+      <span className="block text-[13px] text-foreground/60 font-normal">
+        eerste massage €{MASSAGE.introductieprijs}
+        <br />
+        t/m {MASSAGE.introductieTotTekst.replace(/ \d{4}$/, "")}
+      </span>
+    )}
   </>
 );
 
@@ -76,6 +84,16 @@ const GROEPEN: { titel: string; sub?: string; onderdelen: Onderdeel[] }[] = [
     ],
   },
   {
+    // Vaste pakketten (27 november 2026); het pakket op maat hieronder blijft.
+    titel: "Massagepakketten",
+    onderdelen: MASSAGE_PAKKETTEN.map((p) => ({
+      naam: `${p.aantal} massages`,
+      prijs: <>€{p.prijs}</>,
+      tekst: `${MASSAGE.naam}, ${p.aantal} keer ${MASSAGE.duur}, ${PAKKET_MENGEN}. Het pakket is ${p.geldig} geldig.`,
+      link: { href: `/zwangerschapsmassage?pakket=${p.code}#afspraak`, tekst: "Vraag dit pakket aan" },
+    })),
+  },
+  {
     titel: "Aan huis",
     onderdelen: [
       {
@@ -106,7 +124,7 @@ export default function Aanbod() {
 
   usePageMeta({
     title: "Aanbod en tarieven | Studio Luna, Nieuwerkerk aan den IJssel",
-    description: `Alles van Studio Luna met de prijzen: de Geboortereeks (€195), privéles zwangerschapsyoga en geboortevoorbereiding, zwangerschapsmassage en postpartummassage (€${MASSAGE.prijs}) in Nieuwerkerk aan den IJssel.`,
+    description: `Alles van Studio Luna met de prijzen: de Geboortereeks (€195), privéles zwangerschapsyoga en geboortevoorbereiding, zwangerschapsmassage en postpartummassage (€${MASSAGE.prijs}, pakketten vanaf €${MASSAGE_PAKKETTEN[0].prijs}) in Nieuwerkerk aan den IJssel.`,
   });
 
   return (

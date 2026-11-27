@@ -301,7 +301,7 @@ export function reeksOmschrijving(): string {
 const ontsmetHtml = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
-export function massageBevestigingHtml(toName: string, dagdelen: string, plek: string): string {
+export function massageBevestigingHtml(toName: string, dagdelen: string, plek: string, keuze: string): string {
   const p = `margin:0 0 16px; font-family:${SANS}; font-size:16px; line-height:1.7; color:#3B4F41;`;
   return WRAPPER(`
     ${HEADER("Aanvraag ontvangen")}
@@ -309,7 +309,8 @@ export function massageBevestigingHtml(toName: string, dagdelen: string, plek: s
       <td style="padding:28px 40px 12px;">
         <p style="margin:0 0 16px; font-family:${SERIF}; font-size:22px; color:#3B4F41;">Lieve ${ontsmetHtml(toName)},</p>
         <p style="${p}">Je aanvraag voor een ${MASSAGE.naam}-massage is binnen, dankjewel!</p>
-        <p style="${p}">Je gaf aan dat deze dagdelen je goed uitkomen: ${ontsmetHtml(dagdelen)}. Je koos voor ${ontsmetHtml(plek)}.</p>
+        <p style="${p}">Je vroeg ${ontsmetHtml(keuze)} aan. De massage is ${ontsmetHtml(plek)}.</p>
+        <p style="${p}">Je gaf aan dat deze dagdelen je goed uitkomen: ${ontsmetHtml(dagdelen)}.</p>
         <p style="${p}">Marjolein neemt contact met je op met een paar momenten waarop het kan;
           daarna staat je afspraak vast. Je hoeft nu verder niets te doen.</p>
       </td>
@@ -319,15 +320,15 @@ export function massageBevestigingHtml(toName: string, dagdelen: string, plek: s
 }
 
 export async function sendMassageAanvraagBevestiging(params: {
-  toEmail: string; toName: string; dagdelen: string; plek: string;
+  toEmail: string; toName: string; dagdelen: string; plek: string; keuze: string;
 }) {
-  const { toEmail, toName, dagdelen, plek } = params;
+  const { toEmail, toName, dagdelen, plek, keuze } = params;
   await verzend(
     {
       to: toEmail,
       bcc: ADMIN_TO,
       subject: "Je aanvraag voor een massage is binnen",
-      html: massageBevestigingHtml(toName, dagdelen, plek),
+      html: massageBevestigingHtml(toName, dagdelen, plek, keuze),
     },
     "bevestiging massageaanvraag",
   );
