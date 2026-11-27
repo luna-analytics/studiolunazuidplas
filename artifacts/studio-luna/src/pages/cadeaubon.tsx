@@ -111,7 +111,7 @@ export default function Cadeaubon() {
               {CADEAUBON.opties.map((o) => (
                 <div key={o.code} className="py-4 border-b border-border/20">
                   <div className="flex items-baseline justify-between gap-6">
-                    <h3 className="text-[17px] font-semibold text-foreground/85">{o.tekst}</h3>
+                    <h3 className="text-[17px] font-semibold text-foreground/85">{o.naam ? `${o.naam}: ${o.tekst}` : o.tekst}</h3>
                     <p className="text-[17px] font-semibold text-foreground/85 shrink-0">€{o.prijs}</p>
                   </div>
                   {extraBij(o.code) && (
@@ -152,7 +152,7 @@ export default function Cadeaubon() {
                           className="mt-1.5 w-4 h-4 accent-[hsl(var(--primary))]"
                         />
                         <span>
-                          {o.tekst} (€{o.prijs})
+                          {o.naam ? `${o.naam}: ${o.tekst}` : o.tekst} (€{o.prijs})
                           {extraBij(o.code) && (
                             <span className="block text-sm text-foreground/60">inclusief {extraBij(o.code)}</span>
                           )}

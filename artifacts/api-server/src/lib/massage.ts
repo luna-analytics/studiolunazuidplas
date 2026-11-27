@@ -42,9 +42,10 @@ export const MASSAGE = {
   wanneerPostpartum: "vlak na de bevalling en ook maanden later",
 };
 
+// Namen van de pakketten: haar keuze van 27 november 2026 uit drie opties per pakket.
 export const MASSAGE_PAKKETTEN = [
-  { code: "3", aantal: 3, prijs: 255, geldig: "6 maanden", extra: "Luna butter (100% biologische sheaboter) t.w.v. €10" },
-  { code: "5", aantal: 5, prijs: 400, geldig: "12 maanden", extra: "een verzorgingscadeau t.w.v. €30" },
+  { code: "3", aantal: 3, prijs: 255, geldig: "6 maanden", extra: "Luna butter (100% biologische sheaboter) t.w.v. €10", naam: "Even voor jou" },
+  { code: "5", aantal: 5, prijs: 400, geldig: "12 maanden", extra: "een verzorgingscadeau t.w.v. €30", naam: "Gedragen worden" },
 ] as const;
 export const PAKKET_MENGEN = "zwangerschaps- en postpartummassages door elkaar";
 
@@ -65,15 +66,18 @@ export const PAKKET_VOORWAARDEN = [
 export const CADEAUBON = {
   geldig: "12 maanden",
   opties: [
-    { code: "los", tekst: "1 massage", prijs: MASSAGE.prijs },
-    ...MASSAGE_PAKKETTEN.map((p) => ({ code: p.code as string, tekst: `${p.aantal} massages`, prijs: p.prijs as number })),
+    { code: "los", tekst: "1 massage", prijs: MASSAGE.prijs, naam: "" },
+    ...MASSAGE_PAKKETTEN.map((p) => ({ code: p.code as string, tekst: `${p.aantal} massages`, prijs: p.prijs as number, naam: p.naam as string })),
   ],
 };
 
-/** "3" wordt "een cadeaubon voor 3 massages (€255)". */
+/** "3" wordt "een cadeaubon voor het pakket Even voor jou (3 massages, €255)". */
 export function cadeaubonTekst(code: string): string | null {
   const o = CADEAUBON.opties.find((x) => x.code === code);
-  return o ? `een cadeaubon voor ${o.tekst} (€${o.prijs})` : null;
+  if (!o) return null;
+  return o.naam
+    ? `een cadeaubon voor het pakket ${o.naam} (${o.tekst}, €${o.prijs})`
+    : `een cadeaubon voor ${o.tekst} (€${o.prijs})`;
 }
 
 /** Loopt de introductieprijs vandaag (Nederlandse tijd) nog? */
@@ -91,7 +95,7 @@ export type MassageKeuze = "los" | (typeof MASSAGE_PAKKETTEN)[number]["code"];
 export function keuzeTekst(code: string): string | null {
   if (code === "los") return "een losse massage";
   const p = MASSAGE_PAKKETTEN.find((x) => x.code === code);
-  return p ? `een pakket van ${p.aantal} massages (€${p.prijs}, ${p.geldig} geldig), inclusief ${p.extra}` : null;
+  return p ? `het pakket ${p.naam}: ${p.aantal} massages (€${p.prijs}, ${p.geldig} geldig), inclusief ${p.extra}` : null;
 }
 
 export type MassageVoor = "zwanger" | "postpartum";

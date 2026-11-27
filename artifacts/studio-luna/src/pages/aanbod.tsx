@@ -87,9 +87,9 @@ const GROEPEN: { titel: string; sub?: string; onderdelen: Onderdeel[] }[] = [
     // Vaste pakketten (27 november 2026); het pakket op maat hieronder blijft.
     titel: "Massagepakketten",
     onderdelen: MASSAGE_PAKKETTEN.map((p) => ({
-      naam: `${p.aantal} massages`,
+      naam: p.naam,
       prijs: <>€{p.prijs}</>,
-      tekst: `${MASSAGE.naam}, ${p.aantal} keer ${MASSAGE.duur}, ${PAKKET_MENGEN}. Het pakket is ${p.geldig} geldig. Inclusief ${p.extra}.`,
+      tekst: `${p.aantal} massages ${MASSAGE.naam} van ${MASSAGE.duur}, ${PAKKET_MENGEN}. Het pakket is ${p.geldig} geldig. Inclusief ${p.extra}.`,
       link: { href: `/zwangerschapsmassage?pakket=${p.code}#afspraak`, tekst: "Vraag dit pakket aan" },
     })),
   },

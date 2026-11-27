@@ -30,6 +30,8 @@ const GROEPEN: Groep[] = [
       { label: "Zwangerschapsyoga", noot: "De Geboortereeks van acht weken", href: "/geboortereeks" },
       { label: "Privéles", noot: "Yoga en geboortevoorbereiding op maat", href: "/aanbod#priveles" },
       { label: "Zwangerschapsmassage", noot: "Lomi Lomi Hapai, 75 minuten", href: "/zwangerschapsmassage" },
+      // Haar wens van 27 november 2026: de cadeaubon in het menu, onder beide groepen.
+      { label: "Cadeaubon", noot: "Geef een massage cadeau", href: "/cadeaubon" },
     ],
   },
   {
@@ -38,6 +40,7 @@ const GROEPEN: Groep[] = [
     onderdelen: [
       { label: "Mama-en-babyyoga", noot: "Na de Geboortereeks, als alle kindjes geboren zijn", href: "/geboortereeks#mama-en-babyyoga" },
       { label: "Postpartummassage", noot: "Lomi Lomi Hapai, 75 minuten", href: "/postpartummassage" },
+      { label: "Cadeaubon", noot: "Geef een massage cadeau", href: "/cadeaubon" },
       { label: "Behandeling aan huis" },
     ],
   },

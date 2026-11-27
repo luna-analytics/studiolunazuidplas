@@ -71,8 +71,8 @@ const MASSAGE = {
 // Pakketten en introductieprijs (27 november 2026). De introductieprijs geldt
 // voor de eerste massage en komt alleen in de schil zolang hij loopt; na de
 // einddatum laat de datumbewaking de build stoppen tot massage.ts is opgeruimd.
-MASSAGE.pakketten = [...massageBron.matchAll(/aantal: (\d+), prijs: (\d+), geldig: "([^"]+)", extra: "([^"]+)"/g)]
-  .map(([, aantal, prijs, geldig, extra]) => ({ aantal, prijs, geldig, extra }));
+MASSAGE.pakketten = [...massageBron.matchAll(/aantal: (\d+), prijs: (\d+), geldig: "([^"]+)", extra: "([^"]+)", naam: "([^"]+)"/g)]
+  .map(([, aantal, prijs, geldig, extra, naam]) => ({ aantal, prijs, geldig, extra, naam }));
 MASSAGE.introTot = massageVeld("introductieTot");
 MASSAGE.introTotTekst = massageVeld("introductieTotTekst");
 MASSAGE.mengen = (massageBron.match(/PAKKET_MENGEN = "([^"]+)"/) || [])[1] || "";
@@ -80,7 +80,7 @@ MASSAGE.mengen = (massageBron.match(/PAKKET_MENGEN = "([^"]+)"/) || [])[1] || ""
 MASSAGE.voorwaarden = [...massageBron.matchAll(/vraag: "([^"]+)",\s*antwoord: "([^"]+)"/g)]
   .map(([, vraag, antwoord]) => ({ vraag, antwoord }));
 MASSAGE.cadeaubonGeldig = (massageBron.match(/CADEAUBON = \{\s*geldig: "([^"]+)"/) || [])[1] || "";
-const cadeaubonOpties = [`1 massage (€${MASSAGE.prijs})`, ...MASSAGE.pakketten.map((p) => `${p.aantal} massages (€${p.prijs})`)].join(", ");
+const cadeaubonOpties = [`1 massage (€${MASSAGE.prijs})`, ...MASSAGE.pakketten.map((p) => `het pakket ${p.naam} met ${p.aantal} massages (€${p.prijs})`)].join(", ");
 const massageIntroLoopt = new Date().toLocaleDateString("sv-SE", { timeZone: "Europe/Amsterdam" }) <= MASSAGE.introTot;
 if (MASSAGE.pakketten.length !== 2 || !MASSAGE.introTot || !MASSAGE.mengen || MASSAGE.voorwaarden.length !== 2 || !MASSAGE.cadeaubonGeldig) {
   console.error("De massagepakketten of de introductiedatum zijn niet uit api-server/src/lib/massage.ts te lezen; klopt de opmaak nog?");
@@ -381,7 +381,7 @@ const ROUTES = [
               : []),
             { "@type": "Offer", name: `${MASSAGE.naam}, ${MASSAGE.duur}`, price: `${MASSAGE.prijs}.00`, priceCurrency: "EUR" },
             ...MASSAGE.pakketten.map((p) => ({
-              "@type": "Offer", name: `${MASSAGE.naam}, pakket van ${p.aantal} massages, ${p.geldig} geldig, inclusief ${p.extra}`, price: `${p.prijs}.00`, priceCurrency: "EUR",
+              "@type": "Offer", name: `${MASSAGE.naam}, pakket ${p.naam}: ${p.aantal} massages, ${p.geldig} geldig, inclusief ${p.extra}`, price: `${p.prijs}.00`, priceCurrency: "EUR",
             })),
           ],
         },
@@ -400,7 +400,7 @@ const ROUTES = [
         `<li>Waar: bij ${tekstVeilig(MASSAGE.praktijk[0])}, ${tekstVeilig(MASSAGE.praktijk[1])}</li>` +
         `<li>Losse massage: €${MASSAGE.prijs}</li>` +
         (massageIntroLoopt ? `<li>Introductieprijs: €${MASSAGE.intro} voor je eerste massage, tot en met ${MASSAGE.introTotTekst}</li>` : "") +
-        MASSAGE.pakketten.map((p) => `<li>Pakket ${p.aantal} massages: €${p.prijs}, ${p.geldig} geldig, inclusief ${tekstVeilig(p.extra)}</li>`).join("") +
+        MASSAGE.pakketten.map((p) => `<li>Pakket ${p.aantal} massages: ${p.naam}, €${p.prijs}, ${p.geldig} geldig, inclusief ${tekstVeilig(p.extra)}</li>`).join("") +
         `<li>Afspraak: via het formulier op deze pagina</li></ul>` +
         `<h2>Een afspraak aanvragen</h2><p>${tekstVeilig(massageTeksten.afspraakUitleg)}</p>` +
         faqHtml(faq),
@@ -420,7 +420,7 @@ const ROUTES = [
       `<li><a href="/postpartummassage">Postpartummassage</a>: ${MASSAGE.naam}, ${MASSAGE.duur}, €${MASSAGE.prijs}${massageIntroLoopt ? ` (eerste massage €${MASSAGE.intro} tot en met ${MASSAGE.introTotTekst})` : ""}.</li>` +
       `<li>Mama-en-babyyoga: inbegrepen bij de Geboortereeks.</li></ul>` +
       `<h2>Massagepakketten</h2><ul>` +
-      MASSAGE.pakketten.map((p) => `<li>${p.aantal} massages: €${p.prijs}, ${MASSAGE.mengen}, ${p.geldig} geldig. Inclusief ${tekstVeilig(p.extra)}.</li>`).join("") +
+      MASSAGE.pakketten.map((p) => `<li>${p.naam}: ${p.aantal} massages, €${p.prijs}, ${MASSAGE.mengen}, ${p.geldig} geldig. Inclusief ${tekstVeilig(p.extra)}.</li>`).join("") +
       `</ul>` +
       `<h2>Cadeaubon</h2><p><a href="/cadeaubon">Cadeaubon voor een massage</a>: ${cadeaubonOpties}, ${MASSAGE.cadeaubonGeldig} geldig.</p>` +
       `<h2>Aan huis</h2><p>Behandeling aan huis, bijvoorbeeld in de kraamperiode: binnenkort beschikbaar.</p>` +
@@ -435,7 +435,7 @@ const ROUTES = [
       `<p>Geef een ${MASSAGE.naam}-massage cadeau: een full body ontspanningsmassage van ${MASSAGE.duur}, tijdens de zwangerschap of na de bevalling, bij ${tekstVeilig(MASSAGE.praktijk[0])} in Nieuwerkerk aan den IJssel. <a href="/zwangerschapsmassage">Over de zwangerschapsmassage</a>. <a href="/postpartummassage">Over de postpartummassage</a>.</p>` +
       `<h2>De cadeaubonnen</h2><ul>` +
       `<li>1 massage: €${MASSAGE.prijs}</li>` +
-      MASSAGE.pakketten.map((p) => `<li>${p.aantal} massages: €${p.prijs}, inclusief ${tekstVeilig(p.extra)}</li>`).join("") +
+      MASSAGE.pakketten.map((p) => `<li>${p.naam}: ${p.aantal} massages, €${p.prijs}, inclusief ${tekstVeilig(p.extra)}</li>`).join("") +
       `</ul>` +
       `<h2>Zo werkt het</h2><p>Je vraagt de cadeaubon aan via het formulier op deze pagina en krijgt daarna een factuur per mail. Na betaling krijg je de cadeaubon per mail, om door te sturen of te printen. De bon is ${MASSAGE.cadeaubonGeldig} geldig, en wie hem krijgt maakt zelf een afspraak via de massagepagina.</p>`,
   },

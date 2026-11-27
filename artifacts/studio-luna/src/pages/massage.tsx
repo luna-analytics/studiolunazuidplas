@@ -136,7 +136,7 @@ function MassagePagina({ voor }: { voor: MassageVoor }) {
             : []),
           { "@type": "Offer", name: `${MASSAGE.naam}, ${MASSAGE.duur}`, price: `${MASSAGE.prijs}.00`, priceCurrency: "EUR" },
           ...MASSAGE_PAKKETTEN.map((p) => ({
-            "@type": "Offer", name: `${MASSAGE.naam}, pakket van ${p.aantal} massages, ${p.geldig} geldig, inclusief ${p.extra}`, price: `${p.prijs}.00`, priceCurrency: "EUR",
+            "@type": "Offer", name: `${MASSAGE.naam}, pakket ${p.naam}: ${p.aantal} massages, ${p.geldig} geldig, inclusief ${p.extra}`, price: `${p.prijs}.00`, priceCurrency: "EUR",
           })),
         ],
       },
@@ -163,7 +163,7 @@ function MassagePagina({ voor }: { voor: MassageVoor }) {
       : []),
     ...MASSAGE_PAKKETTEN.map((p) => ({
       label: `Pakket ${p.aantal} massages`,
-      waarde: `€${p.prijs}, ${p.geldig} geldig, inclusief ${p.extra}`,
+      waarde: `${p.naam}, €${p.prijs}, ${p.geldig} geldig, inclusief ${p.extra}`,
     })),
     {
       label: "Afspraak",
@@ -313,7 +313,7 @@ function MassagePagina({ voor }: { voor: MassageVoor }) {
                       },
                       ...MASSAGE_PAKKETTEN.map((p) => ({
                         code: p.code as string,
-                        tekst: `${p.aantal} massages (€${p.prijs}, ${p.geldig} geldig)`,
+                        tekst: `${p.naam}: ${p.aantal} massages (€${p.prijs}, ${p.geldig} geldig)`,
                         extra: `inclusief ${p.extra}`,
                       })),
                     ].map((o) => (
