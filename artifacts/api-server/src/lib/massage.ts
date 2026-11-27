@@ -14,11 +14,14 @@
 // door elkaar, zonder introductieprijs. Na de einddatum verdwijnt de
 // introductieprijs vanzelf van de pagina's (introductieLoopt), en stopt de
 // datumbewaking de build tot de datum hieronder is opgeruimd.
+//
+// Later dezelfde dag haar keuze na een vergelijking van 75/90/95/100/110:
+// los €95, pakketten €255 (3) en €400 (5); introductieprijs blijft €75.
 
 export const MASSAGE = {
   naam: "Lomi Lomi Hapai",
   duur: "75 minuten",
-  prijs: 90,
+  prijs: 95,
   introductieprijs: 75,
   introductieTot: "2026-12-31",
   introductieTotTekst: "31 december 2026",
@@ -33,8 +36,8 @@ export const MASSAGE = {
 };
 
 export const MASSAGE_PAKKETTEN = [
-  { code: "3", aantal: 3, prijs: 240, geldig: "6 maanden" },
-  { code: "5", aantal: 5, prijs: 380, geldig: "12 maanden" },
+  { code: "3", aantal: 3, prijs: 255, geldig: "6 maanden" },
+  { code: "5", aantal: 5, prijs: 400, geldig: "12 maanden" },
 ] as const;
 export const PAKKET_MENGEN = "zwangerschaps- en postpartummassages door elkaar";
 
